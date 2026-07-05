@@ -1,0 +1,2774 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Match Point — Player Journey</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="flow-app flow-immersive">
+      <div class="flow-guest-inline" id="guest-banner" style="display: none">
+        <span data-i18n="guest.bannerInline"
+          >Mode tamu — lihat saja. Masuk untuk submit match &amp; event.</span
+        >
+        <button
+          type="button"
+          class="btn btn-primary btn-sm"
+          id="guest-login-cta"
+          data-guest-login
+          data-i18n="flow.guestLoginCta"
+        >
+          Masuk untuk fitur penuh
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="flow-preview-fab"
+        id="flow-preview-fab"
+        aria-label="Preview tools"
+        title="Preview tools"
+      >
+        ⋯
+      </button>
+      <aside
+        class="flow-preview-panel"
+        id="flow-preview-panel"
+        aria-hidden="true"
+      >
+        <div class="flow-preview-panel-head">
+          <span>Preview</span>
+          <button
+            type="button"
+            class="flow-preview-close"
+            id="flow-preview-close"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
+        <a href="index.html" class="flow-preview-link">← Menu Flow</a>
+        <div class="device-toggle device-toggle-labeled flow-preview-device">
+          <button class="device-btn" data-device="mobile" title="Mobile">
+            📱 <span class="device-label">Mobile</span>
+          </button>
+          <button class="device-btn" data-device="tablet" title="Tablet">
+            📋 <span class="device-label">Tablet</span>
+          </button>
+          <button class="device-btn active" data-device="desktop" title="Web">
+            🖥 <span class="device-label">Web</span>
+          </button>
+        </div>
+        <div class="lang-toggle flow-preview-lang">
+          <button class="lang-btn" data-lang="id">ID</button>
+          <button class="lang-btn active" data-lang="en">EN</button>
+        </div>
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm btn-block"
+          id="flow-logout"
+          data-i18n="flow.logout"
+        >
+          Keluar
+        </button>
+        <div class="flow-progress flow-preview-progress">
+          <div
+            class="flow-progress-bar"
+            id="flow-progress-bar"
+            style="width: 10%"
+          ></div>
+        </div>
+      </aside>
+
+      <main class="flow-body flow-body-immersive">
+        <div class="device-stage" id="device-stage">
+          <div class="flow-frame">
+            <!-- Step 0: Login -->
+            <div class="flow-step active" data-step="login">
+              <div class="app login-gate-app">
+                <div class="login-gate-hero">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                  </div>
+                  <h1 class="login-hook" data-i18n="login.hook">
+                    Rank-mu di klub ini… valid di klub lain?
+                  </h1>
+                  <p class="login-subhook" data-i18n="login.subhook">
+                    Satu reputasi portabel lintas semua komunitas padel, tennis
+                    &amp; pickleball.
+                  </p>
+                  <div class="login-sport-chips">
+                    <span class="login-sport-chip">🏓 Padel</span>
+                    <span class="login-sport-chip">🎾 Tennis</span>
+                    <span class="login-sport-chip">🥎 Pickleball</span>
+                  </div>
+                  <div class="login-teaser-stats">
+                    <div class="login-stat">
+                      <strong>10,842</strong
+                      ><span data-i18n="login.stat1">pemain aktif</span>
+                    </div>
+                    <div class="login-stat">
+                      <strong>523</strong
+                      ><span data-i18n="login.stat2">komunitas</span>
+                    </div>
+                    <div class="login-stat">
+                      <strong>51K</strong
+                      ><span data-i18n="login.stat3">match/bulan</span>
+                    </div>
+                  </div>
+                  <div class="login-preview-cards">
+                    <div class="login-preview-card">
+                      <div class="login-preview-ava">BS</div>
+                      <span class="badge badge-on-dark badge-mabar"
+                        >Mabar #12</span
+                      >
+                      <small>Budi · 1680 pts</small>
+                    </div>
+                    <div class="login-preview-card">
+                      <div class="login-preview-ava alt">🌍</div>
+                      <span class="badge badge-on-dark badge-global"
+                        >Global #142</span
+                      >
+                      <small data-i18n="login.previewGlobal"
+                        >Lintas komunitas · 1570 pts</small
+                      >
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-ball btn-block login-browse-btn"
+                    id="guest-continue"
+                    data-i18n="login.browse"
+                  >
+                    👀 Lihat isi dulu — tanpa login
+                  </button>
+                </div>
+                <div class="app-body login-gate-form">
+                  <div class="login-form-inner">
+                    <h2 class="section-title" data-i18n="login.title">
+                      Masuk ke Match Point
+                    </h2>
+                    <p class="section-sub" data-i18n="login.subtitle">
+                      Reputasi portabel menunggu kamu
+                    </p>
+                    <div class="oauth-btns">
+                      <button type="button" class="oauth-btn" data-login>
+                        <svg
+                          class="oauth-ico"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill="#4285F4"
+                            d="M23.5 12.3c0-.9-.1-1.5-.3-2.3H12v4.5h6.5c-.1 1.1-.8 2.7-2.4 3.8l3.7 2.9c2.3-2.1 3.7-5.2 3.7-8.9z"
+                          />
+                          <path
+                            fill="#34A853"
+                            d="M12 24c3.2 0 6-1.1 7.9-2.9l-3.7-2.9c-1 .7-2.4 1.2-4.2 1.2-3.2 0-6-2.1-6.9-5.1L1.2 17.2C3.2 21.2 7.3 24 12 24z"
+                          />
+                          <path
+                            fill="#FBBC05"
+                            d="M5.1 14.3c-.3-.8-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.2 6.8C.4 8.4 0 10.1 0 12s.4 3.6 1.2 5.2l3.9-2.9z"
+                          />
+                          <path
+                            fill="#EA4335"
+                            d="M12 4.7c2.3 0 3.8 1 4.7 1.8L20 3.2C18 1.2 15.2 0 12 0 7.3 0 3.2 2.8 1.2 6.8l3.9 2.9c1-3 3.7-5 6.9-5z"
+                          />
+                        </svg>
+                        <span data-i18n="login.google">Lanjut dengan Google</span>
+                      </button>
+                      <button type="button" class="oauth-btn" data-login>
+                        <svg
+                          class="oauth-ico"
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M17.05 20.28c-.98.95-2.05.86-3.08.38-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.38C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"
+                          />
+                        </svg>
+                        <span data-i18n="login.apple">Lanjut dengan Apple</span>
+                      </button>
+                    </div>
+                    <div class="divider">
+                      <span data-i18n="login.orEmail">atau email</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="login.email"
+                        >Email</label
+                      ><input
+                        class="form-input"
+                        type="email"
+                        value="budi@email.com"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="login.password"
+                        >Password</label
+                      ><input
+                        class="form-input"
+                        type="password"
+                        value="••••••••"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      class="login-forgot"
+                      data-i18n="login.forgot"
+                    >
+                      Lupa password?
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-login
+                      data-i18n="login.submit"
+                    >
+                      Masuk
+                    </button>
+                    <p class="login-signup-note">
+                      <span data-i18n="login.noAccount">Belum punya akun?</span>
+                      <button
+                        type="button"
+                        data-flow-goto="17"
+                        data-i18n="login.signUp"
+                      >
+                        Daftar gratis
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 1: Home (community-first, focused) -->
+            <div class="flow-step" data-step="dashboard">
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                  </div>
+                </header>
+                <div class="app-body">
+                  <!-- Home state: browsing as guest -->
+                  <div class="mp-club-banner" data-guest-only hidden>
+                    <div>
+                      <strong data-i18n="guest.homeTitle"
+                        >Kamu lagi lihat-lihat 👀</strong
+                      >
+                      <p data-i18n="guest.homeDesc">
+                        Jelajahi komunitas, ranking &amp; acara secara bebas.
+                        Masuk untuk gabung komunitas dan dapat rank Mabar-mu.
+                      </p>
+                    </div>
+                    <div class="flex gap-1" style="flex-wrap: wrap">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        data-guest-login
+                        data-i18n="flow.guestLoginCta"
+                      >
+                        Masuk untuk fitur penuh
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm"
+                        data-flow-goto="14"
+                        data-i18n="club.findCta"
+                      >
+                        🔍 Cari Komunitas
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Home state: no community -->
+                  <div class="mp-club-banner" data-show-if-no-club data-auth-only>
+                    <div>
+                      <strong data-i18n="club.noClubTitle"
+                        >Belum punya komunitas</strong
+                      >
+                      <p data-i18n="club.noClubDesc">
+                        Buat klub padel/tennis-mu — jadi admin, kelola turnamen
+                        &amp; Americano.
+                      </p>
+                    </div>
+                    <div class="flex gap-1" style="flex-wrap: wrap">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        data-requires-auth
+                        data-flow-goto="2"
+                        data-i18n="club.createCta"
+                      >
+                        + Buat Komunitas
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm"
+                        data-flow-goto="14"
+                        data-i18n="club.findCta"
+                      >
+                        🔍 Cari Komunitas
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Home state: community request pending platform approval -->
+                  <div class="mp-pending-banner" data-show-if-club-pending hidden>
+                    <strong data-i18n="club.pendingTitle"
+                      >Menunggu persetujuan platform</strong
+                    >
+                    <div class="approval-track">
+                      <span class="approval-node done" data-i18n="approval.submitted"
+                        >Diajukan</span
+                      >
+                      <span class="approval-arrow">→</span>
+                      <span class="approval-node current" data-i18n="approval.pending"
+                        >Menunggu Review</span
+                      >
+                      <span class="approval-arrow">→</span>
+                      <span class="approval-node" data-i18n="approval.approved"
+                        >Disetujui</span
+                      >
+                    </div>
+                    <p data-i18n="club.pendingDesc">
+                      Pengajuan komunitasmu sedang direview tim Match Point.
+                    </p>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm mt-1"
+                      data-club-approve
+                      data-i18n="club.pendingDemo"
+                    >
+                      ✓ Simulasikan disetujui (demo)
+                    </button>
+                  </div>
+                  <!-- Home state: active member / community admin -->
+                  <div data-show-if-club hidden>
+                    <span class="mp-club-chip"
+                      >👥
+                      <span
+                        class="sport-dynamic"
+                        data-padel="Padel Jakarta Selatan"
+                        data-tennis="Jakarta Tennis Community"
+                        data-pickleball="Belum ada komunitas pickleball"
+                        >Padel Jakarta Selatan</span
+                      ></span
+                    >
+                    <div class="community-stats">
+                      <div class="stat-box">
+                        <div
+                          class="stat-val sport-dynamic"
+                          data-padel="142"
+                          data-tennis="98"
+                          data-pickleball="—"
+                        >
+                          142
+                        </div>
+                        <div class="stat-lbl" data-i18n="home.statMembers">
+                          Member
+                        </div>
+                      </div>
+                      <div class="stat-box">
+                        <div
+                          class="stat-val sport-dynamic"
+                          data-padel="847"
+                          data-tennis="1.2K"
+                          data-pickleball="—"
+                        >
+                          847
+                        </div>
+                        <div class="stat-lbl" data-i18n="home.statMatches">
+                          Match
+                        </div>
+                      </div>
+                      <div class="stat-box">
+                        <div
+                          class="stat-val sport-dynamic"
+                          data-padel="#12"
+                          data-tennis="#8"
+                          data-pickleball="—"
+                        >
+                          #12
+                        </div>
+                        <div class="stat-lbl" data-i18n="home.statYourRank">
+                          Rank Mabar-mu
+                        </div>
+                      </div>
+                      <div class="stat-box">
+                        <div
+                          class="stat-val sport-dynamic"
+                          data-padel="Sab"
+                          data-tennis="Min"
+                          data-pickleball="—"
+                        >
+                          Sab
+                        </div>
+                        <div class="stat-lbl" data-i18n="home.statNextEvent">
+                          Acara berikut
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm mb-1"
+                      data-show-if-club-admin
+                      data-i18n="club.manageCta"
+                      onclick="location.href='club.html'"
+                    >
+                      Kelola Komunitas →
+                    </button>
+                  </div>
+
+                  <section class="mp-hero">
+                    <div class="mp-hero-row" data-guest-only hidden>
+                      <div class="avatar avatar-md">👀</div>
+                      <div>
+                        <h1
+                          class="mp-hero-greeting"
+                          data-i18n="guest.heroTitle"
+                        >
+                          Jelajahi Match Point
+                        </h1>
+                        <p class="mp-hero-meta" data-i18n="guest.heroMeta">
+                          Mode tamu — ranking, komunitas &amp; acara terbuka
+                          untuk dilihat
+                        </p>
+                      </div>
+                    </div>
+                    <div class="mp-hero-row" data-auth-only>
+                      <div class="avatar avatar-md">BS</div>
+                      <div>
+                        <h1 class="mp-hero-greeting">Hi, Budi 👋</h1>
+                        <p
+                          class="mp-hero-meta sport-dynamic"
+                          data-show-if-club
+                          data-padel="#12 Mabar · Padel Jakarta Selatan · 1680 pts"
+                          data-tennis="#8 Mabar · Jakarta Tennis Community · 1720 pts"
+                          data-pickleball="Belum ada rank — coba pickleball di acara!"
+                        >
+                          #12 Mabar · Padel Jakarta Selatan · 1680 pts
+                        </p>
+                        <p
+                          class="mp-hero-meta"
+                          data-show-if-no-club
+                          data-i18n="home.heroNoClub"
+                        >
+                          Belum ada komunitas — gabung untuk dapat rank Mabar
+                        </p>
+                        <p
+                          class="mp-hero-meta"
+                          data-show-if-club-pending
+                          hidden
+                          data-i18n="club.pendingTitle"
+                        >
+                          Menunggu persetujuan platform
+                        </p>
+                        <div class="rank-chip-row">
+                          <span
+                            class="rank-chip mabar sport-dynamic"
+                            data-show-if-club
+                            data-padel="Mabar · Padel #12"
+                            data-tennis="Mabar · Tennis #8"
+                            data-pickleball="Mabar · Pickleball —"
+                            >Mabar · Padel #12</span
+                          >
+                          <button
+                            type="button"
+                            class="rank-chip global sport-dynamic"
+                            data-flow-goto="3"
+                            data-padel="Global · Padel #142"
+                            data-tennis="Global · Tennis #31"
+                            data-pickleball="Global · Pickleball —"
+                          >
+                            Global · Padel #142
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mp-sport-cards mp-sport-cards-3">
+                      <button
+                        type="button"
+                        class="mp-sport-card padel sport-btn"
+                        data-sport="padel"
+                      >
+                        <span class="mp-sport-card-label">🏓 Padel</span>
+                        <div class="mp-sport-card-score" data-auth-only>
+                          1680
+                        </div>
+                        <div class="mp-sport-card-score" data-guest-only hidden>
+                          —
+                        </div>
+                        <span class="mp-sport-card-sub" data-show-if-club
+                          >Mabar #12 · Global #142</span
+                        >
+                        <span
+                          class="mp-sport-card-sub"
+                          data-show-if-no-club
+                          data-auth-only
+                          >Global #142</span
+                        >
+                        <span
+                          class="mp-sport-card-sub"
+                          data-show-if-club-pending
+                          hidden
+                          >Global #142</span
+                        >
+                        <span
+                          class="mp-sport-card-sub"
+                          data-guest-only
+                          hidden
+                          data-i18n="guest.sportHint"
+                          >Masuk untuk lihat rank-mu</span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        class="mp-sport-card tennis sport-btn"
+                        data-sport="tennis"
+                      >
+                        <span class="mp-sport-card-label">🎾 Tennis</span>
+                        <div class="mp-sport-card-score" data-auth-only>
+                          1720
+                        </div>
+                        <div class="mp-sport-card-score" data-guest-only hidden>
+                          —
+                        </div>
+                        <span class="mp-sport-card-sub" data-show-if-club
+                          >Mabar #8 · Global #31</span
+                        >
+                        <span
+                          class="mp-sport-card-sub"
+                          data-show-if-no-club
+                          data-auth-only
+                          >Global #31</span
+                        >
+                        <span
+                          class="mp-sport-card-sub"
+                          data-show-if-club-pending
+                          hidden
+                          >Global #31</span
+                        >
+                        <span
+                          class="mp-sport-card-sub"
+                          data-guest-only
+                          hidden
+                          data-i18n="guest.sportHint"
+                          >Masuk untuk lihat rank-mu</span
+                        >
+                      </button>
+                      <button
+                        type="button"
+                        class="mp-sport-card pickleball sport-btn"
+                        data-sport="pickleball"
+                      >
+                        <span class="mp-sport-card-label">🥎 Pickleball</span>
+                        <div class="mp-sport-card-score">—</div>
+                        <span class="mp-sport-card-sub" data-i18n="home.soon"
+                          >Segera — coba di acara</span
+                        >
+                      </button>
+                    </div>
+                  </section>
+
+                  <!-- Quick action: submit only — Rank & Acara live in the nav,
+                       and get real data previews in the grid below -->
+                  <div class="mp-play-row">
+                    <button
+                      type="button"
+                      class="mp-play-btn primary"
+                      data-show-if-club
+                      data-requires-auth
+                      data-flow-goto="4"
+                    >
+                      <strong data-i18n="flow.cta.submitTitle"
+                        >Catat Hasil Match</strong
+                      >
+                      <span data-i18n="flow.cta.submitDesc"
+                        >~30 detik · rank update instan</span
+                      >
+                    </button>
+                  </div>
+
+                  <div class="mp-home-grid">
+                    <div class="mp-home-main">
+                      <!-- Community-first: communities take the lead slot,
+                           events sit beside them -->
+                      <div class="mp-duo">
+                        <section class="mp-duo-col" data-show-if-no-club>
+                          <div class="mp-section-head">
+                            <h2 data-i18n="find.nearYou">
+                              👥 Komunitas terdekat
+                            </h2>
+                            <button
+                              type="button"
+                              class="linkish"
+                              data-flow-goto="14"
+                              data-i18n="home.seeAll"
+                            >
+                              Lihat semua
+                            </button>
+                          </div>
+                          <p
+                            class="text-sm text-muted mb-1"
+                            data-i18n="home.nearbySub"
+                          >
+                            Klub yang bisa kamu gabung di sekitarmu
+                          </p>
+                          <div
+                            class="community-row"
+                            data-flow-goto="15"
+                            role="button"
+                            style="cursor: pointer"
+                          >
+                            <div class="community-row-body">
+                              <strong>Senayan Padel Club</strong>
+                              <div class="community-row-meta">
+                                🏓 88 member · 🟢 Open
+                              </div>
+                            </div>
+                            <span class="distance-chip">1.2 km</span>
+                          </div>
+                          <div
+                            class="community-row"
+                            data-flow-goto="15"
+                            role="button"
+                            style="cursor: pointer"
+                          >
+                            <div class="community-row-body">
+                              <strong>Kemang Tennis Society</strong>
+                              <div class="community-row-meta">
+                                🎾 64 member · 🟢 Open
+                              </div>
+                            </div>
+                            <span class="distance-chip">2.8 km</span>
+                          </div>
+                          <div
+                            class="community-row"
+                            data-flow-goto="15"
+                            role="button"
+                            style="cursor: pointer"
+                          >
+                            <div class="community-row-body">
+                              <strong>Pickle Blok M</strong>
+                              <div class="community-row-meta">
+                                🥎 31 member · 🟢 Open
+                              </div>
+                            </div>
+                            <span class="distance-chip">3.5 km</span>
+                          </div>
+                        </section>
+                        <section class="mp-duo-col" data-show-if-no-club>
+                          <div class="mp-section-head">
+                            <h2 data-i18n="home.topGlobal">🏆 Top 5 Global</h2>
+                            <button
+                              type="button"
+                              class="linkish"
+                              data-flow-goto="3"
+                              data-i18n="home.seeAll"
+                            >
+                              Lihat semua
+                            </button>
+                          </div>
+                          <p
+                            class="text-sm text-muted mb-1 sport-dynamic"
+                            data-padel="🏓 Padel · lintas komunitas"
+                            data-tennis="🎾 Tennis · lintas komunitas"
+                            data-pickleball="🥎 Pickleball · lintas komunitas"
+                          >
+                            🏓 Padel · lintas komunitas
+                          </p>
+                          <ul class="leaderboard-list compact lb-card">
+                            <li class="lb-row">
+                              <span class="lb-rank gold">1</span>
+                              <div class="lb-info">
+                                <div class="lb-name">Agus Wibowo</div>
+                              </div>
+                              <span class="lb-points">2140</span>
+                            </li>
+                            <li class="lb-row">
+                              <span class="lb-rank">2</span>
+                              <div class="lb-info">
+                                <div class="lb-name">Rudi Hartono</div>
+                              </div>
+                              <span class="lb-points">2085</span>
+                            </li>
+                            <li class="lb-row">
+                              <span class="lb-rank">3</span>
+                              <div class="lb-info">
+                                <div class="lb-name">Maya K.</div>
+                              </div>
+                              <span class="lb-points">1905</span>
+                            </li>
+                            <li class="lb-row">
+                              <span class="lb-rank">4</span>
+                              <div class="lb-info">
+                                <div class="lb-name">Doni P.</div>
+                              </div>
+                              <span class="lb-points">1848</span>
+                            </li>
+                            <li class="lb-row">
+                              <span class="lb-rank">5</span>
+                              <div class="lb-info">
+                                <div class="lb-name">Rina S.</div>
+                              </div>
+                              <span class="lb-points">1790</span>
+                            </li>
+                            <li class="lb-row highlight" data-auth-only>
+                              <span
+                                class="lb-rank sport-dynamic"
+                                data-padel="142"
+                                data-tennis="31"
+                                data-pickleball="—"
+                                >142</span
+                              >
+                              <div class="lb-info">
+                                <div class="lb-name">Budi (kamu)</div>
+                              </div>
+                              <span
+                                class="lb-points sport-dynamic"
+                                data-padel="1570"
+                                data-tennis="1650"
+                                data-pickleball="—"
+                                >1570</span
+                              >
+                            </li>
+                          </ul>
+                        </section>
+                        <section class="mp-duo-col">
+                          <div class="mp-section-head">
+                            <h2 data-i18n="home.eventsNear">
+                              🎯 Acara dekat kamu
+                            </h2>
+                            <button
+                              type="button"
+                              class="linkish"
+                              data-flow-goto="10"
+                              data-i18n="home.seeAll"
+                            >
+                              Lihat semua
+                            </button>
+                          </div>
+                          <p
+                            class="text-sm text-muted mb-1"
+                            data-i18n="home.eventsSub"
+                          >
+                            Sesi live &amp; registrasi terbuka di dekatmu
+                          </p>
+                          <div class="event-card event-card-live mb-2">
+                        <div class="event-card-top">
+                          <span class="badge badge-live">LIVE</span>
+                          <span class="badge badge-mabar">Americano</span>
+                        </div>
+                        <strong
+                          class="sport-dynamic"
+                          data-padel="Sabtu Americano · Padel Jakarta"
+                          data-tennis="Sunday Tennis Social"
+                          data-pickleball="Pickle Saturday JKT"
+                          >Sabtu Americano · Padel Jakarta</strong
+                        >
+                        <p class="text-sm text-muted event-card-meta">
+                          16 pemain · 24 poin/round
+                        </p>
+                        <button
+                          type="button"
+                          class="btn btn-primary btn-sm btn-block mt-1"
+                          data-flow-goto="11"
+                          data-i18n="flow.cta.joinSession"
+                        >
+                          Gabung Sesi →
+                        </button>
+                      </div>
+                      <div class="event-card mb-2">
+                        <div class="event-card-top">
+                          <span class="badge badge-info">Mexicano</span>
+                          <span
+                            class="badge badge-pending"
+                            data-i18n="events.regOpenBadge"
+                            >Registrasi buka</span
+                          >
+                        </div>
+                        <strong
+                          class="sport-dynamic"
+                          data-padel="Mexicano · Minggu Padel Open"
+                          data-tennis="Mexicano · Friday Ladder Night"
+                          data-pickleball="Mexicano · Sunday Pickle Open"
+                          >Mexicano · Minggu Padel Open</strong
+                        >
+                        <p class="text-sm text-muted event-card-meta">
+                          12/16 slot · Minggu 09:00
+                        </p>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm btn-block mt-1"
+                          data-requires-auth
+                          data-flow-goto="16"
+                          data-i18n="events.registerCta"
+                        >
+                          Daftar →
+                        </button>
+                      </div>
+                        </section>
+                      </div>
+                      <div class="mp-section-head">
+                        <h2 data-i18n="home.recent">Aktivitas terakhir</h2>
+                      </div>
+                      <div class="match-card" data-show-if-club>
+                        <div>
+                          <div class="match-players">
+                            Budi &amp; Rudi vs Sari &amp; Dina
+                          </div>
+                          <div class="match-score">6-4, 3-6, 10-7</div>
+                          <div
+                            class="match-meta sport-dynamic"
+                            data-padel="Padel Senayan · +18 poin Mabar"
+                            data-tennis="Lapangan Kemang · +12 poin Mabar"
+                            data-pickleball="—"
+                          >
+                            Padel Senayan · +18 poin Mabar
+                          </div>
+                        </div>
+                        <span class="badge badge-success">Approved</span>
+                      </div>
+                      <div class="upsell-card" data-show-if-no-club>
+                        <strong data-i18n="upsell.title"
+                          >Gratis untuk komunitas</strong
+                        >
+                        <p data-i18n="upsell.body">
+                          Rank Mabar, match log, acara dasar &amp; gabung
+                          komunitas — gratis.
+                        </p>
+                      </div>
+                    </div>
+                    <aside class="mp-aside-card">
+                      <div data-show-if-club>
+                        <h3 data-i18n="home.topMabar">Top 5 Mabar</h3>
+                        <p
+                          class="text-sm text-muted sport-dynamic"
+                          data-padel="Padel Jakarta Selatan"
+                          data-tennis="Jakarta Tennis Community"
+                          data-pickleball="—"
+                        >
+                          Padel Jakarta Selatan
+                        </p>
+                        <ul class="leaderboard-list compact">
+                          <li class="lb-row">
+                            <span class="lb-rank gold">1</span>
+                            <div class="lb-info">
+                              <div
+                                class="lb-name sport-dynamic"
+                                data-padel="Rudi H."
+                                data-tennis="Elena W."
+                                data-pickleball="—"
+                              >
+                                Rudi H.
+                              </div>
+                            </div>
+                            <span
+                              class="lb-points sport-dynamic"
+                              data-padel="1820"
+                              data-tennis="1960"
+                              data-pickleball="—"
+                              >1820</span
+                            >
+                          </li>
+                          <li class="lb-row highlight">
+                            <span
+                              class="lb-rank sport-dynamic"
+                              data-padel="12"
+                              data-tennis="8"
+                              data-pickleball="—"
+                              >12</span
+                            >
+                            <div class="lb-info">
+                              <div class="lb-name">Budi (kamu)</div>
+                            </div>
+                            <span
+                              class="lb-points sport-dynamic"
+                              data-padel="1680"
+                              data-tennis="1720"
+                              data-pickleball="—"
+                              >1680</span
+                            >
+                          </li>
+                        </ul>
+                        <button
+                          type="button"
+                          class="btn btn-outline btn-sm btn-block mt-1"
+                          data-flow-goto="3"
+                          data-i18n="home.fullRank"
+                        >
+                          Leaderboard lengkap →
+                        </button>
+                      </div>
+                      <div data-show-if-club-pending hidden>
+                        <h3 data-i18n="club.pendingTitle">
+                          Menunggu persetujuan platform
+                        </h3>
+                        <p class="text-sm text-muted" data-i18n="club.pendingDesc">
+                          Pengajuan komunitasmu sedang direview tim Match Point.
+                        </p>
+                      </div>
+                    </aside>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Create Club (user → club admin) -->
+            <div class="flow-step" data-step="create-club">
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-back="1"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="title.create-club">
+                      Buat Komunitas
+                    </div>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <h2 class="section-title" data-i18n="club.createTitle">
+                    Buat Komunitas
+                  </h2>
+                  <p class="section-sub" data-i18n="club.createSub">
+                    Kamu jadi admin klub — buat turnamen, Americano, Mexicano
+                    untuk member.
+                  </p>
+                  <div class="approval-track">
+                    <span
+                      class="approval-node current"
+                      data-i18n="approval.submitted"
+                      >Diajukan</span
+                    >
+                    <span class="approval-arrow">→</span>
+                    <span class="approval-node" data-i18n="approval.pending"
+                      >Menunggu Review</span
+                    >
+                    <span class="approval-arrow">→</span>
+                    <span class="approval-node" data-i18n="approval.approved"
+                      >Disetujui</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="club.nameLabel"
+                      >Nama Komunitas</label
+                    >
+                    <input
+                      class="form-input"
+                      id="club-name-input"
+                      value="Padel Jakarta Selatan"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="club.sportLabel"
+                      >Olahraga utama</label
+                    >
+                    <select class="form-select">
+                      <option>🏓 Padel</option>
+                      <option>🎾 Tennis</option>
+                      <option>Padel + Tennis</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="club.cityLabel"
+                      >Kota / venue</label
+                    >
+                    <input
+                      class="form-input"
+                      value="Jakarta Selatan · Senayan"
+                    />
+                  </div>
+                  <label class="form-check mb-2">
+                    <input type="checkbox" checked />
+                    <span data-i18n="club.openLabel"
+                      >Open Community — match counting ke ranking global</span
+                    >
+                  </label>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      id="club-create-btn"
+                      data-i18n="club.requestBtn"
+                    >
+                      Ajukan Komunitas — Review Platform
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-block"
+                      data-flow-goto="14"
+                      data-i18n="club.findCta"
+                    >
+                      🔍 Cari Komunitas
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-goto="1"
+                      data-i18n="club.skipBtn"
+                    >
+                      Lewati — main dulu tanpa klub
+                    </button>
+                  </div>
+                  <p class="form-hint" data-i18n="club.approvalNote">
+                    Semua komunitas baru direview tim platform sebelum tayang
+                    (biasanya &lt; 24 jam).
+                  </p>
+                  <p class="form-hint" data-i18n="club.adminNote">
+                    Admin klub ≠ admin Match Point platform. Dispute lintas
+                    komunitas ditangani tim platform.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Leaderboard -->
+            <div class="flow-step" data-step="leaderboard">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-logo">🏆 <span data-i18n="nav.rank">Rank</span></div>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip">
+                    <strong
+                      class="sport-dynamic"
+                      data-padel="Padel Jakarta Selatan"
+                      data-tennis="Jakarta Tennis Community"
+                      data-pickleball="Pickleball JKT (coming soon)"
+                      >Padel Jakarta Selatan</strong
+                    >
+                    · <span data-i18n="lb.realtimeNote">Track Mabar
+                    diperbarui real-time setelah match disetujui.</span>
+                  </div>
+                  <div data-tabs>
+                    <div class="tabs">
+                      <button type="button" class="tab active" data-tab="mabar">
+                        Mabar
+                      </button>
+                      <button type="button" class="tab" data-tab="global">
+                        Global
+                      </button>
+                    </div>
+                    <div data-tab-pane="mabar">
+                      <p
+                        class="form-hint"
+                        data-guest-only
+                        hidden
+                        data-i18n="guest.lbHint"
+                      >
+                        Masuk &amp; gabung komunitas untuk muncul di ranking
+                        ini.
+                      </p>
+                      <ul class="leaderboard-list">
+                        <li class="lb-row">
+                          <span class="lb-rank gold">1</span>
+                          <div class="avatar avatar-sm">RH</div>
+                          <div class="lb-info">
+                            <div class="lb-name">Rudi Hartono</div>
+                            <div class="lb-meta">52 match · +24 minggu ini</div>
+                          </div>
+                          <span class="lb-points">1820</span>
+                        </li>
+                        <li class="lb-row highlight" data-auth-only>
+                          <span
+                            class="lb-rank sport-dynamic"
+                            data-padel="12"
+                            data-tennis="8"
+                            data-pickleball="—"
+                            >12</span
+                          >
+                          <div class="avatar avatar-sm">BS</div>
+                          <div class="lb-info">
+                            <div class="lb-name">Budi (kamu)</div>
+                            <div class="lb-meta">47 match · posisi naik 2</div>
+                          </div>
+                          <span
+                            class="lb-points sport-dynamic"
+                            data-padel="1680"
+                            data-tennis="1720"
+                            data-pickleball="—"
+                            >1680</span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <div data-tab-pane="global" hidden>
+                      <p class="form-hint" data-i18n="lb.globalNote">
+                        Ranking lintas komunitas per olahraga — sekunder, Mabar
+                        tetap jalur utama.
+                      </p>
+                      <ul class="leaderboard-list">
+                        <li class="lb-row">
+                          <span class="lb-rank gold">1</span>
+                          <div class="avatar avatar-sm">AW</div>
+                          <div class="lb-info">
+                            <div class="lb-name">Agus Wibowo</div>
+                            <div class="lb-meta">Bandung Padel Pro</div>
+                          </div>
+                          <span class="lb-points">2140</span>
+                        </li>
+                        <li class="lb-row">
+                          <span class="lb-rank">2</span>
+                          <div class="avatar avatar-sm">RH</div>
+                          <div class="lb-info">
+                            <div class="lb-name">Rudi Hartono</div>
+                            <div class="lb-meta">Padel Jakarta Selatan</div>
+                          </div>
+                          <span class="lb-points">2085</span>
+                        </li>
+                        <li class="lb-row highlight" data-auth-only>
+                          <span
+                            class="lb-rank sport-dynamic"
+                            data-padel="142"
+                            data-tennis="31"
+                            data-pickleball="—"
+                            >142</span
+                          >
+                          <div class="avatar avatar-sm">BS</div>
+                          <div class="lb-info">
+                            <div class="lb-name">Budi (kamu)</div>
+                            <div class="lb-meta">Padel Jakarta Selatan</div>
+                          </div>
+                          <span
+                            class="lb-points sport-dynamic"
+                            data-padel="1570"
+                            data-tennis="1650"
+                            data-pickleball="—"
+                            >1570</span
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-requires-auth
+                      data-flow-goto="4"
+                      data-i18n="flow.cta.submitTitle"
+                    >
+                      Catat Hasil Match
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-block"
+                      data-flow-goto="10"
+                      data-i18n="flow.cta.tournamentBtn"
+                    >
+                      Lihat Turnamen Aktif
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Submit Match -->
+            <div class="flow-step" data-step="submit">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-logo">➕ <span data-i18n="nav.play">Main</span></div>
+                  <span class="badge badge-success">~30 detik</span>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip">
+                    Doubles · GPS &amp; venue dicek otomatis sebelum rank
+                    diperbarui.
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Tim 1</label>
+                    <div class="flex gap-1">
+                      <select class="form-select">
+                        <option>Budi#1</option></select
+                      ><select class="form-select">
+                        <option>Rudi Hartono</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Tim 2</label>
+                    <div class="flex gap-1">
+                      <select class="form-select">
+                        <option>Sari Wijaya</option></select
+                      ><select class="form-select">
+                        <option>Dina Hartini</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Skor</label
+                    ><input
+                      class="form-input font-mono"
+                      value="6-4, 3-6, 10-7"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Venue</label
+                    ><select class="form-select">
+                      <option>Padel Senayan</option>
+                    </select>
+                  </div>
+                  <div class="gps-indicator gps-ok">
+                    📍 GPS OK — 120m dari venue
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block btn-lg"
+                    data-flow-goto="5"
+                    data-i18n="flow.cta.submitBtn"
+                  >
+                    Kirim &amp; Update Rank
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Match Approved -->
+            <div class="flow-step" data-step="approved">
+              <div class="app">
+                <div class="app-body text-center" style="padding: 2rem 1.25rem">
+                  <div style="font-size: 3.5rem">✅</div>
+                  <h2 class="section-title">Match Disetujui!</h2>
+                  <p class="section-sub">
+                    Rank Mabar +18 poin · status AutoApproved
+                  </p>
+                  <div class="card text-left mb-2">
+                    <div class="match-players">
+                      Budi &amp; Rudi vs Sari &amp; Dina
+                    </div>
+                    <div class="match-score">6-4, 3-6, 10-7</div>
+                    <div class="match-meta">
+                      Kamu naik ke <strong>#12</strong> di Padel Jakarta
+                    </div>
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-flow-goto="3"
+                      data-i18n="flow.cta.leaderboardBtn"
+                    >
+                      Lihat Peringkat Lengkap
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-block"
+                      data-flow-goto="8"
+                      data-i18n="flow.cta.shareTitle"
+                    >
+                      Bagikan Rank-mu
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-goto="1"
+                      data-i18n="flow.cta.homeBtn"
+                    >
+                      Kembali ke Beranda
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 5: Profile -->
+            <div class="flow-step" data-step="profile">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-logo">👤 <span data-i18n="nav.profile">Profil</span></div>
+                </div>
+                <div class="app-body">
+                  <div class="flex items-center gap-1 mb-2">
+                    <div class="avatar avatar-lg">BS</div>
+                    <div>
+                      <h2 class="section-title">Budi Santoso</h2>
+                      <p class="text-sm text-muted">
+                        @budisantoso · Trust 0.94 · Verified HP
+                      </p>
+                    </div>
+                  </div>
+                  <p
+                    class="text-sm font-bold mb-1 sport-dynamic"
+                    data-padel="🏓 Padel"
+                    data-tennis="🎾 Tennis"
+                    data-pickleball="🥎 Pickleball"
+                  >
+                    🏓 Padel
+                  </p>
+                  <div class="rank-dual">
+                    <div class="rank-track mabar">
+                      <div class="rank-track-label">Mabar</div>
+                      <div
+                        class="rank-track-value sport-dynamic"
+                        data-padel="1680"
+                        data-tennis="1720"
+                        data-pickleball="—"
+                      >
+                        1680
+                      </div>
+                      <div
+                        class="rank-track-sub sport-dynamic"
+                        data-padel="#12 · Padel Jakarta Selatan"
+                        data-tennis="#8 · Jakarta Tennis"
+                        data-pickleball="Belum ada match"
+                      >
+                        #12 · Padel Jakarta Selatan
+                      </div>
+                    </div>
+                    <div class="rank-track global">
+                      <div class="rank-track-label">Global</div>
+                      <div
+                        class="rank-track-value sport-dynamic"
+                        data-padel="1570"
+                        data-tennis="1650"
+                        data-pickleball="—"
+                      >
+                        1570
+                      </div>
+                      <div
+                        class="rank-track-sub sport-dynamic"
+                        data-padel="#142 lintas komunitas"
+                        data-tennis="#31 lintas komunitas"
+                        data-pickleball="Belum ada rank"
+                      >
+                        #142 lintas komunitas
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-sm font-bold" style="margin: 1rem 0 0.5rem">
+                    Endorsement Skills
+                    <span class="text-muted font-normal"
+                      >· min 3 endorser publik</span
+                    >
+                  </p>
+                  <div class="skill-grid mb-2">
+                    <div class="skill-chip">
+                      <span>Serve</span
+                      ><span class="skill-chip-score">8.2</span>
+                    </div>
+                    <div class="skill-chip">
+                      <span>Volley</span
+                      ><span class="skill-chip-score">7.8</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="action-card primary"
+                    data-requires-auth
+                    data-flow-goto="7"
+                  >
+                    <span class="action-card-icon">⭐</span>
+                    <span class="action-card-body"
+                      ><strong>Endorse Rudi Hartono</strong
+                      ><span
+                        >Beri rating skill — serve, volley, footwork,
+                        strategy</span
+                      ></span
+                    >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="8">
+                    <span class="action-card-icon">📤</span>
+                    <span class="action-card-body"
+                      ><strong data-i18n="flow.cta.shareTitle"
+                        >Bagikan Rank-mu</strong
+                      ><span data-i18n="flow.cta.shareDesc"
+                        >Kartu 600×600 siap WhatsApp &amp; Instagram</span
+                      ></span
+                    >
+                  </button>
+                  <p
+                    class="text-sm font-bold"
+                    style="margin: 1rem 0 0.5rem"
+                    data-i18n="profile.communities"
+                  >
+                    Komunitas
+                  </p>
+                  <div class="community-row" data-flow-goto="15" role="button">
+                    <div class="avatar avatar-sm">PJ</div>
+                    <div class="community-row-body">
+                      <strong>Padel Jakarta Selatan</strong>
+                      <div class="community-row-meta">
+                        🏓 Padel · Mabar #12 · 142 member
+                      </div>
+                    </div>
+                    <span class="badge badge-mabar">Mabar #12</span>
+                  </div>
+                  <div class="community-row" data-flow-goto="15" role="button">
+                    <div class="avatar avatar-sm">JT</div>
+                    <div class="community-row-body">
+                      <strong>Jakarta Tennis Community</strong>
+                      <div class="community-row-meta">
+                        🎾 Tennis · Mabar #8 · 98 member
+                      </div>
+                    </div>
+                    <span class="badge badge-mabar">Mabar #8</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 6: Endorsement -->
+            <div class="flow-step" data-step="endorse">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="6" aria-label="Back">←</button><div class="app-logo">Endorse Rudi</div></div>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip">
+                    Kamu &amp; Rudi same community · 47 match ✓ · cooldown 30
+                    hari/skill
+                  </div>
+                  <p class="form-label">Pilih skill yang ingin di-endorse</p>
+                  <div class="skill-grid mb-2">
+                    <button
+                      type="button"
+                      class="skill-chip"
+                      style="
+                        cursor: pointer;
+                        border-color: var(--accent);
+                        background: rgba(45, 106, 79, 0.08);
+                      "
+                    >
+                      <span>Serve ✓</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="skill-chip"
+                      style="cursor: pointer"
+                    >
+                      <span>Volley</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="skill-chip"
+                      style="cursor: pointer"
+                    >
+                      <span>Footwork</span>
+                    </button>
+                    <button
+                      type="button"
+                      class="skill-chip"
+                      style="cursor: pointer"
+                    >
+                      <span>Strategy</span>
+                    </button>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Rating skill (1–10)</label>
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value="8"
+                      style="width: 100%"
+                    />
+                    <p class="text-center font-bold" style="margin-top: 0.5rem">
+                      8 / 10
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block btn-lg"
+                    data-flow-goto="6"
+                    data-i18n="flow.cta.endorseBtn"
+                  >
+                    Kirim Endorsement ke Rudi
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 7: Share Card -->
+            <div class="flow-step" data-step="share">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo">Share Card</div></div>
+                </div>
+                <div class="app-body">
+                  <p class="section-sub">
+                    Kartu ranking 600×600 · cache 1 jam · invalidate saat rank
+                    berubah
+                  </p>
+                  <div class="share-card-preview">
+                    <div class="share-card-avatar">BS</div>
+                    <div class="share-card-name">Budi Santoso</div>
+                    <div class="share-card-ranks">
+                      <div class="share-card-rank-item">
+                        <div class="share-card-rank-val">1680</div>
+                        <div class="share-card-rank-lbl">Mabar #12</div>
+                      </div>
+                      <div class="share-card-rank-item">
+                        <div class="share-card-rank-val">1570</div>
+                        <div class="share-card-rank-lbl">Global #142</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                    >
+                      Bagikan ke WhatsApp
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-block">
+                      Bagikan ke Instagram
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-goto="1"
+                      data-i18n="flow.cta.homeBtn"
+                    >
+                      Kembali ke Beranda
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 8: Communities -->
+            <div class="flow-step" data-step="communities">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-logo">👥 <span data-i18n="nav.group.community">Komunitas</span></div>
+                </div>
+                <div class="app-body">
+                  <div class="mp-section-head">
+                    <h2 data-i18n="communities.mine">Komunitasku</h2>
+                    <button
+                      type="button"
+                      class="linkish"
+                      data-flow-goto="14"
+                      data-i18n="find.title"
+                    >
+                      Cari Komunitas
+                    </button>
+                  </div>
+                  <div
+                    class="card card-highlight mb-1"
+                    data-show-if-club
+                    data-flow-goto="15"
+                    role="button"
+                    style="cursor: pointer"
+                  >
+                    <strong class="club-name-dynamic"
+                      >Padel Jakarta Selatan</strong
+                    >
+                    <p class="text-sm text-muted" style="margin: 0.35rem 0">
+                      142 anggota · 847 match · 🟢 Open Community
+                    </p>
+                    <span class="badge badge-mabar">Mabar · Padel #12</span>
+                    <span class="badge badge-success" data-show-if-club-admin
+                      >Admin</span
+                    >
+                  </div>
+                  <div class="card mb-1" data-show-if-no-club>
+                    <p class="text-sm text-muted" data-i18n="communities.none">
+                      Kamu belum gabung komunitas — pilih yang terdekat di bawah
+                      atau ajukan yang baru.
+                    </p>
+                  </div>
+                  <div class="mp-pending-banner" data-show-if-club-pending hidden>
+                    <strong data-i18n="club.pendingTitle"
+                      >Menunggu persetujuan platform</strong
+                    >
+                    <p data-i18n="club.pendingDesc">
+                      Pengajuan komunitasmu sedang direview tim Match Point.
+                    </p>
+                  </div>
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="find.nearYou">👥 Komunitas terdekat</h2>
+                  </div>
+                  <div class="community-row">
+                    <div class="avatar avatar-sm">SP</div>
+                    <div class="community-row-body">
+                      <strong>Senayan Padel Club</strong>
+                      <div class="community-row-meta">
+                        🏓 Padel · 88 member · 🟢 Open
+                      </div>
+                    </div>
+                    <span class="distance-chip">1.2 km</span>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
+                      data-flow-goto="15"
+                      data-i18n="find.viewBtn"
+                    >
+                      Lihat
+                    </button>
+                  </div>
+                  <div class="community-row">
+                    <div class="avatar avatar-sm">KT</div>
+                    <div class="community-row-body">
+                      <strong>Kemang Tennis Society</strong>
+                      <div class="community-row-meta">
+                        🎾 Tennis · 64 member · 🟢 Open
+                      </div>
+                    </div>
+                    <span class="distance-chip">2.8 km</span>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
+                      data-flow-goto="15"
+                      data-i18n="find.viewBtn"
+                    >
+                      Lihat
+                    </button>
+                  </div>
+                  <div class="btn-stack mt-1">
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-requires-auth
+                      data-flow-goto="2"
+                      data-i18n="find.requestNew"
+                    >
+                      Tidak ketemu? Ajukan komunitas baru →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 9: Events Hub -->
+            <div class="flow-step" data-step="events">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-logo">🎯 <span data-i18n="nav.events">Acara</span></div>
+                </div>
+                <div class="app-body">
+                  <p class="section-sub" data-i18n="flow.eventsIntro">
+                    Format sosial &amp; kompetitif — poin individual, partner
+                    rotasi. Sama untuk padel &amp; tennis.
+                  </p>
+                  <button
+                    type="button"
+                    class="action-card primary"
+                    data-flow-goto="11"
+                  >
+                    <span class="action-card-icon">🔄</span>
+                    <span class="action-card-body">
+                      <strong
+                        >Americano ·
+                        <span
+                          class="sport-dynamic"
+                          data-padel="Sabtu Padel Jakarta"
+                          data-tennis="Sunday Tennis Social"
+                          data-pickleball="Pickle Saturday JKT"
+                          >Sabtu Padel Jakarta</span
+                        >
+                        <span class="badge badge-live">LIVE</span>
+                        <span
+                          class="badge badge-success"
+                          data-auth-only
+                          data-i18n="events.registeredBadge"
+                          >Terdaftar</span
+                        ></strong
+                      >
+                      <span data-i18n="flow.americanoDesc"
+                        >Partner acak tiap round · poin kumulatif · 16 pemain ·
+                        LIVE sekarang</span
+                      >
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    class="action-card"
+                    data-requires-auth
+                    data-flow-goto="16"
+                  >
+                    <span class="action-card-icon">📈</span>
+                    <span class="action-card-body">
+                      <strong
+                        >Mexicano ·
+                        <span
+                          class="sport-dynamic"
+                          data-padel="Minggu Padel Open"
+                          data-tennis="Friday Ladder Night"
+                          data-pickleball="Sunday Pickle Open"
+                          >Minggu Padel Open</span
+                        >
+                        <span
+                          class="badge badge-pending"
+                          data-i18n="events.regOpenBadge"
+                          >Registrasi buka</span
+                        ></strong
+                      >
+                      <span data-i18n="flow.mexicanoDesc"
+                        >Round 2+ by leaderboard · 1+4 vs 2+3 · makin
+                        seimbang</span
+                      >
+                    </span>
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="13">
+                    <span class="action-card-icon">🏆</span>
+                    <span class="action-card-body">
+                      <strong data-i18n="flow.bracketTitle"
+                        >Bracket · Single Elimination</strong
+                      >
+                      <span
+                        class="sport-dynamic"
+                        data-padel="Padel Open Jakarta · 32 pemain · Tier 2"
+                        data-tennis="Jakarta Tennis Open · 64 draw · Tier 3"
+                        data-pickleball="Pickle Open JKT · 16 pemain · Tier 3"
+                        >Padel Open Jakarta · 32 pemain · Tier 2</span
+                      >
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 10: Americano Live -->
+            <div class="flow-step" data-step="americano">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo">Americano</div></div>
+                  <span class="badge badge-live">Round 3 / 7</span>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip mb-2">
+                    <span>🔄</span>
+                    <span data-i18n="flow.americanoLiveHint"
+                      >Partner &amp; lawan rotasi otomatis · skor tim = poin
+                      individualmu</span
+                    >
+                  </div>
+                  <div class="rotation-card mb-2">
+                    <div class="rotation-court">
+                      <span class="rotation-court-label">Court 1</span>
+                      <div class="rotation-match">
+                        <span><strong>Budi</strong> + Rudi</span>
+                        <span class="rotation-vs">vs</span>
+                        <span>Sari + Dina</span>
+                      </div>
+                      <div class="rotation-score">
+                        18 – 12 <small>/ 24 poin</small>
+                      </div>
+                    </div>
+                    <div class="rotation-court">
+                      <span class="rotation-court-label">Court 2</span>
+                      <div class="rotation-match">
+                        <span>Andi + Henry</span>
+                        <span class="rotation-vs">vs</span>
+                        <span><strong>Kamu</strong> + Carla</span>
+                      </div>
+                      <div class="rotation-score live-pulse">Live</div>
+                    </div>
+                  </div>
+                  <h3 class="text-sm font-bold section-label">
+                    Leaderboard Individual
+                  </h3>
+                  <ul class="leaderboard-list compact">
+                    <li class="lb-row highlight">
+                      <span class="lb-rank">1</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Rudi H.</div>
+                      </div>
+                      <span class="lb-points">58</span>
+                    </li>
+                    <li class="lb-row" data-auth-only>
+                      <span class="lb-rank">4</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Budi#1 (kamu)</div>
+                      </div>
+                      <span class="lb-points">52</span>
+                    </li>
+                  </ul>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-requires-auth
+                    >
+                      Submit Skor Round 3
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-goto="12"
+                    >
+                      Lihat Mexicano Berikutnya →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 11: Mexicano Live -->
+            <div class="flow-step" data-step="mexicano">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo">Mexicano</div></div>
+                  <span class="badge badge-info">Round 4 · Seeded</span>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip mb-2">
+                    <span>📈</span>
+                    <span data-i18n="flow.mexicanoLiveHint"
+                      >Round 4: #1+#4 vs #2+#3 · ranking menentukan pairing
+                      berikutnya</span
+                    >
+                  </div>
+                  <div class="pairing-preview card mb-2">
+                    <div class="pairing-row">
+                      <span class="pairing-rank">#1+#4</span
+                      ><span>Rudi + Dina</span><span class="pairing-vs">vs</span
+                      ><span>#2+#3</span><span>Sari + Budi</span>
+                    </div>
+                    <p class="form-hint" data-i18n="flow.mexicanoPairHint">
+                      Winners play winners — matches tighten as points
+                      accumulate
+                    </p>
+                  </div>
+                  <h3 class="text-sm font-bold section-label">
+                    Live Standings
+                  </h3>
+                  <ul class="leaderboard-list compact">
+                    <li class="lb-row">
+                      <span class="lb-rank gold">1</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Rudi H.</div>
+                        <div class="text-sm text-muted">82 pts</div>
+                      </div>
+                    </li>
+                    <li class="lb-row highlight" data-auth-only>
+                      <span class="lb-rank">2</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Budi#1 (kamu)</div>
+                        <div class="text-sm text-muted">76 pts</div>
+                      </div>
+                    </li>
+                  </ul>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block btn-lg"
+                    data-flow-goto="13"
+                  >
+                    Lihat Bracket Turnamen →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 12: Bracket Tournament -->
+            <div class="flow-step" data-step="tournament">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo"><span
+                      class="sport-dynamic"
+                      data-padel="Padel Open Jakarta"
+                      data-tennis="Jakarta Tennis Open"
+                      data-pickleball="Pickle Open JKT"
+                      >Padel Open Jakarta</span
+                    ></div></div>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip">
+                    <strong data-i18n="flow.bracketFormat"
+                      >Single Elimination</strong
+                    >
+                    ·
+                    <span
+                      class="sport-dynamic"
+                      data-padel="32 pemain · Tier 2 Regional"
+                      data-tennis="64 draw · Tier 3 National"
+                      data-pickleball="16 pemain · Tier 3 Community"
+                      >32 pemain · Tier 2 Regional</span
+                    >
+                  </div>
+                  <div class="bracket">
+                    <div class="bracket-round">Final</div>
+                    <div
+                      class="bracket-match"
+                      style="border: 2px solid var(--ball)"
+                    >
+                      <span class="winner">Rudi Hartono</span> vs Budi#1 ·
+                      <em>Belum dimainkan</em>
+                    </div>
+                  </div>
+                  <div class="flow-complete mt-2">
+                    <div class="flow-complete-icon">🎉</div>
+                    <h2 class="section-title" data-i18n="flow.completeTitle">
+                      Kamu sudah explore Match Point!
+                    </h2>
+                    <p class="text-sm text-muted" data-i18n="flow.completeDesc">
+                      Padel &amp; tennis · match · rank · event · admin — satu
+                      reputasi lintas komunitas.
+                    </p>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg mt-2"
+                      data-flow-finish
+                      data-i18n="flow.cta.finishBtn"
+                    >
+                      Selesai — Kembali ke Menu
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Step 14: Find Community (search + nearest + filters) -->
+            <div class="flow-step" data-step="find-community">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="9" aria-label="Back">←</button><div class="app-logo"><span data-i18n="find.title">Cari Komunitas</span></div></div>
+                </div>
+                <div class="app-body">
+                  <p class="section-sub" data-i18n="find.sub">
+                    Terdekat dulu — berdasar lokasimu di Jakarta Selatan.
+                  </p>
+                  <div class="search-input-row">
+                    <input
+                      class="form-input"
+                      data-i18n-placeholder="find.searchPlaceholder"
+                      placeholder="Cari nama komunitas / kota…"
+                    />
+                  </div>
+                  <div class="filter-chips">
+                    <button type="button" class="filter-chip active" data-i18n="find.filterAll">
+                      Semua
+                    </button>
+                    <button type="button" class="filter-chip sport-padel">
+                      🏓 Padel
+                    </button>
+                    <button type="button" class="filter-chip sport-tennis">
+                      🎾 Tennis
+                    </button>
+                    <button type="button" class="filter-chip sport-pickleball">
+                      🥎 Pickleball
+                    </button>
+                    <button type="button" class="filter-chip" data-i18n="find.filterOpen">
+                      🟢 Open
+                    </button>
+                    <button type="button" class="filter-chip" data-i18n="find.filterCity">
+                      📍 Jakarta
+                    </button>
+                  </div>
+                  <h3 class="text-sm font-bold section-label" data-i18n="find.nearYou">
+                    👥 Komunitas terdekat
+                  </h3>
+                  <div class="community-row">
+                    <div class="avatar avatar-sm">SP</div>
+                    <div class="community-row-body">
+                      <strong>Senayan Padel Club</strong>
+                      <div class="community-row-meta">
+                        🏓 Padel · 88 member · 🟢 Open · Senayan
+                      </div>
+                    </div>
+                    <span class="distance-chip">1.2 km</span>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm"
+                      data-flow-goto="15"
+                      data-i18n="find.viewBtn"
+                    >
+                      Lihat
+                    </button>
+                  </div>
+                  <div class="community-row">
+                    <div class="avatar avatar-sm">KT</div>
+                    <div class="community-row-body">
+                      <strong>Kemang Tennis Society</strong>
+                      <div class="community-row-meta">
+                        🎾 Tennis · 64 member · 🟢 Open · Kemang
+                      </div>
+                    </div>
+                    <span class="distance-chip">2.8 km</span>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
+                      data-flow-goto="15"
+                      data-i18n="find.viewBtn"
+                    >
+                      Lihat
+                    </button>
+                  </div>
+                  <div class="community-row">
+                    <div class="avatar avatar-sm">PB</div>
+                    <div class="community-row-body">
+                      <strong>Pickle Blok M</strong>
+                      <div class="community-row-meta">
+                        🥎 Pickleball · 31 member · 🟢 Open · Blok M
+                      </div>
+                    </div>
+                    <span class="distance-chip">3.5 km</span>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
+                      data-flow-goto="15"
+                      data-i18n="find.viewBtn"
+                    >
+                      Lihat
+                    </button>
+                  </div>
+                  <div class="community-row">
+                    <div class="avatar avatar-sm">BP</div>
+                    <div class="community-row-body">
+                      <strong>BSD Padel House</strong>
+                      <div class="community-row-meta">
+                        🏓 Padel · 120 member · 🔒 Invite only · BSD
+                      </div>
+                    </div>
+                    <span class="distance-chip">18 km</span>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
+                      data-flow-goto="15"
+                      data-i18n="find.viewBtn"
+                    >
+                      Lihat
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-block mt-1"
+                    data-requires-auth
+                    data-flow-goto="2"
+                    data-i18n="find.requestNew"
+                  >
+                    Tidak ketemu? Ajukan komunitas baru →
+                  </button>
+                  <div class="upsell-card">
+                    <strong data-i18n="upsell.title">Gratis untuk komunitas</strong>
+                    <p data-i18n="upsell.body">
+                      Rank Mabar, match log, acara dasar &amp; gabung komunitas —
+                      gratis. Ke depan: featured placement, badge verified,
+                      ekspor turnamen, analytics.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 15: Community Page (public spotlight + members-only feed) -->
+            <div class="flow-step" data-step="community-page">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="14" aria-label="Back">←</button><div class="app-logo">Senayan Padel Club</div></div>
+                  <span class="badge badge-info">🏓 Padel</span>
+                </div>
+                <div class="app-body">
+                  <!-- Cover / identity -->
+                  <div class="cp-cover">
+                    <div class="cp-cover-body">
+                      <div class="cp-logo">SP</div>
+                      <div class="cp-cover-info">
+                        <h2 class="cp-name">Senayan Padel Club</h2>
+                        <p class="cp-meta">
+                          🏓 Padel · Senayan, Jakarta Selatan · 🟢 Open
+                        </p>
+                        <div class="cp-avatar-stack">
+                          <div class="avatar avatar-sm">MK</div>
+                          <div class="avatar avatar-sm">DP</div>
+                          <div class="avatar avatar-sm">RS</div>
+                          <div class="avatar avatar-sm">AL</div>
+                          <span class="cp-avatar-more">+84 member</span>
+                        </div>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-ball btn-block"
+                      data-requires-auth
+                      data-club-join="Senayan Padel Club"
+                      data-hide-if-member-of="Senayan Padel Club"
+                      data-i18n="community.joinCta"
+                    >
+                      Gabung Komunitas Ini
+                    </button>
+                    <div
+                      class="cp-member-chip"
+                      data-show-if-member-of="Senayan Padel Club"
+                      hidden
+                      data-i18n="community.memberChip"
+                    >
+                      ✓ Kamu member — akses penuh terbuka
+                    </div>
+                  </div>
+
+                  <div class="community-stats">
+                    <div class="stat-box">
+                      <div class="stat-val">88</div>
+                      <div class="stat-lbl" data-i18n="home.statMembers">
+                        Member
+                      </div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">412</div>
+                      <div class="stat-lbl" data-i18n="home.statMatches">
+                        Match
+                      </div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">3</div>
+                      <div class="stat-lbl" data-i18n="community.statEvents">
+                        Acara aktif
+                      </div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">1.2</div>
+                      <div class="stat-lbl">km</div>
+                    </div>
+                  </div>
+
+                  <!-- Gallery — public -->
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.galleryTitle">
+                      📸 Galeri Komunitas
+                    </h2>
+                    <span
+                      class="badge badge-public"
+                      data-i18n="community.publicBadge"
+                      >🌐 Publik</span
+                    >
+                  </div>
+                  <div class="cp-gallery">
+                    <div class="cp-photo grad-a">🏓</div>
+                    <div class="cp-photo grad-b">🏆</div>
+                    <div class="cp-photo grad-c">🎉</div>
+                    <div class="cp-photo grad-d">+38</div>
+                  </div>
+
+                  <!-- Leaderboard — public -->
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.lbTitle">
+                      🏆 Leaderboard Mabar
+                    </h2>
+                    <span
+                      class="badge badge-public"
+                      data-i18n="community.publicBadge"
+                      >🌐 Publik</span
+                    >
+                  </div>
+                  <ul class="leaderboard-list compact lb-card">
+                    <li class="lb-row">
+                      <span class="lb-rank gold">1</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Maya K.</div>
+                      </div>
+                      <span class="lb-points">1905</span>
+                    </li>
+                    <li class="lb-row">
+                      <span class="lb-rank">2</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Doni P.</div>
+                      </div>
+                      <span class="lb-points">1848</span>
+                    </li>
+                    <li class="lb-row">
+                      <span class="lb-rank">3</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Rina S.</div>
+                      </div>
+                      <span class="lb-points">1790</span>
+                    </li>
+                  </ul>
+                  <button
+                    type="button"
+                    class="linkish mt-1"
+                    data-flow-goto="3"
+                    data-i18n="home.fullRank"
+                  >
+                    Leaderboard lengkap →
+                  </button>
+
+                  <!-- Feed — members only -->
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.feedTitle">📣 Feed Komunitas</h2>
+                    <span
+                      class="badge badge-members"
+                      data-i18n="community.memberBadge"
+                      >👥 Khusus member</span
+                    >
+                  </div>
+                  <div data-show-if-member-of="Senayan Padel Club" hidden>
+                    <div class="cp-composer">
+                      <div class="avatar avatar-sm">BS</div>
+                      <input
+                        class="form-input"
+                        data-i18n-placeholder="community.composerPh"
+                        placeholder="Bagikan sesuatu ke komunitas…"
+                      />
+                      <button type="button" class="btn btn-secondary btn-sm">
+                        📷
+                      </button>
+                    </div>
+                    <article class="cp-post">
+                      <div class="cp-post-head">
+                        <div class="avatar avatar-sm">MK</div>
+                        <div>
+                          <strong>Maya K.</strong>
+                          <span class="badge badge-success">Admin</span>
+                          <div class="cp-post-time">2 jam lalu</div>
+                        </div>
+                      </div>
+                      <p class="cp-post-body">
+                        Court 3 &amp; 4 sudah dibooking buat Sabtu Americano —
+                        16 slot, first come first served 🏓🔥
+                      </p>
+                      <div class="cp-photo cp-post-photo grad-a">🏓</div>
+                      <div class="cp-post-foot">
+                        <button type="button">❤️ 24</button>
+                        <button type="button">💬 8</button>
+                        <button type="button">↗️</button>
+                      </div>
+                    </article>
+                    <article class="cp-post">
+                      <div class="cp-post-head">
+                        <div class="avatar avatar-sm">DP</div>
+                        <div>
+                          <strong>Doni P.</strong>
+                          <div class="cp-post-time">Kemarin</div>
+                        </div>
+                      </div>
+                      <p class="cp-post-body">
+                        Final Mexicano kemarin seru banget — congrats Maya
+                        &amp; Rudi! 🏆
+                      </p>
+                      <div class="cp-photo cp-post-photo grad-c">🏆</div>
+                      <div class="cp-post-foot">
+                        <button type="button">❤️ 41</button>
+                        <button type="button">💬 12</button>
+                        <button type="button">↗️</button>
+                      </div>
+                    </article>
+                  </div>
+                  <div
+                    class="cp-locked"
+                    data-hide-if-member-of="Senayan Padel Club"
+                  >
+                    <span class="cp-locked-icon">🔒</span>
+                    <div>
+                      <strong data-i18n="community.lockedTitle"
+                        >Feed khusus member</strong
+                      >
+                      <p data-i18n="community.lockedBody">
+                        Post, foto lengkap, diskusi &amp; kontak komunitas
+                        terbuka setelah kamu gabung komunitas ini.
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Events — public -->
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.eventsTitle">
+                      🎯 Acara Komunitas
+                    </h2>
+                    <span
+                      class="badge badge-public"
+                      data-i18n="community.publicBadge"
+                      >🌐 Publik</span
+                    >
+                  </div>
+                  <div class="event-card mb-1">
+                    <div class="event-card-top">
+                      <span class="badge badge-mabar">Americano</span>
+                      <span
+                        class="badge badge-pending"
+                        data-i18n="events.regOpenBadge"
+                        >Registrasi buka</span
+                      >
+                    </div>
+                    <strong>Sabtu Americano · Senayan</strong>
+                    <p class="text-sm text-muted event-card-meta">
+                      16 pemain · 24 poin/round · Sabtu 08:00
+                    </p>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm btn-block mt-1"
+                      data-requires-auth
+                      data-flow-goto="16"
+                      data-i18n="events.registerCta"
+                    >
+                      Daftar →
+                    </button>
+                  </div>
+
+                  <!-- Members — avatars public, names members-only -->
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.membersTitle">Member</h2>
+                    <span
+                      class="badge badge-members"
+                      data-i18n="community.memberDetailBadge"
+                      >👥 Detail khusus member</span
+                    >
+                  </div>
+                  <div
+                    class="flex gap-1"
+                    style="flex-wrap: wrap"
+                    data-hide-if-member-of="Senayan Padel Club"
+                  >
+                    <div class="avatar avatar-sm">MK</div>
+                    <div class="avatar avatar-sm">DP</div>
+                    <div class="avatar avatar-sm">RS</div>
+                    <div class="avatar avatar-sm">AL</div>
+                    <div class="avatar avatar-sm">+84</div>
+                  </div>
+                  <div data-show-if-member-of="Senayan Padel Club" hidden>
+                    <div class="community-row">
+                      <div class="avatar avatar-sm">MK</div>
+                      <div class="community-row-body">
+                        <strong>Maya K.</strong>
+                        <div class="community-row-meta">
+                          Mabar #1 · Admin komunitas
+                        </div>
+                      </div>
+                    </div>
+                    <div class="community-row">
+                      <div class="avatar avatar-sm">DP</div>
+                      <div class="community-row-body">
+                        <strong>Doni P.</strong>
+                        <div class="community-row-meta">
+                          Mabar #2 · 61 match
+                        </div>
+                      </div>
+                    </div>
+                    <div class="community-row">
+                      <div class="avatar avatar-sm">RS</div>
+                      <div class="community-row-body">
+                        <strong>Rina S.</strong>
+                        <div class="community-row-meta">
+                          Mabar #3 · 48 match
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="linkish mt-1">
+                      +85 member lain →
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-block mt-2"
+                    data-flow-goto="14"
+                    data-i18n="community.nearbyCta"
+                  >
+                    Komunitas lain di dekatmu →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 16: Event Registration -->
+            <div class="flow-step" data-step="event-register">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="10" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.event-register">Pendaftaran Acara</span></div></div>
+                  <span class="badge badge-info">Mexicano</span>
+                </div>
+                <div class="app-body app-body-narrow">
+                  <div class="card mb-2">
+                    <strong
+                      class="sport-dynamic"
+                      data-padel="Mexicano · Minggu Padel Open"
+                      data-tennis="Mexicano · Friday Ladder Night"
+                      data-pickleball="Mexicano · Sunday Pickle Open"
+                      >Mexicano · Minggu Padel Open</strong
+                    >
+                    <p class="text-sm text-muted" style="margin: 0.35rem 0">
+                      <span class="club-name-dynamic">Padel Jakarta Selatan</span>
+                      · Minggu 09:00 · 4 lapangan
+                    </p>
+                    <p class="text-sm text-muted" data-i18n="flow.mexicanoDesc">
+                      Round 2+ by leaderboard · 1+4 vs 2+3 · makin seimbang
+                    </p>
+                    <p class="form-hint" data-i18n="reg.formatNote">
+                      Format dipilih admin saat membuat acara.
+                    </p>
+                    <div class="reg-capacity">
+                      <div class="reg-capacity-label">
+                        <span data-i18n="reg.capacityLabel">Slot terisi</span>
+                        <span>12 / 16</span>
+                      </div>
+                      <div class="reg-capacity-bar">
+                        <div class="reg-capacity-fill" style="width: 75%"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="btn-stack" id="reg-actions">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-requires-auth
+                      data-reveal="#reg-confirmed"
+                      data-hide="#reg-actions"
+                      data-reveal-toast="reg.registeredToast"
+                      data-i18n="reg.registerBtn"
+                    >
+                      Daftar Sekarang — Gratis
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-block"
+                      data-requires-auth
+                      data-reveal="#reg-confirmed"
+                      data-hide="#reg-actions"
+                      data-reveal-toast="reg.registeredToast"
+                      data-i18n="reg.waitlistBtn"
+                    >
+                      Penuh? Masuk Waitlist
+                    </button>
+                  </div>
+                  <div id="reg-confirmed" hidden>
+                    <div class="alert alert-success">
+                      <span>🎉</span>
+                      <span data-i18n="reg.confirmedTitle">Kamu terdaftar!</span>
+                    </div>
+                    <p class="text-sm text-muted" data-i18n="reg.confirmedDesc">
+                      Line-up round diumumkan admin komunitas saat sesi dimulai.
+                    </p>
+                    <div class="btn-stack mt-1">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-block"
+                        data-flow-goto="12"
+                      >
+                        Live Standings (demo) →
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-block"
+                        data-flow-goto="10"
+                        data-i18n="reg.backEvents"
+                      >
+                        ← Semua acara
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-block"
+                        data-i18n="reg.leaveBtn"
+                      >
+                        Batalkan pendaftaran
+                      </button>
+                    </div>
+                  </div>
+                  <p class="form-hint mt-1" data-i18n="reg.closeNote">
+                    Registrasi ditutup 1 jam sebelum mulai — lalu admin
+                    menjalankan sesi live manual.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 17: Sign Up (account creation) -->
+            <div class="flow-step" data-step="register">
+              <div class="app" data-no-chrome>
+                <div class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-back="0"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="register.title">
+                      Daftar Akun
+                    </div>
+                  </div>
+                </div>
+                <div class="app-body app-body-narrow">
+                  <h2 class="section-title" data-i18n="register.title">
+                    Daftar Akun
+                  </h2>
+                  <p class="section-sub" data-i18n="register.subtitle">
+                    Username global unik — dipakai untuk login
+                  </p>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="register.nameLabel"
+                      >Nama lengkap</label
+                    >
+                    <input class="form-input" value="Budi Santoso" />
+                  </div>
+                  <div class="form-group">
+                    <label
+                      class="form-label"
+                      data-i18n="register.usernameLabel"
+                      >Username</label
+                    >
+                    <input class="form-input font-mono" value="budisantoso" />
+                    <p class="form-hint ok" data-i18n="register.usernameOk">
+                      ✓ Tersedia — unik global, dipakai login &amp; leaderboard
+                    </p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="login.email"
+                      >Email</label
+                    >
+                    <input
+                      class="form-input"
+                      type="email"
+                      value="budi@email.com"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="register.phoneLabel"
+                      >No. HP</label
+                    >
+                    <input
+                      class="form-input"
+                      type="tel"
+                      value="+62 812-3456-7890"
+                    />
+                    <p class="form-hint" data-i18n="register.phoneHint">
+                      Dipakai untuk verifikasi SMS &amp; trust score profilmu.
+                    </p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="login.password"
+                      >Password</label
+                    >
+                    <input class="form-input" type="password" value="••••••••" />
+                    <p class="form-hint" data-i18n="register.passwordHint">
+                      Minimal 8 karakter.
+                    </p>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="register.cityLabel"
+                      >Kota</label
+                    >
+                    <input class="form-input" value="Jakarta Selatan" />
+                    <p class="form-hint" data-i18n="register.cityHint">
+                      Untuk rekomendasi komunitas &amp; acara terdekat.
+                    </p>
+                  </div>
+                  <p class="form-label" data-i18n="register.sportsLabel">
+                    Olahraga yang kamu mainkan
+                  </p>
+                  <div class="filter-chips mb-2">
+                    <button
+                      type="button"
+                      class="filter-chip sport-padel active"
+                      data-toggle-active
+                    >
+                      🏓 Padel
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip sport-tennis active"
+                      data-toggle-active
+                    >
+                      🎾 Tennis
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip sport-pickleball"
+                      data-toggle-active
+                    >
+                      🥎 Pickleball
+                    </button>
+                  </div>
+                  <label class="form-check mb-2">
+                    <input type="checkbox" checked />
+                    <span data-i18n="register.terms"
+                      >Saya setuju dengan Syarat Layanan &amp; aturan fair-play
+                      Match Point.</span
+                    >
+                  </label>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block btn-lg"
+                    data-flow-goto="18"
+                    data-i18n="register.submit"
+                  >
+                    Buat Akun
+                  </button>
+                  <p class="login-signup-note">
+                    <span data-i18n="register.haveAccount"
+                      >Sudah punya akun?</span
+                    >
+                    <button
+                      type="button"
+                      data-flow-goto="0"
+                      data-i18n="login.submit"
+                    >
+                      Masuk
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 18: Verify phone (SMS OTP) -->
+            <div class="flow-step" data-step="verify-otp">
+              <div class="app" data-no-chrome>
+                <div class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-back="17"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="otp.title">
+                      Verifikasi No. HP
+                    </div>
+                  </div>
+                </div>
+                <div class="app-body app-body-narrow text-center">
+                  <div style="font-size: 3rem; margin-top: 1rem">📲</div>
+                  <h2 class="section-title" data-i18n="otp.title">
+                    Verifikasi No. HP
+                  </h2>
+                  <p class="section-sub" data-i18n="otp.desc">
+                    Kode 6 digit dikirim via SMS ke +62 812-••••-7890.
+                  </p>
+                  <div class="otp-inputs">
+                    <input class="otp-box" maxlength="1" value="4" />
+                    <input class="otp-box" maxlength="1" value="8" />
+                    <input class="otp-box" maxlength="1" value="2" />
+                    <input class="otp-box" maxlength="1" value="9" />
+                    <input class="otp-box" maxlength="1" value="1" />
+                    <input class="otp-box" maxlength="1" value="3" />
+                  </div>
+                  <button type="button" class="linkish mb-2" data-i18n="otp.resend">
+                    Kirim ulang kode (0:24)
+                  </button>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-login
+                      data-login-goto="1"
+                      data-i18n="otp.verifyBtn"
+                    >
+                      Verifikasi &amp; Buat Akun
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-back="17"
+                      data-i18n="otp.editPhone"
+                    >
+                      Ubah nomor
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /device-stage -->
+      </main>
+
+      <div
+        class="flow-toast"
+        id="flow-toast"
+        role="status"
+        aria-live="polite"
+      ></div>
+
+      <div class="flow-modal-overlay" id="auth-modal">
+        <div class="flow-modal">
+          <h3 data-i18n="guest.lockTitle">Perlu akun</h3>
+          <p data-i18n="guest.lockBody">
+            Login atau daftar untuk menggunakan fitur ini.
+          </p>
+          <button
+            type="button"
+            class="btn btn-primary btn-block mb-1"
+            id="modal-login"
+            data-i18n="guest.lockCta"
+          >
+            Masuk / Daftar
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary btn-block"
+            data-modal-close
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../i18n.js"></script>
+    <script src="../device.js"></script>
+    <script src="../sport.js"></script>
+    <script src="../role.js"></script>
+    <script src="flow.js"></script>
+    <script>
+      const steps = [
+        { titleKey: "title.auth-login", hintKey: "flow.hint.login" },
+        {
+          titleKey: "title.home-dashboard",
+          hintKey: "flow.hint.dashboard",
+          nav: "home",
+        },
+        { titleKey: "title.create-club", hintKey: "flow.hint.createClub" },
+        {
+          titleKey: "title.leaderboard",
+          hintKey: "flow.hint.leaderboard",
+          nav: "rank",
+        },
+        {
+          titleKey: "title.submit-match",
+          hintKey: "flow.hint.submit",
+          nav: "match",
+        },
+        { titleKey: "title.match-approved", hintKey: "flow.hint.approved" },
+        {
+          titleKey: "title.profile",
+          hintKey: "flow.hint.profile",
+          nav: "profile",
+        },
+        { titleKey: "title.endorsement", hintKey: "flow.hint.endorse" },
+        { titleKey: "title.share-card", hintKey: "flow.hint.share" },
+        {
+          titleKey: "title.communities",
+          hintKey: "flow.hint.communities",
+          nav: "community",
+        },
+        {
+          titleKey: "title.events",
+          hintKey: "flow.hint.events",
+          nav: "events",
+        },
+        { titleKey: "title.americano", hintKey: "flow.hint.americano" },
+        { titleKey: "title.mexicano", hintKey: "flow.hint.mexicano" },
+        {
+          titleKey: "title.tournament-bracket",
+          hintKey: "flow.hint.tournament",
+        },
+        {
+          titleKey: "title.find-community",
+          hintKey: "flow.hint.findCommunity",
+          nav: "community",
+        },
+        {
+          titleKey: "title.community-page",
+          hintKey: "flow.hint.communityPage",
+          nav: "community",
+        },
+        {
+          titleKey: "title.event-register",
+          hintKey: "flow.hint.register",
+          nav: "events",
+        },
+        { titleKey: "title.auth-register", hintKey: "flow.hint.signup" },
+        { titleKey: "title.verify-otp", hintKey: "flow.hint.verifyOtp" },
+      ];
+
+      const isGuest = new URLSearchParams(location.search).get("guest") === "1";
+      MP_Flow.init({
+        steps,
+        guest: isGuest,
+        guestStartStep: isGuest ? 14 : 0,
+        appChrome: true,
+        finishUrl: "index.html",
+      });
+    </script>
+  </body>
+</html>

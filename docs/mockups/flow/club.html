@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Match Point — Club Admin</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="flow-app flow-immersive">
+      <button
+        type="button"
+        class="flow-preview-fab"
+        id="flow-preview-fab"
+        aria-label="Preview tools"
+      >
+        ⋯
+      </button>
+      <aside
+        class="flow-preview-panel"
+        id="flow-preview-panel"
+        aria-hidden="true"
+      >
+        <div class="flow-preview-panel-head">
+          <span>Preview</span
+          ><button
+            type="button"
+            class="flow-preview-close"
+            id="flow-preview-close"
+          >
+            ✕
+          </button>
+        </div>
+        <a href="index.html" class="flow-preview-link">← Menu Flow</a>
+        <div class="device-toggle device-toggle-labeled flow-preview-device">
+          <button class="device-btn" data-device="mobile">📱</button>
+          <button class="device-btn" data-device="tablet">📋</button>
+          <button class="device-btn active" data-device="desktop">🖥</button>
+        </div>
+        <div class="lang-toggle flow-preview-lang">
+          <button class="lang-btn" data-lang="id">ID</button
+          ><button class="lang-btn active" data-lang="en">EN</button>
+        </div>
+        <div class="flow-progress flow-preview-progress">
+          <div
+            class="flow-progress-bar"
+            id="flow-progress-bar"
+            style="width: 16%"
+          ></div>
+        </div>
+      </aside>
+
+      <main class="flow-body flow-body-immersive">
+        <div class="device-stage">
+          <div class="flow-frame">
+            <!-- 0 Club dashboard -->
+            <div class="flow-step active">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      onclick="location.href='user.html'"
+                      aria-label="Back to Home"
+                      data-i18n-title="club.backHome"
+                      title="Kembali ke Beranda"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo">
+                      👑
+                      <span class="club-name-dynamic"
+                        >Padel Jakarta Selatan</span
+                      >
+                    </div>
+                  </div>
+                </header>
+                <div class="app-body">
+                  <!-- Same community-page cover every member sees -->
+                  <div class="cp-cover">
+                    <div class="cp-cover-body">
+                      <div class="cp-logo">PJ</div>
+                      <div class="cp-cover-info">
+                        <h2 class="cp-name club-name-dynamic">
+                          Padel Jakarta Selatan
+                        </h2>
+                        <p class="cp-meta">
+                          🏓 Padel · Senayan, Jakarta Selatan · 🟢 Open
+                        </p>
+                        <div class="cp-avatar-stack">
+                          <div class="avatar avatar-sm">BS</div>
+                          <div class="avatar avatar-sm">RH</div>
+                          <div class="avatar avatar-sm">SW</div>
+                          <div class="avatar avatar-sm">DL</div>
+                          <span class="cp-avatar-more">+138 member</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="cp-member-chip" data-i18n="club.adminChip">
+                      👑 Kamu admin komunitas ini
+                    </div>
+                  </div>
+
+                  <!-- The ONLY difference vs a member: the manage panel -->
+                  <div class="mp-section-head">
+                    <h2 data-i18n="club.manageTitle">⚙️ Kelola Komunitas</h2>
+                    <span class="badge badge-members" data-i18n="club.adminBadge"
+                      >👑 Admin</span
+                    >
+                  </div>
+                  <div class="stat-grid mb-2">
+                    <div class="stat-box">
+                      <div class="stat-val">142</div>
+                      <div class="stat-lbl" data-i18n="home.statMembers">
+                        Member
+                      </div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">3</div>
+                      <div class="stat-lbl" data-i18n="approval.pending">
+                        Menunggu Review
+                      </div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">847</div>
+                      <div class="stat-lbl" data-i18n="home.statMatches">
+                        Match
+                      </div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">2</div>
+                      <div class="stat-lbl" data-i18n="community.statEvents">
+                        Acara aktif
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="action-card primary"
+                    data-flow-goto="1"
+                  >
+                    <span class="action-card-icon">🎯</span>
+                    <span class="action-card-body"
+                      ><strong data-i18n="flow.adminCreateEvent"
+                        >Buat Acara / Turnamen</strong
+                      ><span data-i18n="flow.adminCreateEventDesc"
+                        >Americano · Mexicano · Bracket</span
+                      ></span
+                    >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="3">
+                    <span class="action-card-icon">📋</span>
+                    <span class="action-card-body"
+                      ><strong data-i18n="club.regTitle"
+                        >Pendaftaran Peserta</strong
+                      ><span>Minggu Mexicano · 12/16 · waitlist 2</span></span
+                    >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="4">
+                    <span class="action-card-icon">🔄</span>
+                    <span class="action-card-body"
+                      ><strong>Live Session · Americano</strong
+                      ><span>Round 3/7 · 16 pemain · skor manual</span></span
+                    >
+                  </button>
+
+                  <!-- Everything below is the normal member view -->
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.feedTitle">📣 Feed Komunitas</h2>
+                    <span
+                      class="badge badge-members"
+                      data-i18n="community.memberBadge"
+                      >👥 Khusus member</span
+                    >
+                  </div>
+                  <div class="cp-composer">
+                    <div class="avatar avatar-sm">BS</div>
+                    <input
+                      class="form-input"
+                      data-i18n-placeholder="community.composerPh"
+                      placeholder="Bagikan sesuatu ke komunitas…"
+                    />
+                    <button type="button" class="btn btn-secondary btn-sm">
+                      📷
+                    </button>
+                  </div>
+                  <article class="cp-post">
+                    <div class="cp-post-head">
+                      <div class="avatar avatar-sm">BS</div>
+                      <div>
+                        <strong>Budi Santoso</strong>
+                        <span class="badge badge-success">👑 Admin</span>
+                        <div class="cp-post-time">1 jam lalu</div>
+                      </div>
+                    </div>
+                    <p class="cp-post-body">
+                      📌 Court dibooking Sabtu 08:00 — Americano 16 slot,
+                      langsung daftar ya! 🏓
+                    </p>
+                    <div class="cp-post-foot">
+                      <button type="button">❤️ 18</button>
+                      <button type="button">💬 5</button>
+                      <button type="button">↗️</button>
+                    </div>
+                  </article>
+
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.galleryTitle">
+                      📸 Galeri Komunitas
+                    </h2>
+                    <span
+                      class="badge badge-public"
+                      data-i18n="community.publicBadge"
+                      >🌐 Publik</span
+                    >
+                  </div>
+                  <div class="cp-gallery">
+                    <div class="cp-photo grad-a">🏓</div>
+                    <div class="cp-photo grad-b">🏆</div>
+                    <div class="cp-photo grad-c">🎉</div>
+                    <div class="cp-photo grad-d">+52</div>
+                  </div>
+
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="community.lbTitle">
+                      🏆 Leaderboard Mabar
+                    </h2>
+                    <span
+                      class="badge badge-public"
+                      data-i18n="community.publicBadge"
+                      >🌐 Publik</span
+                    >
+                  </div>
+                  <ul class="leaderboard-list compact lb-card">
+                    <li class="lb-row">
+                      <span class="lb-rank gold">1</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Rudi Hartono</div>
+                      </div>
+                      <span class="lb-points">1820</span>
+                    </li>
+                    <li class="lb-row">
+                      <span class="lb-rank">2</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Sari Wijaya</div>
+                      </div>
+                      <span class="lb-points">1764</span>
+                    </li>
+                    <li class="lb-row highlight">
+                      <span class="lb-rank">12</span>
+                      <div class="lb-info">
+                        <div class="lb-name">Budi (kamu)</div>
+                      </div>
+                      <span class="lb-points">1680</span>
+                    </li>
+                  </ul>
+
+                  <p class="form-hint mt-2" data-i18n="club.adminNote">
+                    Admin klub ≠ admin Match Point platform. Dispute lintas
+                    komunitas ditangani tim platform.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1 Create event: pick format -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="0" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-create-event">Buat Acara</span></div></div>
+                </header>
+                <div class="app-body">
+                  <p class="section-sub" data-i18n="reg.formatNote">
+                    Format dipilih admin saat membuat acara.
+                  </p>
+                  <button
+                    type="button"
+                    class="action-card primary"
+                    data-flow-goto="2"
+                  >
+                    <span class="action-card-icon">🔄</span
+                    ><span class="action-card-body"
+                      ><strong>Americano</strong
+                      ><span data-i18n="flow.americanoAdminDesc"
+                        >Partner acak · club night</span
+                      ></span
+                    >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="2">
+                    <span class="action-card-icon">📈</span
+                    ><span class="action-card-body"
+                      ><strong>Mexicano</strong
+                      ><span data-i18n="flow.mexicanoAdminDesc"
+                        >By leaderboard</span
+                      ></span
+                    >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="2">
+                    <span class="action-card-icon">🏆</span
+                    ><span class="action-card-body"
+                      ><strong>Bracket</strong
+                      ><span data-i18n="flow.bracketAdminDesc"
+                        >Single elimination · advance manual</span
+                      ></span
+                    >
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 2 Configure & publish -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-publish-event">Publish Acara</span></div></div>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="club.eventNameLabel"
+                      >Nama Acara</label
+                    ><input
+                      class="form-input sport-dynamic"
+                      data-padel="Minggu Mexicano · Padel Jakarta"
+                      data-tennis="Sunday Tennis Social"
+                      data-pickleball="Sunday Pickle Open"
+                      value="Minggu Mexicano · Padel Jakarta"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Format</label
+                    ><select class="form-select">
+                      <option>Mexicano — seeded rounds (manual)</option>
+                      <option>Americano — rotasi manual</option>
+                      <option>Bracket — single elimination (manual)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="club.capacityLabel"
+                      >Kapasitas &amp; waitlist</label
+                    ><input
+                      class="form-input"
+                      value="16 pemain · waitlist 4 · 4 lapangan"
+                    />
+                  </div>
+                  <label class="form-check mb-2">
+                    <input type="checkbox" checked />
+                    <span data-i18n="club.regRequiredLabel"
+                      >Wajib registrasi — pemain daftar sebelum sesi</span
+                    >
+                  </label>
+                  <div class="alert alert-success">
+                    <span>✓</span
+                    ><span data-i18n="flow.publishPreview"
+                      >Muncul di Beranda pemain komunitas.</span
+                    >
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block btn-lg"
+                    data-flow-goto="3"
+                    data-i18n="flow.publishBtn"
+                  >
+                    Publish Acara
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Registrations (manual waitlist) -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="0" aria-label="Back">←</button><div class="app-logo"><span data-i18n="club.regTitle">Pendaftaran Peserta</span></div></div>
+                  <span class="badge badge-pending">12 / 16</span>
+                </header>
+                <div class="app-body">
+                  <p class="section-sub" data-i18n="club.regSub">
+                    Kelola peserta sebelum sesi — promosikan waitlist secara
+                    manual.
+                  </p>
+                  <div class="reg-capacity mb-2">
+                    <div class="reg-capacity-label">
+                      <span data-i18n="reg.capacityLabel">Slot terisi</span>
+                      <span>12 / 16 · waitlist 2</span>
+                    </div>
+                    <div class="reg-capacity-bar">
+                      <div class="reg-capacity-fill" style="width: 75%"></div>
+                    </div>
+                  </div>
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">Budi Santoso</div>
+                      <div class="match-meta">Mabar #12 · daftar 2 jam lalu</div>
+                    </div>
+                    <span
+                      class="badge badge-success"
+                      data-i18n="events.registeredBadge"
+                      >Terdaftar</span
+                    >
+                  </div>
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">Sari Wijaya</div>
+                      <div class="match-meta">Mabar #5 · daftar 1 jam lalu</div>
+                    </div>
+                    <span
+                      class="badge badge-success"
+                      data-i18n="events.registeredBadge"
+                      >Terdaftar</span
+                    >
+                  </div>
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">Dewi Lestari</div>
+                      <div class="match-meta">Waitlist #1 · 30 menit lalu</div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm"
+                      data-i18n="club.promoteBtn"
+                    >
+                      ↑ Naikkan dari waitlist
+                    </button>
+                  </div>
+                  <div class="btn-stack mt-2">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-flow-goto="4"
+                      data-i18n="club.closeRegBtn"
+                    >
+                      Tutup Registrasi → Mulai Sesi Live
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-back="0"
+                      data-i18n="club.backDash"
+                    >
+                      ← Dashboard
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Live session — manual rounds & scores -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="3" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-live-session">Live Session</span></div></div>
+                  <span class="badge badge-live">LIVE · R3/7</span>
+                </header>
+                <div class="app-body">
+                  <div class="info-strip mb-2">
+                    <span>✍️</span>
+                    <span data-i18n="club.manualHint"
+                      >Rotasi &amp; skor diinput manual oleh admin — cepat,
+                      tanpa mesin otomatis.</span
+                    >
+                  </div>
+                  <div class="rotation-card mb-2">
+                    <div class="rotation-court">
+                      <span class="rotation-court-label">Court 1</span>
+                      <div class="rotation-match">
+                        <span>Budi + Rudi</span
+                        ><span class="rotation-vs">vs</span
+                        ><span>Sari + Dina</span>
+                      </div>
+                      <div class="manual-score-row">
+                        <input
+                          class="form-input"
+                          inputmode="numeric"
+                          value="18"
+                        />
+                        <span class="manual-score-sep">–</span>
+                        <input
+                          class="form-input"
+                          inputmode="numeric"
+                          value="12"
+                        />
+                        <button
+                          type="button"
+                          class="btn btn-primary btn-sm"
+                          data-i18n="club.saveScoreBtn"
+                        >
+                          Simpan Skor Court 1
+                        </button>
+                      </div>
+                    </div>
+                    <div class="rotation-court">
+                      <span class="rotation-court-label">Court 2</span>
+                      <div class="rotation-match">
+                        <span>Andi + Henry</span
+                        ><span class="rotation-vs">vs</span
+                        ><span>Carla + Dewi</span>
+                      </div>
+                      <div class="manual-score-row">
+                        <input class="form-input" inputmode="numeric" value="" />
+                        <span class="manual-score-sep">–</span>
+                        <input class="form-input" inputmode="numeric" value="" />
+                        <span class="manual-hint">⏱ Live</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-i18n="club.manualRoundBtn"
+                    >
+                      Susun Round 4 — Manual
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-block"
+                      data-flow-goto="5"
+                      data-i18n="club.toBracketBtn"
+                    >
+                      Bracket Turnamen (manual) →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5 Manual bracket advancement -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="4" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-bracket">Bracket Manual</span></div></div>
+                  <span class="badge badge-info">Semifinal</span>
+                </header>
+                <div class="app-body">
+                  <div class="info-strip mb-2">
+                    <span>🏆</span>
+                    <span data-i18n="club.bracketManualNote"
+                      >Bracket maju manual — admin konfirmasi tiap hasil.</span
+                    >
+                  </div>
+                  <div class="bracket">
+                    <div class="bracket-round">Semifinal 1</div>
+                    <div class="bracket-match">
+                      <span class="winner">Rudi/Maya</span> 6-3, 6-4 vs
+                      Doni/Rina
+                    </div>
+                    <div class="bracket-round">Semifinal 2</div>
+                    <div class="bracket-match">
+                      Budi/Sari vs Andi/Carla · <em>skor belum diinput</em>
+                    </div>
+                  </div>
+                  <div class="manual-score-row mb-2">
+                    <input class="form-input" inputmode="numeric" value="6" />
+                    <span class="manual-score-sep">–</span>
+                    <input class="form-input" inputmode="numeric" value="2" />
+                    <span class="manual-hint">Set 1 · Budi/Sari</span>
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-i18n="club.advanceBtn"
+                    >
+                      Majukan Pemenang → Final
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary btn-block"
+                      data-flow-goto="0"
+                      data-i18n="club.backDash"
+                    >
+                      ← Dashboard
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-finish
+                      data-i18n="club.finishHome"
+                    >
+                      Selesai — kembali ke Beranda
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <div
+        class="flow-toast"
+        id="flow-toast"
+        role="status"
+        aria-live="polite"
+      ></div>
+    </div>
+    <script src="../i18n.js"></script>
+    <script src="../device.js"></script>
+    <script src="../sport.js"></script>
+    <script src="../role.js"></script>
+    <script src="flow.js"></script>
+    <script>
+      MP_Role.setClub({ name: "Padel Jakarta Selatan", admin: true });
+      // Club admin is a signed-in surface — keep the session alive so
+      // navigating back to user.html lands on Home, not the login gate
+      localStorage.setItem("mp-auth", "1");
+      MP_Flow.init({
+        steps: [
+          { titleKey: "title.club-admin", hintKey: "flow.hint.clubAdmin" },
+          {
+            titleKey: "title.admin-create-event",
+            hintKey: "flow.hint.adminCreateEvent",
+          },
+          {
+            titleKey: "title.admin-publish-event",
+            hintKey: "flow.hint.adminPublish",
+          },
+          {
+            titleKey: "title.admin-registrations",
+            hintKey: "flow.hint.adminRegs",
+          },
+          {
+            titleKey: "title.admin-live-session",
+            hintKey: "flow.hint.adminLive",
+          },
+          {
+            titleKey: "title.admin-bracket",
+            hintKey: "flow.hint.adminBracket",
+          },
+        ],
+        finishUrl: "user.html",
+        appChrome: true,
+        // These sections live in the player journey — same chrome, other page
+        navRedirect: {
+          home: "user.html?step=1",
+          rank: "user.html?step=3",
+          match: "user.html?step=4",
+          events: "user.html?step=10",
+          community: "user.html?step=9",
+          profile: "user.html?step=6",
+        },
+        logoutUrl: "user.html",
+      });
+    </script>
+  </body>
+</html>

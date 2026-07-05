@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Match Point — Platform Admin</title>
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <div class="flow-app flow-immersive">
+      <button
+        type="button"
+        class="flow-preview-fab"
+        id="flow-preview-fab"
+        aria-label="Preview tools"
+      >
+        ⋯
+      </button>
+      <aside
+        class="flow-preview-panel"
+        id="flow-preview-panel"
+        aria-hidden="true"
+      >
+        <div class="flow-preview-panel-head">
+          <span>Preview</span>
+          <button
+            type="button"
+            class="flow-preview-close"
+            id="flow-preview-close"
+          >
+            ✕
+          </button>
+        </div>
+        <a href="index.html" class="flow-preview-link">← Menu Flow</a>
+        <div class="device-toggle device-toggle-labeled flow-preview-device">
+          <button class="device-btn" data-device="mobile">
+            📱 <span class="device-label">Mobile</span>
+          </button>
+          <button class="device-btn" data-device="tablet">
+            📋 <span class="device-label">Tablet</span>
+          </button>
+          <button class="device-btn active" data-device="desktop">
+            🖥 <span class="device-label">Web</span>
+          </button>
+        </div>
+        <div class="lang-toggle flow-preview-lang">
+          <button class="lang-btn" data-lang="id">ID</button>
+          <button class="lang-btn active" data-lang="en">EN</button>
+        </div>
+        <div class="flow-progress flow-preview-progress">
+          <div
+            class="flow-progress-bar"
+            id="flow-progress-bar"
+            style="width: 11%"
+          ></div>
+        </div>
+      </aside>
+
+      <main class="flow-body flow-body-immersive">
+        <div class="device-stage">
+          <div class="flow-frame">
+            <!-- Step 0: Admin Login -->
+            <div class="flow-step active">
+              <div class="app admin-theme login-gate-app">
+                <div class="login-gate-hero">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Admin Portal
+                  </div>
+                  <h1 class="login-hook" data-i18n="flow.platformLoginHook">
+                    Tim Match Point — dispute lintas komunitas &amp; audit
+                    platform.
+                  </h1>
+                  <p class="login-subhook" data-i18n="flow.platformLoginSub">
+                    Superadmin platform · bukan admin klub komunitas.
+                  </p>
+                </div>
+                <div class="app-body login-gate-form">
+                  <h2 class="section-title">Masuk Admin</h2>
+                  <div class="form-group">
+                    <label class="form-label">Email Admin</label
+                    ><input class="form-input" value="admin@matchpoint.id" />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Password</label
+                    ><input
+                      class="form-input"
+                      type="password"
+                      value="••••••••"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block"
+                    data-login
+                    data-i18n="flow.adminLoginBtn"
+                  >
+                    Masuk ke Dashboard
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 1: Overview -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-header">
+                  <div class="app-logo">⚙ Superadmin</div>
+                </div>
+                <div class="app-body">
+                  <div class="stat-grid mb-2">
+                    <div class="stat-box">
+                      <div class="stat-val">10,842</div>
+                      <div class="stat-lbl">Players</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">523</div>
+                      <div class="stat-lbl">Communities</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">5</div>
+                      <div class="stat-lbl" data-i18n="approval.pending">
+                        Menunggu Review
+                      </div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">23</div>
+                      <div class="stat-lbl">Pending match</div>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    class="action-card primary"
+                    data-flow-goto="2"
+                  >
+                    <span class="action-card-icon">📥</span>
+                    <span class="action-card-body"
+                      ><strong data-i18n="platform.inboxTitle"
+                        >Approval Inbox</strong
+                      ><span data-i18n="platform.inboxCardDesc"
+                        >5 pengajuan — komunitas baru, acara featured</span
+                      ></span
+                    >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="5">
+                    <span class="action-card-icon">⏳</span>
+                    <span class="action-card-body"
+                      ><strong>Review 23 Pending Matches</strong
+                      ><span>Lintas komunitas · GPS fail · dispute</span></span
+                    >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="8">
+                    <span class="action-card-icon">📊</span>
+                    <span class="action-card-body"
+                      ><strong>Platform Analytics</strong
+                      ><span>523 komunitas · health metrics</span></span
+                    >
+                  </button>
+                  <p class="form-hint mt-2" data-i18n="flow.platformClubNote">
+                    Buat turnamen? Itu peran admin klub di journey Club Admin —
+                    bukan di sini.
+                  </p>
+                  <p class="form-hint" data-i18n="platform.readonlyNote">
+                    📱 Di ponsel, Platform Admin sebaiknya read-only — keputusan
+                    besar di web.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 2: Generic Approval Inbox -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo"><span data-i18n="platform.inboxTitle">Approval Inbox</span></div></div>
+                  <span class="badge badge-pending">5</span>
+                </div>
+                <div class="app-body">
+                  <p class="section-sub" data-i18n="platform.inboxSub">
+                    Antrian generik — komunitas baru, acara featured, dispute.
+                    Status: Diajukan → Menunggu → Disetujui/Ditolak.
+                  </p>
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">
+                        🏘 <span class="club-name-dynamic">Padel Jakarta Selatan</span>
+                      </div>
+                      <div class="match-meta">
+                        Komunitas baru · Budi Santoso · 2 jam lalu
+                      </div>
+                      <div class="approval-track" style="margin: 0.4rem 0 0">
+                        <span
+                          class="approval-node done"
+                          data-i18n="approval.submitted"
+                          >Diajukan</span
+                        >
+                        <span class="approval-arrow">→</span>
+                        <span
+                          class="approval-node current"
+                          data-i18n="approval.pending"
+                          >Menunggu Review</span
+                        >
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-sm"
+                      data-flow-goto="3"
+                      data-i18n="platform.reviewBtn"
+                    >
+                      Review →
+                    </button>
+                  </div>
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">🎯 Jakarta Padel Open — featured</div>
+                      <div class="match-meta">
+                        Acara featured · Senayan Padel Club · 5 jam lalu
+                      </div>
+                    </div>
+                    <span class="badge badge-pending" data-i18n="approval.pending"
+                      >Menunggu Review</span
+                    >
+                  </div>
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">🏘 Bekasi Tennis Society</div>
+                      <div class="match-meta">
+                        Komunitas baru · disetujui oleh Tim MP · kemarin
+                      </div>
+                    </div>
+                    <span
+                      class="badge badge-success"
+                      data-i18n="approval.approved"
+                      >Disetujui</span
+                    >
+                  </div>
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">🏘 "Klub Judi Padel"</div>
+                      <div class="match-meta">
+                        Komunitas baru · nama tidak pantas · ditolak + alasan
+                      </div>
+                    </div>
+                    <span
+                      class="badge badge-danger"
+                      data-i18n="approval.rejected"
+                      >Ditolak</span
+                    >
+                  </div>
+                  <p class="form-hint mt-1" data-i18n="platform.inboxReuseNote">
+                    Komponen approval yang sama dipakai untuk komunitas, acara,
+                    dan dispute.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 3: Approval detail — community create -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="2" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.approval-detail">Review Pengajuan</span></div></div>
+                </div>
+                <div class="app-body app-body-narrow">
+                  <div class="card mb-2">
+                    <strong class="club-name-dynamic">Padel Jakarta Selatan</strong>
+                    <p class="text-sm text-muted" style="margin: 0.35rem 0">
+                      🏓 Padel · Jakarta Selatan · Senayan · 🟢 Open Community
+                    </p>
+                    <p class="text-sm text-muted">
+                      Pengaju: Budi Santoso · @budisantoso · Trust 0.94
+                    </p>
+                    <div class="approval-track">
+                      <span
+                        class="approval-node done"
+                        data-i18n="approval.submitted"
+                        >Diajukan</span
+                      >
+                      <span class="approval-arrow">→</span>
+                      <span
+                        class="approval-node current"
+                        data-i18n="approval.pending"
+                        >Menunggu Review</span
+                      >
+                      <span class="approval-arrow">→</span>
+                      <span class="approval-node" data-i18n="approval.approved"
+                        >Disetujui</span
+                      >
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="platform.reasonLabel"
+                      >Catatan reviewer (wajib, dikirim ke pengaju)</label
+                    >
+                    <textarea class="form-textarea" rows="2">
+Nama & venue valid, tidak duplikat dengan komunitas existing.</textarea
+                    >
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-club-approve
+                      data-flow-goto="4"
+                      data-i18n="platform.approveBtn"
+                    >
+                      ✓ Setujui Komunitas
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger btn-block"
+                      data-flow-goto="2"
+                      data-i18n="platform.rejectBtn"
+                    >
+                      ✕ Tolak — kirim alasan
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 4: Approval result -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-body text-center" style="padding: 2rem 1.25rem">
+                  <div style="font-size: 3.5rem">✅</div>
+                  <h2 class="section-title" data-i18n="platform.approvedTitle">
+                    Komunitas disetujui ✓
+                  </h2>
+                  <p class="section-sub" data-i18n="platform.approvedDesc">
+                    Pengaju otomatis jadi admin komunitas. Keputusan tercatat di
+                    audit log.
+                  </p>
+                  <div class="approval-track" style="justify-content: center">
+                    <span class="approval-node done" data-i18n="approval.submitted"
+                      >Diajukan</span
+                    >
+                    <span class="approval-arrow">→</span>
+                    <span class="approval-node done" data-i18n="approval.pending"
+                      >Menunggu Review</span
+                    >
+                    <span class="approval-arrow">→</span>
+                    <span class="approval-node done" data-i18n="approval.approved"
+                      >Disetujui</span
+                    >
+                  </div>
+                  <div class="audit-log mt-2 text-left">
+                    <div class="audit-line">
+                      10:14 · community_approved · admin@matchpoint.id
+                    </div>
+                    <div class="audit-line">
+                      08:02 · community_submitted · budisantoso
+                    </div>
+                  </div>
+                  <div class="btn-stack mt-2">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-flow-goto="2"
+                      data-i18n="platform.backInboxBtn"
+                    >
+                      ← Kembali ke Approval Inbox
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-goto="1"
+                      data-i18n="platform.backOverviewBtn"
+                    >
+                      Dashboard Overview
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 5: Pending matches -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo">Pending Matches (23)</div></div>
+                </div>
+                <div class="app-body">
+                  <div class="match-card">
+                    <div>
+                      <div class="match-players">Budi vs Andi · 6-2, 6-1</div>
+                      <div class="match-meta">GPS fail 2.3km</div>
+                    </div>
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-flow-goto="6"
+                    >
+                      ✓ Approve Match Budi vs Andi
+                    </button>
+                    <button type="button" class="btn btn-danger btn-block">
+                      ✕ Tolak Match — GPS Fail 2.3km
+                    </button>
+                  </div>
+                  <div class="match-card mt-2">
+                    <div>
+                      <div class="match-players">
+                        Sari vs Dina · skor tidak cocok
+                      </div>
+                      <div class="match-meta">
+                        Dispute #D-4421 · prioritas tinggi
+                      </div>
+                    </div>
+                    <span class="badge badge-warning">Dispute</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-block btn-lg mt-1"
+                    data-flow-goto="6"
+                  >
+                    Buka & Resolve Dispute Sari vs Dina →
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 6: Dispute -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="5" aria-label="Back">←</button><div class="app-logo">Resolve Dispute #D-4421</div></div>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip mb-2">
+                    <span>⚖</span>
+                    <span
+                      >Skor tidak cocok · Sari vs Dina · butuh keputusan admin
+                      dengan catatan audit</span
+                    >
+                  </div>
+                  <div class="card mb-2">
+                    <strong>Budi vs Andi</strong><br /><span
+                      class="text-sm text-muted"
+                      >Budi: 6-2, 6-1 · Andi: 4-6, 6-3, 10-8</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Keputusan Admin</label>
+                    <select class="form-select">
+                      <option>Approve skor Budi (6-2, 6-1)</option>
+                      <option>Approve skor Andi (4-6, 6-3, 10-8)</option>
+                      <option>Tolak match — data tidak valid</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Catatan Admin (wajib)</label>
+                    <textarea class="form-textarea" rows="2">
+Set 2 diverifikasi via screenshot lapangan.</textarea
+                    >
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-flow-goto="7"
+                    >
+                      ✓ Resolve Dispute — Terapkan Keputusan
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-back="5"
+                    >
+                      ← Kembali ke Pending Queue
+                    </button>
+                  </div>
+                  <div class="audit-log mt-2">
+                    <div class="audit-line">14:02 · dispute_created · andi</div>
+                    <div class="audit-line">08:15 · match_submitted · budi</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 7: Adjustment -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="6" aria-label="Back">←</button><div class="app-logo">Point Adjustment</div></div>
+                </div>
+                <div class="app-body">
+                  <div class="alert alert-info">
+                    <span>ℹ</span
+                    ><span
+                      >Tercatat di audit_log — snapshot immutable untuk
+                      transparansi.</span
+                    >
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Pemain</label>
+                    <select class="form-select">
+                      <option>Budi Santoso · 1680 pts · Padel Jakarta</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Adjustment (+/- poin)</label>
+                    <input class="form-input font-mono" value="+10" />
+                    <p class="form-hint">
+                      Alasan: koreksi setelah dispute #D-4421 resolved
+                    </p>
+                  </div>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-flow-goto="8"
+                    >
+                      Apply +10 pts ke Budi Santoso
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-back="1"
+                    >
+                      ← Kembali ke Dashboard Admin
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 8: Community Stats -->
+            <div class="flow-step">
+              <div class="app admin-theme">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo">Stats · Padel Jakarta</div></div>
+                </div>
+                <div class="app-body">
+                  <div class="stat-grid mb-2">
+                    <div class="stat-box">
+                      <div class="stat-val">+12</div>
+                      <div class="stat-lbl">Member/minggu</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">2.1%</div>
+                      <div class="stat-lbl">Dispute ratio</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">847</div>
+                      <div class="stat-lbl">Match total</div>
+                    </div>
+                    <div class="stat-box">
+                      <div class="stat-val">142</div>
+                      <div class="stat-lbl">Anggota aktif</div>
+                    </div>
+                  </div>
+                  <div class="flow-complete">
+                    <div class="flow-complete-icon">📊</div>
+                    <h2 class="section-title">Analytics Komunitas</h2>
+                    <p class="text-sm text-muted" style="margin-bottom: 1rem">
+                      Padel Jakarta · pertumbuhan sehat · dispute ratio rendah.
+                    </p>
+                    <div class="btn-stack">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-block btn-lg"
+                        data-flow-goto="2"
+                        data-i18n="platform.backInboxBtn"
+                      >
+                        ← Kembali ke Approval Inbox
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-block"
+                        data-flow-finish
+                        data-i18n="flow.cta.finishBtn"
+                      >
+                        Selesai — Kembali ke Menu
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- /device-stage -->
+      </main>
+
+      <div
+        class="flow-toast"
+        id="flow-toast"
+        role="status"
+        aria-live="polite"
+      ></div>
+    </div>
+
+    <script src="../i18n.js"></script>
+    <script src="../device.js"></script>
+    <script src="../sport.js"></script>
+    <script src="../role.js"></script>
+    <script src="flow.js"></script>
+    <script>
+      MP_Flow.init({
+        steps: [
+          { titleKey: "title.auth-login", hintKey: "flow.hint.adminLogin" },
+          { titleKey: "title.admin", hintKey: "flow.hint.adminOverview" },
+          {
+            titleKey: "title.approval-inbox",
+            hintKey: "flow.hint.approvalInbox",
+          },
+          {
+            titleKey: "title.approval-detail",
+            hintKey: "flow.hint.approvalDetail",
+          },
+          {
+            titleKey: "title.approval-result",
+            hintKey: "flow.hint.approvalResult",
+          },
+          {
+            titleKey: "title.admin-pending",
+            hintKey: "flow.hint.adminPending",
+          },
+          {
+            titleKey: "title.admin-dispute",
+            hintKey: "flow.hint.adminDispute",
+          },
+          {
+            titleKey: "title.admin-adjustment",
+            hintKey: "flow.hint.adminAdjustment",
+          },
+          {
+            titleKey: "title.admin-community",
+            hintKey: "flow.hint.adminCommunity",
+          },
+        ],
+        resetRoleOnLogin: false,
+        finishUrl: "index.html",
+      });
+    </script>
+  </body>
+</html>
