@@ -145,11 +145,11 @@
                       ><strong data-i18n="flow.adminCreateEvent"
                         >Buat Acara / Turnamen</strong
                       ><span data-i18n="flow.adminCreateEventDesc"
-                        >Americano · Mexicano · Bracket</span
+                        >Americano · Mexicano · Bracket · RR · League · 7 formats</span
                       ></span
                     >
                   </button>
-                  <button type="button" class="action-card" data-flow-goto="3">
+                  <button type="button" class="action-card" data-flow-goto="7">
                     <span class="action-card-icon">📋</span>
                     <span class="action-card-body"
                       ><strong data-i18n="club.regTitle"
@@ -157,7 +157,7 @@
                       ><span>Minggu Mexicano · 12/16 · waitlist 2</span></span
                     >
                   </button>
-                  <button type="button" class="action-card" data-flow-goto="4">
+                  <button type="button" class="action-card" data-flow-goto="9">
                     <span class="action-card-icon">🔄</span>
                     <span class="action-card-body"
                       ><strong>Live Session · Americano</strong
@@ -264,170 +264,268 @@
               </div>
             </div>
 
-            <!-- 1 Create event: pick format -->
-            <div class="flow-step">
+            <!-- 1 Event type: Americano · Mexicano · Singles · Doubles -->
+            <div class="flow-step" data-wizard-step="1">
               <div class="app mp-shell admin-theme">
                 <header class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="0" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-create-event">Buat Acara</span></div></div>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="0" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step1Title">Buat Acara — Tipe</span></div></div>
+                  <span class="badge badge-info" data-i18n="wizard.stepLabel">Langkah 1/4</span>
                 </header>
                 <div class="app-body">
-                  <p class="section-sub" data-i18n="reg.formatNote">
-                    Format dipilih admin saat membuat acara.
-                  </p>
-                  <button
-                    type="button"
-                    class="action-card primary"
-                    data-flow-goto="2"
-                  >
-                    <span class="action-card-icon">🔄</span
-                    ><span class="action-card-body"
-                      ><strong>Americano</strong
-                      ><span data-i18n="flow.americanoAdminDesc"
-                        >Partner acak · club night</span
-                      ></span
-                    >
-                  </button>
-                  <button type="button" class="action-card" data-flow-goto="2">
-                    <span class="action-card-icon">📈</span
-                    ><span class="action-card-body"
-                      ><strong>Mexicano</strong
-                      ><span data-i18n="flow.mexicanoAdminDesc"
-                        >By leaderboard</span
-                      ></span
-                    >
-                  </button>
-                  <button type="button" class="action-card" data-flow-goto="2">
-                    <span class="action-card-icon">🏆</span
-                    ><span class="action-card-body"
-                      ><strong>Bracket</strong
-                      ><span data-i18n="flow.bracketAdminDesc"
-                        >Single elimination · advance manual</span
-                      ></span
-                    >
-                  </button>
+                  <div class="wizard-progress mb-2">
+                    <span class="wizard-dot current" data-wizard-step-indicator="1">1</span>
+                    <span class="wizard-line"></span>
+                    <span class="wizard-dot" data-wizard-step-indicator="2">2</span>
+                    <span class="wizard-line"></span>
+                    <span class="wizard-dot" data-wizard-step-indicator="3">3</span>
+                    <span class="wizard-line"></span>
+                    <span class="wizard-dot" data-wizard-step-indicator="4">4</span>
+                  </div>
+                  <p class="section-sub" data-i18n="wizard.step1Sub">Pilih jenis acara — sosial (Americano/Mexicano) atau kompetitif (Single/Double).</p>
+                  <div class="format-grid">
+                    <button type="button" class="action-card" data-wizard-type-card="americano" data-wizard-pick-type="americano">
+                      <span class="action-card-icon">🔄</span><span class="action-card-body"><strong>Americano</strong><span data-i18n="wizard.americanoDesc">Rotasi partner · poin individual · club night</span></span>
+                    </button>
+                    <button type="button" class="action-card" data-wizard-type-card="mexicano" data-wizard-pick-type="mexicano">
+                      <span class="action-card-icon">📈</span><span class="action-card-body"><strong>Mexicano</strong><span data-i18n="wizard.mexicanoDesc">Pairing by ranking · makin kompetitif</span></span>
+                    </button>
+                    <button type="button" class="action-card" data-wizard-type-card="singles" data-wizard-pick-type="singles">
+                      <span class="action-card-icon">🎾</span><span class="action-card-body"><strong>Singles</strong><span data-i18n="wizard.singlesDesc">1v1 · turnamen atau liga</span></span>
+                    </button>
+                    <button type="button" class="action-card" data-wizard-type-card="doubles" data-wizard-pick-type="doubles">
+                      <span class="action-card-icon">👥</span><span class="action-card-body"><strong>Doubles</strong><span data-i18n="wizard.doublesDesc">2v2 · men's · women's · mixed</span></span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- 2 Configure & publish -->
-            <div class="flow-step">
+            <!-- 2 Division: Men · Women · Mixed (Singles/Double only) -->
+            <div class="flow-step" data-wizard-step="2">
               <div class="app mp-shell admin-theme">
                 <header class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-publish-event">Publish Acara</span></div></div>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step2Title">Kategori Pemain</span></div></div>
+                  <span class="badge badge-info" data-i18n="wizard.step2Label">Langkah 2/4</span>
                 </header>
                 <div class="app-body app-body-narrow">
-                  <div class="form-group">
-                    <label class="form-label" data-i18n="club.eventNameLabel"
-                      >Nama Acara</label
-                    ><input
-                      class="form-input sport-dynamic"
-                      data-padel="Minggu Mexicano · Padel Jakarta"
-                      data-tennis="Sunday Tennis Social"
-                      data-pickleball="Sunday Pickle Open"
-                      value="Minggu Mexicano · Padel Jakarta"
-                    />
+                  <div class="wizard-progress mb-2">
+                    <span class="wizard-dot done" data-wizard-step-indicator="1">1</span><span class="wizard-line"></span>
+                    <span class="wizard-dot current" data-wizard-step-indicator="2">2</span><span class="wizard-line"></span>
+                    <span class="wizard-dot" data-wizard-step-indicator="3">3</span><span class="wizard-line"></span>
+                    <span class="wizard-dot" data-wizard-step-indicator="4">4</span>
+                  </div>
+                  <p class="section-sub" data-i18n="wizard.step2Sub">Siapa yang main? Pilih kategori untuk Single atau Double.</p>
+                  <div class="filter-chips mb-2" data-wizard-division-group>
+                    <button type="button" class="filter-chip" data-wizard-division-chip="men" data-wizard-pick-division="men" data-i18n="wizard.divMen">👨 Men's</button>
+                    <button type="button" class="filter-chip" data-wizard-division-chip="women" data-wizard-pick-division="women" data-i18n="wizard.divWomen">👩 Women's</button>
+                    <button type="button" class="filter-chip" data-wizard-division-chip="mixed" data-wizard-pick-division="mixed" data-show-wizard-doubles-only data-i18n="wizard.divMixed">🤝 Mixed</button>
+                  </div>
+                  <p class="form-hint" data-i18n="wizard.divHint">Mixed hanya untuk Double. Tennis, padel & pickleball pakai aturan yang sama.</p>
+                  <button type="button" class="btn btn-primary btn-block btn-lg mt-2" data-wizard-next="3" data-i18n="wizard.continueBtn">Lanjut → Peserta</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3 Participants -->
+            <div class="flow-step" data-wizard-step="3">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-wizard-back="participants" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step3Title">Jumlah Peserta</span></div></div>
+                  <span class="badge badge-info" data-i18n="wizard.step3Label">Langkah 3/4</span>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <div class="wizard-progress mb-2">
+                    <span class="wizard-dot done" data-wizard-step-indicator="1">1</span><span class="wizard-line"></span>
+                    <span class="wizard-dot done" data-wizard-step-indicator="2">2</span><span class="wizard-line"></span>
+                    <span class="wizard-dot current" data-wizard-step-indicator="3">3</span><span class="wizard-line"></span>
+                    <span class="wizard-dot" data-wizard-step-indicator="4">4</span>
+                  </div>
+                  <p class="section-sub" data-i18n="wizard.step3Sub">Berapa pemain (atau tim) yang akan ikut?</p>
+                  <div class="filter-chips mb-2">
+                    <button type="button" class="filter-chip" data-wizard-participant-val="8" data-wizard-pick-participants="8">8</button>
+                    <button type="button" class="filter-chip active" data-wizard-participant-val="16" data-wizard-pick-participants="16">16</button>
+                    <button type="button" class="filter-chip" data-wizard-participant-val="20" data-wizard-pick-participants="20">20</button>
+                    <button type="button" class="filter-chip" data-wizard-participant-val="24" data-wizard-pick-participants="24">24</button>
+                    <button type="button" class="filter-chip" data-wizard-participant-val="32" data-wizard-pick-participants="32">32</button>
                   </div>
                   <div class="form-group">
-                    <label class="form-label">Format</label
-                    ><select class="form-select">
-                      <option>Mexicano — seeded rounds (manual)</option>
-                      <option>Americano — rotasi manual</option>
-                      <option>Bracket — single elimination (manual)</option>
+                    <label class="form-label" data-i18n="wizard.customCount">Atau ketik jumlah</label>
+                    <input class="form-input" type="number" data-wizard-participants-input value="16" min="4" max="64" />
+                  </div>
+                  <p class="form-hint" data-i18n="wizard.participantHint">Americano/Mexicano: jumlah pemain individual. Single/Double: jumlah pemain atau pasangan tim.</p>
+                  <button type="button" class="btn btn-primary btn-block btn-lg mt-2" data-wizard-next-participants data-i18n="wizard.continueBtn">Lanjut</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Competition structure (Singles/Double only) -->
+            <div class="flow-step" data-wizard-step="4">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="3" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step4Title">Format Kompetisi</span></div></div>
+                  <span class="badge badge-info" data-i18n="wizard.step4Label">Langkah 4/4</span>
+                </header>
+                <div class="app-body">
+                  <div class="wizard-progress mb-2">
+                    <span class="wizard-dot done" data-wizard-step-indicator="1">1</span><span class="wizard-line"></span>
+                    <span class="wizard-dot done" data-wizard-step-indicator="2">2</span><span class="wizard-line"></span>
+                    <span class="wizard-dot done" data-wizard-step-indicator="3">3</span><span class="wizard-line"></span>
+                    <span class="wizard-dot current" data-wizard-step-indicator="4">4</span>
+                  </div>
+                  <p class="section-sub" data-i18n="wizard.step4Sub">Bagaimana pertandingan berjalan?</p>
+                  <div class="format-grid">
+                    <button type="button" class="action-card" data-wizard-structure-card="round_robin" data-wizard-pick-structure="round_robin">
+                      <span class="action-card-icon">🔁</span><span class="action-card-body"><strong>Round Robin</strong><span data-i18n="wizard.rrDesc">Semua lawan semua · klasemen</span></span>
+                    </button>
+                    <button type="button" class="action-card" data-wizard-structure-card="group_knockout" data-wizard-pick-structure="group_knockout">
+                      <span class="action-card-icon">📊</span><span class="action-card-body"><strong>Group → Knockout</strong><span data-i18n="wizard.groupKoDesc">Fase grup lalu eliminasi</span></span>
+                    </button>
+                    <button type="button" class="action-card" data-wizard-structure-card="league" data-wizard-pick-structure="league">
+                      <span class="action-card-icon">📅</span><span class="action-card-body"><strong>League</strong><span data-i18n="wizard.leagueDesc">Musim · jadwal · klasemen</span></span>
+                    </button>
+                  </div>
+                  <div class="form-group mt-2" data-show-wizard-rr-variant hidden>
+                    <label class="form-label" data-i18n="wizard.rrVariantLabel">Varian Round Robin</label>
+                    <select class="form-select" data-wizard-rr-variant>
+                      <option value="full" data-i18n="wizard.rrFull">Full Round Robin — semua vs semua</option>
+                      <option value="pools" data-i18n="wizard.rrPools">Pool Round Robin — 2 pool → semifinal</option>
+                      <option value="timed" data-i18n="wizard.rrTimed">Timed Rotation — rotasi per sesi</option>
                     </select>
+                    <p class="form-hint" data-i18n="wizard.rrVariantHint">Pilih sub-format setelah memilih Round Robin.</p>
+                  </div>
+                  <button type="button" class="btn btn-primary btn-block btn-lg mt-2" data-wizard-next="5" data-i18n="wizard.continueRoster">Lanjut → Daftar pemain</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5 Optional roster — admin pre-registration -->
+            <div class="flow-step" data-wizard-step="5">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-wizard-back="roster" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.rosterTitle">Daftar Pemain</span></div></div>
+                  <span class="badge badge-info" data-i18n="wizard.rosterOptional">Opsional</span>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <p class="section-sub" data-i18n="wizard.rosterSub">Registrasi dua arah — admin bisa isi nama sekarang; pemain lain tetap bisa daftar sendiri setelah publish.</p>
+                  <div class="reg-capacity mb-2">
+                    <div class="reg-capacity-label">
+                      <span data-i18n="wizard.rosterFilled">Slot terisi (admin)</span>
+                      <span data-wizard-roster-count>0 / 16</span>
+                    </div>
+                    <div class="reg-capacity-bar"><div class="reg-capacity-fill" style="width:0%"></div></div>
+                  </div>
+                  <div class="search-input-row mb-1">
+                    <input class="form-input" type="search" data-wizard-roster-search data-i18n-placeholder="wizard.rosterSearchPh" placeholder="Cari pemain…" />
+                  </div>
+                  <div class="filter-chips mb-2">
+                    <button type="button" class="filter-chip active" data-wizard-roster-filter="all" data-i18n="wizard.rosterFilterAll">Semua</button>
+                    <button type="button" class="filter-chip" data-wizard-roster-filter="community" data-i18n="wizard.rosterFilterCommunity">Dalam komunitas</button>
+                    <button type="button" class="filter-chip" data-wizard-roster-filter="external" data-i18n="wizard.rosterFilterOutside">Luar komunitas</button>
+                  </div>
+                  <div class="roster-results-panel mb-2" data-wizard-roster-results></div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="wizard.rosterGuestLabel">Atau ketik nama (tanpa akun)</label>
+                    <div class="search-input-row">
+                      <input class="form-input" data-wizard-roster-guest-name data-i18n-placeholder="wizard.rosterGuestPh" placeholder="Nama walk-in / tamu" />
+                      <button type="button" class="btn btn-outline" data-wizard-roster-add-guest data-i18n="wizard.rosterAddGuest">+ Tambah</button>
+                    </div>
+                  </div>
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="wizard.rosterSelected">Sudah ditambahkan</h2>
+                  </div>
+                  <div data-wizard-roster-list></div>
+                  <div class="btn-stack mt-2">
+                    <button type="button" class="btn btn-primary btn-block btn-lg" data-wizard-next="6" data-i18n="wizard.continuePublish">Lanjut → Review &amp; Publish</button>
+                    <button type="button" class="btn btn-outline btn-block" data-wizard-roster-skip data-flow-goto="6" data-i18n="wizard.rosterSkip">Lewati — buka untuk self-registration</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 6 Review & publish -->
+            <div class="flow-step" data-wizard-step="6">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-wizard-back="publish" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-publish-event">Publish Acara</span></div></div>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <div class="card mb-2" style="padding:0.85rem">
+                    <span class="text-sm text-muted" data-i18n="wizard.summaryLabel">Ringkasan acara</span>
+                    <div class="font-bold mt-1" data-wizard-summary>Americano · 16 players</div>
+                    <p class="text-sm text-muted mt-1" data-wizard-roster-summary hidden></p>
                   </div>
                   <div class="form-group">
-                    <label class="form-label" data-i18n="club.capacityLabel"
-                      >Kapasitas &amp; waitlist</label
-                    ><input
-                      class="form-input"
-                      value="16 pemain · waitlist 4 · 4 lapangan"
-                    />
+                    <label class="form-label" data-i18n="club.eventNameLabel">Nama Acara</label>
+                    <input class="form-input" data-event-name data-wizard-suggested-name />
+                  </div>
+                  <div data-show-scoring-social>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="match.scoringLabel">Mode skor</label>
+                      <select class="form-select" data-event-scoring>
+                        <option value="race_to_n" selected>Race to N</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="wizard.raceToLabel">Race to (poin)</label>
+                      <input class="form-input" data-event-race-to type="number" value="24" />
+                    </div>
+                  </div>
+                  <div data-show-scoring-competitive hidden>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="match.scoringLabel">Mode skor</label>
+                      <select class="form-select" data-event-scoring>
+                        <option value="normal_sets">Normal sets (6 games)</option>
+                        <option value="best_of_n">Best of 3 sets</option>
+                        <option value="single_set">Single set to 6</option>
+                        <option value="super_tiebreak">Super tiebreak (10)</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="club.capacityLabel">Kapasitas &amp; waitlist</label>
+                    <input class="form-input" data-wizard-capacity-display value="16 pemain · waitlist 4" readonly />
                   </div>
                   <label class="form-check mb-2">
                     <input type="checkbox" checked />
-                    <span data-i18n="club.regRequiredLabel"
-                      >Wajib registrasi — pemain daftar sebelum sesi</span
-                    >
+                    <span data-i18n="club.regRequiredLabel">Wajib registrasi — pemain daftar sebelum sesi</span>
                   </label>
-                  <div class="alert alert-success">
-                    <span>✓</span
-                    ><span data-i18n="flow.publishPreview"
-                      >Muncul di Beranda pemain komunitas.</span
-                    >
+                  <div class="alert alert-info mb-2">
+                    <span>ℹ️</span><span data-i18n="wizard.dualRegNote">Setelah publish, pemain bisa daftar sendiri. Slot yang belum terisi tetap terbuka.</span>
                   </div>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-block btn-lg"
-                    data-flow-goto="3"
-                    data-i18n="flow.publishBtn"
-                  >
-                    Publish Acara
-                  </button>
+                  <div class="alert alert-success">
+                    <span>✓</span><span data-i18n="flow.publishPreview">Muncul di Beranda pemain komunitas.</span>
+                  </div>
+                  <button type="button" class="btn btn-primary btn-block btn-lg" data-publish-event data-flow-goto="7" data-i18n="flow.publishBtn">Publish Acara</button>
                 </div>
               </div>
             </div>
 
-            <!-- 3 Registrations (manual waitlist) -->
-            <div class="flow-step">
+            <!-- 7 Registrations -->
+            <div class="flow-step" data-admin-reg-panel>
               <div class="app mp-shell admin-theme">
                 <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="0" aria-label="Back">←</button><div class="app-logo"><span data-i18n="club.regTitle">Pendaftaran Peserta</span></div></div>
-                  <span class="badge badge-pending">12 / 16</span>
+                  <span class="badge badge-pending" data-admin-reg-badge>0 / 16</span>
                 </header>
                 <div class="app-body">
-                  <p class="section-sub" data-i18n="club.regSub">
-                    Kelola peserta sebelum sesi — promosikan waitlist secara
-                    manual.
+                  <p class="section-sub" data-i18n="wizard.regDualSub">
+                    Registrasi dua arah — admin-added + self-registration. Kelola waitlist sebelum sesi.
                   </p>
                   <div class="reg-capacity mb-2">
                     <div class="reg-capacity-label">
                       <span data-i18n="reg.capacityLabel">Slot terisi</span>
-                      <span>12 / 16 · waitlist 2</span>
+                      <span data-admin-reg-count>0 / 16</span>
                     </div>
                     <div class="reg-capacity-bar">
-                      <div class="reg-capacity-fill" style="width: 75%"></div>
+                      <div class="reg-capacity-fill" style="width: 0%"></div>
                     </div>
                   </div>
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">Budi Santoso</div>
-                      <div class="match-meta">Mabar #12 · daftar 2 jam lalu</div>
-                    </div>
-                    <span
-                      class="badge badge-success"
-                      data-i18n="events.registeredBadge"
-                      >Terdaftar</span
-                    >
-                  </div>
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">Sari Wijaya</div>
-                      <div class="match-meta">Mabar #5 · daftar 1 jam lalu</div>
-                    </div>
-                    <span
-                      class="badge badge-success"
-                      data-i18n="events.registeredBadge"
-                      >Terdaftar</span
-                    >
-                  </div>
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">Dewi Lestari</div>
-                      <div class="match-meta">Waitlist #1 · 30 menit lalu</div>
-                    </div>
-                    <button
-                      type="button"
-                      class="btn btn-outline btn-sm"
-                      data-i18n="club.promoteBtn"
-                    >
-                      ↑ Naikkan dari waitlist
-                    </button>
-                  </div>
+                  <div data-admin-reg-list></div>
                   <div class="btn-stack mt-2">
                     <button
                       type="button"
                       class="btn btn-primary btn-block btn-lg"
-                      data-flow-goto="4"
+                      data-flow-goto="8"
                       data-i18n="club.closeRegBtn"
                     >
                       Tutup Registrasi → Mulai Sesi Live
@@ -445,91 +543,110 @@
               </div>
             </div>
 
-            <!-- 4 Live session — manual rounds & scores -->
-            <div class="flow-step">
-              <div class="app mp-shell admin-theme">
+            <!-- 8 Session setup — courts, players, generate schedule -->
+            <div class="flow-step" data-referee-setup>
+              <div class="app mp-shell admin-theme" data-chrome-slim>
                 <header class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="3" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-live-session">Live Session</span></div></div>
-                  <span class="badge badge-live">LIVE · R3/7</span>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="7" aria-label="Back">←</button><div class="app-logo"><span data-i18n="referee.setupTitle">Setup Sesi</span></div></div>
+                  <span class="badge badge-info" data-i18n="referee.setupBadge">Sebelum live</span>
                 </header>
-                <div class="app-body">
-                  <div class="info-strip mb-2">
-                    <span>✍️</span>
-                    <span data-i18n="club.manualHint"
-                      >Rotasi &amp; skor diinput manual oleh admin — cepat,
-                      tanpa mesin otomatis.</span
-                    >
+                <div class="app-body app-body-narrow" data-referee-setup-form>
+                  <p class="section-sub" data-i18n="referee.setupSub">Konfirmasi nama turnamen, pemain, lapangan &amp; skor — berlaku untuk Americano, Mexicano, Singles &amp; Doubles.</p>
+                  <div class="referee-format-chip mb-2"><span class="badge badge-info" data-referee-format-badge>Americano</span></div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="referee.tournamentName">Nama turnamen</label>
+                    <input class="form-input" data-referee-event-name />
                   </div>
-                  <div class="rotation-card mb-2">
-                    <div class="rotation-court">
-                      <span class="rotation-court-label">Court 1</span>
-                      <div class="rotation-match">
-                        <span>Budi + Rudi</span
-                        ><span class="rotation-vs">vs</span
-                        ><span>Sari + Dina</span>
-                      </div>
-                      <div class="manual-score-row">
-                        <input
-                          class="form-input"
-                          inputmode="numeric"
-                          value="18"
-                        />
-                        <span class="manual-score-sep">–</span>
-                        <input
-                          class="form-input"
-                          inputmode="numeric"
-                          value="12"
-                        />
-                        <button
-                          type="button"
-                          class="btn btn-primary btn-sm"
-                          data-i18n="club.saveScoreBtn"
-                        >
-                          Simpan Skor Court 1
-                        </button>
-                      </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="match.scoringLabel">Mode skor</label>
+                    <div class="form-input" readonly data-referee-scoring-mode>race_to_n</div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="referee.playerCount">Jumlah pemain</label>
+                      <input class="form-input" data-referee-player-count readonly />
                     </div>
-                    <div class="rotation-court">
-                      <span class="rotation-court-label">Court 2</span>
-                      <div class="rotation-match">
-                        <span>Andi + Henry</span
-                        ><span class="rotation-vs">vs</span
-                        ><span>Carla + Dewi</span>
-                      </div>
-                      <div class="manual-score-row">
-                        <input class="form-input" inputmode="numeric" value="" />
-                        <span class="manual-score-sep">–</span>
-                        <input class="form-input" inputmode="numeric" value="" />
-                        <span class="manual-hint">⏱ Live</span>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="referee.courtCount">Jumlah lapangan</label>
+                      <div class="referee-stepper">
+                        <button type="button" class="btn btn-outline btn-sm" data-referee-court-minus>−</button>
+                        <span data-referee-court-count>2</span>
+                        <button type="button" class="btn btn-outline btn-sm" data-referee-court-plus>+</button>
                       </div>
                     </div>
                   </div>
-                  <div class="btn-stack">
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-block btn-lg"
-                      data-i18n="club.manualRoundBtn"
-                    >
-                      Susun Round 4 — Manual
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-secondary btn-block"
-                      data-flow-goto="5"
-                      data-i18n="club.toBracketBtn"
-                    >
-                      Bracket Turnamen (manual) →
-                    </button>
+                  <div data-show-race-to>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="referee.maxScore">Max skor (race to)</label>
+                      <input class="form-input" type="number" data-referee-max-score value="24" min="0" />
+                    </div>
                   </div>
+                  <div data-show-sets hidden>
+                    <div class="form-group">
+                      <label class="form-label" data-i18n="referee.bestOf">Best of (sets)</label>
+                      <input class="form-input" type="number" data-referee-best-of value="3" min="1" max="5" />
+                    </div>
+                  </div>
+                  <div class="mp-section-head mt-1"><h2 data-i18n="referee.playerNames">Nama pemain</h2></div>
+                  <div data-referee-players-list></div>
+                  <div class="mp-section-head mt-1"><h2 data-i18n="referee.courtNames">Nama lapangan</h2></div>
+                  <div data-referee-courts-list></div>
+                  <div class="referee-stats-card card mt-2">
+                    <div class="referee-stat-row"><span data-i18n="referee.statMatches">Total pertandingan</span><strong data-referee-stat-matches>—</strong></div>
+                    <div class="referee-stat-row"><span data-i18n="referee.statDuration">Estimasi durasi</span><strong data-referee-stat-duration>—</strong></div>
+                    <div class="referee-stat-row"><span data-i18n="referee.statPerPlayer">Match per pemain</span><strong data-referee-stat-per-player>—</strong></div>
+                  </div>
+                  <button type="button" class="btn btn-primary btn-block btn-lg mt-2" data-referee-generate data-flow-goto="9" data-i18n="referee.generateBtn">Generate jadwal → Mulai live</button>
                 </div>
               </div>
             </div>
 
-            <!-- 5 Manual bracket advancement -->
+            <!-- 9 Live referee session -->
             <div class="flow-step">
-              <div class="app mp-shell admin-theme">
+              <div class="app mp-shell admin-theme referee-live-shell" data-referee-immersive>
                 <header class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="4" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-bracket">Bracket Manual</span></div></div>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="8" aria-label="Back">←</button><div class="app-logo"><span data-referee-title data-i18n="title.admin-live-session">Live Session</span></div></div>
+                  <span class="badge badge-live" data-referee-round-badge>LIVE</span>
+                </header>
+                <div class="app-body referee-live-body" data-referee-live>
+                  <p class="referee-subtitle text-sm text-muted" data-referee-subtitle></p>
+                  <div class="referee-view" data-referee-view="standings" hidden>
+                    <div class="referee-share mb-2">
+                      <label class="form-label text-sm" data-i18n="referee.shareLabel">Share link to players</label>
+                      <div class="search-input-row">
+                        <input class="form-input" readonly data-referee-share-url />
+                        <button type="button" class="btn btn-outline btn-sm" data-referee-copy-link data-i18n="referee.copyBtn">Copy</button>
+                      </div>
+                    </div>
+                    <div data-referee-standings></div>
+                  </div>
+                  <div class="referee-view" data-referee-view="courts">
+                    <div class="mp-section-head"><h2 data-referee-round-label>Round 1</h2></div>
+                    <p class="form-hint referee-courts-hint mb-1" data-i18n="referee.courtsHint">Tap a court card to select it, then open Score to enter points.</p>
+                    <div data-referee-matches></div>
+                    <div class="btn-stack mt-2">
+                      <button type="button" class="btn btn-primary btn-block btn-lg" data-advance-round data-i18n="club.advanceRoundBtn">Round berikutnya →</button>
+                      <button type="button" class="btn btn-ball btn-block btn-lg" data-event-finalize data-flow-goto="0" data-i18n="rank.finalizeBtn">Finalisasi → Update Mabar Rank</button>
+                      <button type="button" class="btn btn-secondary btn-block" data-flow-goto="10" data-i18n="club.toBracketBtn">Bracket →</button>
+                    </div>
+                  </div>
+                  <div class="referee-view" data-referee-view="score" hidden>
+                    <div class="referee-picker-panel" data-referee-score-picker></div>
+                  </div>
+                </div>
+                <nav class="referee-tab-bar" aria-label="Referee views">
+                  <button type="button" class="referee-tab active" data-referee-tab="courts" data-i18n="referee.tabCourts">Courts</button>
+                  <button type="button" class="referee-tab" data-referee-tab="score" data-i18n="referee.tabScore">Score</button>
+                  <button type="button" class="referee-tab" data-referee-tab="standings" data-i18n="referee.tabStandings">Standings</button>
+                </nav>
+              </div>
+            </div>
+
+            <!-- 10 Bracket -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme" data-chrome-slim>
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="9" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-bracket">Bracket Manual</span></div></div>
                   <span class="badge badge-info">Semifinal</span>
                 </header>
                 <div class="app-body">
@@ -539,17 +656,7 @@
                       >Bracket maju manual — admin konfirmasi tiap hasil.</span
                     >
                   </div>
-                  <div class="bracket">
-                    <div class="bracket-round">Semifinal 1</div>
-                    <div class="bracket-match">
-                      <span class="winner">Rudi/Maya</span> 6-3, 6-4 vs
-                      Doni/Rina
-                    </div>
-                    <div class="bracket-round">Semifinal 2</div>
-                    <div class="bracket-match">
-                      Budi/Sari vs Andi/Carla · <em>skor belum diinput</em>
-                    </div>
-                  </div>
+                  <div class="bracket" data-tournament-bracket></div>
                   <div class="manual-score-row mb-2">
                     <input class="form-input" inputmode="numeric" value="6" />
                     <span class="manual-score-sep">–</span>
@@ -557,21 +664,8 @@
                     <span class="manual-hint">Set 1 · Budi/Sari</span>
                   </div>
                   <div class="btn-stack">
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-block btn-lg"
-                      data-i18n="club.advanceBtn"
-                    >
-                      Majukan Pemenang → Final
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-secondary btn-block"
-                      data-flow-goto="0"
-                      data-i18n="club.backDash"
-                    >
-                      ← Dashboard
-                    </button>
+                    <button type="button" class="btn btn-ball btn-block btn-lg" data-event-finalize data-flow-goto="0" data-i18n="rank.finalizeBtn">Finalisasi → Update Mabar Rank</button>
+                    <button type="button" class="btn btn-secondary btn-block" data-flow-goto="0" data-i18n="club.backDash">← Dashboard</button>
                     <button
                       type="button"
                       class="btn btn-outline btn-block"
@@ -594,39 +688,37 @@
         aria-live="polite"
       ></div>
     </div>
+    <div class="referee-fullscreen" data-referee-fullscreen hidden aria-hidden="true"></div>
     <script src="../i18n.js"></script>
     <script src="../device.js"></script>
     <script src="../sport.js"></script>
+    <script src="../approval.js"></script>
+    <script src="../rank.js"></script>
+    <script src="../tournament.js"></script>
+    <script src="../community-data.js"></script>
     <script src="../role.js"></script>
+    <script src="../event-wizard.js"></script>
+    <script src="../live-referee.js"></script>
     <script src="flow.js"></script>
     <script>
       MP_Role.setClub({ name: "Padel Jakarta Selatan", admin: true });
-      // Club admin is a signed-in surface — keep the session alive so
-      // navigating back to user.html lands on Home, not the login gate
       localStorage.setItem("mp-auth", "1");
+      MP_Tournament.createEvent({ format: "americano", name: "Americano Live", capacity: 8 });
+      MP_EventWizard.init();
+      MP_Referee.init();
       MP_Flow.init({
         steps: [
           { titleKey: "title.club-admin", hintKey: "flow.hint.clubAdmin" },
-          {
-            titleKey: "title.admin-create-event",
-            hintKey: "flow.hint.adminCreateEvent",
-          },
-          {
-            titleKey: "title.admin-publish-event",
-            hintKey: "flow.hint.adminPublish",
-          },
-          {
-            titleKey: "title.admin-registrations",
-            hintKey: "flow.hint.adminRegs",
-          },
-          {
-            titleKey: "title.admin-live-session",
-            hintKey: "flow.hint.adminLive",
-          },
-          {
-            titleKey: "title.admin-bracket",
-            hintKey: "flow.hint.adminBracket",
-          },
+          { titleKey: "wizard.step1Title", hintKey: "wizard.hintStep1" },
+          { titleKey: "wizard.step2Title", hintKey: "wizard.hintStep2" },
+          { titleKey: "wizard.step3Title", hintKey: "wizard.hintStep3" },
+          { titleKey: "wizard.step4Title", hintKey: "wizard.hintStep4" },
+          { titleKey: "wizard.rosterTitle", hintKey: "wizard.hintRoster" },
+          { titleKey: "title.admin-publish-event", hintKey: "flow.hint.adminPublish" },
+          { titleKey: "title.admin-registrations", hintKey: "flow.hint.adminRegs" },
+          { titleKey: "referee.setupTitle", hintKey: "referee.hintSetup" },
+          { titleKey: "title.admin-live-session", hintKey: "referee.hintLive" },
+          { titleKey: "title.admin-bracket", hintKey: "flow.hint.adminBracket" },
         ],
         finishUrl: "user.html",
         appChrome: true,

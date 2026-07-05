@@ -76,6 +76,25 @@ window.MP_Flow = (function () {
        - web/tablet: persistent centered section tabs (.mp-topnav)
        - mobile: frozen bottom nav with the same sections
        Profile lives in the avatar dropdown on all devices. */
+    /* Chrome levels per screen:
+       - none: login gates (data-no-chrome)
+       - immersive: live referee — slim header + sport orb only
+       - slim: operational focus (setup, manual bracket) — same slim header
+       - full: dashboard, lists, wizards — header actions + section nav */
+    function chromeLevel(app) {
+      if (
+        app.classList.contains("login-gate-app") ||
+        app.hasAttribute("data-no-chrome")
+      )
+        return "none";
+      if (app.hasAttribute("data-referee-immersive")) return "immersive";
+      if (app.hasAttribute("data-chrome-slim")) return "slim";
+      return "full";
+    }
+
+    const slimControlsHTML =
+      '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>';
+
     function injectChrome() {
       const NAV_ITEMS = [
         { key: "home", i18n: "nav.home", icon: "🏠" },
@@ -90,7 +109,12 @@ window.MP_Flow = (function () {
       );
 
       const controlsHTML =
-        '<button type="button" class="icon-btn" data-auth-only data-i18n-title="chrome.notifications" title="Notifikasi">🔔</button>' +
+        '<div class="notif-wrap">' +
+        '<button type="button" class="icon-btn" data-auth-only data-notif-toggle data-i18n-title="chrome.notifications" title="Notifikasi">🔔</button>' +
+        '<div class="notif-panel" hidden><div class="notif-panel-head"><strong data-i18n="notif.title">Notifikasi</strong></div>' +
+        '<div class="notif-item"><span>🏆</span><div><strong>Rank Mabar updated</strong><small>+15 pts dari Americano</small></div></div>' +
+        '<div class="notif-item"><span>🎯</span><div><strong>Acara besok</strong><small>Minggu Mexicano · 08:00</small></div></div>' +
+        '<div class="notif-item"><span>👥</span><div><strong>Komunitas disetujui</strong><small>Padel Jakarta Selatan aktif</small></div></div></div></div>' +
         '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>' +
         '<div class="profile-menu-wrap">' +
         '<button type="button" class="avatar avatar-sm avatar-photo" data-profile-toggle aria-haspopup="true" title="Budi Santoso">🧑🏽</button>' +
@@ -109,59 +133,131 @@ window.MP_Flow = (function () {
         "</div></div>";
 
       document.querySelectorAll(".flow-step .app").forEach((app) => {
-        // Auth screens (login gate, sign-up, OTP) get no app chrome
-        if (
-          app.classList.contains("login-gate-app") ||
-          app.hasAttribute("data-no-chrome")
-        )
-          return;
+        const level = chromeLevel(app);
+        if (level === "none") return;
 
+        app.dataset.chromeLevel = level;
         const header = app.querySelector(".app-header");
-        if (header && !header.querySelector(".profile-menu-wrap")) {
+
+        if (level === "full") {
+          if (header && !header.querySelector(".profile-menu-wrap")) {
+            let actions = header.querySelector(".app-header-actions");
+            if (!actions) {
+              actions = document.createElement("div");
+              actions.className = "app-header-actions";
+              header.appendChild(actions);
+            }
+            actions.insertAdjacentHTML("beforeend", controlsHTML);
+          }
+
+          if (NAV_ITEMS.length && !app.querySelector(".mp-topnav")) {
+            const nav = document.createElement("nav");
+            nav.className = "mp-topnav";
+            nav.innerHTML = NAV_ITEMS.map(
+              (it) =>
+                '<button type="button" class="mp-topnav-item"' +
+                (it.auth ? " data-requires-auth" : "") +
+                ' data-nav="' +
+                it.key +
+                '" data-i18n="' +
+                it.i18n +
+                '"></button>',
+            ).join("");
+            if (header) header.insertAdjacentElement("afterend", nav);
+            else app.prepend(nav);
+          }
+
+          if (NAV_ITEMS.length && !app.querySelector(".bottom-nav")) {
+            const bn = document.createElement("nav");
+            bn.className = "bottom-nav";
+            bn.innerHTML = NAV_ITEMS.map(
+              (it) =>
+                '<button type="button" class="bottom-nav-item"' +
+                (it.auth ? " data-requires-auth" : "") +
+                ' data-nav="' +
+                it.key +
+                '"><span>' +
+                it.icon +
+                '</span><span data-i18n="' +
+                it.i18n +
+                '"></span></button>',
+            ).join("");
+            app.appendChild(bn);
+          }
+          return;
+        }
+
+        app.classList.add(
+          level === "immersive" ? "chrome-immersive" : "chrome-slim",
+        );
+        if (header && !header.querySelector(".sport-orb")) {
           let actions = header.querySelector(".app-header-actions");
           if (!actions) {
             actions = document.createElement("div");
-            actions.className = "app-header-actions";
+            actions.className = "app-header-actions app-header-actions-slim";
             header.appendChild(actions);
           }
-          actions.insertAdjacentHTML("beforeend", controlsHTML);
-        }
-
-        if (NAV_ITEMS.length && !app.querySelector(".mp-topnav")) {
-          const nav = document.createElement("nav");
-          nav.className = "mp-topnav";
-          nav.innerHTML = NAV_ITEMS.map(
-            (it) =>
-              '<button type="button" class="mp-topnav-item"' +
-              (it.auth ? " data-requires-auth" : "") +
-              ' data-nav="' +
-              it.key +
-              '" data-i18n="' +
-              it.i18n +
-              '"></button>',
-          ).join("");
-          if (header) header.insertAdjacentElement("afterend", nav);
-          else app.prepend(nav);
-        }
-
-        if (NAV_ITEMS.length && !app.querySelector(".bottom-nav")) {
-          const bn = document.createElement("nav");
-          bn.className = "bottom-nav";
-          bn.innerHTML = NAV_ITEMS.map(
-            (it) =>
-              '<button type="button" class="bottom-nav-item"' +
-              (it.auth ? " data-requires-auth" : "") +
-              ' data-nav="' +
-              it.key +
-              '"><span>' +
-              it.icon +
-              '</span><span data-i18n="' +
-              it.i18n +
-              '"></span></button>',
-          ).join("");
-          app.appendChild(bn);
+          actions.insertAdjacentHTML("beforeend", slimControlsHTML);
         }
       });
+    }
+
+    function syncActiveChrome() {
+      const activeApp = document.querySelector(".flow-step.active .app");
+      document.body.classList.remove("mp-chrome-slim", "mp-chrome-immersive");
+      if (!activeApp) return;
+      const level = chromeLevel(activeApp);
+      if (level === "immersive") document.body.classList.add("mp-chrome-immersive");
+      else if (level === "slim") document.body.classList.add("mp-chrome-slim");
+    }
+
+    const REFEREE_DEMOS = {
+      americano: {
+        format: "americano",
+        eventType: "americano",
+        name: "Americano Night",
+        capacity: 8,
+        scoring: "race_to_n",
+        raceTo: 24,
+      },
+      mexicano: {
+        format: "mexicano",
+        eventType: "mexicano",
+        name: "Mexicano Session",
+        capacity: 8,
+        scoring: "race_to_n",
+        raceTo: 24,
+      },
+      singles_rr: {
+        format: "round_robin",
+        eventType: "singles",
+        category: "singles_men",
+        division: "men",
+        structure: "round_robin",
+        name: "Men's Singles RR",
+        capacity: 6,
+        scoring: "normal_sets",
+        bestOf: 3,
+      },
+      doubles_league: {
+        format: "league",
+        eventType: "doubles",
+        category: "mixed",
+        division: "mixed",
+        structure: "league",
+        name: "Mixed Doubles League",
+        capacity: 8,
+        scoring: "normal_sets",
+        bestOf: 3,
+      },
+    };
+
+    function seedRefereeDemo(kind) {
+      if (!window.MP_Tournament || !REFEREE_DEMOS[kind]) return;
+      const ev = MP_Tournament.get();
+      if (ev?.demoKind === kind) return;
+      MP_Tournament.createEvent({ ...REFEREE_DEMOS[kind], demoKind: kind });
+      MP_Tournament.generateSchedule();
     }
 
     function updateUI() {
@@ -218,7 +314,11 @@ window.MP_Flow = (function () {
           ? MP_Role.get()
           : { status: "none", clubName: "" };
       const memberOf = (name) =>
-        !guest && role.status === "active" && role.clubName === name;
+        !guest &&
+        window.MP_Role &&
+        MP_Role.isMemberOf
+          ? MP_Role.isMemberOf(name)
+          : !guest && role.status === "active" && role.clubName === name;
       document.querySelectorAll("[data-show-if-member-of]").forEach((el) => {
         el.hidden = !memberOf(el.dataset.showIfMemberOf);
       });
@@ -227,6 +327,47 @@ window.MP_Flow = (function () {
       });
 
       syncBottomNav(current);
+      syncActiveChrome();
+
+      if (window.MP_Communities) {
+        document.querySelectorAll("[data-community-page]").forEach((el) => {
+          MP_Communities.applyCommunityPage(el);
+        });
+      }
+      if (window.MP_Rank) MP_Rank.applyDOM();
+      if (window.MP_Tournament) MP_Tournament.init();
+
+      if (window.MP_Tournament) {
+        const activeReferee = document.querySelector(".flow-step.active [data-referee-live]");
+        if (activeReferee) {
+          const demo = activeReferee.dataset.refereeDemo;
+          if (demo) seedRefereeDemo(demo);
+          const ev = MP_Tournament.get();
+          if (ev && !ev.sessionReady) MP_Tournament.generateSchedule();
+        }
+      }
+
+      if (window.MP_Referee) {
+        if (current === 8 && window.MP_EventWizard && window.MP_Tournament) {
+          const w = MP_EventWizard.get();
+          const ev = MP_Tournament.get();
+          if (w.roster?.length && ev) {
+            MP_Tournament.configureSession({
+              name: ev.name || MP_EventWizard.suggestedName(),
+              playerNames: w.roster.map((p) => p.name),
+            });
+          }
+        }
+        const activeRefereeLive = document.querySelector(".flow-step.active [data-referee-live]");
+        if (activeRefereeLive) MP_Referee.resetLiveView();
+        else MP_Referee.applyAll();
+      }
+
+      if (window.MP_EventWizard) {
+        window.__wizardFlowIdx = current;
+        MP_EventWizard.applyUI(current);
+      }
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -254,6 +395,7 @@ window.MP_Flow = (function () {
       opts = opts || {};
       closeMenus();
       const prev = current;
+      if (n === 1 && prev === 0 && window.MP_EventWizard) MP_EventWizard.reset();
       current = Math.max(0, Math.min(steps.length - 1, n));
       if (current !== prev && opts.toast !== false) {
         const hint = steps[current].hintKey
@@ -314,12 +456,21 @@ window.MP_Flow = (function () {
         return;
       }
 
-      // Settings (mock) from the profile dropdown
+      const notifToggle = e.target.closest("[data-notif-toggle]");
+      if (notifToggle) {
+        e.preventDefault();
+        const panel = notifToggle.parentElement.querySelector(".notif-panel");
+        if (panel) panel.hidden = !panel.hidden;
+        return;
+      }
+
+      // Settings → edit profile step when configured
       const settingsEl = e.target.closest("[data-menu-settings]");
       if (settingsEl) {
         e.preventDefault();
         closeMenus();
-        showToast(i18n.t("menu.settingsToast"));
+        if (config.settingsStep != null) go(config.settingsStep, { toast: false });
+        else showToast(i18n.t("menu.settingsToast"));
         return;
       }
 
@@ -397,12 +548,424 @@ window.MP_Flow = (function () {
         return;
       }
 
+      const rejectClubEl = e.target.closest("[data-club-reject]");
+      if (rejectClubEl && window.MP_Role) {
+        e.preventDefault();
+        MP_Role.rejectClub("Nama tidak memenuhi pedoman komunitas.");
+        showToast(i18n.t("club.rejectedToast"));
+        return;
+      }
+
+      const resubmitEl = e.target.closest("[data-club-resubmit]");
+      if (resubmitEl && window.MP_Role) {
+        e.preventDefault();
+        MP_Role.resubmitClub();
+        showToast(i18n.t("club.resubmitToast"));
+        return;
+      }
+
       const joinEl = e.target.closest("[data-club-join]");
       if (joinEl && window.MP_Role) {
         e.preventDefault();
         MP_Role.joinClub({ name: joinEl.dataset.clubJoin || "Komunitasku" });
         showToast(i18n.t("club.joinedToast"));
         const next = parseInt(joinEl.dataset.flowGoto, 10);
+        if (!isNaN(next)) go(next, { toast: false });
+        return;
+      }
+
+      const communityViewEl = e.target.closest("[data-community-view]");
+      if (communityViewEl && window.MP_Communities) {
+        e.preventDefault();
+        MP_Communities.setView(communityViewEl.dataset.communityView);
+        const next = parseInt(communityViewEl.dataset.flowGoto || "15", 10);
+        go(next, { toast: false });
+        return;
+      }
+
+      const wizardTypeEl = e.target.closest("[data-wizard-pick-type]");
+      if (wizardTypeEl && window.MP_EventWizard) {
+        e.preventDefault();
+        MP_EventWizard.set({
+          eventType: wizardTypeEl.dataset.wizardPickType,
+          division: "",
+          structure: "",
+        });
+        go(MP_EventWizard.stepAfterType(), { toast: false });
+        return;
+      }
+
+      const wizardDivEl = e.target.closest("[data-wizard-pick-division]");
+      if (wizardDivEl && window.MP_EventWizard) {
+        e.preventDefault();
+        MP_EventWizard.set({ division: wizardDivEl.dataset.wizardPickDivision });
+        return;
+      }
+
+      const wizardNextEl = e.target.closest("[data-wizard-next]");
+      if (wizardNextEl && window.MP_EventWizard) {
+        e.preventDefault();
+        const state = MP_EventWizard.get();
+        const next = parseInt(wizardNextEl.dataset.wizardNext, 10);
+        if (next === 3 && MP_EventWizard.isCompetitive() && !state.division) {
+          showToast(i18n.t("wizard.pickDivision"));
+          return;
+        }
+        if (next === 5 && MP_EventWizard.isCompetitive() && !state.structure) {
+          showToast(i18n.t("wizard.pickStructure"));
+          return;
+        }
+        if (!isNaN(next)) go(next, { toast: false });
+        return;
+      }
+
+      const wizardPartEl = e.target.closest("[data-wizard-pick-participants]");
+      if (wizardPartEl && window.MP_EventWizard) {
+        e.preventDefault();
+        MP_EventWizard.set({
+          participants: parseInt(wizardPartEl.dataset.wizardPickParticipants, 10),
+        });
+        return;
+      }
+
+      const wizardNextPartEl = e.target.closest("[data-wizard-next-participants]");
+      if (wizardNextPartEl && window.MP_EventWizard) {
+        e.preventDefault();
+        const input = document.querySelector("[data-wizard-participants-input]");
+        const n = parseInt(input?.value, 10) || MP_EventWizard.get().participants;
+        MP_EventWizard.set({ participants: n });
+        go(MP_EventWizard.stepAfterParticipants(), { toast: false });
+        return;
+      }
+
+      const wizardStructEl = e.target.closest("[data-wizard-pick-structure]");
+      if (wizardStructEl && window.MP_EventWizard) {
+        e.preventDefault();
+        MP_EventWizard.set({ structure: wizardStructEl.dataset.wizardPickStructure });
+        return;
+      }
+
+      const wizardBackEl = e.target.closest("[data-wizard-back]");
+      if (wizardBackEl && window.MP_EventWizard) {
+        e.preventDefault();
+        go(MP_EventWizard.wizardBackTarget(wizardBackEl.dataset.wizardBack), {
+          toast: false,
+        });
+        return;
+      }
+
+      const rosterFilterEl = e.target.closest("[data-wizard-roster-filter]");
+      if (rosterFilterEl && window.MP_EventWizard) {
+        e.preventDefault();
+        MP_EventWizard.set({ rosterFilter: rosterFilterEl.dataset.wizardRosterFilter });
+        return;
+      }
+
+      const rosterAddEl = e.target.closest("[data-wizard-roster-add]");
+      if (rosterAddEl && window.MP_EventWizard) {
+        e.preventDefault();
+        const player = MP_EventWizard.getPlayerById(rosterAddEl.dataset.wizardRosterAdd);
+        if (!player) return;
+        const state = MP_EventWizard.get();
+        if (state.roster.length >= state.participants) {
+          showToast(i18n.t("wizard.rosterFull"));
+          return;
+        }
+        MP_EventWizard.addToRoster(player);
+        showToast(i18n.t("wizard.rosterAdded"));
+        return;
+      }
+
+      const rosterRemoveEl = e.target.closest("[data-wizard-roster-remove]");
+      if (rosterRemoveEl && window.MP_EventWizard) {
+        e.preventDefault();
+        MP_EventWizard.removeFromRoster(rosterRemoveEl.dataset.wizardRosterRemove);
+        return;
+      }
+
+      const rosterGuestEl = e.target.closest("[data-wizard-roster-add-guest]");
+      if (rosterGuestEl && window.MP_EventWizard) {
+        e.preventDefault();
+        const input = document.querySelector("[data-wizard-roster-guest-name]");
+        const name = input?.value?.trim();
+        if (!name) {
+          showToast(i18n.t("wizard.rosterGuestRequired"));
+          return;
+        }
+        const state = MP_EventWizard.get();
+        if (state.roster.length >= state.participants) {
+          showToast(i18n.t("wizard.rosterFull"));
+          return;
+        }
+        MP_EventWizard.addGuestName(name);
+        if (input) input.value = "";
+        showToast(i18n.t("wizard.rosterAdded"));
+        return;
+      }
+
+      const rosterSkipEl = e.target.closest("[data-wizard-roster-skip]");
+      if (rosterSkipEl && window.MP_EventWizard) {
+        e.preventDefault();
+        go(parseInt(rosterSkipEl.dataset.flowGoto || "6", 10), { toast: false });
+        return;
+      }
+
+      const formatEl = e.target.closest("[data-pick-format]");
+      if (formatEl) {
+        e.preventDefault();
+        const fmt = formatEl.dataset.pickFormat;
+        try {
+          sessionStorage.setItem("mp-pick-format", fmt);
+        } catch (_) {
+          /* no-op */
+        }
+        if (formatEl.hasAttribute("data-publish-event") && window.MP_Tournament) {
+          const form = formatEl.closest(".app-body") || document;
+          const name = form.querySelector("[data-event-name]")?.value || "League Season";
+          MP_Tournament.createEvent({ format: fmt, name, category: "doubles", scoring: "normal_sets", capacity: 8 });
+          showToast(i18n.t("league.generateBtn"));
+        } else {
+          showToast(MP_Tournament?.FORMATS?.find((f) => f.id === fmt)?.label || fmt);
+        }
+        const next = parseInt(formatEl.dataset.flowGoto || "2", 10);
+        if (!isNaN(next)) go(next, { toast: false });
+        return;
+      }
+
+      const finalizeEl = e.target.closest("[data-event-finalize]");
+      if (finalizeEl && window.MP_Tournament) {
+        e.preventDefault();
+        MP_Tournament.finalize({ delta: 20, mabarBonus: 5 });
+        showToast(i18n.t("rank.finalizeToast"));
+        const next = parseInt(finalizeEl.dataset.flowGoto, 10);
+        if (!isNaN(next)) go(next, { toast: false });
+        return;
+      }
+
+      const advanceRoundEl = e.target.closest("[data-advance-round]");
+      if (advanceRoundEl && window.MP_Tournament) {
+        e.preventDefault();
+        MP_Tournament.advanceRound();
+        MP_Tournament.init();
+        if (window.MP_Referee) MP_Referee.applyAll();
+        showToast(i18n.t("tournament.roundAdvanced"));
+        return;
+      }
+
+      const refereeGenEl = e.target.closest("[data-referee-generate]");
+      if (refereeGenEl && window.MP_Tournament && window.MP_Referee) {
+        e.preventDefault();
+        const form =
+          refereeGenEl.closest("[data-referee-setup-form]") ||
+          document.querySelector("[data-referee-setup-form]");
+        const opts = MP_Referee.collectSetup(form);
+        MP_Tournament.configureSession(opts);
+        MP_Tournament.generateSchedule();
+        MP_Referee.applyAll();
+        showToast(i18n.t("referee.generateBtn"));
+        const next = parseInt(refereeGenEl.dataset.flowGoto, 10);
+        if (!isNaN(next)) go(next, { toast: false });
+        return;
+      }
+
+      const courtPlusEl = e.target.closest("[data-referee-court-plus]");
+      if (courtPlusEl && window.MP_Tournament) {
+        e.preventDefault();
+        MP_Tournament.addCourt();
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const courtMinusEl = e.target.closest("[data-referee-court-minus]");
+      if (courtMinusEl && window.MP_Tournament) {
+        e.preventDefault();
+        MP_Tournament.removeCourt();
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const refereeTabEl = e.target.closest("[data-referee-tab]");
+      if (refereeTabEl && window.MP_Referee) {
+        e.preventDefault();
+        const tab = refereeTabEl.dataset.refereeTab;
+        const matchId = refereeTabEl.dataset.refereeSelectMatch;
+        if (matchId) MP_Referee.selectMatch(matchId);
+        else MP_Referee.setTab(tab);
+        return;
+      }
+
+      const fsOpenEl = e.target.closest("[data-referee-fs-open]");
+      if (fsOpenEl && window.MP_Referee) {
+        e.preventDefault();
+        e.stopPropagation();
+        MP_Referee.openFullscreen(fsOpenEl.dataset.refereeFsOpen);
+        return;
+      }
+
+      const selectMatchEl = e.target.closest("[data-referee-select-match]");
+      if (selectMatchEl && window.MP_Referee && !e.target.closest("button[data-referee-fs-open]")) {
+        e.preventDefault();
+        MP_Referee.selectMatch(selectMatchEl.dataset.refereeSelectMatch);
+        return;
+      }
+
+      const bumpScoreEl = e.target.closest("[data-referee-bump-score]");
+      if (bumpScoreEl && window.MP_Tournament) {
+        e.preventDefault();
+        const id = bumpScoreEl.dataset.refereeBumpScore;
+        const side = parseInt(bumpScoreEl.dataset.side, 10);
+        const delta = parseInt(bumpScoreEl.dataset.delta, 10);
+        if (delta > 0) {
+          MP_Tournament.bumpMatchScore(id, side, delta);
+        } else {
+          const m = MP_Tournament.findMatch(id);
+          if (m) {
+            const cur = side === 1 ? m.score1 || 0 : m.score2 || 0;
+            MP_Tournament.setMatchScoreSide(id, side, Math.max(0, cur + delta));
+          }
+        }
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const setScoreEl = e.target.closest("[data-referee-set-score]");
+      if (setScoreEl && window.MP_Tournament) {
+        e.preventDefault();
+        const id = setScoreEl.dataset.refereeSetScore;
+        const side = parseInt(setScoreEl.dataset.refereeSide, 10);
+        const val = parseInt(setScoreEl.dataset.refereeValue, 10);
+        MP_Tournament.setMatchScoreSide(id, side, val);
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const confirmScoreEl = e.target.closest("[data-referee-confirm-score]");
+      if (confirmScoreEl && window.MP_Tournament) {
+        e.preventDefault();
+        MP_Tournament.confirmMatchScore(confirmScoreEl.dataset.refereeConfirmScore);
+        MP_Referee.closeFullscreen();
+        MP_Referee.applyAll();
+        showToast(i18n.t("referee.scoreSaved"));
+        return;
+      }
+
+      const fsCloseEl = e.target.closest("[data-referee-fs-close]");
+      if (fsCloseEl && window.MP_Referee) {
+        e.preventDefault();
+        MP_Referee.closeFullscreen();
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const fsBumpEl = e.target.closest("[data-referee-fs-bump]");
+      if (fsBumpEl && window.MP_Tournament) {
+        e.preventDefault();
+        MP_Tournament.bumpMatchScore(fsBumpEl.dataset.refereeFsBump, parseInt(fsBumpEl.dataset.side, 10), 1);
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const fsAddEl = e.target.closest("[data-referee-fs-add]");
+      if (fsAddEl && window.MP_Tournament) {
+        e.preventDefault();
+        MP_Tournament.bumpMatchScore(
+          fsAddEl.dataset.refereeFsAdd,
+          parseInt(fsAddEl.dataset.side, 10),
+          parseInt(fsAddEl.dataset.add, 10),
+        );
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const copyLinkEl = e.target.closest("[data-referee-copy-link]");
+      if (copyLinkEl) {
+        e.preventDefault();
+        const input = document.querySelector("[data-referee-share-url]");
+        if (input?.value) {
+          navigator.clipboard?.writeText(input.value).catch(() => {});
+          showToast(i18n.t("referee.copyBtn"));
+        }
+        return;
+      }
+
+      const playerEl = e.target.closest("[data-player-profile]");
+      if (playerEl && config.playerStep != null) {
+        e.preventDefault();
+        try {
+          sessionStorage.setItem("mp-view-player", playerEl.dataset.playerProfile || "Rudi Hartono");
+        } catch (_) {
+          /* no-op */
+        }
+        go(config.playerStep, { toast: false });
+        return;
+      }
+
+      const publishEl = e.target.closest("[data-publish-event]");
+      if (publishEl && window.MP_Tournament) {
+        e.preventDefault();
+        const form = publishEl.closest(".app-body") || document;
+        let fmt = "americano";
+        let name = "Community Event";
+        let category = "doubles";
+        let scoring = "race_to_n";
+        let raceTo = 24;
+        let bestOf = 3;
+        let eventType = "";
+        let structure = "";
+        let division = "";
+        let roster = [];
+        let capacity;
+        if (window.MP_EventWizard && MP_EventWizard.get().eventType) {
+          const opts = MP_EventWizard.toTournamentOpts(form);
+          fmt = opts.format;
+          name = opts.name;
+          category = opts.category;
+          scoring = opts.scoring;
+          raceTo = opts.raceTo;
+          bestOf = opts.bestOf;
+          eventType = opts.eventType;
+          structure = opts.structure;
+          division = opts.division;
+          roster = opts.roster || [];
+          capacity = opts.capacity;
+        } else {
+          try {
+            fmt = sessionStorage.getItem("mp-pick-format") || fmt;
+          } catch (_) {
+            /* no-op */
+          }
+          name = form.querySelector("[data-event-name]")?.value || name;
+          category = form.querySelector("[data-event-category]")?.value || category;
+          scoring =
+            form.querySelector("[data-event-scoring]")?.value ||
+            MP_Tournament.defaultScoringForFormat(fmt);
+          raceTo = parseInt(form.querySelector("[data-event-race-to]")?.value, 10) || raceTo;
+          bestOf = parseInt(form.querySelector("[data-event-best-of]")?.value, 10) || bestOf;
+        }
+        const tierText = form.querySelector("[data-event-tier]")?.value || "";
+        let tier = null;
+        if (tierText.includes("Tier 1")) tier = 1;
+        else if (tierText.includes("Tier 2")) tier = 2;
+        else if (tierText.includes("Tier 3")) tier = 3;
+        const scope = tier ? "global" : "community";
+        MP_Tournament.createEvent({
+          format: fmt,
+          name,
+          category,
+          eventType,
+          structure,
+          division,
+          scoring,
+          raceTo,
+          bestOf,
+          tier,
+          scope,
+          rankTarget: tier ? "global" : "mabar",
+          capacity: capacity ?? (window.MP_EventWizard ? MP_EventWizard.get().participants : undefined),
+          roster,
+        });
+        showToast(i18n.t("flow.publishBtn"));
+        const next = parseInt(publishEl.dataset.flowGoto, 10);
         if (!isNaN(next)) go(next, { toast: false });
         return;
       }
@@ -418,6 +981,11 @@ window.MP_Flow = (function () {
       const backEl = e.target.closest("[data-flow-back]");
       if (backEl) {
         e.preventDefault();
+        if (backEl.dataset.flowBack === "smart") {
+          const target = guest && NAV_STEP.home !== undefined ? NAV_STEP.home : current - 1;
+          go(Math.max(0, target), { toast: false });
+          return;
+        }
         const idx = parseInt(backEl.dataset.flowBack, 10);
         if (!isNaN(idx)) go(idx, { toast: false });
         else go(current - 1, { toast: false });
@@ -553,7 +1121,16 @@ window.MP_Flow = (function () {
 
     if (window.MP_Device) MP_Device.init();
     if (window.MP_Sport) MP_Sport.init();
+    if (window.MP_Approval) MP_Approval.init();
+    if (window.MP_Rank) MP_Rank.init();
+    if (window.MP_Tournament) MP_Tournament.init();
     if (window.MP_Role) MP_Role.init();
+    if (window.MP_Communities) {
+      MP_Communities.init();
+      document.querySelectorAll("[data-find-community]").forEach((el) => {
+        MP_Communities.initFilters(el);
+      });
+    }
 
     window.addEventListener("mp:role", updateUI);
 

@@ -343,6 +343,16 @@
                       ✓ Simulasikan disetujui (demo)
                     </button>
                   </div>
+                  <div class="mp-pending-banner" data-show-if-club-rejected hidden>
+                    <strong data-i18n="club.rejectedTitle">Pengajuan ditolak</strong>
+                    <div class="approval-track">
+                      <span class="approval-node done" data-i18n="approval.submitted">Diajukan</span>
+                      <span class="approval-arrow">→</span>
+                      <span class="approval-node rejected" data-i18n="approval.rejected">Ditolak</span>
+                    </div>
+                    <p data-i18n="club.rejectedDesc">Tim platform menolak pengajuan. Perbaiki dan ajukan ulang.</p>
+                    <button type="button" class="btn btn-primary btn-sm mt-1" data-club-resubmit data-i18n="club.resubmitBtn">Ajukan ulang</button>
+                  </div>
                   <!-- Home state: active member / community admin -->
                   <div data-show-if-club hidden>
                     <span class="mp-club-chip"
@@ -1067,7 +1077,7 @@
                         ini.
                       </p>
                       <ul class="leaderboard-list">
-                        <li class="lb-row">
+                        <li class="lb-row" data-player-profile="Rudi Hartono" style="cursor:pointer">
                           <span class="lb-rank gold">1</span>
                           <div class="avatar avatar-sm">RH</div>
                           <div class="lb-info">
@@ -1100,10 +1110,10 @@
                       </ul>
                     </div>
                     <div data-tab-pane="global" hidden>
-                      <p class="form-hint" data-i18n="lb.globalNote">
-                        Ranking lintas komunitas per olahraga — sekunder, Mabar
-                        tetap jalur utama.
+                      <p class="form-hint" data-i18n="lb.globalActive">
+                        Ranking lintas komunitas per olahraga — kompetitif, tiered tournaments feed Global rank.
                       </p>
+                      <button type="button" class="btn btn-outline btn-sm mb-1" data-flow-goto="24" data-i18n="lb.snapshotBtn">Monthly snapshot →</button>
                       <ul class="leaderboard-list">
                         <li class="lb-row">
                           <span class="lb-rank gold">1</span>
@@ -1179,8 +1189,15 @@
                 </div>
                 <div class="app-body">
                   <div class="info-strip">
-                    Doubles · GPS &amp; venue dicek otomatis sebelum rank
-                    diperbarui.
+                    GPS &amp; venue dicek otomatis sebelum rank diperbarui.
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="match.categoryLabel">Kategori</label>
+                    <select class="form-select" data-event-category>
+                      <option value="singles">Singles</option>
+                      <option value="doubles" selected>Doubles</option>
+                      <option value="mixed">Mixed Doubles</option>
+                    </select>
                   </div>
                   <div class="form-group">
                     <label class="form-label">Tim 1</label>
@@ -1302,6 +1319,7 @@
                   >
                     🏓 Padel
                   </p>
+                  <span class="badge badge-warning" data-provisional-badge hidden data-i18n="profile.provisional">Provisional · &lt;5 match</span>
                   <div class="rank-dual">
                     <div class="rank-track mabar">
                       <div class="rank-track-label">Mabar</div>
@@ -1342,6 +1360,8 @@
                       </div>
                     </div>
                   </div>
+                  <p class="text-sm font-bold" style="margin: 1rem 0 0.5rem" data-i18n="profile.communitiesTitle">Komunitas</p>
+                  <div data-multi-communities class="mb-2"></div>
                   <p class="text-sm font-bold" style="margin: 1rem 0 0.5rem">
                     Endorsement Skills
                     <span class="text-muted font-normal"
@@ -1637,224 +1657,299 @@
               </div>
             </div>
 
-            <!-- Step 9: Events Hub -->
+            <!-- Step 9: Events discovery feed -->
             <div class="flow-step" data-step="events">
-              <div class="app">
+              <div class="app" data-events-feed>
                 <div class="app-header">
                   <div class="app-logo">🎯 <span data-i18n="nav.events">Acara</span></div>
                 </div>
                 <div class="app-body">
                   <p class="section-sub" data-i18n="flow.eventsIntro">
-                    Format sosial &amp; kompetitif — poin individual, partner
-                    rotasi. Sama untuk padel &amp; tennis.
+                    Acara live &amp; registrasi terbuka di dekatmu dan di
+                    komunitasmu
                   </p>
-                  <button
-                    type="button"
-                    class="action-card primary"
-                    data-flow-goto="11"
-                  >
-                    <span class="action-card-icon">🔄</span>
-                    <span class="action-card-body">
-                      <strong
-                        >Americano ·
-                        <span
-                          class="sport-dynamic"
-                          data-padel="Sabtu Padel Jakarta"
-                          data-tennis="Sunday Tennis Social"
-                          data-pickleball="Pickle Saturday JKT"
-                          >Sabtu Padel Jakarta</span
-                        >
+                  <div class="filter-chips mb-2">
+                    <button
+                      type="button"
+                      class="filter-chip active"
+                      data-event-filter="all"
+                      data-i18n="events.filterAll"
+                    >
+                      Semua
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      data-event-filter="live"
+                      data-i18n="events.filterLive"
+                    >
+                      Live
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      data-event-filter="open"
+                      data-i18n="events.filterOpen"
+                    >
+                      Buka
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      data-event-filter="registered"
+                      data-i18n="events.filterRegistered"
+                    >
+                      Terdaftar
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      data-event-filter="past"
+                      data-i18n="events.filterPast"
+                    >
+                      Selesai
+                    </button>
+                  </div>
+                  <div class="event-feed">
+                    <article
+                      class="event-card event-card-live mb-2"
+                      data-event-card
+                      data-event-tags="live,registered"
+                    >
+                      <div class="event-card-top">
                         <span class="badge badge-live">LIVE</span>
+                        <span class="badge badge-mabar">Americano</span>
                         <span
                           class="badge badge-success"
                           data-auth-only
                           data-i18n="events.registeredBadge"
                           >Terdaftar</span
-                        ></strong
-                      >
-                      <span data-i18n="flow.americanoDesc"
-                        >Partner acak tiap round · poin kumulatif · 16 pemain ·
-                        LIVE sekarang</span
-                      >
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    class="action-card"
-                    data-requires-auth
-                    data-flow-goto="16"
-                  >
-                    <span class="action-card-icon">📈</span>
-                    <span class="action-card-body">
+                        >
+                      </div>
                       <strong
-                        >Mexicano ·
+                        class="sport-dynamic"
+                        data-padel="Sabtu Americano"
+                        data-tennis="Sunday Tennis Social"
+                        data-pickleball="Pickle Saturday JKT"
+                        >Sabtu Americano</strong
+                      >
+                      <p class="text-sm text-muted event-card-meta">
+                        <span data-i18n="events.hostedBy">Diselenggarakan</span>
+                        ·
                         <span
                           class="sport-dynamic"
-                          data-padel="Minggu Padel Open"
-                          data-tennis="Friday Ladder Night"
-                          data-pickleball="Sunday Pickle Open"
-                          >Minggu Padel Open</span
+                          data-padel="Senayan Padel Club"
+                          data-tennis="Jakarta Tennis Community"
+                          data-pickleball="Pickle Blok M"
+                          >Senayan Padel Club</span
                         >
+                        · 16 pemain · Sabtu 08:00
+                      </p>
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-sm btn-block mt-1"
+                        data-flow-goto="11"
+                        data-i18n="events.joinLiveCta"
+                      >
+                        Gabung Live →
+                      </button>
+                    </article>
+                    <article
+                      class="event-card mb-2"
+                      data-event-card
+                      data-event-tags="open"
+                    >
+                      <div class="event-card-top">
+                        <span class="badge badge-info">Mexicano</span>
                         <span
                           class="badge badge-pending"
                           data-i18n="events.regOpenBadge"
                           >Registrasi buka</span
-                        ></strong
-                      >
-                      <span data-i18n="flow.mexicanoDesc"
-                        >Round 2+ by leaderboard · 1+4 vs 2+3 · makin
-                        seimbang</span
-                      >
-                    </span>
-                  </button>
-                  <button type="button" class="action-card" data-flow-goto="13">
-                    <span class="action-card-icon">🏆</span>
-                    <span class="action-card-body">
-                      <strong data-i18n="flow.bracketTitle"
-                        >Bracket · Single Elimination</strong
-                      >
-                      <span
+                        >
+                      </div>
+                      <strong
                         class="sport-dynamic"
-                        data-padel="Padel Open Jakarta · 32 pemain · Tier 2"
-                        data-tennis="Jakarta Tennis Open · 64 draw · Tier 3"
-                        data-pickleball="Pickle Open JKT · 16 pemain · Tier 3"
-                        >Padel Open Jakarta · 32 pemain · Tier 2</span
+                        data-padel="Minggu Padel Open"
+                        data-tennis="Friday Ladder Night"
+                        data-pickleball="Sunday Pickle Open"
+                        >Minggu Padel Open</strong
                       >
-                    </span>
-                  </button>
+                      <p class="text-sm text-muted event-card-meta">
+                        <span data-i18n="events.hostedBy">Diselenggarakan</span>
+                        · Kemang Tennis Society · 12/16 slot · Minggu 09:00
+                      </p>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm btn-block mt-1"
+                        data-requires-auth
+                        data-flow-goto="16"
+                        data-i18n="events.registerCta"
+                      >
+                        Daftar →
+                      </button>
+                    </article>
+                    <article
+                      class="event-card mb-2"
+                      data-event-card
+                      data-event-tags="registered"
+                      data-auth-only
+                    >
+                      <div class="event-card-top">
+                        <span class="badge badge-info">Bracket</span>
+                        <span
+                          class="badge badge-success"
+                          data-i18n="events.registeredBadge"
+                          >Terdaftar</span
+                        >
+                      </div>
+                      <strong
+                        class="sport-dynamic"
+                        data-padel="Padel Open Jakarta"
+                        data-tennis="Jakarta Tennis Open"
+                        data-pickleball="Pickle Open JKT"
+                        >Padel Open Jakarta</strong
+                      >
+                      <p class="text-sm text-muted event-card-meta">
+                        <span data-i18n="events.hostedBy">Diselenggarakan</span>
+                        · BSD Padel House · 32 pemain · 14 Jun 10:00
+                      </p>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm btn-block mt-1"
+                        data-flow-goto="13"
+                        data-i18n="events.viewCta"
+                      >
+                        Lihat →
+                      </button>
+                    </article>
+                    <article
+                      class="event-card mb-2"
+                      data-event-card
+                      data-event-tags="open"
+                    >
+                      <div class="event-card-top">
+                        <span class="badge badge-global">Global</span>
+                        <span
+                          class="badge badge-pending"
+                          data-i18n="events.regOpenBadge"
+                          >Registrasi buka</span
+                        >
+                      </div>
+                      <strong data-i18n="title.global-tournament"
+                        >Global Tournament</strong
+                      >
+                      <p class="text-sm text-muted event-card-meta">
+                        Cross-community · Tier 2 · 64 draw · 28 Jun
+                      </p>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm btn-block mt-1"
+                        data-requires-auth
+                        data-flow-goto="21"
+                        data-i18n="events.registerCta"
+                      >
+                        Daftar →
+                      </button>
+                    </article>
+                    <article
+                      class="event-card event-card-past mb-2"
+                      data-event-card
+                      data-event-tags="past"
+                    >
+                      <div class="event-card-top">
+                        <span class="badge badge-muted" data-i18n="events.pastBadge"
+                          >Selesai</span
+                        >
+                        <span class="badge badge-mabar">Americano</span>
+                      </div>
+                      <strong>Americano Juni · Senayan</strong>
+                      <p class="text-sm text-muted event-card-meta">
+                        Senayan Padel Club · 16 pemain · 31 Mei
+                      </p>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm btn-block mt-1"
+                        data-flow-goto="11"
+                        data-i18n="events.viewResultsCta"
+                      >
+                        Lihat hasil →
+                      </button>
+                    </article>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Step 10: Americano Live -->
+            <!-- Step 10: Americano Live (referee) -->
             <div class="flow-step" data-step="americano">
-              <div class="app">
+              <div class="app referee-live-shell" data-referee-immersive>
                 <div class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo">Americano</div></div>
-                  <span class="badge badge-live">Round 3 / 7</span>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo"><span data-referee-title>Americano</span></div></div>
+                  <span class="badge badge-live" data-referee-round-badge>LIVE</span>
                 </div>
-                <div class="app-body">
-                  <div class="info-strip mb-2">
-                    <span>🔄</span>
-                    <span data-i18n="flow.americanoLiveHint"
-                      >Partner &amp; lawan rotasi otomatis · skor tim = poin
-                      individualmu</span
-                    >
-                  </div>
-                  <div class="rotation-card mb-2">
-                    <div class="rotation-court">
-                      <span class="rotation-court-label">Court 1</span>
-                      <div class="rotation-match">
-                        <span><strong>Budi</strong> + Rudi</span>
-                        <span class="rotation-vs">vs</span>
-                        <span>Sari + Dina</span>
-                      </div>
-                      <div class="rotation-score">
-                        18 – 12 <small>/ 24 poin</small>
+                <div class="app-body referee-live-body" data-referee-live data-referee-demo="americano">
+                  <p class="referee-subtitle text-sm text-muted" data-referee-subtitle></p>
+                  <div class="referee-view" data-referee-view="standings" hidden>
+                    <div class="referee-share mb-2">
+                      <label class="form-label text-sm" data-i18n="referee.shareLabel">Share link</label>
+                      <div class="search-input-row">
+                        <input class="form-input" readonly data-referee-share-url />
+                        <button type="button" class="btn btn-outline btn-sm" data-referee-copy-link data-i18n="referee.copyBtn">Copy</button>
                       </div>
                     </div>
-                    <div class="rotation-court">
-                      <span class="rotation-court-label">Court 2</span>
-                      <div class="rotation-match">
-                        <span>Andi + Henry</span>
-                        <span class="rotation-vs">vs</span>
-                        <span><strong>Kamu</strong> + Carla</span>
-                      </div>
-                      <div class="rotation-score live-pulse">Live</div>
+                    <div data-referee-standings></div>
+                  </div>
+                  <div class="referee-view" data-referee-view="courts">
+                    <div class="mp-section-head"><h2 data-referee-round-label>Round 1</h2></div>
+                    <p class="form-hint referee-courts-hint mb-1" data-i18n="referee.courtsHint">Tap a court card to select it, then open Score to enter points.</p>
+                    <div data-referee-matches></div>
+                    <div class="btn-stack mt-2">
+                      <button type="button" class="btn btn-primary btn-block btn-lg" data-advance-round data-i18n="club.advanceRoundBtn">Round berikutnya →</button>
+                      <button type="button" class="btn btn-outline btn-block" data-flow-goto="12">Mexicano →</button>
                     </div>
                   </div>
-                  <h3 class="text-sm font-bold section-label">
-                    Leaderboard Individual
-                  </h3>
-                  <ul class="leaderboard-list compact">
-                    <li class="lb-row highlight">
-                      <span class="lb-rank">1</span>
-                      <div class="lb-info">
-                        <div class="lb-name">Rudi H.</div>
-                      </div>
-                      <span class="lb-points">58</span>
-                    </li>
-                    <li class="lb-row" data-auth-only>
-                      <span class="lb-rank">4</span>
-                      <div class="lb-info">
-                        <div class="lb-name">Budi#1 (kamu)</div>
-                      </div>
-                      <span class="lb-points">52</span>
-                    </li>
-                  </ul>
-                  <div class="btn-stack">
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-block btn-lg"
-                      data-requires-auth
-                    >
-                      Submit Skor Round 3
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-outline btn-block"
-                      data-flow-goto="12"
-                    >
-                      Lihat Mexicano Berikutnya →
-                    </button>
+                  <div class="referee-view" data-referee-view="score" hidden>
+                    <div class="referee-picker-panel" data-referee-score-picker></div>
                   </div>
                 </div>
+                <nav class="referee-tab-bar" aria-label="Referee views">
+                  <button type="button" class="referee-tab active" data-referee-tab="courts" data-i18n="referee.tabCourts">Courts</button>
+                  <button type="button" class="referee-tab" data-referee-tab="score" data-i18n="referee.tabScore">Score</button>
+                  <button type="button" class="referee-tab" data-referee-tab="standings" data-i18n="referee.tabStandings">Standings</button>
+                </nav>
               </div>
             </div>
 
-            <!-- Step 11: Mexicano Live -->
+            <!-- Step 11: Mexicano Live (referee) -->
             <div class="flow-step" data-step="mexicano">
-              <div class="app">
+              <div class="app referee-live-shell" data-referee-immersive>
                 <div class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo">Mexicano</div></div>
-                  <span class="badge badge-info">Round 4 · Seeded</span>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo"><span data-referee-title>Mexicano</span></div></div>
+                  <span class="badge badge-live" data-referee-round-badge>LIVE</span>
                 </div>
-                <div class="app-body">
-                  <div class="info-strip mb-2">
-                    <span>📈</span>
-                    <span data-i18n="flow.mexicanoLiveHint"
-                      >Round 4: #1+#4 vs #2+#3 · ranking menentukan pairing
-                      berikutnya</span
-                    >
+                <div class="app-body referee-live-body" data-referee-live data-referee-demo="mexicano">
+                  <p class="referee-subtitle text-sm text-muted" data-referee-subtitle></p>
+                  <div class="referee-view" data-referee-view="standings" hidden>
+                    <div data-referee-standings></div>
                   </div>
-                  <div class="pairing-preview card mb-2">
-                    <div class="pairing-row">
-                      <span class="pairing-rank">#1+#4</span
-                      ><span>Rudi + Dina</span><span class="pairing-vs">vs</span
-                      ><span>#2+#3</span><span>Sari + Budi</span>
+                  <div class="referee-view" data-referee-view="courts">
+                    <div class="mp-section-head"><h2 data-referee-round-label>Round 1</h2></div>
+                    <p class="form-hint referee-courts-hint mb-1" data-i18n="referee.courtsHint">Tap a court card to select it, then open Score to enter points.</p>
+                    <div data-referee-matches></div>
+                    <div class="btn-stack mt-2">
+                      <button type="button" class="btn btn-primary btn-block btn-lg" data-advance-round data-i18n="club.advanceRoundBtn">Round berikutnya →</button>
+                      <button type="button" class="btn btn-outline btn-block" data-flow-goto="13">Bracket →</button>
                     </div>
-                    <p class="form-hint" data-i18n="flow.mexicanoPairHint">
-                      Winners play winners — matches tighten as points
-                      accumulate
-                    </p>
                   </div>
-                  <h3 class="text-sm font-bold section-label">
-                    Live Standings
-                  </h3>
-                  <ul class="leaderboard-list compact">
-                    <li class="lb-row">
-                      <span class="lb-rank gold">1</span>
-                      <div class="lb-info">
-                        <div class="lb-name">Rudi H.</div>
-                        <div class="text-sm text-muted">82 pts</div>
-                      </div>
-                    </li>
-                    <li class="lb-row highlight" data-auth-only>
-                      <span class="lb-rank">2</span>
-                      <div class="lb-info">
-                        <div class="lb-name">Budi#1 (kamu)</div>
-                        <div class="text-sm text-muted">76 pts</div>
-                      </div>
-                    </li>
-                  </ul>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-block btn-lg"
-                    data-flow-goto="13"
-                  >
-                    Lihat Bracket Turnamen →
-                  </button>
+                  <div class="referee-view" data-referee-view="score" hidden>
+                    <div class="referee-picker-panel" data-referee-score-picker></div>
+                  </div>
                 </div>
+                <nav class="referee-tab-bar" aria-label="Referee views">
+                  <button type="button" class="referee-tab active" data-referee-tab="courts" data-i18n="referee.tabCourts">Courts</button>
+                  <button type="button" class="referee-tab" data-referee-tab="score" data-i18n="referee.tabScore">Score</button>
+                  <button type="button" class="referee-tab" data-referee-tab="standings" data-i18n="referee.tabStandings">Standings</button>
+                </nav>
               </div>
             </div>
 
@@ -1894,7 +1989,7 @@
                       <em>Belum dimainkan</em>
                     </div>
                   </div>
-                  <div class="flow-complete mt-2">
+                  <div class="flow-complete mt-2" hidden>
                     <div class="flow-complete-icon">🎉</div>
                     <h2 class="section-title" data-i18n="flow.completeTitle">
                       Kamu sudah explore Match Point!
@@ -1912,6 +2007,12 @@
                       Selesai — Kembali ke Menu
                     </button>
                   </div>
+                  <div class="btn-stack mt-2">
+                    <span class="badge badge-mabar mb-1">Mabar rank · hasil final</span>
+                    <span class="badge badge-global mb-1">Global points · Tier 2 events</span>
+                    <button type="button" class="btn btn-outline btn-block" data-flow-goto="19">Round Robin standings →</button>
+                    <button type="button" class="btn btn-outline btn-block" data-flow-goto="20">League season →</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1919,43 +2020,44 @@
             <div class="flow-step" data-step="find-community">
               <div class="app">
                 <div class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="9" aria-label="Back">←</button><div class="app-logo"><span data-i18n="find.title">Cari Komunitas</span></div></div>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="smart" aria-label="Back">←</button><div class="app-logo"><span data-i18n="find.title">Cari Komunitas</span></div></div>
                 </div>
-                <div class="app-body">
+                <div class="app-body" data-find-community>
                   <p class="section-sub" data-i18n="find.sub">
                     Terdekat dulu — berdasar lokasimu di Jakarta Selatan.
                   </p>
                   <div class="search-input-row">
                     <input
-                      class="form-input"
+                      class="form-input community-search"
                       data-i18n-placeholder="find.searchPlaceholder"
                       placeholder="Cari nama komunitas / kota…"
                     />
                   </div>
                   <div class="filter-chips">
-                    <button type="button" class="filter-chip active" data-i18n="find.filterAll">
+                    <button type="button" class="filter-chip active" data-filter="all" data-i18n="find.filterAll">
                       Semua
                     </button>
-                    <button type="button" class="filter-chip sport-padel">
+                    <button type="button" class="filter-chip sport-padel" data-filter="padel">
                       🏓 Padel
                     </button>
-                    <button type="button" class="filter-chip sport-tennis">
+                    <button type="button" class="filter-chip sport-tennis" data-filter="tennis">
                       🎾 Tennis
                     </button>
-                    <button type="button" class="filter-chip sport-pickleball">
+                    <button type="button" class="filter-chip sport-pickleball" data-filter="pickleball">
                       🥎 Pickleball
                     </button>
-                    <button type="button" class="filter-chip" data-i18n="find.filterOpen">
+                    <button type="button" class="filter-chip" data-filter="open" data-i18n="find.filterOpen">
                       🟢 Open
                     </button>
-                    <button type="button" class="filter-chip" data-i18n="find.filterCity">
+                    <button type="button" class="filter-chip" data-filter="jakarta" data-i18n="find.filterCity">
                       📍 Jakarta
                     </button>
                   </div>
                   <h3 class="text-sm font-bold section-label" data-i18n="find.nearYou">
                     👥 Komunitas terdekat
                   </h3>
-                  <div class="community-row">
+                  <div class="community-list">
+                  <div class="community-row" data-community-row data-community-view="senayan" data-flow-goto="15" data-community-name="Senayan Padel Club" data-filter-tags="padel,open,jakarta" data-distance="1.2">
                     <div class="avatar avatar-sm">SP</div>
                     <div class="community-row-body">
                       <strong>Senayan Padel Club</strong>
@@ -1967,13 +2069,14 @@
                     <button
                       type="button"
                       class="btn btn-primary btn-sm"
+                      data-community-view="senayan"
                       data-flow-goto="15"
                       data-i18n="find.viewBtn"
                     >
                       Lihat
                     </button>
                   </div>
-                  <div class="community-row">
+                  <div class="community-row" data-community-row data-community-name="Kemang Tennis Society" data-filter-tags="tennis,open,jakarta" data-distance="2.8">
                     <div class="avatar avatar-sm">KT</div>
                     <div class="community-row-body">
                       <strong>Kemang Tennis Society</strong>
@@ -1985,13 +2088,14 @@
                     <button
                       type="button"
                       class="btn btn-outline btn-sm"
+                      data-community-view="kemang"
                       data-flow-goto="15"
                       data-i18n="find.viewBtn"
                     >
                       Lihat
                     </button>
                   </div>
-                  <div class="community-row">
+                  <div class="community-row" data-community-row data-community-name="Pickle Blok M" data-filter-tags="pickleball,open,jakarta" data-distance="3.5">
                     <div class="avatar avatar-sm">PB</div>
                     <div class="community-row-body">
                       <strong>Pickle Blok M</strong>
@@ -2003,13 +2107,14 @@
                     <button
                       type="button"
                       class="btn btn-outline btn-sm"
+                      data-community-view="blokm"
                       data-flow-goto="15"
                       data-i18n="find.viewBtn"
                     >
                       Lihat
                     </button>
                   </div>
-                  <div class="community-row">
+                  <div class="community-row" data-community-row data-community-name="BSD Padel House" data-filter-tags="padel,jakarta" data-distance="18">
                     <div class="avatar avatar-sm">BP</div>
                     <div class="community-row-body">
                       <strong>BSD Padel House</strong>
@@ -2021,11 +2126,13 @@
                     <button
                       type="button"
                       class="btn btn-outline btn-sm"
+                      data-community-view="bsd"
                       data-flow-goto="15"
                       data-i18n="find.viewBtn"
                     >
                       Lihat
                     </button>
+                  </div>
                   </div>
                   <button
                     type="button"
@@ -2050,7 +2157,7 @@
 
             <!-- Step 15: Community Page (public spotlight + members-only feed) -->
             <div class="flow-step" data-step="community-page">
-              <div class="app">
+              <div class="app" data-community-page>
                 <div class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="14" aria-label="Back">←</button><div class="app-logo">Senayan Padel Club</div></div>
                   <span class="badge badge-info">🏓 Padel</span>
@@ -2116,6 +2223,15 @@
                     <div class="stat-box">
                       <div class="stat-val">1.2</div>
                       <div class="stat-lbl">km</div>
+                    </div>
+                  </div>
+
+                  <div class="league-card" data-show-if-club-admin>
+                    <h3 data-i18n="league.cardTitle">📅 Liga Aktif — Musim 2025</h3>
+                    <p class="text-sm text-muted" data-i18n="league.cardSub">Round robin · 8 tim · Minggu 12:00</p>
+                    <div class="league-next-match">
+                      <span><strong>Next:</strong> Budi/Sari vs Rudi/Maya</span>
+                      <button type="button" class="btn btn-outline btn-sm" data-flow-goto="20" data-i18n="league.viewBtn">Lihat liga</button>
                     </div>
                   </div>
 
@@ -2257,33 +2373,55 @@
                     </div>
                   </div>
 
-                  <!-- Events — public -->
+                  <!-- Upcoming events — this community only -->
                   <div class="mp-section-head mt-2">
                     <h2 data-i18n="community.eventsTitle">
-                      🎯 Acara Komunitas
+                      📅 Acara Mendatang
                     </h2>
-                    <span
-                      class="badge badge-public"
-                      data-i18n="community.publicBadge"
-                      >🌐 Publik</span
+                    <button
+                      type="button"
+                      class="linkish"
+                      data-show-if-club-admin
+                      onclick="location.href='club.html'"
+                      data-i18n="community.createEventCta"
                     >
+                      + Buat acara →
+                    </button>
                   </div>
-                  <div class="event-card mb-1">
+                  <div class="event-card event-card-live mb-1">
                     <div class="event-card-top">
+                      <span class="badge badge-live">LIVE</span>
                       <span class="badge badge-mabar">Americano</span>
-                      <span
-                        class="badge badge-pending"
-                        data-i18n="events.regOpenBadge"
-                        >Registrasi buka</span
-                      >
                     </div>
-                    <strong>Sabtu Americano · Senayan</strong>
+                    <strong>Sabtu Americano</strong>
                     <p class="text-sm text-muted event-card-meta">
                       16 pemain · 24 poin/round · Sabtu 08:00
                     </p>
                     <button
                       type="button"
                       class="btn btn-primary btn-sm btn-block mt-1"
+                      data-flow-goto="11"
+                      data-i18n="events.joinLiveCta"
+                    >
+                      Gabung Live →
+                    </button>
+                  </div>
+                  <div class="event-card mb-1">
+                    <div class="event-card-top">
+                      <span class="badge badge-info">Mexicano</span>
+                      <span
+                        class="badge badge-pending"
+                        data-i18n="events.regOpenBadge"
+                        >Registrasi buka</span
+                      >
+                    </div>
+                    <strong>Minggu Mexicano</strong>
+                    <p class="text-sm text-muted event-card-meta">
+                      12/16 slot · Minggu 09:00
+                    </p>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-sm btn-block mt-1"
                       data-requires-auth
                       data-flow-goto="16"
                       data-i18n="events.registerCta"
@@ -2598,6 +2736,141 @@
               </div>
             </div>
 
+            <!-- Step 19: Round Robin (referee) -->
+            <div class="flow-step" data-step="round-robin">
+              <div class="app referee-live-shell" data-referee-immersive>
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo"><span data-i18n="format.roundRobin">Round Robin</span></div></div>
+                  <span class="badge badge-live" data-referee-round-badge>LIVE</span>
+                </div>
+                <div class="app-body referee-live-body" data-referee-live data-referee-demo="singles_rr">
+                  <p class="referee-subtitle text-sm text-muted" data-referee-subtitle></p>
+                  <div class="referee-view" data-referee-view="standings" hidden>
+                    <div data-referee-standings></div>
+                  </div>
+                  <div class="referee-view" data-referee-view="courts">
+                    <div class="mp-section-head"><h2 data-referee-round-label>Round 1</h2></div>
+                    <p class="form-hint referee-courts-hint mb-1" data-i18n="referee.courtsHint">Tap a court card to select it, then open Score to enter points.</p>
+                    <div data-referee-matches></div>
+                    <div class="btn-stack mt-2">
+                      <button type="button" class="btn btn-primary btn-block" data-advance-round data-i18n="club.advanceRoundBtn">Round berikutnya →</button>
+                      <button type="button" class="btn btn-outline btn-block" data-flow-goto="10">← Events</button>
+                    </div>
+                  </div>
+                  <div class="referee-view" data-referee-view="score" hidden>
+                    <div class="referee-picker-panel" data-referee-score-picker></div>
+                  </div>
+                </div>
+                <nav class="referee-tab-bar" aria-label="Referee views">
+                  <button type="button" class="referee-tab active" data-referee-tab="courts" data-i18n="referee.tabCourts">Courts</button>
+                  <button type="button" class="referee-tab" data-referee-tab="score" data-i18n="referee.tabScore">Score</button>
+                  <button type="button" class="referee-tab" data-referee-tab="standings" data-i18n="referee.tabStandings">Standings</button>
+                </nav>
+              </div>
+            </div>
+
+            <!-- Step 20: League (referee) -->
+            <div class="flow-step" data-step="league">
+              <div class="app referee-live-shell" data-referee-immersive>
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="15" aria-label="Back">←</button><div class="app-logo"><span data-i18n="format.league">League</span></div></div>
+                  <span class="badge badge-live" data-referee-round-badge>LIVE</span>
+                </div>
+                <div class="app-body referee-live-body" data-referee-live data-referee-demo="doubles_league">
+                  <p class="referee-subtitle text-sm text-muted" data-referee-subtitle></p>
+                  <div class="referee-view" data-referee-view="standings" hidden>
+                    <div data-referee-standings></div>
+                  </div>
+                  <div class="referee-view" data-referee-view="courts">
+                    <div class="mp-section-head"><h2 data-referee-round-label>GW 1</h2></div>
+                    <p class="form-hint referee-courts-hint mb-1" data-i18n="referee.courtsHint">Tap a court card to select it, then open Score to enter points.</p>
+                    <div data-referee-matches></div>
+                    <div class="btn-stack mt-2">
+                      <button type="button" class="btn btn-primary btn-block" data-advance-round data-i18n="club.advanceRoundBtn">GW berikutnya →</button>
+                      <button type="button" class="btn btn-outline btn-block" data-flow-goto="15">← Komunitas</button>
+                    </div>
+                  </div>
+                  <div class="referee-view" data-referee-view="score" hidden>
+                    <div class="referee-picker-panel" data-referee-score-picker></div>
+                  </div>
+                </div>
+                <nav class="referee-tab-bar" aria-label="Referee views">
+                  <button type="button" class="referee-tab active" data-referee-tab="courts" data-i18n="referee.tabCourts">Courts</button>
+                  <button type="button" class="referee-tab" data-referee-tab="score" data-i18n="referee.tabScore">Score</button>
+                  <button type="button" class="referee-tab" data-referee-tab="standings" data-i18n="referee.tabStandings">Standings</button>
+                </nav>
+              </div>
+            </div>
+
+            <!-- Step 21: Global Tournament -->
+            <div class="flow-step" data-step="global-tournament">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo">Indonesia Padel Masters</div></div>
+                  <span class="badge badge-global">Tier 1 · Global</span>
+                </div>
+                <div class="app-body">
+                  <div class="info-strip mb-2">Cross-community · 64 draw · Global rank · K=64</div>
+                  <div class="bracket" data-tournament-bracket></div>
+                  <button type="button" class="btn btn-primary btn-block" data-requires-auth data-flow-goto="16">Daftar turnamen →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 22: Other Player Profile -->
+            <div class="flow-step" data-step="player-other">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="3" aria-label="Back">←</button><div class="app-logo" id="other-player-name">Rudi Hartono</div></div>
+                </div>
+                <div class="app-body">
+                  <div class="flex items-center gap-1 mb-2">
+                    <div class="avatar avatar-lg">RH</div>
+                    <div>
+                      <h2 class="section-title" id="other-player-title">Rudi Hartono</h2>
+                      <p class="text-sm text-muted">@rudih · Trust 0.91</p>
+                    </div>
+                  </div>
+                  <div class="rank-dual">
+                    <div class="rank-track mabar"><div class="rank-track-label">Mabar</div><div class="rank-track-value">1820</div><div class="rank-track-sub">#1 · Senayan Padel Club</div></div>
+                    <div class="rank-track global"><div class="rank-track-label">Global</div><div class="rank-track-value">2085</div><div class="rank-track-sub">#2 padel</div></div>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-block mt-2" data-flow-goto="7">Endorse player →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 23: Settings / Edit Profile -->
+            <div class="flow-step" data-step="settings">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="6" aria-label="Back">←</button><div class="app-logo" data-i18n="title.edit-profile">Akun &amp; Pengaturan</div></div>
+                </div>
+                <div class="app-body app-body-narrow">
+                  <div class="form-group"><label class="form-label">Nama</label><input class="form-input" value="Budi Santoso" /></div>
+                  <div class="form-group"><label class="form-label">@username</label><input class="form-input" value="budisantoso" disabled /><p class="form-hint">Username global tidak bisa diubah</p></div>
+                  <div class="form-group"><label class="form-label" data-i18n="profile.homeCommunity">Komunitas utama</label><select class="form-select"><option>Padel Jakarta Selatan</option><option>Kemang Tennis Society</option></select></div>
+                  <button type="button" class="btn btn-primary btn-block" data-flow-goto="6">Simpan</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 24: Rank Snapshot -->
+            <div class="flow-step" data-step="rank-snapshot">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="3" aria-label="Back">←</button><div class="app-logo" data-i18n="title.leaderboard-snapshot">Monthly Snapshot</div></div>
+                </div>
+                <div class="app-body">
+                  <p class="form-hint" data-i18n="lb.snapshotNote">Global rank snapshot · immutable monthly record</p>
+                  <ul class="leaderboard-list compact">
+                    <li class="lb-row"><span class="lb-rank gold">1</span><div class="lb-info"><div class="lb-name">Agus Wibowo</div></div><span class="lb-points">2140</span></li>
+                    <li class="lb-row"><span class="lb-rank">2</span><div class="lb-info"><div class="lb-name">Rudi Hartono</div></div><span class="lb-points">2085</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
             <!-- Step 18: Verify phone (SMS OTP) -->
             <div class="flow-step" data-step="verify-otp">
               <div class="app" data-no-chrome>
@@ -2693,10 +2966,16 @@
         </div>
       </div>
     </div>
+    <div class="referee-fullscreen" data-referee-fullscreen hidden aria-hidden="true"></div>
 
     <script src="../i18n.js"></script>
     <script src="../device.js"></script>
     <script src="../sport.js"></script>
+    <script src="../approval.js"></script>
+    <script src="../rank.js"></script>
+    <script src="../tournament.js"></script>
+    <script src="../live-referee.js"></script>
+    <script src="../community-data.js"></script>
     <script src="../role.js"></script>
     <script src="flow.js"></script>
     <script>
@@ -2759,15 +3038,35 @@
         },
         { titleKey: "title.auth-register", hintKey: "flow.hint.signup" },
         { titleKey: "title.verify-otp", hintKey: "flow.hint.verifyOtp" },
+        { titleKey: "format.roundRobin", hintKey: "flow.hint.roundRobin" },
+        { titleKey: "format.league", hintKey: "flow.hint.league" },
+        { titleKey: "title.global-tournament", hintKey: "flow.hint.globalTournament" },
+        { titleKey: "title.player-other", hintKey: "flow.hint.playerOther" },
+        { titleKey: "title.edit-profile", hintKey: "flow.hint.settings" },
+        { titleKey: "title.leaderboard-snapshot", hintKey: "flow.hint.snapshot" },
       ];
 
       const isGuest = new URLSearchParams(location.search).get("guest") === "1";
       MP_Flow.init({
         steps,
         guest: isGuest,
-        guestStartStep: isGuest ? 14 : 0,
+        guestStartStep: isGuest ? 1 : 0,
         appChrome: true,
         finishUrl: "index.html",
+        settingsStep: 23,
+        playerStep: 22,
+      });
+
+      if (window.MP_Referee) MP_Referee.init();
+      document.body.addEventListener("click", (e) => {
+        const p = e.target.closest("[data-player-profile]");
+        if (p) {
+          const name = p.dataset.playerProfile || "Player";
+          const t = document.getElementById("other-player-title");
+          const n = document.getElementById("other-player-name");
+          if (t) t.textContent = name;
+          if (n) n.textContent = name;
+        }
       });
     </script>
   </body>
