@@ -1314,6 +1314,17 @@ window.MP_I18N = (function () {
     "platform.createGlobalBtn": { id: "Buat Global Tournament", en: "Create Global Tournament" },
     "platform.globalRegTitle": { id: "Registrasi Global", en: "Global Registration" },
     "platform.globalLiveTitle": { id: "Global Live", en: "Global Live" },
+    "platform.overviewTitle": { id: "Ringkasan platform", en: "Platform overview" },
+    "platform.quickActions": { id: "Aksi cepat", en: "Quick actions" },
+    "platform.navInbox": { id: "Inbox", en: "Inbox" },
+    "platform.navMatches": { id: "Match", en: "Matches" },
+    "platform.navAnalytics": { id: "Analitik", en: "Analytics" },
+    "platform.accountTitle": { id: "Akun Admin", en: "Admin account" },
+    "platform.accountRole": { id: "Superadmin platform", en: "Platform superadmin" },
+    "platform.inboxEmptyHint": {
+      id: "Ketuk item untuk review — komunitas, acara featured, dispute.",
+      en: "Tap an item to review — communities, featured events, disputes.",
+    },
   };
 
   function t(key, lang) {

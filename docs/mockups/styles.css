@@ -2614,9 +2614,99 @@ body.mp-device-mobile .app-nav-desktop {
 }
 
 .action-card-body span {
+  display: block;
   font-size: 0.78rem;
   color: var(--ink-muted);
-  line-height: 1.4;
+  margin-top: 0.15rem;
+}
+
+/* Platform admin — scannable queue lists */
+.platform-queue {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--card);
+}
+
+.platform-queue-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--surface-2);
+  text-align: left;
+  width: 100%;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  background: var(--card);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.platform-queue-item:last-child {
+  border-bottom: none;
+}
+
+.platform-queue-item:hover {
+  background: var(--surface);
+}
+
+.platform-queue-item.is-static {
+  cursor: default;
+}
+
+.platform-queue-item.is-static:hover {
+  background: var(--card);
+}
+
+.platform-queue-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.platform-queue-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+
+.platform-queue-meta {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  margin-top: 0.2rem;
+  line-height: 1.35;
+}
+
+.platform-queue-aside {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+}
+
+.badge-platform {
+  background: rgba(26, 26, 46, 0.12);
+  color: #1a1a2e;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.mp-shell.admin-theme .app-header .icon-btn {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.mp-shell.admin-theme .app-header .avatar-photo {
+  border-color: rgba(255, 255, 255, 0.55);
 }
 
 .header-back {

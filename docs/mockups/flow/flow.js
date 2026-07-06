@@ -96,17 +96,31 @@ window.MP_Flow = (function () {
       '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>';
 
     function injectChrome() {
-      const NAV_ITEMS = [
-        { key: "home", i18n: "nav.home", icon: "🏠" },
-        { key: "rank", i18n: "nav.rank", icon: "🏆" },
-        { key: "match", i18n: "nav.play", icon: "➕", auth: true },
-        { key: "events", i18n: "nav.events", icon: "🎯" },
-        { key: "community", i18n: "nav.group.community", icon: "👥" },
-      ].filter(
+      const chromeProfile = config.chromeProfile || {
+        name: "Budi Santoso",
+        handle: "@budisantoso",
+        avatar: "🧑🏽",
+        title: "Budi Santoso",
+      };
+
+      const NAV_ITEMS = (
+        config.navItems || [
+          { key: "home", i18n: "nav.home", icon: "🏠" },
+          { key: "rank", i18n: "nav.rank", icon: "🏆" },
+          { key: "match", i18n: "nav.play", icon: "➕", auth: true },
+          { key: "events", i18n: "nav.events", icon: "🎯" },
+          { key: "community", i18n: "nav.group.community", icon: "👥" },
+        ]
+      ).filter(
         (it) =>
           NAV_STEP[it.key] !== undefined ||
           (config.navRedirect && config.navRedirect[it.key]),
       );
+
+      const sportOrbHTML =
+        config.chromeSport !== false
+          ? '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>'
+          : "";
 
       const controlsHTML =
         '<div class="notif-wrap">' +
@@ -115,11 +129,19 @@ window.MP_Flow = (function () {
         '<div class="notif-item"><span>🏆</span><div><strong>Rank Mabar updated</strong><small>+15 pts dari Americano</small></div></div>' +
         '<div class="notif-item"><span>🎯</span><div><strong>Acara besok</strong><small>Minggu Mexicano · 08:00</small></div></div>' +
         '<div class="notif-item"><span>👥</span><div><strong>Komunitas disetujui</strong><small>Padel Jakarta Selatan aktif</small></div></div></div></div>' +
-        '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>' +
+        sportOrbHTML +
         '<div class="profile-menu-wrap">' +
-        '<button type="button" class="avatar avatar-sm avatar-photo" data-profile-toggle aria-haspopup="true" title="Budi Santoso">🧑🏽</button>' +
+        '<button type="button" class="avatar avatar-sm avatar-photo" data-profile-toggle aria-haspopup="true" title="' +
+        chromeProfile.title +
+        '">' +
+        chromeProfile.avatar +
+        "</button>" +
         '<div class="profile-menu" hidden>' +
-        '<div class="profile-menu-head"><strong>Budi Santoso</strong><span>@budisantoso</span></div>' +
+        '<div class="profile-menu-head"><strong>' +
+        chromeProfile.name +
+        "</strong><span>" +
+        chromeProfile.handle +
+        "</span></div>" +
         '<button type="button" class="profile-menu-item" data-nav="profile" data-i18n="menu.viewProfile">Lihat Profil</button>' +
         '<button type="button" class="profile-menu-item" data-menu-settings data-i18n="menu.settings">Akun &amp; Pengaturan</button>' +
         '<div class="profile-menu-divider"></div>' +
@@ -1141,9 +1163,14 @@ window.MP_Flow = (function () {
     if (guest && config.guestStartStep != null)
       go(config.guestStartStep, { toast: false });
     else if (!isNaN(urlStep) && isAuthed()) go(urlStep, { toast: false });
-    else if (isAuthed() && NAV_STEP.home !== undefined)
-      // Returning signed-in session (e.g. back from club admin) skips the gate
-      go(NAV_STEP.home, { toast: false });
+    else if (isAuthed()) {
+      const landing =
+        config.authedStartStep ??
+        NAV_STEP.home ??
+        NAV_STEP.dashboard;
+      if (landing !== undefined) go(landing, { toast: false });
+      else go(0, { toast: false });
+    }
     else go(0, { toast: false });
     updateUI();
   }

@@ -102,11 +102,17 @@
 
             <!-- Step 1: Overview -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
-                  <div class="app-logo">⚙ Superadmin</div>
-                </div>
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                    <span class="badge badge-platform" data-i18n="platform.accountRole">Superadmin platform</span>
+                  </div>
+                </header>
                 <div class="app-body">
+                  <div class="mp-section-head">
+                    <h2 data-i18n="platform.overviewTitle">Platform overview</h2>
+                  </div>
                   <div class="stat-grid mb-2">
                     <div class="stat-box">
                       <div class="stat-val">10,842</div>
@@ -126,6 +132,9 @@
                       <div class="stat-val">23</div>
                       <div class="stat-lbl">Pending match</div>
                     </div>
+                  </div>
+                  <div class="mp-section-head">
+                    <h2 data-i18n="platform.quickActions">Quick actions</h2>
                   </div>
                   <button type="button" class="action-card primary" data-flow-goto="9">
                     <span class="action-card-icon">🌍</span>
@@ -155,120 +164,90 @@
                   <button type="button" class="action-card" data-flow-goto="8">
                     <span class="action-card-icon">📊</span>
                     <span class="action-card-body"
-                      ><strong>Platform Analytics</strong
+                      ><strong data-i18n="platform.navAnalytics">Analytics</strong
                       ><span>523 komunitas · health metrics</span></span
                     >
                   </button>
-                  <p class="form-hint mt-2" data-i18n="flow.platformDualTier">
-                    Community events → Club Admin. Global tournaments (national/regional, cross-community, Global rank) → Platform Admin above.
-                  </p>
-                  <p class="form-hint" data-i18n="platform.readonlyNote">
-                    📱 Di ponsel, Platform Admin sebaiknya read-only — keputusan
-                    besar di web.
-                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Step 2: Generic Approval Inbox -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo"><span data-i18n="platform.inboxTitle">Approval Inbox</span></div></div>
-                  <span class="badge badge-pending">5</span>
-                </div>
+                  <div class="app-header-actions">
+                    <span class="badge badge-pending">5</span>
+                  </div>
+                </header>
                 <div class="app-body">
-                  <p class="section-sub" data-i18n="platform.inboxSub">
-                    Antrian generik — komunitas baru, acara featured, dispute.
-                    Status: Diajukan → Menunggu → Disetujui/Ditolak.
+                  <p class="text-sm text-muted mb-2" data-i18n="platform.inboxEmptyHint">
+                    Ketuk item untuk review — komunitas, acara featured, dispute.
                   </p>
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">
-                        🏘 <span class="club-name-dynamic">Padel Jakarta Selatan</span>
+                  <div class="platform-queue">
+                    <button type="button" class="platform-queue-item" data-flow-goto="3">
+                      <div class="platform-queue-main">
+                        <div class="platform-queue-title">🏘 <span class="club-name-dynamic">Padel Jakarta Selatan</span></div>
+                        <div class="platform-queue-meta">Komunitas baru · Budi Santoso · 2 jam lalu</div>
+                        <div class="approval-track" style="margin: 0.35rem 0 0">
+                          <span class="approval-node done" data-i18n="approval.submitted">Diajukan</span>
+                          <span class="approval-arrow">→</span>
+                          <span class="approval-node current" data-i18n="approval.pending">Menunggu Review</span>
+                        </div>
                       </div>
-                      <div class="match-meta">
-                        Komunitas baru · Budi Santoso · 2 jam lalu
+                      <div class="platform-queue-aside">
+                        <span class="btn btn-primary btn-sm" data-i18n="platform.reviewBtn">Review →</span>
                       </div>
-                      <div class="approval-track" style="margin: 0.4rem 0 0">
-                        <span
-                          class="approval-node done"
-                          data-i18n="approval.submitted"
-                          >Diajukan</span
-                        >
-                        <span class="approval-arrow">→</span>
-                        <span
-                          class="approval-node current"
-                          data-i18n="approval.pending"
-                          >Menunggu Review</span
-                        >
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      data-flow-goto="3"
-                      data-i18n="platform.reviewBtn"
-                    >
-                      Review →
                     </button>
-                  </div>
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">🌍 Indonesia Padel Masters</div>
-                      <div class="match-meta">Global Tier 1 · cross-community · pending review</div>
-                    </div>
-                    <span class="badge badge-pending">Global</span>
-                  </div>
-                  <div class="match-card">
-                      <div class="match-meta">
-                        Acara featured · Senayan Padel Club · 5 jam lalu
+                    <div class="platform-queue-item is-static">
+                      <div class="platform-queue-main">
+                        <div class="platform-queue-title">🌍 Indonesia Padel Masters</div>
+                        <div class="platform-queue-meta">Global Tier 1 · cross-community</div>
+                      </div>
+                      <div class="platform-queue-aside">
+                        <span class="badge badge-pending">Global</span>
+                        <span class="badge badge-pending" data-i18n="approval.pending">Menunggu Review</span>
                       </div>
                     </div>
-                    <span class="badge badge-pending" data-i18n="approval.pending"
-                      >Menunggu Review</span
-                    >
-                  </div>
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">🏘 Bekasi Tennis Society</div>
-                      <div class="match-meta">
-                        Komunitas baru · disetujui oleh Tim MP · kemarin
+                    <div class="platform-queue-item is-static">
+                      <div class="platform-queue-main">
+                        <div class="platform-queue-title">⭐ Featured Event</div>
+                        <div class="platform-queue-meta">Senayan Padel Club · 5 jam lalu</div>
+                      </div>
+                      <div class="platform-queue-aside">
+                        <span class="badge badge-pending" data-i18n="approval.pending">Menunggu Review</span>
                       </div>
                     </div>
-                    <span
-                      class="badge badge-success"
-                      data-i18n="approval.approved"
-                      >Disetujui</span
-                    >
-                  </div>
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">🏘 "Klub Judi Padel"</div>
-                      <div class="match-meta">
-                        Komunitas baru · nama tidak pantas · ditolak + alasan
+                    <div class="platform-queue-item is-static">
+                      <div class="platform-queue-main">
+                        <div class="platform-queue-title">🏘 Bekasi Tennis Society</div>
+                        <div class="platform-queue-meta">Disetujui oleh Tim MP · kemarin</div>
+                      </div>
+                      <div class="platform-queue-aside">
+                        <span class="badge badge-success" data-i18n="approval.approved">Disetujui</span>
                       </div>
                     </div>
-                    <span
-                      class="badge badge-danger"
-                      data-i18n="approval.rejected"
-                      >Ditolak</span
-                    >
+                    <div class="platform-queue-item is-static">
+                      <div class="platform-queue-main">
+                        <div class="platform-queue-title">🏘 "Klub Judi Padel"</div>
+                        <div class="platform-queue-meta">Nama tidak pantas · alasan dikirim ke pengaju</div>
+                      </div>
+                      <div class="platform-queue-aside">
+                        <span class="badge badge-danger" data-i18n="approval.rejected">Ditolak</span>
+                      </div>
+                    </div>
                   </div>
-                  <p class="form-hint mt-1" data-i18n="platform.inboxReuseNote">
-                    Komponen approval yang sama dipakai untuk komunitas, acara,
-                    dan dispute.
-                  </p>
                 </div>
               </div>
             </div>
 
             <!-- Step 3: Approval detail — community create -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="2" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.approval-detail">Review Pengajuan</span></div></div>
-                </div>
+                </header>
                 <div class="app-body app-body-narrow">
                   <div class="card mb-2">
                     <strong class="club-name-dynamic">Padel Jakarta Selatan</strong>
@@ -329,7 +308,10 @@ Nama & venue valid, tidak duplikat dengan komunitas existing.</textarea
 
             <!-- Step 4: Approval result -->
             <div class="flow-step">
-              <div class="app admin-theme">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="2" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.approvedTitle">Komunitas disetujui ✓</div></div>
+                </header>
                 <div class="app-body text-center" style="padding: 2rem 1.25rem">
                   <div style="font-size: 3.5rem">✅</div>
                   <h2 class="section-title" data-i18n="platform.approvedTitle">
@@ -384,16 +366,31 @@ Nama & venue valid, tidak duplikat dengan komunitas existing.</textarea
 
             <!-- Step 5: Pending matches -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo">Pending Matches (23)</div></div>
-                </div>
+                </header>
                 <div class="app-body">
-                  <div class="match-card">
-                    <div>
-                      <div class="match-players">Budi vs Andi · 6-2, 6-1</div>
-                      <div class="match-meta">GPS fail 2.3km</div>
+                  <div class="platform-queue mb-2">
+                    <div class="platform-queue-item is-static">
+                      <div class="platform-queue-main">
+                        <div class="platform-queue-title">Budi vs Andi · 6-2, 6-1</div>
+                        <div class="platform-queue-meta">GPS fail 2.3km</div>
+                      </div>
+                      <div class="platform-queue-aside">
+                        <span class="badge badge-warning">GPS</span>
+                      </div>
                     </div>
+                    <button type="button" class="platform-queue-item" data-flow-goto="6">
+                      <div class="platform-queue-main">
+                        <div class="platform-queue-title">Sari vs Dina · skor tidak cocok</div>
+                        <div class="platform-queue-meta">Dispute #D-4421 · prioritas tinggi</div>
+                      </div>
+                      <div class="platform-queue-aside">
+                        <span class="badge badge-warning">Dispute</span>
+                        <span class="text-sm font-bold">Resolve →</span>
+                      </div>
+                    </button>
                   </div>
                   <div class="btn-stack">
                     <button
@@ -407,34 +404,16 @@ Nama & venue valid, tidak duplikat dengan komunitas existing.</textarea
                       ✕ Tolak Match — GPS Fail 2.3km
                     </button>
                   </div>
-                  <div class="match-card mt-2">
-                    <div>
-                      <div class="match-players">
-                        Sari vs Dina · skor tidak cocok
-                      </div>
-                      <div class="match-meta">
-                        Dispute #D-4421 · prioritas tinggi
-                      </div>
-                    </div>
-                    <span class="badge badge-warning">Dispute</span>
-                  </div>
-                  <button
-                    type="button"
-                    class="btn btn-outline btn-block btn-lg mt-1"
-                    data-flow-goto="6"
-                  >
-                    Buka & Resolve Dispute Sari vs Dina →
-                  </button>
                 </div>
               </div>
             </div>
 
             <!-- Step 6: Dispute -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="5" aria-label="Back">←</button><div class="app-logo">Resolve Dispute #D-4421</div></div>
-                </div>
+                </header>
                 <div class="app-body">
                   <div class="info-strip mb-2">
                     <span>⚖</span>
@@ -489,10 +468,10 @@ Set 2 diverifikasi via screenshot lapangan.</textarea
 
             <!-- Step 7: Adjustment -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="6" aria-label="Back">←</button><div class="app-logo">Point Adjustment</div></div>
-                </div>
+                </header>
                 <div class="app-body">
                   <div class="alert alert-info">
                     <span>ℹ</span
@@ -536,10 +515,10 @@ Set 2 diverifikasi via screenshot lapangan.</textarea
 
             <!-- Step 8: Community Stats -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo">Stats · Padel Jakarta</div></div>
-                </div>
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.navAnalytics">Analytics</div></div>
+                </header>
                 <div class="app-body">
                   <div class="stat-grid mb-2">
                     <div class="stat-box">
@@ -590,10 +569,10 @@ Set 2 diverifikasi via screenshot lapangan.</textarea
 
             <!-- Step 9: Global Tournament Wizard -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.globalTournamentTitle">Create Global Tournament</div></div>
-                </div>
+                </header>
                 <div class="app-body app-body-narrow">
                   <div class="form-group"><label class="form-label">Nama Turnamen</label><input class="form-input" data-event-name value="Indonesia Padel Masters" /></div>
                   <div class="form-group"><label class="form-label">Format</label><select class="form-select"><option>Single Elimination</option><option>Double Elimination</option><option>Group → Knockout</option><option>Round Robin</option></select></div>
@@ -609,11 +588,13 @@ Set 2 diverifikasi via screenshot lapangan.</textarea
 
             <!-- Step 10: Global registration -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="9" aria-label="Back">←</button><div class="app-logo">Global Registration</div></div>
-                  <span class="badge badge-global">48 / 64</span>
-                </div>
+                  <div class="app-header-actions">
+                    <span class="badge badge-global">48 / 64</span>
+                  </div>
+                </header>
                 <div class="app-body">
                   <p class="section-sub">Cross-community entrants — Senayan, Kemang, BSD, Bandung…</p>
                   <div class="match-card"><div><div class="match-players">Budi Santoso</div><div class="match-meta">Padel Jakarta · Global #142</div></div><span class="badge badge-success">Terdaftar</span></div>
@@ -625,14 +606,49 @@ Set 2 diverifikasi via screenshot lapangan.</textarea
 
             <!-- Step 11: Global live -->
             <div class="flow-step">
-              <div class="app admin-theme">
-                <div class="app-header">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo">Global Live</div></div>
-                  <span class="badge badge-global">Tier 2</span>
-                </div>
+                  <div class="app-header-actions">
+                    <span class="badge badge-global">Tier 2</span>
+                  </div>
+                </header>
                 <div class="app-body" data-tournament-live>
                   <div class="bracket" data-tournament-bracket></div>
                   <button type="button" class="btn btn-ball btn-block btn-lg" data-event-finalize data-flow-goto="1" data-i18n="rank.finalizeGlobalBtn">Finalisasi → Update Global Rank</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 12: Admin account & settings -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.accountTitle">Admin account</div></div>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <div class="card mb-2 text-center" style="padding: 1.25rem">
+                    <div class="avatar avatar-lg avatar-photo" style="margin: 0 auto 0.65rem">🛡️</div>
+                    <strong>Tim Match Point</strong>
+                    <p class="text-sm text-muted" style="margin: 0.25rem 0 0">admin@matchpoint.id</p>
+                    <span class="badge badge-platform mt-1" data-i18n="platform.accountRole">Superadmin platform</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Email Admin</label>
+                    <input class="form-input" value="admin@matchpoint.id" readonly />
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" data-i18n="menu.language">Language</label>
+                    <div class="lang-toggle">
+                      <button type="button" class="lang-btn" data-lang="id">ID</button>
+                      <button type="button" class="lang-btn active" data-lang="en">EN</button>
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-outline btn-block" data-theme-toggle>
+                    <span data-theme-icon>🌙</span>
+                    <span data-theme-label data-i18n="theme.toDark">Dark Mode</span>
+                  </button>
+                  <button type="button" class="btn btn-danger btn-block mt-2" data-menu-logout data-i18n="flow.logout">Keluar</button>
                 </div>
               </div>
             </div>
@@ -662,20 +678,40 @@ Set 2 diverifikasi via screenshot lapangan.</textarea
       MP_Flow.init({
         steps: [
           { titleKey: "title.auth-login", hintKey: "flow.hint.adminLogin" },
-          { titleKey: "title.admin", hintKey: "flow.hint.adminOverview" },
-          { titleKey: "title.approval-inbox", hintKey: "flow.hint.approvalInbox" },
+          { titleKey: "title.admin", hintKey: "flow.hint.adminOverview", nav: "home" },
+          { titleKey: "title.approval-inbox", hintKey: "flow.hint.approvalInbox", nav: "inbox" },
           { titleKey: "title.approval-detail", hintKey: "flow.hint.approvalDetail" },
           { titleKey: "title.approval-result", hintKey: "flow.hint.approvalResult" },
-          { titleKey: "title.admin-pending", hintKey: "flow.hint.adminPending" },
+          { titleKey: "title.admin-pending", hintKey: "flow.hint.adminPending", nav: "matches" },
           { titleKey: "title.admin-dispute", hintKey: "flow.hint.adminDispute" },
           { titleKey: "title.admin-adjustment", hintKey: "flow.hint.adminAdjustment" },
-          { titleKey: "title.admin-community", hintKey: "flow.hint.adminCommunity" },
+          { titleKey: "title.admin-community", hintKey: "flow.hint.adminCommunity", nav: "analytics" },
           { titleKey: "platform.globalTournamentTitle", hintKey: "flow.hint.globalWizard" },
           { titleKey: "platform.globalRegTitle", hintKey: "flow.hint.globalReg" },
           { titleKey: "platform.globalLiveTitle", hintKey: "flow.hint.globalLive" },
+          { titleKey: "platform.accountTitle", hintKey: "flow.hint.adminSettings" },
         ],
         resetRoleOnLogin: false,
         finishUrl: "index.html",
+        appChrome: true,
+        authedStartStep: 1,
+        settingsStep: 12,
+        chromeSport: false,
+        chromeProfile: {
+          name: "Tim Match Point",
+          handle: "admin@matchpoint.id",
+          avatar: "🛡️",
+          title: "Platform Admin",
+        },
+        navItems: [
+          { key: "home", i18n: "nav.dashboard", icon: "📊" },
+          { key: "inbox", i18n: "platform.navInbox", icon: "📥" },
+          { key: "matches", i18n: "platform.navMatches", icon: "⏳" },
+          { key: "analytics", i18n: "platform.navAnalytics", icon: "📈" },
+        ],
+        navRedirect: {
+          profile: "platform.html?step=12",
+        },
       });
     </script>
   </body>
