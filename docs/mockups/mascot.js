@@ -39,9 +39,13 @@ window.MP_Mascot = (function () {
     return rel;
   }
 
+  function isAutoSport(el) {
+    return el.getAttribute("data-mascot-sport") === "auto" || el.hasAttribute("data-mascot-switch");
+  }
+
   function resolveSport(el) {
-    const mode = el.dataset.mascotSport || "padel";
-    if (mode === "auto" && window.MP_Sport) return MP_Sport.get();
+    if (isAutoSport(el) && window.MP_Sport) return MP_Sport.get();
+    const mode = el.getAttribute("data-mascot-sport") || "padel";
     if (SPORTS.includes(mode) || mode === "rally") return mode;
     return "padel";
   }
@@ -59,6 +63,7 @@ window.MP_Mascot = (function () {
     const size = opts.size || el.dataset.mascotSize || "md";
     const showName = opts.showName || el.hasAttribute("data-mascot-show-name");
     const isSwitch = el.hasAttribute("data-mascot-switch");
+    const autoMode = isAutoSport(el);
 
     el.className =
       "mp-mascot mp-mascot-" +
@@ -68,7 +73,11 @@ window.MP_Mascot = (function () {
       " mp-mascot-sport-" +
       sport +
       (isSwitch ? " mp-mascot-switch mp-mascot-header-slot" : "");
-    el.dataset.mascotSport = sport;
+    if (autoMode) {
+      el.setAttribute("data-mascot-sport", "auto");
+    } else {
+      el.dataset.mascotSport = sport;
+    }
 
     const name = t(m.nameKey);
     const tagline = t(m.taglineKey);
@@ -140,9 +149,11 @@ window.MP_Mascot = (function () {
   }
 
   function refreshAuto() {
-    document.querySelectorAll('[data-mascot-sport="auto"]').forEach(function (el) {
-      mount(el);
-    });
+    document
+      .querySelectorAll('[data-mascot-sport="auto"], [data-mascot-switch]')
+      .forEach(function (el) {
+        mount(el);
+      });
   }
 
   function init() {
