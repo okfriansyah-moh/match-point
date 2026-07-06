@@ -61,6 +61,12 @@ window.MP_Sport = (function () {
     apply(saved && SPORTS.includes(saved) ? saved : "padel");
 
     document.body.addEventListener("click", (e) => {
+      const mascotSwitch = e.target.closest(".mp-mascot-switch");
+      if (mascotSwitch) {
+        e.preventDefault();
+        cycle();
+        return;
+      }
       const orb = e.target.closest(".sport-orb");
       if (orb) {
         e.preventDefault();

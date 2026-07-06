@@ -5051,6 +5051,9 @@ body.mp-dark .mp-aside-card {
 body.mp-dark .sport-orb {
   background: var(--surface-2);
 }
+body.mp-dark .mp-mascot-switch {
+  background: var(--surface-2);
+}
 
 /* Notifications panel */
 .notif-wrap {
@@ -6304,13 +6307,13 @@ body.mp-device-mobile .pa-hbar-row {
   height: 72px;
 }
 .mp-mascot-sport-padel .mp-mascot-img {
-  filter: drop-shadow(0 6px 14px rgba(20, 184, 166, 0.4));
+  filter: drop-shadow(0 6px 14px rgba(14, 165, 233, 0.5));
 }
 .mp-mascot-sport-tennis .mp-mascot-img {
-  filter: drop-shadow(0 6px 14px rgba(34, 197, 94, 0.4));
+  filter: drop-shadow(0 6px 14px rgba(34, 197, 94, 0.5));
 }
 .mp-mascot-sport-pickleball .mp-mascot-img {
-  filter: drop-shadow(0 6px 14px rgba(251, 146, 60, 0.45));
+  filter: drop-shadow(0 6px 14px rgba(220, 38, 38, 0.5));
 }
 .mp-mascot-card:nth-child(2) .mp-mascot-img {
   animation-delay: 0.35s;
@@ -6527,13 +6530,41 @@ body.docs-locked {
   align-items: center;
   line-height: 0;
 }
+.mp-mascot-switch {
+  border: 2.5px solid var(--sport-mascot-accent, #0ea5e9);
+  border-radius: 50%;
+  padding: 2px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sport-mascot-accent, #0ea5e9) 22%, transparent);
+}
+.mp-mascot-switch:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sport-mascot-accent, #0ea5e9) 30%, transparent);
+}
+.mp-mascot-switch:active {
+  transform: scale(0.96);
+}
+.mp-mascot-switch.mp-mascot-sport-padel {
+  --sport-mascot-accent: #0ea5e9;
+}
+.mp-mascot-switch.mp-mascot-sport-tennis {
+  --sport-mascot-accent: #22c55e;
+}
+.mp-mascot-switch.mp-mascot-sport-pickleball {
+  --sport-mascot-accent: #dc2626;
+}
 .mp-mascot-header-slot .mp-mascot-img {
   width: 36px;
   height: 36px;
   animation-duration: 3s;
 }
+.mp-mascot-switch .mp-mascot-img {
+  pointer-events: none;
+}
 .app-header-actions .mp-mascot-header-slot {
-  margin-right: 0.15rem;
+  margin-right: 0.35rem;
 }
 .mp-dash-mascot {
   margin-bottom: 1rem;

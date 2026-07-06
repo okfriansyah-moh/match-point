@@ -58,6 +58,7 @@ window.MP_Mascot = (function () {
     const mood = opts.mood || el.dataset.mascotMood || "idle";
     const size = opts.size || el.dataset.mascotSize || "md";
     const showName = opts.showName || el.hasAttribute("data-mascot-show-name");
+    const isSwitch = el.hasAttribute("data-mascot-switch");
 
     el.className =
       "mp-mascot mp-mascot-" +
@@ -65,7 +66,8 @@ window.MP_Mascot = (function () {
       " mp-mascot-" +
       mood +
       " mp-mascot-sport-" +
-      sport;
+      sport +
+      (isSwitch ? " mp-mascot-switch mp-mascot-header-slot" : "");
     el.dataset.mascotSport = sport;
 
     const name = t(m.nameKey);
@@ -73,9 +75,7 @@ window.MP_Mascot = (function () {
     el.innerHTML =
       '<img src="' +
       resolvePath(m.file) +
-      '" alt="' +
-      name +
-      '" class="mp-mascot-img" width="120" height="120" />' +
+      '" alt="" class="mp-mascot-img" width="120" height="120" aria-hidden="true" />' +
       (showName
         ? '<div class="mp-mascot-label"><span class="mp-mascot-name">' +
           name +
@@ -86,6 +86,16 @@ window.MP_Mascot = (function () {
       (opts.speech
         ? '<div class="mp-mascot-speech">' + opts.speech + "</div>"
         : "");
+
+    if (isSwitch) {
+      const sportLabel = window.MP_Sport ? MP_Sport.label(sport) : sport;
+      const label = t("sport.switch") + " — " + sportLabel + " (" + name + ")";
+      el.setAttribute("type", "button");
+      el.setAttribute("aria-label", label);
+      el.title = label;
+    } else if (el.querySelector(".mp-mascot-img")) {
+      el.querySelector(".mp-mascot-img").setAttribute("alt", name);
+    }
   }
 
   function mountTrio(el) {

@@ -92,9 +92,10 @@ window.MP_Flow = (function () {
       return "full";
     }
 
-    const slimControlsHTML =
-      '<span class="mp-mascot-header-slot" data-mascot data-mascot-sport="auto" data-mascot-size="sm" aria-hidden="true"></span>' +
-      '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>';
+    const mascotSwitchHTML =
+      '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="sm" data-i18n-title="sport.switch" title="Switch sport"></button>';
+
+    const slimControlsHTML = mascotSwitchHTML;
 
     function injectChrome() {
       const chromeProfile = config.chromeProfile || {
@@ -118,14 +119,10 @@ window.MP_Flow = (function () {
           (config.navRedirect && config.navRedirect[it.key]),
       );
 
-      const mascotHTML =
-        '<span class="mp-mascot-header-slot" data-mascot data-mascot-sport="auto" data-mascot-size="sm" aria-hidden="true"></span>';
+      const mascotSwitchHTML =
+        '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="sm" data-i18n-title="sport.switch" title="Switch sport"></button>';
 
-      const sportOrbHTML =
-        config.chromeSport !== false
-          ? mascotHTML +
-            '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>'
-          : "";
+      const sportOrbHTML = config.chromeSport !== false ? mascotSwitchHTML : "";
 
       const controlsHTML =
         '<div class="notif-wrap">' +
@@ -219,7 +216,7 @@ window.MP_Flow = (function () {
         app.classList.add(
           level === "immersive" ? "chrome-immersive" : "chrome-slim",
         );
-        if (header && !header.querySelector(".sport-orb")) {
+        if (header && !header.querySelector(".mp-mascot-switch")) {
           let actions = header.querySelector(".app-header-actions");
           if (!actions) {
             actions = document.createElement("div");
