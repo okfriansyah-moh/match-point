@@ -3808,6 +3808,13 @@ body.mp-device-desktop .mp-device-bar-label::after {
   content: " · Web";
 }
 
+/* Web/desktop is full-bleed — profile + header actions sit top-right; keep switcher left */
+body.mp-device-desktop .mp-device-bar {
+  top: max(0.65rem, env(safe-area-inset-top, 0px));
+  left: calc(max(0.65rem, env(safe-area-inset-left, 0px)) + 2.75rem);
+  right: auto;
+}
+
 /* On narrow viewports, keep the switcher compact at the top so bottom nav stays tappable */
 @media (max-width: 639px) {
   .mp-device-bar {
