@@ -1,9 +1,18 @@
 /* Match Point product docs — version & changelog (update when shipping mockup changes) */
 window.MP_Docs = {
-  version: "3.1.0",
+  version: "3.2.0",
   label: "Mockup docs",
   updated: "2026-07-06",
   changelog: [
+    {
+      version: "3.2.0",
+      date: "2026-07-06",
+      title: "Per-sport mascots & global readiness strategy",
+      items: [
+        "Per-sport gemoy mascots — Pipo (padel), Tenni (tennis), Dink (pickleball)",
+        "Global readiness doc — market fit, competition, monetization, infra, post-mockup roadmap",
+      ],
+    },
     {
       version: "3.1.0",
       date: "2026-07-06",
@@ -13,7 +22,7 @@ window.MP_Docs = {
         "Community Sparring — 2+ communities, casual (~40% rank) vs ranked (~70%) modes",
         "Glicko-2-lite skill display (WPR / UTR / DUPR bands) + eligibility gates",
         "Match Point badges & crests; Rally mascot; feedback widget (WhatsApp + email)",
-        "Product docs page (this page) with version changelog",
+        "Product docs page (About) with version changelog",
       ],
     },
     {

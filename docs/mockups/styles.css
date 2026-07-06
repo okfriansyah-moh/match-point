@@ -6475,6 +6475,87 @@ body.mp-device-mobile .pa-hbar-row {
   font-size: 0.8rem;
   color: var(--ink-muted);
 }
+.docs-pre {
+  background: var(--surface-2, rgba(0, 0, 0, 0.04));
+  border-radius: var(--radius, 8px);
+  padding: 1rem 1.25rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  margin: 1rem 0;
+}
+.docs-gate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(10, 30, 18, 0.92);
+  backdrop-filter: blur(6px);
+}
+.docs-gate-card {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+.docs-gate-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+.docs-gate-form {
+  margin-top: 1.25rem;
+  text-align: left;
+}
+.docs-gate-error {
+  margin-top: 0.5rem;
+}
+.docs-gate-back {
+  display: inline-block;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+body.docs-locked {
+  overflow: hidden;
+}
+.mp-mascot-header-slot {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+}
+.mp-mascot-header-slot .mp-mascot-img {
+  width: 36px;
+  height: 36px;
+  animation-duration: 3s;
+}
+.app-header-actions .mp-mascot-header-slot {
+  margin-right: 0.15rem;
+}
+.mp-dash-mascot {
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, rgba(196, 30, 58, 0.06), rgba(34, 197, 94, 0.06));
+}
+.mp-dash-mascot-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.mp-dash-mascot-copy strong {
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
+}
+.mp-dash-mascot-copy p {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.85;
+  line-height: 1.35;
+}
 
 .app-logo-page-title {
   font-size: 1.28rem;

@@ -1596,6 +1596,54 @@ window.MP_I18N = (function () {
       id: "Maskot utama Match Point",
       en: "Match Point's main mascot",
     },
+
+    "global.navLink": { id: "Kesiapan global →", en: "Global readiness →" },
+    "global.linkAbout": { id: "← Dokumentasi produk", en: "← Product docs (About)" },
+    "global.title": {
+      id: "Kesiapan global & go-to-market",
+      en: "Global readiness & go-to-market",
+    },
+    "global.lead": {
+      id: "Referensi strategi untuk scale Match Point melampaui Indonesia — market fit, kompetisi, kematangan mockup, monetisasi, dan infrastruktur setelah fase prototipe.",
+      en: "Strategy reference for scaling Match Point beyond Indonesia — market fit, competition, mockup maturity, monetization, and infrastructure after the prototype phase.",
+    },
+    "global.toc": { id: "Di halaman ini", en: "On this page" },
+    "global.secSummary": { id: "Ringkasan eksekutif", en: "Executive summary" },
+    "global.secProblem": { id: "Masalah & market fit", en: "Problem & market fit" },
+    "global.secPositioning": { id: "Posisi & visi", en: "Positioning & vision" },
+    "global.secCompetitive": { id: "Lanskap kompetitif", en: "Competitive landscape" },
+    "global.secAdvantage": { id: "Keunggulan kami", en: "Our advantage" },
+    "global.secGlobalReady": { id: "Desain siap global", en: "Global-ready design" },
+    "global.secMockupToday": { id: "Inventaris mockup", en: "Mockup inventory" },
+    "global.secWedge": { id: "Wedge Indonesia dulu", en: "Indonesia-first wedge" },
+    "global.secGaps": { id: "Kesenjangan & perbaikan", en: "Gaps & improvements" },
+    "global.secExpansion": { id: "Ekspansi regional", en: "Regional expansion" },
+    "global.secIntegrations": { id: "Roadmap integrasi", en: "Integrations roadmap" },
+    "global.secLocalization": { id: "Lokalisasi & kepatuhan", en: "Localization & compliance" },
+    "global.secMonetization": { id: "Strategi monetisasi", en: "Monetization strategy" },
+    "global.secMonetizationReady": { id: "Kesiapan monetisasi", en: "Monetization readiness" },
+    "global.secInfrastructure": { id: "Infrastruktur & keberlanjutan", en: "Infrastructure & sustainability" },
+    "global.secRoadmap": { id: "Roadmap pasca-mockup", en: "Post-mockup roadmap" },
+    "global.secMetrics": { id: "Metrik sukses", en: "Success metrics" },
+    "global.secRisks": { id: "Risiko", en: "Risks" },
+    "global.gateTitle": { id: "Dokumen terbatas", en: "Restricted document" },
+    "global.gateDesc": {
+      id: "Kesiapan global & strategi — masukkan password tim untuk melanjutkan.",
+      en: "Global readiness & strategy — enter the team password to continue.",
+    },
+    "global.gateLabel": { id: "Password", en: "Password" },
+    "global.gateError": {
+      id: "Password salah. Coba lagi.",
+      en: "Incorrect password. Try again.",
+    },
+    "global.gateSubmit": { id: "Buka dokumen", en: "Unlock document" },
+    "global.gateBack": { id: "← Kembali ke hub", en: "← Back to hub" },
+
+    "mascot.dashTitle": { id: "Siap main?", en: "Ready to play?" },
+    "mascot.dashDesc": {
+      id: "Teman olahragamu berubah saat kamu ganti padel, tennis, atau pickleball.",
+      en: "Your sport buddy updates when you switch padel, tennis, or pickleball.",
+    },
   };
 
   function t(key, lang) {

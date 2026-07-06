@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Readiness — Match Point Docs</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="about-page docs-page">
+    <div class="docs-shell">
+      <aside class="docs-sidebar" aria-label="Documentation navigation">
+        <a href="index.html" class="docs-sidebar-brand">← Match Point</a>
+        <p class="docs-sidebar-meta">
+          <span class="docs-version-pill" id="docs-version-pill">v3.2.0</span>
+          <span class="docs-updated" id="docs-updated">Updated 2026-07-06</span>
+        </p>
+        <nav class="docs-toc">
+          <p class="docs-toc-label" data-i18n="global.toc">On this page</p>
+          <a href="#summary" data-i18n="global.secSummary">Executive summary</a>
+          <a href="#problem" data-i18n="global.secProblem">Problem &amp; market fit</a>
+          <a href="#positioning" data-i18n="global.secPositioning">Positioning &amp; vision</a>
+          <a href="#competitive" data-i18n="global.secCompetitive">Competitive landscape</a>
+          <a href="#advantage" data-i18n="global.secAdvantage">Our advantage</a>
+          <a href="#global-ready" data-i18n="global.secGlobalReady">Global-ready design</a>
+          <a href="#mockup-today" data-i18n="global.secMockupToday">Mockup inventory</a>
+          <a href="#indonesia-wedge" data-i18n="global.secWedge">Indonesia-first wedge</a>
+          <a href="#gaps" data-i18n="global.secGaps">Gaps &amp; improvements</a>
+          <a href="#expansion" data-i18n="global.secExpansion">Regional expansion</a>
+          <a href="#integrations" data-i18n="global.secIntegrations">Integrations roadmap</a>
+          <a href="#localization" data-i18n="global.secLocalization">Localization &amp; compliance</a>
+          <a href="#monetization" data-i18n="global.secMonetization">Monetization strategy</a>
+          <a href="#monetization-ready" data-i18n="global.secMonetizationReady">Monetization readiness</a>
+          <a href="#infrastructure" data-i18n="global.secInfrastructure">Infrastructure &amp; sustainability</a>
+          <a href="#roadmap" data-i18n="global.secRoadmap">Post-mockup roadmap</a>
+          <a href="#metrics" data-i18n="global.secMetrics">Success metrics</a>
+          <a href="#risks" data-i18n="global.secRisks">Risks</a>
+          <a href="about.html" data-i18n="global.linkAbout">← Product docs (About)</a>
+        </nav>
+        <div class="lang-toggle docs-lang">
+          <button type="button" class="lang-btn" data-lang="id">ID</button>
+          <button type="button" class="lang-btn active" data-lang="en">EN</button>
+        </div>
+      </aside>
+
+      <main class="docs-main">
+        <header class="docs-hero">
+          <div data-mascot data-mascot-sport="padel" data-mascot-size="sm" data-mascot-mood="idle"></div>
+          <h1 data-i18n="global.title">Global readiness &amp; go-to-market</h1>
+          <p class="docs-lead" data-i18n="global.lead">
+            Strategy reference for scaling Match Point beyond Indonesia — market fit, competition, mockup maturity, monetization, and infrastructure after the prototype phase.
+          </p>
+        </header>
+
+        <section id="summary" class="docs-section card">
+          <h2 data-i18n="global.secSummary">Executive summary</h2>
+          <p>
+            <strong>Match Point can serve the world</strong> as a product category: portable player reputation and rankings across informal padel, tennis, and pickleball communities.
+            The mockup phase validates UX and rules; architecture is region-agnostic. What is Indonesia-specific today is <em>launch data, integrations, and copy</em> — not the core model.
+          </p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Question</th><th>Answer</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Is the problem global?</td>
+                <td>Yes — most play is outside federations; reputation is fragmented across clubs and apps.</td>
+              </tr>
+              <tr>
+                <td>Are our sports global?</td>
+                <td>Yes — padel (EU/LATAM/MENA/US), tennis (worldwide), pickleball (US-led, spreading).</td>
+              </tr>
+              <tr>
+                <td>Do we replace UTR / DUPR / WPR?</td>
+                <td>No — we complement them with <strong>community portability</strong>, endorsements, BoC, and club operations.</td>
+              </tr>
+              <tr>
+                <td>Launch strategy</td>
+                <td><strong>Indonesia-first density</strong>, global product design, regional adapters per market.</td>
+              </tr>
+              <tr>
+                <td>One-stop ambition</td>
+                <td>Reputation + community ops + cross-club competition first; booking and full social feed are phase-2+.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="problem" class="docs-section card">
+          <h2 data-i18n="global.secProblem">Problem &amp; market fit</h2>
+          <h3>The gap federations and booking apps do not fill</h3>
+          <ul class="docs-list">
+            <li><strong>Official systems</strong> (federations, ILTL-style leagues) capture sanctioned competition only — recreational and club play is invisible.</li>
+            <li><strong>Booking apps</strong> (Playtomic, court resellers) optimize court utilization, not long-term player reputation across clubs.</li>
+            <li><strong>Rating platforms</strong> (UTR, DUPR, WPR) measure skill but not community history, endorsements, or inter-club rivalry narratives.</li>
+            <li><strong>Social groups</strong> (WhatsApp, Instagram) drive discovery but leave no structured, portable record.</li>
+          </ul>
+          <h3>Who feels the pain (global ICP)</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Segment</th><th>Job to be done</th><th>Willingness to pay</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Recreational players</strong></td>
+                <td>Fair brackets, visible progress, shareable identity, play-up/down clarity</td>
+                <td>Low direct — freemium; monetize via clubs &amp; events</td>
+              </tr>
+              <tr>
+                <td><strong>Club / community admins</strong></td>
+                <td>Run events, rank members, reduce sandbagging disputes, retain players</td>
+                <td><strong>High</strong> — SaaS per community</td>
+              </tr>
+              <tr>
+                <td><strong>Platform / federation operators</strong></td>
+                <td>Cross-community seasons (BoC), audit trails, analytics, brand</td>
+                <td><strong>High</strong> — enterprise / season sponsorship</td>
+              </tr>
+              <tr>
+                <td><strong>Brands &amp; sponsors</strong></td>
+                <td>Reach engaged local sports communities with measurable participation</td>
+                <td>Medium — seasonal campaigns</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="form-hint">
+            Market fit is strongest where padel/pickleball communities are dense, WhatsApp-organized, and underserved by federation data — Indonesia, UAE, Spain, and US metro areas are prime wedges.
+          </p>
+        </section>
+
+        <section id="positioning" class="docs-section card">
+          <h2 data-i18n="global.secPositioning">Positioning &amp; vision</h2>
+          <h3>What we are</h3>
+          <p>
+            The <strong>cross-community reputation layer</strong> for padel, tennis, and pickleball — community-first operations with a portable Global rank, fair-play gates, and flagship inter-community products (Battle of Communities, Community Sparring).
+          </p>
+          <h3>What we are building toward (north star)</h3>
+          <p>A <strong>one-stop home for your racket-sport social identity</strong> — not replacing every app on day one, but becoming the profile and rank players share everywhere:</p>
+          <ul class="docs-list">
+            <li><strong>Identity</strong> — verified profile, per-sport skill bands (WPR / UTR / DUPR display), endorsements, share card</li>
+            <li><strong>Community</strong> — discover clubs, join events, Mabar ladder, admin tools</li>
+            <li><strong>Competition</strong> — club events, global tournaments, BoC seasons, sparring</li>
+            <li><strong>Trust</strong> — match submission, disputes, eligibility, anti-sandbagging</li>
+            <li><strong>Social (phased)</strong> — activity feed, highlights, rivalries, achievements — lightweight at first, not a generic social network</li>
+          </ul>
+          <h3>What we are not (v1 production)</h3>
+          <ul class="docs-list">
+            <li>Primary court-booking marketplace (integrate with Playtomic / local POS instead)</li>
+            <li>Replacement for UTR/DUPR/WPR official ratings (align display; link or import where APIs allow)</li>
+            <li>TikTok-style content platform (share cards and match moments, not infinite scroll video)</li>
+          </ul>
+        </section>
+
+        <section id="competitive" class="docs-section card">
+          <h2 data-i18n="global.secCompetitive">Competitive landscape</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Strength</th>
+                <th>Weakness vs Match Point</th>
+                <th>Relationship</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>UTR</strong> (tennis)</td>
+                <td>Global skill standard, college recruiting, verified events</td>
+                <td>Weak community/club ops; limited padel/pickleball</td>
+                <td>Complement — display alignment, optional import</td>
+              </tr>
+              <tr>
+                <td><strong>DUPR</strong> (pickleball)</td>
+                <td>De facto pickleball rating, club adoption US</td>
+                <td>No cross-community BoC/sparring; limited ID/SEA</td>
+                <td>Complement — band labels, club events feed in</td>
+              </tr>
+              <tr>
+                <td><strong>WPR</strong> (padel)</td>
+                <td>Growing padel-specific global rating</td>
+                <td>Less community admin tooling</td>
+                <td>Complement — WPR-style display in mockup</td>
+              </tr>
+              <tr>
+                <td><strong>Playtomic</strong></td>
+                <td>Court booking, large EU/LATAM padel/tennis base</td>
+                <td>Reputation portability across non-Playtomic clubs</td>
+                <td>Integrate — match import, not head-on booking war</td>
+              </tr>
+              <tr>
+                <td><strong>ILTL</strong> (Indonesia)</td>
+                <td>Official competition data ID</td>
+                <td>Recreational/club play uncovered</td>
+                <td>Import — authoritative baseline for ID tennis/padel</td>
+              </tr>
+              <tr>
+                <td><strong>Strava / generic fitness</strong></td>
+                <td>Social sharing habit</td>
+                <td>No bracket logic, endorsements, or sport formats</td>
+                <td>Different category — borrow share UX only</td>
+              </tr>
+              <tr>
+                <td><strong>WhatsApp / Instagram groups</strong></td>
+                <td>Zero friction, local trust</td>
+                <td>No rank, no audit, no cross-club ladder</td>
+                <td>Distribution channel — deep links, share cards</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="advantage" class="docs-section card">
+          <h2 data-i18n="global.secAdvantage">Our competitive advantage</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Advantage</th><th>Why it matters globally</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Dual-track rank</strong> (Mabar + Global)</td>
+                <td>Clubs keep local culture; players still earn portable cross-community standing — works in any city.</td>
+              </tr>
+              <tr>
+                <td><strong>Multi-sport single identity</strong></td>
+                <td>One profile for padel + tennis + pickleball — rare in incumbents who are sport-siloed.</td>
+              </tr>
+              <tr>
+                <td><strong>Community-first + platform seasons</strong></td>
+                <td>BoC and Sparring are differentiated IP — not just another ladder app.</td>
+              </tr>
+              <tr>
+                <td><strong>Fair-play system</strong></td>
+                <td>Glicko-style skill, eligibility gates, sandbagging policy — universal need for bracketed events.</td>
+              </tr>
+              <tr>
+                <td><strong>Endorsement graph</strong></td>
+                <td>Social proof without black-box AI — culturally adaptable (peers vouch for skill).</td>
+              </tr>
+              <tr>
+                <td><strong>Transparent rules in-product</strong></td>
+                <td>Public docs (About, this page) build trust for global expansion and B2B operators.</td>
+              </tr>
+              <tr>
+                <td><strong>Visual identity system</strong></td>
+                <td>Badges, crests, mascots per sport — memorable brand for community pride globally.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="global-ready" class="docs-section card">
+          <h2 data-i18n="global.secGlobalReady">Global-ready design (architecture)</h2>
+          <p>These choices already travel across regions without redesign:</p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Area</th><th>Status</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Multi-sport model</td><td>✅ Ready</td><td>padel · tennis · pickleball with sport switcher</td></tr>
+              <tr><td>Dual rank scope</td><td>✅ Ready</td><td>Community vs cross-community is region-agnostic</td></tr>
+              <tr><td>Skill display bands</td><td>✅ Ready</td><td>WPR / UTR·NTRP / DUPR labels — international frameworks</td></tr>
+              <tr><td>Event format engine</td><td>✅ Ready</td><td>Americano, Mexicano, RR, knockout, league, group→KO</td></tr>
+              <tr><td>BoC / Sparring rules</td><td>✅ Ready</td><td>Configurable rubric, squads, penalties, audit log</td></tr>
+              <tr><td>i18n framework</td><td>🟡 Partial</td><td>ID + EN today; extensible key-based system</td></tr>
+              <tr><td>Auth / identity</td><td>🔴 Mock only</td><td>Needs production auth, federation ID linking</td></tr>
+              <tr><td>Payments</td><td>🔴 Not built</td><td>Required for monetization &amp; paid events</td></tr>
+              <tr><td>Regional data imports</td><td>🔴 Planned</td><td>ILTL (ID), Playtomic, UTR/DUPR APIs per region</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="mockup-today" class="docs-section card">
+          <h2 data-i18n="global.secMockupToday">What we have in mockups today</h2>
+          <p>Interactive HTML/CSS/JS prototype — validates UX, rules, and stakeholder narrative. <strong>Not production backend.</strong></p>
+
+          <h3>Player journey</h3>
+          <ul class="docs-list">
+            <li>Login, guest preview, phone OTP (mock), profile &amp; edit</li>
+            <li>Community discovery, join, multi-community membership</li>
+            <li>Mabar + Global leaderboard, monthly snapshot</li>
+            <li>Event feed, registration, eligibility panel (play-up/down)</li>
+            <li>Submit match, pending/approved/disputed flows</li>
+            <li>Endorsements (min 3 rule), share card (social-ready dimensions)</li>
+            <li>Battle of Communities detail — standings, squads, live rubric</li>
+            <li>Community Sparring — multi-community standings, casual vs ranked</li>
+          </ul>
+
+          <h3>Club admin</h3>
+          <ul class="docs-list">
+            <li>Community dashboard, member management</li>
+            <li>Event wizard — formats, brackets, live referee / manual scoring</li>
+            <li>Sparring create (invite 2+ communities)</li>
+          </ul>
+
+          <h3>Platform admin</h3>
+          <ul class="docs-list">
+            <li>Approval inbox (communities, featured events)</li>
+            <li>Global tournament wizard, analytics dashboard</li>
+            <li>BoC season wizard — group draw, fixtures, audit log</li>
+            <li>Dispute resolution, point adjustment (audit trail concept)</li>
+          </ul>
+
+          <h3>Cross-cutting</h3>
+          <ul class="docs-list">
+            <li>Glicko-2-lite skill mock (RD, reliability, provisional state)</li>
+            <li>Sport-specific bands (WPR / UTR / DUPR)</li>
+            <li>Badges &amp; crests, per-sport mascots (Pipo, Tenni, Dink)</li>
+            <li>ID/EN i18n, device preview (phone · tablet · web)</li>
+            <li>Product docs (About), feedback widget (WhatsApp + FormSubmit email)</li>
+          </ul>
+        </section>
+
+        <section id="indonesia-wedge" class="docs-section card">
+          <h2 data-i18n="global.secWedge">Indonesia-first wedge (intentional)</h2>
+          <p>Starting in Indonesia is a <strong>go-to-market choice</strong>, not an architectural limit.</p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Indonesia advantage</th><th>Global parallel later</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Dense padel/tennis club culture (Jakarta, Bali)</td><td>Madrid, Dubai, Austin metro wedges</td></tr>
+              <tr><td>WhatsApp-native organizing</td><td>Share cards + deep links; add email/SMS in US/EU</td></tr>
+              <tr><td>ILTL as official data hook</td><td>Playtomic EU, UTR US, local federation APIs</td></tr>
+              <tr><td>“Mabar” community identity</td><td>Localize label (“Club rank”, “Local ladder”) per locale</td></tr>
+              <tr><td>Phone OTP familiarity</td><td>Per-country SMS providers + email OAuth fallback</td></tr>
+            </tbody>
+          </table>
+          <h3>Suggested expansion sequence</h3>
+          <pre class="docs-pre">Indonesia (density, ILTL, WhatsApp)
+  → Singapore / Malaysia / Bali expat hubs
+  → UAE / Spain (padel capitals)
+  → US pickleball + tennis metros</pre>
+        </section>
+
+        <section id="gaps" class="docs-section card">
+          <h2 data-i18n="global.secGaps">Gaps &amp; areas for improvement</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Gap</th><th>Impact</th><th>Priority</th><th>Mockup → Production</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>No real backend / database</td>
+                <td>Cannot ship users or persist ranks</td>
+                <td>P0</td>
+                <td>API + Postgres + auth service</td>
+              </tr>
+              <tr>
+                <td>Indonesia-only sample data</td>
+                <td>Weak global demo for investors/partners</td>
+                <td>P1</td>
+                <td>Seed packs: ID, ES, US, AE</td>
+              </tr>
+              <tr>
+                <td>“Mabar” not localized</td>
+                <td>Confusion outside ID</td>
+                <td>P1</td>
+                <td>i18n keys + locale glossary</td>
+              </tr>
+              <tr>
+                <td>No court booking</td>
+                <td>Not true “one-stop” yet</td>
+                <td>P2</td>
+                <td>Partner integrations vs build</td>
+              </tr>
+              <tr>
+                <td>No activity feed / DMs</td>
+                <td>Limited “social network” stickiness</td>
+                <td>P2</td>
+                <td>Phase 2 — match moments, follows</td>
+              </tr>
+              <tr>
+                <td>Single-language depth (ID/EN only)</td>
+                <td>Blocks ES, AR, PT markets</td>
+                <td>P2</td>
+                <td>Crowdin / Lokalise pipeline</td>
+              </tr>
+              <tr>
+                <td>No payments / subscriptions</td>
+                <td>No revenue</td>
+                <td>P0 for monetization</td>
+                <td>Stripe + local gateways (Xendit ID)</td>
+              </tr>
+              <tr>
+                <td>FormSubmit / WhatsApp feedback only</td>
+                <td>Fine for mockup; not in-app support</td>
+                <td>P2</td>
+                <td>Intercom or Zendesk + in-app</td>
+              </tr>
+              <tr>
+                <td>GDPR / PDPA / data residency</td>
+                <td>EU + ID compliance risk</td>
+                <td>P1 before EU</td>
+                <td>Legal review, DPA, deletion flows</td>
+              </tr>
+              <tr>
+                <td>Native mobile apps</td>
+                <td>Discovery, push, GPS match submit</td>
+                <td>P1</td>
+                <td>PWA first → React Native / Flutter</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="expansion" class="docs-section card">
+          <h2 data-i18n="global.secExpansion">Regional expansion playbook</h2>
+          <p>Per new country/region, run this checklist before marketing spend:</p>
+          <ol class="docs-list">
+            <li><strong>Anchor communities</strong> — 3–5 pilot clubs with active weekly play</li>
+            <li><strong>Data source</strong> — one official or semi-official import (league, booking app, federation)</li>
+            <li><strong>Payment rail</strong> — local currency + tax/VAT rules for club SaaS</li>
+            <li><strong>Verification</strong> — phone SMS provider OR email + OAuth for markets with low SMS delivery</li>
+            <li><strong>Copy &amp; labels</strong> — translate UI; localize “Mabar”, date formats, km/mi</li>
+            <li><strong>Support channel</strong> — WhatsApp (SEA), email (EU/US), in-app chat at scale</li>
+            <li><strong>Launch event</strong> — BoC mini-season or sparring between 2 flagship clubs</li>
+          </ol>
+        </section>
+
+        <section id="integrations" class="docs-section card">
+          <h2 data-i18n="global.secIntegrations">Integrations roadmap</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Integration</th><th>Region</th><th>Purpose</th><th>Phase</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>ILTL API / batch</td><td>Indonesia</td><td>Official match seed, credibility</td><td>v1.0 ID</td></tr>
+              <tr><td>Playtomic</td><td>EU, LATAM, growing</td><td>Match + player import</td><td>v1.5</td></tr>
+              <tr><td>UTR Connect</td><td>Global tennis</td><td>Skill display sync</td><td>v1.5</td></tr>
+              <tr><td>DUPR</td><td>US + global pickleball</td><td>Skill display sync</td><td>v1.5</td></tr>
+              <tr><td>WPR</td><td>Global padel</td><td>Skill display sync</td><td>v1.5</td></tr>
+              <tr><td>Stripe / Xendit / Midtrans</td><td>Global / ID</td><td>Subscriptions &amp; event fees</td><td>v1.0 monetization</td></tr>
+              <tr><td>Twilio / Vonage SMS</td><td>Per country</td><td>OTP verification</td><td>v1.0</td></tr>
+              <tr><td>Google / Apple OAuth</td><td>Global</td><td>Low-friction signup</td><td>v1.0</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="localization" class="docs-section card">
+          <h2 data-i18n="global.secLocalization">Localization &amp; compliance</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Topic</th><th>Current</th><th>Target</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Languages</td><td>ID, EN</td><td>+ ES, PT, AR for priority markets</td></tr>
+              <tr><td>Terminology</td><td>Mabar (ID slang)</td><td>Locale glossary per market</td></tr>
+              <tr><td>Time zones</td><td>Implicit WIB in demos</td><td>IANA tz on all events</td></tr>
+              <tr><td>Units</td><td>km implied</td><td>km/mi by locale</td></tr>
+              <tr><td>Privacy</td><td>Not implemented</td><td>GDPR, Indonesia PDPA, export/delete</td></tr>
+              <tr><td>Minors</td><td>Not addressed</td><td>Parental consent policy for UTR-age juniors</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="monetization" class="docs-section card">
+          <h2 data-i18n="global.secMonetization">Monetization strategy</h2>
+          <p>Revenue should align with <strong>who gets operational value</strong> — clubs and platform operators — while keeping player entry low-friction for network effects.</p>
+
+          <h3>Revenue streams (recommended mix)</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Stream</th><th>Model</th><th>Who pays</th><th>When</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Community Pro</strong></td>
+                <td>SaaS subscription per club (tiered by member count)</td>
+                <td>Club admin</td>
+                <td>v1.0 — core B2B</td>
+              </tr>
+              <tr>
+                <td><strong>Event fees</strong></td>
+                <td>% platform fee on paid registrations</td>
+                <td>Organizer / player</td>
+                <td>v1.0 — tournaments &amp; leagues</td>
+              </tr>
+              <tr>
+                <td><strong>BoC / season sponsorship</strong></td>
+                <td>Branded seasons, featured slots</td>
+                <td>Sponsors, federations</td>
+                <td>v1.5 — after 50+ communities</td>
+              </tr>
+              <tr>
+                <td><strong>Featured discovery</strong></td>
+                <td>Promoted community listings</td>
+                <td>Clubs</td>
+                <td>v1.5</td>
+              </tr>
+              <tr>
+                <td><strong>Platform enterprise</strong></td>
+                <td>White-label or multi-region operator license</td>
+                <td>Federations, chains</td>
+                <td>v2.0</td>
+              </tr>
+              <tr>
+                <td><strong>Player premium</strong> (optional)</td>
+                <td>Advanced stats, custom share card themes</td>
+                <td>Power users</td>
+                <td>v2.0 — never paywall core rank</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Pricing principles</h3>
+          <ul class="docs-list">
+            <li>Never paywall <strong>basic rank visibility</strong> — kills viral share cards</li>
+            <li>Charge for <strong>admin workload reduction</strong> (events, brackets, live scoring, analytics)</li>
+            <li>Localize currency — IDR for Indonesia, USD/EUR for export markets</li>
+            <li>Free tier: 1 community, limited events/month — enough to prove value</li>
+          </ul>
+        </section>
+
+        <section id="monetization-ready" class="docs-section card">
+          <h2 data-i18n="global.secMonetizationReady">Monetization readiness</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Capability</th><th>Mockup</th><th>Needed to charge</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Club admin value demo</td><td>✅ Full wizard, live session</td><td>—</td></tr>
+              <tr><td>Platform analytics UI</td><td>✅ Dashboard mock</td><td>Real metrics pipeline</td></tr>
+              <tr><td>Paid event registration</td><td>🔴 Not built</td><td>Checkout, receipts, refunds</td></tr>
+              <tr><td>Subscription billing</td><td>🔴 Not built</td><td>Stripe Billing + webhooks</td></tr>
+              <tr><td>Usage metering</td><td>🔴 Not built</td><td>Members, events, storage per plan</td></tr>
+              <tr><td>Invoicing / tax</td><td>🔴 Not built</td><td>NPWP ID, VAT EU, 1099 US</td></tr>
+              <tr><td>Entitlement gates</td><td>🔴 Not built</td><td>Feature flags per plan in API</td></tr>
+            </tbody>
+          </table>
+          <p class="form-hint">
+            Mockup phase proves <strong>willingness-to-build</strong> narratives for investors and pilot clubs. Revenue requires backend + payments — target Community Pro first (highest willingness to pay).
+          </p>
+        </section>
+
+        <section id="infrastructure" class="docs-section card">
+          <h2 data-i18n="global.secInfrastructure">Infrastructure &amp; sustainability</h2>
+          <p>Reference stack from architecture docs — sized for post-mockup production. Costs scale with active communities and match volume, not player page views alone.</p>
+
+          <h3>Recommended production stack</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Layer</th><th>Choice</th><th>Rationale</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>API</td><td>Go modular monolith</td><td>Fast, single deploy, clear module boundaries</td></tr>
+              <tr><td>Database</td><td>PostgreSQL</td><td>Transactional + ranking snapshots</td></tr>
+              <tr><td>Cache</td><td>Redis</td><td>Leaderboards, sessions, rate limits</td></tr>
+              <tr><td>Queue</td><td>RabbitMQ / SQS</td><td>Async ranking recompute, notifications</td></tr>
+              <tr><td>Frontend</td><td>Next.js or static + API</td><td>SSR for SEO on public profiles</td></tr>
+              <tr><td>Hosting</td><td>K8s or managed (Fly.io, Railway → GKE)</td><td>Start small; scale on queue depth</td></tr>
+              <tr><td>CDN</td><td>Cloudflare</td><td>Global edge for share cards &amp; assets</td></tr>
+              <tr><td>Observability</td><td>OpenTelemetry + Grafana</td><td>SLOs on API p95 &amp; ranking lag</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Cost drivers &amp; rough monthly bands (estimate)</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Stage</th><th>Communities</th><th>Infra/mo (USD)</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Pilot</td><td>5–20</td><td>$150–400</td><td>Single region, managed DB, minimal ops</td></tr>
+              <tr><td>Growth ID</td><td>50–200</td><td>$800–2.5k</td><td>Ranking workers, SMS, backups</td></tr>
+              <tr><td>Multi-region</td><td>500+</td><td>$5k–15k+</td><td>Read replicas, CDN, compliance</td></tr>
+            </tbody>
+          </table>
+          <p>
+            <strong>Breakeven logic:</strong> at ~$49/mo Community Pro, 20 paying clubs cover pilot infra; 100+ clubs fund a small team. Event fees and BoC sponsorship accelerate margin.
+          </p>
+        </section>
+
+        <section id="roadmap" class="docs-section card">
+          <h2 data-i18n="global.secRoadmap">Post-mockup roadmap (phases)</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Phase</th><th>Focus</th><th>Deliverables</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Phase 0</strong> — Mockup complete</td>
+                <td>Stakeholder alignment</td>
+                <td>Flows, docs, global readiness (this page), pilot club LOIs</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 1</strong> — MVP ID</td>
+                <td>Ship real product in Indonesia</td>
+                <td>Auth, communities, match submit, Mabar rank, club events, ILTL import</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 2</strong> — Monetize</td>
+                <td>Community Pro + paid events</td>
+                <td>Stripe/Xendit, subscriptions, entitlements</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 3</strong> — Global rank &amp; BoC</td>
+                <td>Cross-community competition</td>
+                <td>Global tournaments, BoC season 1, sparring ranked mode</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 4</strong> — Expand</td>
+                <td>2nd region (SG/AE/ES)</td>
+                <td>Locale pack, regional integration, compliance</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 5</strong> — Social layer</td>
+                <td>Stickiness &amp; virality</td>
+                <td>Activity feed, follows, enhanced share cards, push</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="metrics" class="docs-section card">
+          <h2 data-i18n="global.secMetrics">Success metrics</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Metric</th><th>Pilot target</th><th>Global scale signal</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Active communities (weekly event)</td><td>10</td><td>100+ per region</td></tr>
+              <tr><td>Verified matches / month</td><td>500</td><td>50k+</td></tr>
+              <tr><td>Profile claim rate (imported players)</td><td>20%</td><td>40%+</td></tr>
+              <tr><td>Paying clubs</td><td>5</td><td>15% of active communities</td></tr>
+              <tr><td>Cross-community fixtures (BoC/Sparring)</td><td>1 season</td><td>4+ seasons/year multi-region</td></tr>
+              <tr><td>Share card exports / month</td><td>200</td><td>Organic acquisition channel</td></tr>
+              <tr><td>NPS (club admins)</td><td>40+</td><td>50+ at scale</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="risks" class="docs-section card">
+          <h2 data-i18n="global.secRisks">Risks &amp; mitigations</h2>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Risk</th><th>Mitigation</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Incumbents (UTR/DUPR) add community features</td>
+                <td>Move faster on BoC, endorsements, multi-sport identity; partner don’t fight</td>
+              </tr>
+              <tr>
+                <td>Low club willingness to pay</td>
+                <td>Prove admin time saved; free tier; case studies from pilot</td>
+              </tr>
+              <tr>
+                <td>Rating disputes / sandbagging backlash</td>
+                <td>Public rules (already in About); provisional badges; dispute SLA</td>
+              </tr>
+              <tr>
+                <td>Spreading too thin globally</td>
+                <td>Region gates in this playbook; no marketing until 3 anchor clubs</td>
+              </tr>
+              <tr>
+                <td>Infra cost before revenue</td>
+                <td>Modular monolith, managed services, Community Pro before scale marketing</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <footer class="docs-footer">
+          <p>
+            <span data-i18n="about.maintained">Maintained product docs</span>
+            · <span id="docs-footer-version">Mockup v3.2.0</span>
+            · <a href="about.html" data-i18n="global.linkAbout">Product docs</a>
+          </p>
+        </footer>
+      </main>
+    </div>
+
+    <script src="docs-version.js"></script>
+    <script src="docs-gate.js"></script>
+    <script src="i18n.js"></script>
+    <script src="mascot.js"></script>
+    <script src="feedback.js"></script>
+    <script>
+      (function () {
+        const d = window.MP_Docs || {};
+        const pill = document.getElementById("docs-version-pill");
+        const updated = document.getElementById("docs-updated");
+        const footerVer = document.getElementById("docs-footer-version");
+        if (pill && d.version) pill.textContent = "v" + d.version;
+        if (updated && d.updated) updated.textContent = "Updated " + d.updated;
+        if (footerVer) footerVer.textContent = (d.label || "Mockup") + " v" + (d.version || "—");
+
+        document.querySelectorAll(".docs-toc a[href^='#']").forEach((a) => {
+          a.addEventListener("click", (e) => {
+            const id = a.getAttribute("href");
+            if (id) {
+              const el = document.querySelector(id);
+              if (el) {
+                e.preventDefault();
+                el.scrollIntoView({ behavior: "smooth", block: "start" });
+              }
+            }
+          });
+        });
+      })();
+
+      MP_I18N.apply(MP_I18N.getLang());
+      document.querySelectorAll(".lang-btn").forEach((btn) => {
+        btn.addEventListener("click", () => MP_I18N.setLang(btn.dataset.lang));
+      });
+      MP_DocsGate.init();
+      if (MP_DocsGate.isUnlocked()) {
+        MP_Mascot.init();
+        MP_Feedback.init();
+      }
+    </script>
+  </body>
+</html>

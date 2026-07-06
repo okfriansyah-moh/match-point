@@ -93,6 +93,7 @@ window.MP_Flow = (function () {
     }
 
     const slimControlsHTML =
+      '<span class="mp-mascot-header-slot" data-mascot data-mascot-sport="auto" data-mascot-size="sm" aria-hidden="true"></span>' +
       '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>';
 
     function injectChrome() {
@@ -117,9 +118,13 @@ window.MP_Flow = (function () {
           (config.navRedirect && config.navRedirect[it.key]),
       );
 
+      const mascotHTML =
+        '<span class="mp-mascot-header-slot" data-mascot data-mascot-sport="auto" data-mascot-size="sm" aria-hidden="true"></span>';
+
       const sportOrbHTML =
         config.chromeSport !== false
-          ? '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>'
+          ? mascotHTML +
+            '<button type="button" class="sport-orb" data-i18n-title="sport.switch" title="Ganti olahraga"><span data-sport-icon>🏓</span></button>'
           : "";
 
       const controlsHTML =
@@ -145,6 +150,7 @@ window.MP_Flow = (function () {
         '<button type="button" class="profile-menu-item" data-nav="profile" data-i18n="menu.viewProfile">Lihat Profil</button>' +
         '<button type="button" class="profile-menu-item" data-menu-settings data-i18n="menu.settings">Akun &amp; Pengaturan</button>' +
         '<a href="../about.html" class="profile-menu-item" data-i18n="about.title">About Match Point</a>' +
+        '<a href="../global-readiness.html" class="profile-menu-item" data-i18n="global.navLink">Global readiness</a>' +
         '<div class="profile-menu-divider"></div>' +
         '<div class="profile-menu-row"><span data-i18n="menu.language">Language</span>' +
         '<div class="lang-toggle"><button type="button" class="lang-btn" data-lang="id">ID</button>' +

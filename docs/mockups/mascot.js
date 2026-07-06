@@ -30,9 +30,13 @@ window.MP_Mascot = (function () {
   }
 
   function resolvePath(file) {
-    const base = "assets/mascot/" + file;
-    if (location.pathname.includes("/flow/")) return "../" + base;
-    return base;
+    const rel = "assets/mascot/" + file;
+    const script = document.querySelector('script[src*="mascot.js"]');
+    if (script && script.src) {
+      return new URL(rel, script.src).href;
+    }
+    if (location.pathname.includes("/flow/")) return "../" + rel;
+    return rel;
   }
 
   function resolveSport(el) {
@@ -137,5 +141,5 @@ window.MP_Mascot = (function () {
     window.addEventListener("mp:sport", refreshAuto);
   }
 
-  return { init, mount, mountTrio, sports: SPORTS, mascots: MASCOTS };
+  return { init, initAll, mount, mountTrio, sports: SPORTS, mascots: MASCOTS };
 })();
