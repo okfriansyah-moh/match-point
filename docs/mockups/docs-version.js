@@ -1,9 +1,19 @@
 /* Match Point product docs — version & changelog (update when shipping mockup changes) */
 window.MP_Docs = {
-  version: "3.3.0",
+  version: "3.3.1",
   label: "Mockup docs",
   updated: "2026-07-06",
   changelog: [
+    {
+      version: "3.3.1",
+      date: "2026-07-06",
+      title: "Global readiness — 5 sports, MP Rating, WPR gaps",
+      items: [
+        "Global readiness doc synced to v3.3 mockup — five sports, three-layer rank, bracket classes",
+        "WPR parity section — confidence, history chart, stats shipped vs remaining gaps",
+        "Box League, Player Performance, mascot renames (Birdi, Pongi) reflected in strategy doc",
+      ],
+    },
     {
       version: "3.3.0",
       date: "2026-07-06",

@@ -11,7 +11,7 @@
       <aside class="docs-sidebar" aria-label="Documentation navigation">
         <a href="index.html" class="docs-sidebar-brand">← Match Point</a>
         <p class="docs-sidebar-meta">
-          <span class="docs-version-pill" id="docs-version-pill">v3.2.0</span>
+          <span class="docs-version-pill" id="docs-version-pill">v3.3.1</span>
           <span class="docs-updated" id="docs-updated">Updated 2026-07-06</span>
         </p>
         <nav class="docs-toc">
@@ -23,6 +23,8 @@
           <a href="#advantage" data-i18n="global.secAdvantage">Our advantage</a>
           <a href="#global-ready" data-i18n="global.secGlobalReady">Global-ready design</a>
           <a href="#mockup-today" data-i18n="global.secMockupToday">Mockup inventory</a>
+          <a href="#ranking-model">Ranking &amp; MP Rating</a>
+          <a href="#wpr-parity">WPR parity &amp; gaps</a>
           <a href="#indonesia-wedge" data-i18n="global.secWedge">Indonesia-first wedge</a>
           <a href="#gaps" data-i18n="global.secGaps">Gaps &amp; improvements</a>
           <a href="#expansion" data-i18n="global.secExpansion">Regional expansion</a>
@@ -54,7 +56,7 @@
         <section id="summary" class="docs-section card">
           <h2 data-i18n="global.secSummary">Executive summary</h2>
           <p>
-            <strong>Match Point can serve the world</strong> as a product category: portable player reputation and rankings across informal padel, tennis, and pickleball communities.
+            <strong>Match Point can serve the world</strong> as a product category: portable player reputation and rankings across informal racket-sport communities — padel, tennis, pickleball, badminton, and table tennis in the mockup today.
             The mockup phase validates UX and rules; architecture is region-agnostic. What is Indonesia-specific today is <em>launch data, integrations, and copy</em> — not the core model.
           </p>
           <table class="pa-table docs-table">
@@ -68,7 +70,11 @@
               </tr>
               <tr>
                 <td>Are our sports global?</td>
-                <td>Yes — padel (EU/LATAM/MENA/US), tennis (worldwide), pickleball (US-led, spreading).</td>
+                <td>Yes — padel (EU/LATAM/MENA/US), tennis (worldwide), pickleball (US-led, spreading), badminton (Asia/SEA/global), table tennis (global).</td>
+              </tr>
+              <tr>
+                <td>Ranking model</td>
+                <td><strong>Three layers per sport:</strong> MP Rating (Glicko skill) · Mabar/Global pts (ladder from 0) · ≈ WPR/UTR/DUPR reference hints (derived, never imported).</td>
               </tr>
               <tr>
                 <td>Do we replace UTR / DUPR / WPR?</td>
@@ -132,12 +138,12 @@
           <h2 data-i18n="global.secPositioning">Positioning &amp; vision</h2>
           <h3>What we are</h3>
           <p>
-            The <strong>cross-community reputation layer</strong> for padel, tennis, and pickleball — community-first operations with a portable Global rank, fair-play gates, and flagship inter-community products (Battle of Communities, Community Sparring).
+            The <strong>cross-community reputation layer</strong> for padel, tennis, pickleball, badminton, and table tennis — community-first operations with a portable Global rank, MP Rating brackets, fair-play gates, and flagship inter-community products (Battle of Communities, Community Sparring).
           </p>
           <h3>What we are building toward (north star)</h3>
           <p>A <strong>one-stop home for your racket-sport social identity</strong> — not replacing every app on day one, but becoming the profile and rank players share everywhere:</p>
           <ul class="docs-list">
-            <li><strong>Identity</strong> — verified profile, per-sport skill bands (WPR / UTR / DUPR display), endorsements, share card</li>
+            <li><strong>Identity</strong> — verified profile, per-sport MP Rating + confidence score, ≈ WPR/UTR/DUPR hints, endorsements, share card</li>
             <li><strong>Community</strong> — discover clubs, join events, Mabar ladder, admin tools</li>
             <li><strong>Competition</strong> — club events, global tournaments, BoC seasons, sparring</li>
             <li><strong>Trust</strong> — match submission, disputes, eligibility, anti-sandbagging</li>
@@ -177,9 +183,9 @@
               </tr>
               <tr>
                 <td><strong>WPR</strong> (padel)</td>
-                <td>Growing padel-specific global rating</td>
-                <td>Less community admin tooling</td>
-                <td>Complement — WPR-style display in mockup</td>
+                <td>Growing padel-specific global rating; confidence score, rating history, match stats dashboard</td>
+                <td>No community admin tooling; no BoC/sparring; ratings are imported/official not community-portable</td>
+                <td>Complement — WPR-style analytics UX in mockup; MP Rating is our gate; optional API sync later</td>
               </tr>
               <tr>
                 <td><strong>Playtomic</strong></td>
@@ -222,7 +228,7 @@
               </tr>
               <tr>
                 <td><strong>Multi-sport single identity</strong></td>
-                <td>One profile for padel + tennis + pickleball — rare in incumbents who are sport-siloed.</td>
+                <td>One profile across five sports — padel, tennis, pickleball, badminton, table tennis — separate MP Rating per sport; rare in sport-siloed incumbents.</td>
               </tr>
               <tr>
                 <td><strong>Community-first + platform seasons</strong></td>
@@ -230,7 +236,7 @@
               </tr>
               <tr>
                 <td><strong>Fair-play system</strong></td>
-                <td>Glicko-style skill, eligibility gates, sandbagging policy — universal need for bracketed events.</td>
+                <td>Glicko-style MP Rating, bracket classes (Open → Elite), eligibility gates, Lintas klub ✓ calibration — universal need for bracketed events.</td>
               </tr>
               <tr>
                 <td><strong>Endorsement graph</strong></td>
@@ -242,7 +248,7 @@
               </tr>
               <tr>
                 <td><strong>Visual identity system</strong></td>
-                <td>Badges, crests, mascots per sport — memorable brand for community pride globally.</td>
+                <td>Per-sport mascots (Pipo, Tenni, Dink, Birdi, Pongi) — memorable brand for community pride globally.</td>
               </tr>
             </tbody>
           </table>
@@ -256,31 +262,53 @@
               <tr><th>Area</th><th>Status</th><th>Notes</th></tr>
             </thead>
             <tbody>
-              <tr><td>Multi-sport model</td><td>✅ Ready</td><td>padel · tennis · pickleball with sport switcher</td></tr>
-              <tr><td>Dual rank scope</td><td>✅ Ready</td><td>Community vs cross-community is region-agnostic</td></tr>
-              <tr><td>Skill display bands</td><td>✅ Ready</td><td>WPR / UTR·NTRP / DUPR labels — international frameworks</td></tr>
-              <tr><td>Event format engine</td><td>✅ Ready</td><td>Americano, Mexicano, RR, knockout, league, group→KO</td></tr>
-              <tr><td>BoC / Sparring rules</td><td>✅ Ready</td><td>Configurable rubric, squads, penalties, audit log</td></tr>
+              <tr><td>Multi-sport model</td><td>✅ Ready</td><td>Five sports — padel · tennis · pickleball · badminton · table tennis — sport switcher + 3+2 home grid</td></tr>
+              <tr><td>Three-layer rank</td><td>✅ Mock</td><td>MP Rating (Glicko) · Mabar/Global pts · ≈ WPR/UTR/DUPR hints — one engine in <code>rank.js</code></td></tr>
+              <tr><td>Bracket classes</td><td>✅ Mock</td><td>Open / Beginner / Intermediate / Advanced / Elite — MP Rating min/max per sport; tournament wizard picker</td></tr>
+              <tr><td>Dual rank scope</td><td>✅ Ready</td><td>Community (Mabar) vs cross-community (Global) is region-agnostic</td></tr>
+              <tr><td>Skill display bands</td><td>✅ Mock</td><td>≈ WPR (padel) · ≈ UTR (tennis) · ≈ DUPR (pickleball); badminton &amp; table tennis on MP scale until federation mapping</td></tr>
+              <tr><td>WPR-style analytics</td><td>🟡 Mock</td><td>Confidence score, MP Rating history chart (3y/1y/1m/1w), match stats — UI only, seeded localStorage</td></tr>
+              <tr><td>Event format engine</td><td>✅ Ready</td><td>Americano, Mexicano, RR, knockout, league, <strong>Box League</strong>, group→KO</td></tr>
+              <tr><td>BoC / Sparring rules</td><td>✅ Ready</td><td>Configurable rubric, squads, penalties, rank weights (100% / 70% / 40%), audit log</td></tr>
+              <tr><td>Cross-club calibration</td><td>✅ Mock</td><td>Klub vs Lintas klub ✓ badge; Glicko anchor boost on first cross-community opponent</td></tr>
               <tr><td>i18n framework</td><td>🟡 Partial</td><td>ID + EN today; extensible key-based system</td></tr>
               <tr><td>Auth / identity</td><td>🔴 Mock only</td><td>Needs production auth, federation ID linking</td></tr>
               <tr><td>Payments</td><td>🔴 Not built</td><td>Required for monetization &amp; paid events</td></tr>
-              <tr><td>Regional data imports</td><td>🔴 Planned</td><td>ILTL (ID), Playtomic, UTR/DUPR APIs per region</td></tr>
+              <tr><td>Regional data imports</td><td>🔴 Planned</td><td>ILTL (ID), Playtomic, UTR/DUPR/WPR APIs per region</td></tr>
             </tbody>
           </table>
         </section>
 
         <section id="mockup-today" class="docs-section card">
           <h2 data-i18n="global.secMockupToday">What we have in mockups today</h2>
-          <p>Interactive HTML/CSS/JS prototype — validates UX, rules, and stakeholder narrative. <strong>Not production backend.</strong></p>
+          <p>Interactive HTML/CSS/JS prototype — <strong>74 gallery screens</strong> + three role-based flows. Validates UX, ranking rules, and stakeholder narrative. <strong>Not production backend.</strong></p>
+
+          <h3>Five sports (one identity)</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Sport</th><th>Mascot</th><th>MP Rating scale</th><th>Reference hint</th><th>Mockup status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Padel</td><td>Pipo</td><td>0 – 21</td><td>≈ WPR</td><td>✅ Full demo data</td></tr>
+              <tr><td>Tennis</td><td>Tenni</td><td>1.0 – 16.5</td><td>≈ UTR</td><td>✅ Full demo data</td></tr>
+              <tr><td>Pickleball</td><td>Dink</td><td>2 – 8</td><td>≈ DUPR</td><td>✅ Unrated starter state</td></tr>
+              <tr><td>Badminton</td><td>Birdi</td><td>0 – 10</td><td>MP (no BWF mapping yet)</td><td>✅ Provisional demo + brackets</td></tr>
+              <tr><td>Table tennis</td><td>Pongi</td><td>0 – 10</td><td>MP (no ITTF mapping yet)</td><td>✅ Unrated starter + brackets</td></tr>
+            </tbody>
+          </table>
+          <p class="form-hint">Same bracket vocabulary everywhere (Beginner → Elite). Numeric MP Rating ranges differ per sport in <code>BRACKET_CLASSES</code>. Ratings never transfer between sports.</p>
 
           <h3>Player journey</h3>
           <ul class="docs-list">
             <li>Login, guest preview, phone OTP (mock), profile &amp; edit</li>
             <li>Community discovery, join, multi-community membership</li>
-            <li>Mabar + Global leaderboard, monthly snapshot</li>
-            <li>Event feed, registration, eligibility panel (play-up/down)</li>
+            <li>Home dashboard — 3+2 sport grid with MP Rating, confidence %, Mabar/Global pts</li>
+            <li>Mabar + Global leaderboard with MP Rating meta; monthly snapshot</li>
+            <li>Event feed, registration, <strong>eligibility panel</strong> (MP Rating min/max, bracket class, Lintas klub ✓)</li>
             <li>Submit match, pending/approved/disputed flows</li>
             <li>Endorsements (min 3 rule), share card (social-ready dimensions)</li>
+            <li><strong>Player Performance</strong> screen — confidence card, MP Rating history chart, match stats</li>
+            <li><strong>My Matches → Performance tab</strong> — same WPR-style analytics inline</li>
             <li>Battle of Communities detail — standings, squads, live rubric</li>
             <li>Community Sparring — multi-community standings, casual vs ranked</li>
           </ul>
@@ -288,26 +316,134 @@
           <h3>Club admin</h3>
           <ul class="docs-list">
             <li>Community dashboard, member management</li>
-            <li>Event wizard — formats, brackets, live referee / manual scoring</li>
+            <li>Event wizard — formats, <strong>bracket class picker</strong>, live referee / manual scoring</li>
+            <li><strong>Box League</strong> — box groups, round robin within box, promotion/relegation</li>
             <li>Sparring create (invite 2+ communities)</li>
           </ul>
 
           <h3>Platform admin</h3>
           <ul class="docs-list">
             <li>Approval inbox (communities, featured events)</li>
-            <li>Global tournament wizard, analytics dashboard</li>
+            <li>Global tournament wizard with bracket classes, analytics dashboard</li>
             <li>BoC season wizard — group draw, fixtures, audit log</li>
             <li>Dispute resolution, point adjustment (audit trail concept)</li>
           </ul>
 
           <h3>Cross-cutting</h3>
           <ul class="docs-list">
-            <li>Glicko-2-lite skill mock (RD, reliability, provisional state)</li>
-            <li>Sport-specific bands (WPR / UTR / DUPR)</li>
-            <li>Badges &amp; crests, per-sport mascots (Pipo, Tenni, Dink)</li>
+            <li><strong>MP Rating</strong> — Glicko-2-lite: unrated → provisional (est.) → stable ✓; RD, reliability, calibration scope</li>
+            <li><strong>Confidence score</strong> — WPR-inspired % from RD + verified-match ratio (home cards, profile, leaderboards)</li>
+            <li><strong>Rating history</strong> — SVG chart with 3y / 1y / 1m / 1w ranges (<code>player-analytics.js</code>)</li>
+            <li><strong>Match stats</strong> — win %, streaks, tiebreaks, ranked vs practice, weekly activity</li>
+            <li>Event rank weights — BoC 100%, Sparring ranked 70%, casual 40% (Glicko delta, not flat +15)</li>
+            <li>Badges &amp; crests; per-sport gemoy mascots (Pipo, Tenni, Dink, Birdi, Pongi)</li>
             <li>ID/EN i18n, device preview (phone · tablet · web)</li>
-            <li>Product docs (About), feedback widget (WhatsApp + FormSubmit email)</li>
+            <li>Product docs (About), global readiness (this page), feedback widget (WhatsApp + FormSubmit email)</li>
           </ul>
+        </section>
+
+        <section id="ranking-model" class="docs-section card">
+          <h2>Ranking &amp; MP Rating (current mockup)</h2>
+          <p>One engine per sport in <code>rank.js</code> — three user-facing numbers, one pipeline after each verified match.</p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Layer</th><th>Name</th><th>Purpose</th><th>Production note</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1</strong></td>
+                <td><strong>MP Rating</strong></td>
+                <td>Trusted Glicko skill — tournament brackets, seeding, anti-sandbagging</td>
+                <td>Never imported from WPR/UTR/DUPR; computed from verified results</td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td><strong>MP pts</strong> (Mabar / Global)</td>
+                <td>Club ladder &amp; cross-community prestige — starts at <strong>0</strong></td>
+                <td>Delta from Glicko expected outcome × event weight</td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td><strong>Reference hint</strong></td>
+                <td>≈ WPR / ≈ UTR / ≈ DUPR orientation label</td>
+                <td>Display only — not a registration gate</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>MP Rating lifecycle</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>State</th><th>Condition</th><th>UI</th><th>Bracket access</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Unrated</td><td>0 matches</td><td>Belum dinilai / Unrated</td><td>Open only (or play first match)</td></tr>
+              <tr><td>Provisional</td><td>1–4 matches or reliability &lt; 60%</td><td>MP Rating X.XX (est.)</td><td>Beginner + Open</td></tr>
+              <tr><td>Stable</td><td>5+ matches, reliability ≥ 60%</td><td>MP Rating X.XX ✓</td><td>Full bracket range by MP Rating</td></tr>
+            </tbody>
+          </table>
+          <h3>Cross-club fairness</h3>
+          <p>MP Rating 4.0 at Club A is <strong>not promised</strong> equal to 4.0 at Club B until cross-community play calibrates both sides. Badge <strong>Lintas klub ✓</strong> unlocks Intermediate+ for Global tournaments and BoC when diversity thresholds are met (3+ cross-community matches, 20%+ opponent diversity in mock rules).</p>
+        </section>
+
+        <section id="wpr-parity" class="docs-section card">
+          <h2>WPR parity &amp; remaining gaps</h2>
+          <p>Padel players expect WPR-like transparency. The mockup now surfaces several WPR patterns — but parity is <strong>UX and rules demonstration</strong>, not live WPR integration.</p>
+
+          <h3>Shipped in mockup (WPR-inspired)</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>WPR pattern</th><th>Match Point mockup</th><th>Where</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Confidence in your rating</td><td>Confidence score % (RD + reliability)</td><td>Home sport cards, profile, Player Performance</td></tr>
+              <tr><td>Rating over time</td><td>MP Rating history chart — 3y / 1y / 1m / 1w</td><td>Player Performance, profile analytics panel</td></tr>
+              <tr><td>Match breakdown stats</td><td>Wins, streaks, tiebreaks, ranked vs practice</td><td>Player Performance, My Matches Performance tab</td></tr>
+              <tr><td>Skill number + band</td><td>MP Rating + ≈ WPR hint (padel)</td><td>Rank screen, event eligibility, leaderboards</td></tr>
+              <tr><td>Bracket by skill level</td><td>Bracket classes bound to MP Rating ranges</td><td>Event register, tournament wizards</td></tr>
+            </tbody>
+          </table>
+
+          <h3>Still missing vs WPR / production</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Gap</th><th>Impact</th><th>Target</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>No WPR / UTR / DUPR API import</td>
+                <td>Players with existing official ratings cannot link accounts</td>
+                <td>v1.5 — read-only display sync where APIs allow</td>
+              </tr>
+              <tr>
+                <td>History &amp; stats are seeded / localStorage</td>
+                <td>Chart does not reflect real match ledger yet</td>
+                <td>v1.0 — persist from <code>processMatchResult()</code> in API</td>
+              </tr>
+              <tr>
+                <td>Badminton &amp; table tennis — no federation reference mapping</td>
+                <td>Only MP scale + brackets; no ≈ BWF / ITTF hint</td>
+                <td>v1.5 — calibrate scales with regional federation data</td>
+              </tr>
+              <tr>
+                <td>No verified-event-only rating lock</td>
+                <td>WPR distinguishes tournament-verified results strictly</td>
+                <td>v1.0 — organizer verification flag on every rated match</td>
+              </tr>
+              <tr>
+                <td>No public rating algorithm export</td>
+                <td>Power users cannot audit Glicko parameters</td>
+                <td>v1.0 — publish formulas in About (partial today)</td>
+              </tr>
+              <tr>
+                <td>No opponent-strength analytics</td>
+                <td>WPR shows quality of wins; we show aggregate stats only</td>
+                <td>v2.0 — opponent tier breakdown, upset index</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="form-hint">
+            Strategic stance unchanged: <strong>MP Rating is the gate</strong> for our brackets and ladders. WPR/UTR/DUPR remain complementary reference hints — partner and import, don’t replace community portability.
+          </p>
         </section>
 
         <section id="indonesia-wedge" class="docs-section card">
@@ -318,7 +454,7 @@
               <tr><th>Indonesia advantage</th><th>Global parallel later</th></tr>
             </thead>
             <tbody>
-              <tr><td>Dense padel/tennis club culture (Jakarta, Bali)</td><td>Madrid, Dubai, Austin metro wedges</td></tr>
+              <tr><td>Dense padel/tennis/badminton club culture (Jakarta, Bali, Surabaya)</td><td>Madrid, Dubai, Austin, Guangzhou metro wedges</td></tr>
               <tr><td>WhatsApp-native organizing</td><td>Share cards + deep links; add email/SMS in US/EU</td></tr>
               <tr><td>ILTL as official data hook</td><td>Playtomic EU, UTR US, local federation APIs</td></tr>
               <tr><td>“Mabar” community identity</td><td>Localize label (“Club rank”, “Local ladder”) per locale</td></tr>
@@ -344,6 +480,30 @@
                 <td>Cannot ship users or persist ranks</td>
                 <td>P0</td>
                 <td>API + Postgres + auth service</td>
+              </tr>
+              <tr>
+                <td>Three-sport-only docs &amp; demos</td>
+                <td>Investors in badminton/table tennis markets see incomplete story</td>
+                <td>P1</td>
+                <td>✅ Resolved in v3.3 — five sports in UI, rank engine, mascots</td>
+              </tr>
+              <tr>
+                <td>WPR analytics without real data</td>
+                <td>Confidence chart impresses but isn’t auditable</td>
+                <td>P1</td>
+                <td>Wire history + stats to match API in v1.0</td>
+              </tr>
+              <tr>
+                <td>No official rating import</td>
+                <td>Friction for players already on WPR/UTR/DUPR</td>
+                <td>P1</td>
+                <td>Read-only API linking v1.5</td>
+              </tr>
+              <tr>
+                <td>Badminton / table tennis scale uncalibrated</td>
+                <td>Bracket ranges are placeholder MP 0–10</td>
+                <td>P2</td>
+                <td>Regional pilot data before marketing those sports</td>
               </tr>
               <tr>
                 <td>Indonesia-only sample data</td>
@@ -425,10 +585,12 @@
             </thead>
             <tbody>
               <tr><td>ILTL API / batch</td><td>Indonesia</td><td>Official match seed, credibility</td><td>v1.0 ID</td></tr>
+              <tr><td>WPR API</td><td>Global padel</td><td>Read-only skill display sync (optional)</td><td>v1.5</td></tr>
               <tr><td>Playtomic</td><td>EU, LATAM, growing</td><td>Match + player import</td><td>v1.5</td></tr>
               <tr><td>UTR Connect</td><td>Global tennis</td><td>Skill display sync</td><td>v1.5</td></tr>
               <tr><td>DUPR</td><td>US + global pickleball</td><td>Skill display sync</td><td>v1.5</td></tr>
-              <tr><td>WPR</td><td>Global padel</td><td>Skill display sync</td><td>v1.5</td></tr>
+              <tr><td>BWF / national badminton feeds</td><td>SEA, global</td><td>Reference calibration for badminton MP scale</td><td>v2.0</td></tr>
+              <tr><td>ITTF / regional TT leagues</td><td>Global</td><td>Reference calibration for table tennis</td><td>v2.0</td></tr>
               <tr><td>Stripe / Xendit / Midtrans</td><td>Global / ID</td><td>Subscriptions &amp; event fees</td><td>v1.0 monetization</td></tr>
               <tr><td>Twilio / Vonage SMS</td><td>Per country</td><td>OTP verification</td><td>v1.0</td></tr>
               <tr><td>Google / Apple OAuth</td><td>Global</td><td>Low-friction signup</td><td>v1.0</td></tr>
@@ -518,7 +680,8 @@
               <tr><th>Capability</th><th>Mockup</th><th>Needed to charge</th></tr>
             </thead>
             <tbody>
-              <tr><td>Club admin value demo</td><td>✅ Full wizard, live session</td><td>—</td></tr>
+              <tr><td>Club admin value demo</td><td>✅ Full wizard, Box League, bracket picker, live session</td><td>—</td></tr>
+              <tr><td>Player analytics (WPR-style)</td><td>✅ Confidence, chart, stats UI</td><td>Real match ledger + API</td></tr>
               <tr><td>Platform analytics UI</td><td>✅ Dashboard mock</td><td>Real metrics pipeline</td></tr>
               <tr><td>Paid event registration</td><td>🔴 Not built</td><td>Checkout, receipts, refunds</td></tr>
               <tr><td>Subscription billing</td><td>🔴 Not built</td><td>Stripe Billing + webhooks</td></tr>
@@ -579,12 +742,12 @@
               <tr>
                 <td><strong>Phase 0</strong> — Mockup complete</td>
                 <td>Stakeholder alignment</td>
-                <td>Flows, docs, global readiness (this page), pilot club LOIs</td>
+                <td>74 screens, 5 sports, MP Rating + WPR-style analytics mock, Box League, global readiness (this page), pilot club LOIs</td>
               </tr>
               <tr>
                 <td><strong>Phase 1</strong> — MVP ID</td>
                 <td>Ship real product in Indonesia</td>
-                <td>Auth, communities, match submit, Mabar rank, club events, ILTL import</td>
+                <td>Auth, communities, match submit, MP Rating pipeline, Mabar rank, bracket eligibility, club events, ILTL import</td>
               </tr>
               <tr>
                 <td><strong>Phase 2</strong> — Monetize</td>
@@ -662,7 +825,7 @@
         <footer class="docs-footer">
           <p>
             <span data-i18n="about.maintained">Maintained product docs</span>
-            · <span id="docs-footer-version">Mockup v3.2.0</span>
+            · <span id="docs-footer-version">Mockup v3.3.1</span>
             · <a href="about.html" data-i18n="global.linkAbout">Product docs</a>
           </p>
         </footer>
