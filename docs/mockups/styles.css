@@ -4523,6 +4523,14 @@ body.mp-device-mobile .community-stats {
   background: var(--sport-pickleball);
   border-color: var(--sport-pickleball);
 }
+.filter-chip.sport-badminton.active {
+  background: var(--sport-badminton);
+  border-color: var(--sport-badminton);
+}
+.filter-chip.sport-table-tennis.active {
+  background: var(--sport-table-tennis);
+  border-color: var(--sport-table-tennis);
+}
 
 .community-row {
   display: flex;
@@ -6360,6 +6368,12 @@ body.proto-gallery #mp-device-bar {
 .mp-mascot-sport-pickleball .mp-mascot-img {
   filter: drop-shadow(0 6px 14px rgba(220, 38, 38, 0.5));
 }
+.mp-mascot-sport-badminton .mp-mascot-img {
+  filter: drop-shadow(0 6px 14px rgba(217, 119, 6, 0.5));
+}
+.mp-mascot-sport-table_tennis .mp-mascot-img {
+  filter: drop-shadow(0 6px 14px rgba(234, 88, 12, 0.5));
+}
 .mp-mascot-card:nth-child(2) .mp-mascot-img {
   animation-delay: 0.35s;
 }
@@ -6599,6 +6613,12 @@ body.docs-locked {
 }
 .mp-mascot-switch.mp-mascot-sport-pickleball {
   --sport-mascot-accent: #dc2626;
+}
+.mp-mascot-switch.mp-mascot-sport-badminton {
+  --sport-mascot-accent: #f59e0b;
+}
+.mp-mascot-switch.mp-mascot-sport-table_tennis {
+  --sport-mascot-accent: #f97316;
 }
 .mp-mascot-header-slot .mp-mascot-img {
   width: 36px;

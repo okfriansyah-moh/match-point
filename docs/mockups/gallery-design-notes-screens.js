@@ -37,7 +37,7 @@ window.MP_GalleryNotesScreens = (function () {
       purpose: L("Pencarian & join komunitas — prerequisite untuk Mabar rank.", "Search and join communities — prerequisite for Mabar rank."),
       components: [
         c(1, ".community-search", L("Cari komunitas", "Search input"), L("Filter nama/kota real-time.", "Filter name/city in real time."), L("Discoverability atas daftar.", "Top-of-list discoverability.")),
-        c(2, ".filter-chips", L("Filter chips", "Sport filters"), L("Padel/tennis/pickleball + open + kota.", "Padel/tennis/pickleball + open + city."), L("Segmentasi tanpa form berat.", "Segmentation without heavy forms.")),
+        c(2, ".filter-chips", L("Filter chips", "Sport filters"), L("Kelima olahraga + open + kota.", "All five sports + open + city."), L("Segmentasi tanpa form berat.", "Segmentation without heavy forms.")),
         c(3, ".community-row", L("Baris komunitas", "Community row"), L("Avatar, meta, jarak km.", "Avatar, meta, km distance."), L("Scan vertikal — proximity first.", "Vertical scan — proximity first.")),
         c(4, ".distance-chip", L("Chip jarak", "Distance chip"), L("KM dari lokasi pemain.", "KM from player location."), L("Sort terdekat dulu.", "Nearest-first sort.")),
       ],

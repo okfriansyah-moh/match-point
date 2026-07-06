@@ -168,7 +168,7 @@ window.MP_PlatformAnalytics = (function () {
       ],
       rankMoves: { up: 3840, down: 2910, provisional: 520 },
       activity: [
-        { time: "Q2", type: "rank", text: "Global rank snapshots · 3 sports" },
+        { time: "Q2", type: "rank", text: "Global rank snapshots · 5 sports" },
         { time: "90 hari", type: "community", text: "+52 communities · 523 total active" },
         { time: "90 hari", type: "match", text: "9,847 matches · 2.6% dispute rate" },
         { time: "Trend", type: "register", text: "Player growth +12.4% QoQ" },

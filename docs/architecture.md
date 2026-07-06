@@ -30,7 +30,7 @@
 
 ## 1. Executive Summary
 
-Match Point is a **cross-community player reputation and ranking platform** for **padel, tennis, and pickleball**. Most play happens outside official federations — recreational leagues, open play, and club events leave no portable record. Match Point fixes that with verified identity, match results, and rankings that travel with the player.
+Match Point is a **cross-community player reputation and ranking platform** for **padel, tennis, pickleball, badminton, and table tennis**. Most play happens outside official federations — recreational leagues, open play, and club events leave no portable record. Match Point fixes that with verified identity, match results, and rankings that travel with the player.
 
 **Current state:** The product is fully expressed as **interactive HTML mockups** in `docs/mockups/` — player, club admin, and platform admin journeys, dual-track ranking, event engine, Battle of Communities (BoC), Community Sparring, visual identity, and product docs. **No production API or database exists yet.**
 
@@ -314,7 +314,7 @@ Type (social vs competitive)
 
 - Active players, communities, matches (7d/30d)
 - Match status mix (verified, pending, disputed)
-- Sport split (padel/tennis/pickleball)
+- Sport split (five sports: padel / tennis / pickleball / badminton / table tennis)
 - Event format counts
 - Onboarding funnel
 - Rank movements, live activity feed
@@ -356,7 +356,7 @@ Type (social vs competitive)
 
 ### 10.2 Sport switching
 
-- **Header mascot button** (`mp-mascot-switch`) cycles padel → tennis → pickleball on tap
+- **Header mascot button** (`mp-mascot-switch`) cycles padel → tennis → pickleball → badminton → table tennis on tap
 - **Sport cards** on dashboard (`sport-btn`) select sport directly
 - **Event:** `mp:sport` → updates `body[data-sport]`, `.sport-dynamic` elements, mascot image/ring
 
@@ -394,7 +394,7 @@ Type (social vs competitive)
 
 ### 11.0.1 Cross-sport backbone
 
-One engine, `SPORT_PROFILES` registry (`padel`, `tennis`, `pickleball` live; `badminton`, `table_tennis` stubbed). Same bracket class names everywhere; per-sport MP Rating scale calibration only. Ratings do not transfer between sports.
+One engine, `SPORT_PROFILES` registry for all five sports (`padel`, `tennis`, `pickleball`, `badminton`, `table_tennis`). Same bracket class names everywhere; per-sport MP Rating scale calibration only. Ratings do not transfer between sports.
 
 ### 11.1 Dual ledger (per sport)
 
@@ -719,26 +719,26 @@ Context captured: URL, flow step, device, lang, theme, user agent. **Not stored*
 
 ### 17.1 Delivered in mockups (v3.2.0)
 
-| Area                                  | Evidence                                     |
-| ------------------------------------- | -------------------------------------------- |
-| Player journey (27 steps)             | `flow/user.html`                             |
-| Club admin (12 steps)                 | `flow/club.html`                             |
-| Platform admin (19 steps)             | `flow/platform.html`                         |
-| Gallery (32 screens)                  | `prototype.html`                             |
-| Dual rank + Glicko-lite               | `rank.js`                                    |
-| Multi-sport (padel/tennis/pickleball) | `sport.js`                                   |
-| Event wizard + 7 formats              | `event-wizard.js`, `tournament.js`           |
-| Live referee                          | `live-referee.js`                            |
-| BoC season + draw + squads            | `battle-of-communities.js`                   |
-| Community Sparring                    | `community-sparring.js`                      |
-| Platform inbox + analytics            | `platform-lists.js`, `platform-analytics.js` |
-| Badges, crests, mascots               | `badges.js`, `mascot.js`                     |
-| i18n ID/EN                            | `i18n.js`                                    |
-| Device preview + dark mode            | `device.js`                                  |
-| Feedback widget                       | `feedback.js`                                |
-| Product docs + changelog              | `about.html`, `docs-version.js`              |
-| Global readiness strategy             | `global-readiness.html`                      |
-| Gallery chrome alignment              | `gallery-chrome.js`                          |
+| Area                       | Evidence                                     |
+| -------------------------- | -------------------------------------------- |
+| Player journey (27 steps)  | `flow/user.html`                             |
+| Club admin (12 steps)      | `flow/club.html`                             |
+| Platform admin (19 steps)  | `flow/platform.html`                         |
+| Gallery (32 screens)       | `prototype.html`                             |
+| Dual rank + Glicko-lite    | `rank.js`                                    |
+| Multi-sport (5 sports)     | `sport.js`                                   |
+| Event wizard + 7 formats   | `event-wizard.js`, `tournament.js`           |
+| Live referee               | `live-referee.js`                            |
+| BoC season + draw + squads | `battle-of-communities.js`                   |
+| Community Sparring         | `community-sparring.js`                      |
+| Platform inbox + analytics | `platform-lists.js`, `platform-analytics.js` |
+| Badges, crests, mascots    | `badges.js`, `mascot.js`                     |
+| i18n ID/EN                 | `i18n.js`                                    |
+| Device preview + dark mode | `device.js`                                  |
+| Feedback widget            | `feedback.js`                                |
+| Product docs + changelog   | `about.html`, `docs-version.js`              |
+| Global readiness strategy  | `global-readiness.html`                      |
+| Gallery chrome alignment   | `gallery-chrome.js`                          |
 
 ### 17.2 Production v1 (not built)
 
@@ -849,7 +849,7 @@ CREATE TABLE players (
 
 CREATE TABLE player_sport_rank (
   player_id       UUID REFERENCES players(id),
-  sport           TEXT NOT NULL,  -- padel | tennis | pickleball
+  sport           TEXT NOT NULL,  -- padel | tennis | pickleball | badminton | table_tennis
   mabar_points    INT NOT NULL DEFAULT 0,
   mabar_rank      INT,
   global_points   INT NOT NULL DEFAULT 0,

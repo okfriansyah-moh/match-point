@@ -284,8 +284,8 @@ window.MP_I18N = (function () {
       en: "Your rank here… does it travel to other clubs?",
     },
     "login.subhook": {
-      id: "Satu reputasi portabel lintas semua komunitas padel, tennis & pickleball.",
-      en: "One portable reputation across every padel, tennis & pickleball community.",
+      id: "Satu reputasi portabel lintas semua komunitas — padel, tennis, pickleball, badminton & tenis meja.",
+      en: "One portable reputation across every community — padel, tennis, pickleball, badminton & table tennis.",
     },
     "login.stat1": { id: "pemain aktif", en: "active players" },
     "login.stat2": { id: "komunitas", en: "communities" },
@@ -439,8 +439,8 @@ window.MP_I18N = (function () {
       en: "Browse nearby communities without an account",
     },
     "flow.pickRoleSub": {
-      id: "Komunitas dulu, satu aksi per layar — padel, tennis & pickleball.",
-      en: "Community-first, one action per screen — padel, tennis & pickleball.",
+      id: "Komunitas dulu, satu aksi per layar — lima olahraga raket.",
+      en: "Community-first, one action per screen — five racket sports.",
     },
     "flow.clubAdminTitle": { id: "Admin Klub", en: "Club Admin" },
     "flow.clubAdminDesc": {
@@ -608,8 +608,8 @@ window.MP_I18N = (function () {
     "wizard.divWomen": { id: "👩 Women's", en: "👩 Women's" },
     "wizard.divMixed": { id: "🤝 Mixed", en: "🤝 Mixed" },
     "wizard.divHint": {
-      id: "Mixed hanya untuk Double. Tennis, padel & pickleball pakai aturan yang sama.",
-      en: "Mixed is doubles only. Same flow for tennis, padel & pickleball.",
+      id: "Mixed hanya untuk Double. Berlaku untuk kelima olahraga raket.",
+      en: "Mixed is doubles only. Same flow for all five racket sports.",
     },
     "wizard.customCount": { id: "Atau ketik jumlah", en: "Or enter a number" },
     "wizard.participantHint": {
@@ -890,8 +890,8 @@ window.MP_I18N = (function () {
       en: "You've explored Match Point!",
     },
     "flow.completeDesc": {
-      id: "Padel & tennis · match · rank · event · admin — satu reputasi lintas komunitas.",
-      en: "Padel & tennis · matches · ranks · events · admin — one cross-community reputation.",
+      id: "Lima olahraga raket · match · rank · event · admin — satu reputasi lintas komunitas.",
+      en: "Five racket sports · matches · ranks · events · admin — one cross-community reputation.",
     },
     "flow.cta.eventsTitle": {
       id: "Acara",
@@ -1905,8 +1905,8 @@ window.MP_I18N = (function () {
       en: "BoC squad slots re-check eligibility before lock",
     },
     "about.sportsLead": {
-      id: "Aturan ranking yang sama untuk padel, tenis, dan pickleball hari ini — badminton dan tenis meja memakai mesin yang sama saat diluncurkan.",
-      en: "The same ranking rules apply to padel, tennis, and pickleball today — badminton and table tennis use the same engine when launched.",
+      id: "Aturan ranking yang sama untuk kelima olahraga — padel, tenis, pickleball, badminton, dan tenis meja.",
+      en: "The same ranking rules apply to all five sports — padel, tennis, pickleball, badminton, and table tennis.",
     },
     "about.sportsRule1": {
       id: "Satu identitas, MP Rating dan ladder terpisah per olahraga — tidak tercampur",
@@ -1990,8 +1990,8 @@ window.MP_I18N = (function () {
 
     "mascot.dashTitle": { id: "Siap main?", en: "Ready to play?" },
     "mascot.dashDesc": {
-      id: "Teman olahragamu berubah saat kamu ganti padel, tennis, atau pickleball.",
-      en: "Your sport buddy updates when you switch padel, tennis, or pickleball.",
+      id: "Teman olahragamu berubah saat kamu ganti olahraga — Pipo, Tenni, Dink, Birdi, atau Pongi.",
+      en: "Your sport buddy updates when you switch sports — Pipo, Tenni, Dink, Birdi, or Pongi.",
     },
   };
 

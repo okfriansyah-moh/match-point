@@ -358,9 +358,15 @@
                       Rank-mu di klub ini… valid di klub lain?
                     </h1>
                     <p class="login-subhook" data-i18n="login.subhook">
-                      Satu reputasi portabel lintas semua komunitas padel,
-                      tennis &amp; pickleball.
+                      Satu reputasi portabel lintas semua komunitas — padel, tennis, pickleball, badminton &amp; tenis meja.
                     </p>
+                    <div class="login-sport-chips">
+                      <span class="login-sport-chip">🏓 Padel</span>
+                      <span class="login-sport-chip">🎾 Tennis</span>
+                      <span class="login-sport-chip">🥎 Pickleball</span>
+                      <span class="login-sport-chip">🏸 Badminton</span>
+                      <span class="login-sport-chip">🏓 Ping Pong</span>
+                    </div>
                     <div class="login-teaser-stats">
                       <div class="login-stat">
                         <strong>10,842</strong
@@ -503,12 +509,14 @@
                       ><input class="form-input" type="password" />
                     </div>
                     <div class="form-group">
-                      <label class="form-label">Olahraga</label
-                      ><select class="form-select">
-                        <option>Padel</option>
-                        <option>Tennis</option>
-                        <option>Keduanya</option>
-                      </select>
+                      <label class="form-label" data-i18n="register.sportsLabel">Olahraga yang kamu mainkan</label>
+                      <div class="filter-chips mb-2">
+                        <button type="button" class="filter-chip sport-padel active" data-toggle-active>🏓 Padel</button>
+                        <button type="button" class="filter-chip sport-tennis active" data-toggle-active>🎾 Tennis</button>
+                        <button type="button" class="filter-chip sport-pickleball" data-toggle-active>🥎 Pickleball</button>
+                        <button type="button" class="filter-chip sport-badminton" data-toggle-active>🏸 Badminton</button>
+                        <button type="button" class="filter-chip sport-table-tennis" data-toggle-active>🏓 Ping Pong</button>
+                      </div>
                     </div>
                     <a
                       href="flow/user.html"
@@ -551,7 +559,7 @@
                         <div class="mp-dash-mascot-copy">
                           <strong data-i18n="mascot.dashTitle">Ready to play?</strong>
                           <p data-i18n="mascot.dashDesc">
-                            Your sport buddy updates when you switch padel, tennis, or pickleball.
+                            Your sport buddy updates when you switch sports — Pipo, Tenni, Dink, Birdi, or Pongi.
                           </p>
                         </div>
                       </div>
@@ -2598,6 +2606,12 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                       <button type="button" class="filter-chip sport-pickleball" data-filter="pickleball">
                                         🥎 Pickleball
                                       </button>
+                                      <button type="button" class="filter-chip sport-badminton" data-filter="badminton">
+                                        🏸 Badminton
+                                      </button>
+                                      <button type="button" class="filter-chip sport-table-tennis" data-filter="table_tennis">
+                                        🏓 Ping Pong
+                                      </button>
                                       <button type="button" class="filter-chip" data-filter="open" data-i18n="find.filterOpen">
                                         🟢 Open
                                       </button>
@@ -3072,7 +3086,7 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                         <div class="mp-dash-mascot-copy">
                                           <strong data-i18n="mascot.dashTitle">Ready to play?</strong>
                                           <p data-i18n="mascot.dashDesc">
-                                            Your sport buddy updates when you switch padel, tennis, or pickleball.
+                                            Your sport buddy updates when you switch sports — Pipo, Tenni, Dink, Birdi, or Pongi.
                                           </p>
                                         </div>
                                       </div>

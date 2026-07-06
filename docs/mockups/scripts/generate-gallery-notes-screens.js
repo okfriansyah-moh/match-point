@@ -18,7 +18,7 @@ const CATALOG = [
     "Pencarian & join komunitas — prerequisite untuk Mabar rank.",
     "Search and join communities — prerequisite for Mabar rank.",
     [1, ".community-search", "Cari komunitas", "Search input", "Filter nama/kota real-time.", "Filter name/city in real time.", "Discoverability atas daftar.", "Top-of-list discoverability."],
-    [2, ".filter-chips", "Filter chips", "Sport filters", "Padel/tennis/pickleball + open + kota.", "Padel/tennis/pickleball + open + city.", "Segmentasi tanpa form berat.", "Segmentation without heavy forms."],
+    [2, ".filter-chips", "Filter chips", "Sport filters", "Kelima olahraga + open + kota.", "All five sports + open + city.", "Segmentasi tanpa form berat.", "Segmentation without heavy forms."],
     [3, ".community-row", "Baris komunitas", "Community row", "Avatar, meta, jarak km.", "Avatar, meta, km distance.", "Scan vertikal — proximity first.", "Vertical scan — proximity first."],
     [4, ".distance-chip", "Chip jarak", "Distance chip", "KM dari lokasi pemain.", "KM from player location.", "Sort terdekat dulu.", "Nearest-first sort."],
   ],
