@@ -221,51 +221,7 @@
                 <header class="app-header">
                   <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.navAnalytics">Analytics</div></div>
                 </header>
-                <div class="app-body">
-                  <div class="stat-grid mb-2">
-                    <div class="stat-box">
-                      <div class="stat-val">+12</div>
-                      <div class="stat-lbl">Member/minggu</div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val">2.1%</div>
-                      <div class="stat-lbl">Dispute ratio</div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val">847</div>
-                      <div class="stat-lbl">Match total</div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val">142</div>
-                      <div class="stat-lbl">Anggota aktif</div>
-                    </div>
-                  </div>
-                  <div class="flow-complete">
-                    <div class="flow-complete-icon">📊</div>
-                    <h2 class="section-title">Analytics Komunitas</h2>
-                    <p class="text-sm text-muted" style="margin-bottom: 1rem">
-                      Padel Jakarta · pertumbuhan sehat · dispute ratio rendah.
-                    </p>
-                    <div class="btn-stack">
-                      <button
-                        type="button"
-                        class="btn btn-primary btn-block btn-lg"
-                        data-flow-goto="2"
-                        data-i18n="platform.backInboxBtn"
-                      >
-                        ← Kembali ke Approval Inbox
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-outline btn-block"
-                        data-flow-finish
-                        data-i18n="flow.cta.finishBtn"
-                      >
-                        Selesai — Kembali ke Menu
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                <div class="app-body" data-platform-analytics></div>
               </div>
             </div>
 
@@ -541,21 +497,55 @@
               </div>
             </div>
 
-            <!-- Step 15: Admin account & settings -->
+            <!-- Step 15: Admin profile (view) -->
             <div class="flow-step">
               <div class="app mp-shell admin-theme">
                 <header class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.accountTitle">Admin account</div></div>
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.profileTitle">Admin profile</div></div>
                 </header>
                 <div class="app-body app-body-narrow">
                   <div class="card mb-2 text-center" style="padding: 1.25rem">
                     <div class="avatar avatar-lg avatar-photo" style="margin: 0 auto 0.65rem">🛡️</div>
                     <strong>Tim Match Point</strong>
-                    <p class="text-sm text-muted" style="margin: 0.25rem 0 0">admin@matchpoint.id</p>
+                    <p class="text-sm text-muted" style="margin: 0.25rem 0 0">admin@matchpoint.id · @matchpoint_admin</p>
                     <span class="badge badge-platform mt-1" data-i18n="platform.accountRole">Superadmin platform</span>
+                    <p class="text-sm text-muted mt-1" data-i18n="platform.profileSince">Member since Jan 2025 · Jakarta HQ</p>
                   </div>
+                  <div class="stat-grid mb-2">
+                    <div class="stat-box"><div class="stat-val">142</div><div class="stat-lbl" data-i18n="platform.profileReviews">Reviews done</div></div>
+                    <div class="stat-box"><div class="stat-val">89</div><div class="stat-lbl" data-i18n="platform.profileApproved">Approved</div></div>
+                    <div class="stat-box"><div class="stat-val">23</div><div class="stat-lbl" data-i18n="platform.profileDisputes">Disputes resolved</div></div>
+                    <div class="stat-box"><div class="stat-val">2.4h</div><div class="stat-lbl" data-i18n="platform.profileAvgTime">Avg resolution</div></div>
+                  </div>
+                  <p class="text-sm font-bold mb-1" data-i18n="platform.profilePermissions">Platform permissions</p>
+                  <ul class="pa-perm-list mb-2">
+                    <li data-i18n="platform.permInbox">Approval inbox · communities & events</li>
+                    <li data-i18n="platform.permMatches">Match queue · GPS & disputes</li>
+                    <li data-i18n="platform.permGlobal">Global tournaments · Tier 1–3</li>
+                    <li data-i18n="platform.permAnalytics">Platform analytics · read-only</li>
+                  </ul>
+                  <p class="text-sm font-bold mb-1" data-i18n="platform.profileRecent">Recent admin activity</p>
+                  <div class="audit-log mb-2">
+                    <div class="audit-line">10:38 · community_approved · BSD Tennis Club</div>
+                    <div class="audit-line">10:31 · dispute_resolved · #D-4421</div>
+                    <div class="audit-line">09:52 · global_event_published · Padel Masters</div>
+                    <div class="audit-line">Kemarin · match_rejected · GPS 4.1km</div>
+                  </div>
+                  <button type="button" class="btn btn-primary btn-block" data-flow-goto="16" data-i18n="platform.openSettings">Account &amp; Settings →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 16: Admin account & settings -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="15" aria-label="Back">←</button><div class="app-logo" data-i18n="platform.accountTitle">Admin account</div></div>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <p class="section-sub mb-2" data-i18n="platform.settingsSub">Preferences &amp; security — not your public admin profile.</p>
                   <div class="form-group">
-                    <label class="form-label">Email Admin</label>
+                    <label class="form-label" data-i18n="platform.settingsEmail">Admin email</label>
                     <input class="form-input" value="admin@matchpoint.id" readonly />
                   </div>
                   <div class="form-group">
@@ -595,6 +585,7 @@
     <script src="../role.js"></script>
     <script src="../platform-lists.js"></script>
     <script src="../platform-approval-flow.js"></script>
+    <script src="../platform-analytics.js"></script>
     <script src="../event-wizard.js"></script>
     <script src="flow.js"></script>
     <script>
@@ -617,6 +608,7 @@
           { titleKey: "platform.globalTournamentTitle", hintKey: "flow.hint.globalWizard" },
           { titleKey: "platform.globalRegTitle", hintKey: "flow.hint.globalReg" },
           { titleKey: "platform.globalLiveTitle", hintKey: "flow.hint.globalLive" },
+          { titleKey: "platform.profileTitle", hintKey: "flow.hint.adminProfile" },
           { titleKey: "platform.accountTitle", hintKey: "flow.hint.adminSettings" },
         ],
         wizardStepMap: { 1: 7, 2: 8, 3: 9, 4: 10, 5: 11, 6: 12 },
@@ -624,7 +616,7 @@
         finishUrl: "index.html",
         appChrome: true,
         authedStartStep: 1,
-        settingsStep: 15,
+        settingsStep: 16,
         chromeSport: false,
         chromeProfile: {
           name: "Tim Match Point",
@@ -644,6 +636,7 @@
       });
       MP_PlatformLists.init();
       MP_PlatformApproval.init();
+      MP_PlatformAnalytics.init();
     </script>
   </body>
 </html>

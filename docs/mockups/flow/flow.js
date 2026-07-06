@@ -394,6 +394,10 @@ window.MP_Flow = (function () {
         MP_PlatformApproval.onStep(current);
       }
 
+      if (window.MP_PlatformAnalytics) {
+        MP_PlatformAnalytics.onStep(current);
+      }
+
       if (current === 2 || current === 3 || current === 4 || current === 5) {
         const inboxRoot = document.querySelector("[data-platform-inbox]");
         const matchRoot = document.querySelector("[data-platform-matches]");
