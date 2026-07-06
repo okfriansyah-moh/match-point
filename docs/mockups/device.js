@@ -81,6 +81,7 @@ window.MP_Device = (function () {
   }
 
   function ensureDeviceBar() {
+    if (document.body.classList.contains("proto-gallery")) return;
     if (document.getElementById("mp-device-bar")) return;
     if (!document.querySelector(".flow-app, .proto-viewport")) return;
 

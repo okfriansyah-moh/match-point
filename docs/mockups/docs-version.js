@@ -1,9 +1,20 @@
 /* Match Point product docs — version & changelog (update when shipping mockup changes) */
 window.MP_Docs = {
-  version: "3.2.0",
+  version: "3.3.0",
   label: "Mockup docs",
   updated: "2026-07-06",
   changelog: [
+    {
+      version: "3.3.0",
+      date: "2026-07-06",
+      title: "WPR player analytics + 5 sports + Box League",
+      items: [
+        "Confidence score, MP Rating history chart, match stats dashboard (player-analytics.js)",
+        "Badminton (Smash) + table tennis (Spin) mascots and sport themes",
+        "Box League format with promotion/relegation boxes",
+        "Player Performance screen; Performance tab on My Matches",
+      ],
+    },
     {
       version: "3.2.0",
       date: "2026-07-06",

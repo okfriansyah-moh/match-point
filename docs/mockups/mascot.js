@@ -1,6 +1,6 @@
-/* Match Point mascots — Pipo (padel), Tenni (tennis), Dink (pickleball) */
+/* Match Point mascots — Pipo, Tenni, Dink, Smash, Spin */
 window.MP_Mascot = (function () {
-  const SPORTS = ["padel", "tennis", "pickleball"];
+  const SPORTS = ["padel", "tennis", "pickleball", "badminton", "table_tennis"];
 
   const MASCOTS = {
     padel: {
@@ -17,6 +17,16 @@ window.MP_Mascot = (function () {
       file: "dink-pickleball.svg",
       nameKey: "mascot.dink.name",
       taglineKey: "mascot.dink.tagline",
+    },
+    badminton: {
+      file: "smash-badminton.svg",
+      nameKey: "mascot.smash.name",
+      taglineKey: "mascot.smash.tagline",
+    },
+    table_tennis: {
+      file: "spin-table-tennis.svg",
+      nameKey: "mascot.spin.name",
+      taglineKey: "mascot.spin.tagline",
     },
     rally: {
       file: "rally.svg",

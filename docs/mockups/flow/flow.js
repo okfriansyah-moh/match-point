@@ -361,6 +361,10 @@ window.MP_Flow = (function () {
         });
       }
       if (window.MP_Rank) MP_Rank.applyDOM();
+      if (window.MP_PlayerAnalytics) {
+        const profBody = document.querySelector('.flow-step.active[data-step="profile"] .app-body');
+        if (profBody) MP_PlayerAnalytics.renderProfilePanel(profBody);
+      }
       if (window.MP_Tournament) MP_Tournament.init();
 
       if (window.MP_Tournament) {
@@ -678,6 +682,13 @@ window.MP_Flow = (function () {
         return;
       }
 
+      const wizardBracketEl = e.target.closest("[data-wizard-pick-bracket]");
+      if (wizardBracketEl && window.MP_EventWizard) {
+        e.preventDefault();
+        MP_EventWizard.set({ bracketClass: wizardBracketEl.dataset.wizardPickBracket });
+        return;
+      }
+
       const wizardNextEl = e.target.closest("[data-wizard-next]");
       if (wizardNextEl && window.MP_EventWizard) {
         e.preventDefault();
@@ -991,6 +1002,8 @@ window.MP_Flow = (function () {
         let division = "";
         let roster = [];
         let capacity;
+        let bracketClass;
+        let eligibility;
         if (window.MP_EventWizard && MP_EventWizard.get().eventType) {
           const opts = MP_EventWizard.toTournamentOpts(form);
           fmt = opts.format;
@@ -1004,6 +1017,8 @@ window.MP_Flow = (function () {
           division = opts.division;
           roster = opts.roster || [];
           capacity = opts.capacity;
+          bracketClass = opts.bracketClass;
+          eligibility = opts.eligibility;
         } else {
           try {
             fmt = sessionStorage.getItem("mp-pick-format") || fmt;
@@ -1017,6 +1032,9 @@ window.MP_Flow = (function () {
             MP_Tournament.defaultScoringForFormat(fmt);
           raceTo = parseInt(form.querySelector("[data-event-race-to]")?.value, 10) || raceTo;
           bestOf = parseInt(form.querySelector("[data-event-best-of]")?.value, 10) || bestOf;
+          const sport = (window.MP_Sport && MP_Sport.get()) || "padel";
+          bracketClass = MP_EventWizard?.get?.().bracketClass || "open";
+          if (window.MP_Rank) eligibility = MP_Rank.eligibilityFromBracket(sport, bracketClass);
         }
         const tierText = form.querySelector("[data-event-tier]")?.value || "";
         let tier = null;
@@ -1032,6 +1050,8 @@ window.MP_Flow = (function () {
           eventType,
           structure,
           division,
+          bracketClass,
+          eligibility,
           scoring,
           raceTo,
           bestOf,
@@ -1207,6 +1227,7 @@ window.MP_Flow = (function () {
     if (window.MP_Sport) MP_Sport.init();
     if (window.MP_Approval) MP_Approval.init();
     if (window.MP_Rank) MP_Rank.init();
+    if (window.MP_PlayerAnalytics) MP_PlayerAnalytics.init();
     if (window.MP_Tournament) MP_Tournament.init();
     if (window.MP_Role) MP_Role.init();
     if (window.MP_Communities) {

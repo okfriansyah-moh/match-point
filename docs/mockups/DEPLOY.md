@@ -16,6 +16,8 @@ Static HTML/CSS/JS mockups in this folder can be hosted for free. All asset path
 
 After deploy, open the **hub** URL first and navigate from there.
 
+**Gallery ↔ interactive sync:** When changing mockup UI, keep `prototype.html` and `flow/*.html` aligned. See [MOCKUP-SYNC.md](MOCKUP-SYNC.md) and `.cursor/rules/match-point-mockup-sync.mdc`.
+
 ---
 
 ## Recommended: GitHub Pages (zero cost)

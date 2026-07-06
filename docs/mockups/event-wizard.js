@@ -22,10 +22,39 @@ window.MP_EventWizard = (function () {
     { id: "e4", name: "Walk-in guest", source: "external", guest: true, meta: "No account · admin-added" },
   ];
 
+  const BRACKET_IDS = ["open", "beginner", "intermediate", "advanced", "elite"];
+
+  const CLUB_WIZARD_SCREENS = {
+    1: "club-wizard-1",
+    2: "club-wizard-2",
+    3: "club-wizard-3",
+    4: "club-wizard-4",
+    5: "club-wizard-roster",
+    6: "club-wizard-publish",
+  };
+
+  const PLATFORM_WIZARD_SCREENS = {
+    1: "platform-global-wizard-1",
+    2: "platform-global-wizard-2",
+    3: "platform-global-wizard-3",
+    4: "platform-global-wizard-4",
+    5: "platform-global-wizard-5",
+    6: "platform-global-wizard-6",
+  };
+
+  const WIZARD_SCREEN_IDX = {};
+  Object.entries(CLUB_WIZARD_SCREENS).forEach(([k, v]) => {
+    WIZARD_SCREEN_IDX[v] = parseInt(k, 10);
+  });
+  Object.entries(PLATFORM_WIZARD_SCREENS).forEach(([k, v]) => {
+    WIZARD_SCREEN_IDX[v] = parseInt(k, 10);
+  });
+
   function defaults() {
     return {
       eventType: "",
       division: "",
+      bracketClass: "open",
       participants: 16,
       structure: "",
       rrVariant: "full",
@@ -102,6 +131,7 @@ window.MP_EventWizard = (function () {
     if (state.eventType === "americano") return "americano";
     if (state.eventType === "mexicano") return "mexicano";
     if (state.structure === "league") return "league";
+    if (state.structure === "box_league") return "box_league";
     if (state.structure === "group_knockout") return "group_knockout";
     if (state.structure === "round_robin") return "round_robin";
     return "round_robin";
@@ -154,6 +184,7 @@ window.MP_EventWizard = (function () {
       round_robin: "Round Robin",
       group_knockout: "Group → Knockout",
       league: "League",
+      box_league: "Box League",
     };
     return map[state.structure] || "";
   }
@@ -164,11 +195,37 @@ window.MP_EventWizard = (function () {
     return v ? (window.MP_I18N ? MP_I18N.t(v.labelKey) : state.rrVariant) : "";
   }
 
+  function bracketShortName(sport, bracketClass) {
+    if (!window.MP_Rank) return bracketClass || "open";
+    const d = MP_Rank.getBracketDisplay(sport, bracketClass || "open");
+    const lang = (window.MP_I18N && MP_I18N.getLang()) || "en";
+    return lang === "id" ? d.classId_label : d.classEn;
+  }
+
+  function bracketLabel(state) {
+    state = state || load();
+    const sport = (window.MP_Sport && MP_Sport.get()) || "padel";
+    const bracketClass = state.bracketClass || "open";
+    if (!window.MP_Rank) return bracketClass;
+    const d = MP_Rank.getBracketDisplay(sport, bracketClass);
+    const cls = bracketShortName(sport, bracketClass);
+    const range =
+      d.mpRatingRange === "Any"
+        ? window.MP_I18N
+          ? MP_I18N.t("wizard.bracketAny")
+          : "Any"
+        : "MP Rating " + d.mpRatingRange;
+    return cls + " · " + range;
+  }
+
   function buildSummary(state) {
     state = state || load();
     const parts = [typeLabel(state)];
     if (state.division && isCompetitive(state.eventType)) {
       parts.push(divisionLabel(state));
+    }
+    if (state.bracketClass && state.bracketClass !== "open") {
+      parts.push(bracketShortName((window.MP_Sport && MP_Sport.get()) || "padel", state.bracketClass));
     }
     if (isCompetitive(state.eventType) && state.structure) {
       parts.push(structureLabel(state));
@@ -186,7 +243,11 @@ window.MP_EventWizard = (function () {
     if (state.eventType === "mexicano") return "Mexicano Session · " + sportName;
     const div = divisionLabel(state);
     const struct = structureLabel(state);
-    return [struct || typeLabel(state), div, sportName].filter(Boolean).join(" · ");
+    const bracket =
+      state.bracketClass && state.bracketClass !== "open"
+        ? bracketShortName(sport, state.bracketClass)
+        : "";
+    return [struct || typeLabel(state), div, bracket, sportName].filter(Boolean).join(" · ");
   }
 
   function resolveFlowIdx(flowIdx) {
@@ -454,6 +515,14 @@ window.MP_EventWizard = (function () {
       el.classList.toggle("active", el.dataset.wizardDivisionChip === state.division);
     });
 
+    document.querySelectorAll("[data-wizard-bracket-chip]").forEach((el) => {
+      el.classList.toggle("active", el.dataset.wizardBracketChip === state.bracketClass);
+    });
+
+    document.querySelectorAll("[data-wizard-bracket-preview]").forEach((el) => {
+      el.textContent = bracketLabel(state);
+    });
+
     document.querySelectorAll("[data-wizard-structure-card]").forEach((el) => {
       el.classList.toggle("primary", el.dataset.wizardStructureCard === state.structure);
     });
@@ -518,12 +587,20 @@ window.MP_EventWizard = (function () {
     const scoring =
       scoringContainer?.querySelector("[data-event-scoring]")?.value ||
       resolveScoring(state);
+    const sport = (window.MP_Sport && MP_Sport.get()) || "padel";
+    const bracketClass = state.bracketClass || "open";
+    const eligibility =
+      window.MP_Rank && MP_Rank.eligibilityFromBracket
+        ? MP_Rank.eligibilityFromBracket(sport, bracketClass)
+        : { bracketClass };
     return {
       format: resolveEngineFormat(state),
       name,
       category: resolveCategory(state),
       eventType: state.eventType,
       division: state.division,
+      bracketClass,
+      eligibility,
       structure: state.structure,
       rrVariant: state.rrVariant,
       scoring,
@@ -536,6 +613,118 @@ window.MP_EventWizard = (function () {
 
   function getPlayerById(id) {
     return PLAYER_DIR.find((p) => p.id === id);
+  }
+
+  function wizardContext() {
+    const id =
+      document.querySelector(".screen.active")?.id?.replace("screen-", "") || "";
+    return id.startsWith("platform-global-wizard") ? "platform" : "club";
+  }
+
+  function wizardScreens() {
+    return wizardContext() === "platform" ? PLATFORM_WIZARD_SCREENS : CLUB_WIZARD_SCREENS;
+  }
+
+  function navToScreen(screenId) {
+    if (!screenId) return;
+    location.hash = screenId;
+  }
+
+  function navToWizardStep(step) {
+    navToScreen(wizardScreens()[step]);
+  }
+
+  function onScreenChange(screenId) {
+    const idx = WIZARD_SCREEN_IDX[screenId];
+    if (idx) {
+      window.__wizardFlowIdx = idx;
+      applyUI(idx);
+      return;
+    }
+    if (screenId === "event-register" && window.MP_Rank?.applyEligibilityPanel) {
+      MP_Rank.applyEligibilityPanel();
+    }
+    if (screenId === "tournament-create") {
+      applyUI();
+    }
+  }
+
+  function protoToast(msg) {
+    if (!msg) return;
+    const toast = document.getElementById("flow-toast");
+    if (toast) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(protoToast._t);
+      protoToast._t = setTimeout(() => toast.classList.remove("show"), 2800);
+      return;
+    }
+    /* gallery has no toast element */
+  }
+
+  function publishEvent(btn) {
+    if (!window.MP_Tournament) return;
+    const form = btn.closest(".app-body") || document;
+    const state = load();
+    const isSimpleCreate = Boolean(btn.closest("#screen-tournament-create"));
+    let opts;
+    if (!isSimpleCreate && state.eventType) {
+      opts = toTournamentOpts(form);
+    } else if (isSimpleCreate) {
+      const fmt = form.querySelector("[data-event-format]")?.value || "single_elim";
+      const name = form.querySelector("[data-event-name]")?.value || "Community Event";
+      const sport = (window.MP_Sport && MP_Sport.get()) || "padel";
+      const bracketClass = state.bracketClass || "open";
+      opts = {
+        format: fmt,
+        name,
+        category: form.querySelector("[data-event-category]")?.value || "doubles",
+        bracketClass,
+        eligibility: window.MP_Rank
+          ? MP_Rank.eligibilityFromBracket(sport, bracketClass)
+          : { bracketClass },
+        scoring: MP_Tournament.defaultScoringForFormat(fmt),
+        capacity: parseInt(form.querySelector("[data-event-capacity]")?.value, 10) || 16,
+      };
+    } else {
+      const fmt = form.querySelector("[data-event-format]")?.value || "americano";
+      const name = form.querySelector("[data-event-name]")?.value || "Community Event";
+      const sport = (window.MP_Sport && MP_Sport.get()) || "padel";
+      const bracketClass = state.bracketClass || "open";
+      opts = {
+        format: fmt,
+        name,
+        category: form.querySelector("[data-event-category]")?.value || "doubles",
+        bracketClass,
+        eligibility: window.MP_Rank
+          ? MP_Rank.eligibilityFromBracket(sport, bracketClass)
+          : { bracketClass },
+        scoring: MP_Tournament.defaultScoringForFormat(fmt),
+        capacity: 16,
+      };
+    }
+    const tierText = form.querySelector("[data-event-tier]")?.value || "";
+    if (tierText.includes("Tier 1")) opts.tier = 1;
+    else if (tierText.includes("Tier 2")) opts.tier = 2;
+    else if (tierText.includes("Tier 3")) opts.tier = 3;
+    const isGlobal = Boolean(form.querySelector("[data-event-tier]"));
+    if (isGlobal || opts.tier) {
+      opts.scope = "global";
+      opts.rankTarget = "global";
+    } else if (!opts.scope) {
+      opts.scope = "community";
+    }
+    MP_Tournament.createEvent(opts);
+    if (opts.format === "single_elim" || opts.format === "double_elim") {
+      MP_Tournament.generateSchedule();
+    }
+    protoToast(window.MP_I18N ? MP_I18N.t("flow.publishBtn") : "Published");
+    const goto =
+      btn.dataset.goto ||
+      btn.dataset.flowGoto ||
+      (wizardContext() === "platform" ? "platform-global-reg" : "club-registrations");
+    if (goto && !/^\d+$/.test(goto)) navToScreen(goto);
+    else if (goto) navToWizardStep(parseInt(goto, 10));
   }
 
   function init() {
@@ -558,9 +747,149 @@ window.MP_EventWizard = (function () {
         set({ rosterSearch: e.target.value });
       }
     });
+
+    document.body.addEventListener("click", (e) => {
+      const typeEl = e.target.closest("[data-wizard-pick-type]");
+      if (typeEl) {
+        e.preventDefault();
+        set({ eventType: typeEl.dataset.wizardPickType, division: "", structure: "" });
+        navToWizardStep(stepAfterType());
+        return;
+      }
+
+      const divEl = e.target.closest("[data-wizard-pick-division]");
+      if (divEl) {
+        e.preventDefault();
+        set({ division: divEl.dataset.wizardPickDivision });
+        return;
+      }
+
+      const bracketEl = e.target.closest("[data-wizard-pick-bracket]");
+      if (bracketEl) {
+        e.preventDefault();
+        set({ bracketClass: bracketEl.dataset.wizardPickBracket });
+        return;
+      }
+
+      const nextEl = e.target.closest("[data-wizard-next]");
+      if (nextEl) {
+        e.preventDefault();
+        const state = load();
+        const next = parseInt(nextEl.dataset.wizardNext, 10);
+        if (next === 3 && isCompetitive() && !state.division) {
+          protoToast(window.MP_I18N ? MP_I18N.t("wizard.pickDivision") : "Pick a division");
+          return;
+        }
+        if (next === 5 && isCompetitive() && !state.structure) {
+          protoToast(window.MP_I18N ? MP_I18N.t("wizard.pickStructure") : "Pick a format");
+          return;
+        }
+        if (!isNaN(next)) navToWizardStep(next);
+        return;
+      }
+
+      const partEl = e.target.closest("[data-wizard-pick-participants]");
+      if (partEl) {
+        e.preventDefault();
+        set({ participants: parseInt(partEl.dataset.wizardPickParticipants, 10) });
+        return;
+      }
+
+      const nextPartEl = e.target.closest("[data-wizard-next-participants]");
+      if (nextPartEl) {
+        e.preventDefault();
+        const input = document.querySelector("[data-wizard-participants-input]");
+        const n = parseInt(input?.value, 10) || load().participants;
+        set({ participants: n });
+        navToWizardStep(stepAfterParticipants());
+        return;
+      }
+
+      const structEl = e.target.closest("[data-wizard-pick-structure]");
+      if (structEl) {
+        e.preventDefault();
+        set({ structure: structEl.dataset.wizardPickStructure });
+        return;
+      }
+
+      const backEl = e.target.closest("[data-wizard-back]");
+      if (backEl) {
+        e.preventDefault();
+        navToWizardStep(wizardBackTarget(backEl.dataset.wizardBack));
+        return;
+      }
+
+      const filterEl = e.target.closest("[data-wizard-roster-filter]");
+      if (filterEl) {
+        e.preventDefault();
+        set({ rosterFilter: filterEl.dataset.wizardRosterFilter });
+        return;
+      }
+
+      const addEl = e.target.closest("[data-wizard-roster-add]");
+      if (addEl) {
+        e.preventDefault();
+        const player = getPlayerById(addEl.dataset.wizardRosterAdd);
+        if (!player) return;
+        const state = load();
+        if (state.roster.length >= state.participants) {
+          protoToast(window.MP_I18N ? MP_I18N.t("wizard.rosterFull") : "Capacity full");
+          return;
+        }
+        addToRoster(player);
+        protoToast(window.MP_I18N ? MP_I18N.t("wizard.rosterAdded") : "Player added");
+        return;
+      }
+
+      const removeEl = e.target.closest("[data-wizard-roster-remove]");
+      if (removeEl) {
+        e.preventDefault();
+        removeFromRoster(removeEl.dataset.wizardRosterRemove);
+        return;
+      }
+
+      const guestEl = e.target.closest("[data-wizard-roster-add-guest]");
+      if (guestEl) {
+        e.preventDefault();
+        const input = document.querySelector("[data-wizard-roster-guest-name]");
+        const name = input?.value?.trim();
+        if (!name) {
+          protoToast(window.MP_I18N ? MP_I18N.t("wizard.rosterGuestRequired") : "Enter a name");
+          return;
+        }
+        const state = load();
+        if (state.roster.length >= state.participants) {
+          protoToast(window.MP_I18N ? MP_I18N.t("wizard.rosterFull") : "Capacity full");
+          return;
+        }
+        addGuestName(name);
+        if (input) input.value = "";
+        protoToast(window.MP_I18N ? MP_I18N.t("wizard.rosterAdded") : "Player added");
+        return;
+      }
+
+      const skipEl = e.target.closest("[data-wizard-roster-skip]");
+      if (skipEl) {
+        e.preventDefault();
+        const goto = skipEl.dataset.goto || skipEl.dataset.flowGoto || "6";
+        if (/^\d+$/.test(goto)) navToWizardStep(parseInt(goto, 10));
+        else navToScreen(goto);
+        return;
+      }
+
+      const publishEl = e.target.closest("[data-publish-event]");
+      if (publishEl) {
+        e.preventDefault();
+        publishEvent(publishEl);
+      }
+    });
+
+    const hash = location.hash.slice(1);
+    if (hash) onScreenChange(hash);
   }
 
   return {
+    BRACKET_IDS,
     PLAYER_DIR,
     getPlayerById,
     addToRoster,
@@ -584,9 +913,11 @@ window.MP_EventWizard = (function () {
     resolveEngineFormat,
     buildSummary,
     suggestedName,
+    bracketLabel,
     applyUI,
     wizardBackTarget,
     toTournamentOpts,
+    onScreenChange,
     init,
   };
 })();

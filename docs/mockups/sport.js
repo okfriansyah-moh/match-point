@@ -1,13 +1,14 @@
-/* Match Point — multi-sport context (padel · tennis · future) */
+/* Match Point — multi-sport context (padel · tennis · pickleball · badminton · table tennis) */
 window.MP_Sport = (function () {
   const STORAGE_KEY = "mp-sport";
-  const SPORTS = ["padel", "tennis", "pickleball"];
-  let current = "padel";
+  const SPORTS = ["padel", "tennis", "pickleball", "badminton", "table_tennis"];
 
   const META = {
     padel: { icon: "🏓", labelId: "Padel", labelEn: "Padel" },
     tennis: { icon: "🎾", labelId: "Tennis", labelEn: "Tennis" },
     pickleball: { icon: "🥎", labelId: "Pickleball", labelEn: "Pickleball" },
+    badminton: { icon: "🏸", labelId: "Badminton", labelEn: "Badminton" },
+    table_tennis: { icon: "🏓", labelId: "Ping Pong", labelEn: "Table Tennis" },
   };
 
   function getLang() {
@@ -50,7 +51,8 @@ window.MP_Sport = (function () {
     window.dispatchEvent(new CustomEvent("mp:sport", { detail: { sport } }));
   }
 
-  // One tap on the ball orb rotates the whole universe to the next sport
+  let current = "padel";
+
   function cycle() {
     const i = SPORTS.indexOf(current);
     apply(SPORTS[(i + 1) % SPORTS.length]);
@@ -83,5 +85,5 @@ window.MP_Sport = (function () {
     window.addEventListener("mp:lang", () => apply(current));
   }
 
-  return { init, apply, cycle, get: () => current, sports: SPORTS, label };
+  return { init, apply, cycle, get: () => current, sports: SPORTS, label, META };
 })();

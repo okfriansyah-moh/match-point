@@ -1,4 +1,4 @@
-/* Match Point Mockup — navigation + i18n */
+/* Match Point Mockup — navigation + i18n + gallery design notes */
 (function () {
   const i18n = window.MP_I18N;
   const screens = document.querySelectorAll(".screen");
@@ -6,15 +6,18 @@
   const titleEl = document.getElementById("screen-title");
   const navEl = document.getElementById("proto-nav");
   const navToggle = document.getElementById("nav-toggle");
+  const shell = document.querySelector(".proto-shell");
 
   const screenIds = [
     "auth-login",
     "auth-register",
+    "verify-otp",
     "home-dashboard",
     "profile",
     "profile-provisional",
     "profile-endorse-empty",
     "edit-profile",
+    "find-community",
     "communities",
     "community-create",
     "community-detail",
@@ -29,11 +32,51 @@
     "match-duplicate",
     "match-disputed",
     "my-matches",
+    "events-feed",
+    "event-register",
+    "event-americano",
+    "event-mexicano",
+    "format-round-robin",
+    "format-league",
+    "global-tournament",
     "tournament",
     "tournament-create",
     "tournament-bracket",
     "endorsement",
     "share-card",
+    "player-other",
+    "player-performance",
+    "boc-fixture-detail",
+    "sparring-detail",
+    "home-dashboard-guest",
+    "club-admin-dashboard",
+    "club-wizard-1",
+    "club-wizard-2",
+    "club-wizard-3",
+    "club-wizard-4",
+    "club-wizard-roster",
+    "club-wizard-publish",
+    "club-registrations",
+    "club-referee-setup",
+    "club-live-referee",
+    "club-sparring-create",
+    "platform-login",
+    "platform-approval-inbox",
+    "platform-approval-detail",
+    "platform-approval-result",
+    "platform-analytics",
+    "platform-global-wizard-1",
+    "platform-global-wizard-2",
+    "platform-global-wizard-3",
+    "platform-global-wizard-4",
+    "platform-global-wizard-5",
+    "platform-global-wizard-6",
+    "platform-global-reg",
+    "platform-global-live",
+    "platform-profile",
+    "platform-settings",
+    "platform-boc-wizard",
+    "platform-boc-fixtures",
     "admin",
     "admin-community",
     "admin-pending",
@@ -44,7 +87,9 @@
 
   function updateTitle(screenId) {
     if (!titleEl) return;
-    titleEl.textContent = i18n.t(i18n.screenTitleKey(screenId));
+    const key = i18n.screenTitleKey(screenId);
+    const text = i18n.t(key);
+    titleEl.textContent = text === key ? screenId : text;
   }
 
   function showScreen(id) {
@@ -64,6 +109,9 @@
       if (app) MP_GalleryChrome.upgradeApp(app, id);
       if (window.MP_Mascot) MP_Mascot.initAll();
     }
+    if (window.MP_GalleryNotes) MP_GalleryNotes.render(id);
+    if (window.MP_GalleryHydrate) MP_GalleryHydrate.hydrate(id);
+    if (window.MP_EventWizard?.onScreenChange) MP_EventWizard.onScreenChange(id);
   }
 
   navLinks.forEach((link) => {
@@ -78,7 +126,15 @@
   });
 
   if (navToggle) {
-    navToggle.addEventListener("click", () => navEl.classList.toggle("open"));
+    navToggle.addEventListener("click", () => {
+      if (window.innerWidth <= 900) {
+        navEl.classList.toggle("open");
+      } else if (window.MP_GalleryNotes) {
+        MP_GalleryNotes.toggleNav();
+      } else if (shell) {
+        shell.classList.toggle("proto-nav-collapsed");
+      }
+    });
   }
 
   document.querySelectorAll(".lang-btn").forEach((btn) => {
@@ -88,6 +144,7 @@
   window.addEventListener("mp:lang", () => {
     const active = document.querySelector(".nav-link.active");
     if (active) updateTitle(active.dataset.screen);
+    i18n.apply(i18n.getLang());
   });
 
   i18n.apply(i18n.getLang());

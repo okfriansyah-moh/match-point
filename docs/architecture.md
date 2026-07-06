@@ -346,11 +346,13 @@ Type (social vs competitive)
 
 ### 10.1 Sports
 
-| Sport      | Icon | Mascot | Accent color    |
-| ---------- | ---- | ------ | --------------- |
-| Padel      | 🏓   | Pipo   | Blue `#0ea5e9`  |
-| Tennis     | 🎾   | Tenni  | Green `#22c55e` |
-| Pickleball | 🥎   | Dink   | Red `#dc2626`   |
+| Sport        | Icon | Mascot | Accent color     |
+| ------------ | ---- | ------ | ---------------- |
+| Padel        | 🏓   | Pipo   | Blue `#277da1`   |
+| Tennis       | 🎾   | Tenni  | Green `#2d6a4f`  |
+| Pickleball   | 🥎   | Dink   | Red `#c1443c`    |
+| Badminton    | 🏸   | Smash  | Amber `#d97706`  |
+| Table tennis | 🏓   | Spin   | Orange `#ea580c` |
 
 ### 10.2 Sport switching
 
@@ -378,6 +380,22 @@ Type (social vs competitive)
 
 **Source:** `rank.js`, `about.html`, gallery `errors` screen.
 
+### 11.0 Three-layer model (per sport)
+
+| Layer                  | User-facing name             | Purpose                                                       |
+| ---------------------- | ---------------------------- | ------------------------------------------------------------- |
+| **1 — MP Rating**      | MP Rating / Rating MP        | Glicko-2 trusted skill — brackets, seeding, anti-sandbagging  |
+| **2 — MP Ladder**      | Mabar pts / Global pts       | Club leaderboard & cross-community prestige — starts at **0** |
+| **3 — Reference hint** | `≈ WPR` / `≈ UTR` / `≈ DUPR` | Optional orientation — derived from MP Rating, never the gate |
+
+**Signup:** unrated until first verified match (`skill: null`, `matches: 0`). MP does **not** import federation ratings.
+
+**Single pipeline:** `processMatchResult()` → Glicko update (MP Rating) → derive ladder delta → Mabar or Global pts.
+
+### 11.0.1 Cross-sport backbone
+
+One engine, `SPORT_PROFILES` registry (`padel`, `tennis`, `pickleball` live; `badminton`, `table_tennis` stubbed). Same bracket class names everywhere; per-sport MP Rating scale calibration only. Ratings do not transfer between sports.
+
 ### 11.1 Dual ledger (per sport)
 
 | Track      | Storage fields         | Scope            |
@@ -385,37 +403,44 @@ Type (social vs competitive)
 | **Mabar**  | `mabar`, `mabarRank`   | Within community |
 | **Global** | `global`, `globalRank` | Cross-community  |
 
-Persisted in `localStorage` key `mp-ranks`. Production: PostgreSQL `player_sport_rank` table per sport.
+Persisted in `localStorage` key `mp-ranks`. Production: PostgreSQL `player_sport_rank` per sport.
 
-### 11.2 Glicko-lite skill rating
+### 11.2 MP Rating (Glicko-lite)
 
-| Field             | Meaning                             |
-| ----------------- | ----------------------------------- |
-| `skill`           | Internal skill value (sport-scaled) |
-| `rd`              | Rating deviation (uncertainty)      |
-| `reliability`     | % derived from verified match ratio |
-| `verifiedMatches` | Count of organizer-verified results |
-| `matches`         | Total rated matches                 |
+| Field                   | Meaning                                 |
+| ----------------------- | --------------------------------------- |
+| `skill`                 | MP Rating value (sport-scaled Glicko μ) |
+| `rd`                    | Rating deviation (uncertainty)          |
+| `reliability`           | % from verified match ratio             |
+| `verifiedMatches`       | Organizer-verified result count         |
+| `matches`               | Total rated matches                     |
+| `calibrationScope`      | `club_local` \| `cross_community`       |
+| `crossCommunityMatches` | Verified matches vs other communities   |
+| `opponentDiversityPct`  | % of matches outside home community     |
 
-**K-factor** (`kFactor(rd, matches)`):
+**Lifecycle:**
 
-| Condition                  | K   |
-| -------------------------- | --- |
-| `matches < 5` OR `rd > 80` | 32  |
-| `rd > 50`                  | 24  |
-| else                       | 16  |
+| State       | Condition                          | UI                      |
+| ----------- | ---------------------------------- | ----------------------- |
+| Unrated     | `skill == null && matches === 0`   | Belum dinilai / Unrated |
+| Provisional | `matches < 5` or reliability < 60% | MP Rating X.XX (est.)   |
+| Stable      | 5+ matches, reliability ≥ 60%      | MP Rating X.XX ✓        |
 
-**Provisional:** `matches < 5` OR `reliability < 60%` → badge shown on profile and registration.
+**K-factor** (`kFactor(rd, matches)`): 32 if `matches < 5` or `rd > 80`; 24 if `rd > 50`; else 16. Anchor boost ×1.5 on first cross-community opponent.
 
-### 11.3 Display adapters (`SPORT_PROFILES`)
+**Ladder delta:** `round(K × weight × (score − expected) × 0.8)` — not flat +15.
 
-| Sport      | Label | Band examples                      |
-| ---------- | ----- | ---------------------------------- |
-| Padel      | WPR   | Club ~2.5, ~3.5, ~4.0, 4.5+        |
-| Tennis     | UTR   | NTRP ~2.0 – 4.5+ mapped from skill |
-| Pickleball | DUPR  | Beginner, Intermediate, Advanced   |
+### 11.3 Reference hints (`SPORT_PROFILES`)
 
-### 11.4 Event rank weights (`finalizeEvent`)
+| Sport        | MP Rating scale | Reference hint | Status          |
+| ------------ | --------------- | -------------- | --------------- |
+| Padel        | 0 – 21          | ≈ WPR          | Live            |
+| Tennis       | 1.0 – 16.5      | ≈ UTR          | Live            |
+| Pickleball   | 2 – 8           | ≈ DUPR         | Live            |
+| Badminton    | TBD             | TBD            | Live (MP scale) |
+| Table tennis | TBD             | TBD            | Live (MP scale) |
+
+### 11.4 Event rank weights (`finalizeEvent` / `processMatchResult`)
 
 | Event type                    | Weight                                   |
 | ----------------------------- | ---------------------------------------- |
@@ -426,15 +451,31 @@ Persisted in `localStorage` key `mp-ranks`. Production: PostgreSQL `player_sport
 
 ### 11.5 Eligibility (`checkEligibility`)
 
-| Rule             | Parameter            | Behavior                                       |
-| ---------------- | -------------------- | ---------------------------------------------- |
-| Bracket ceiling  | `maxRating`          | Block if skill > max and `allowPlayDown` false |
-| Bracket floor    | `minRating`          | Block if skill < min                           |
-| Provisional gate | `requireReliability` | Block provisional players                      |
+| Rule                 | Parameter               | Behavior                                              |
+| -------------------- | ----------------------- | ----------------------------------------------------- |
+| Bracket ceiling      | `maxMpRating`           | Block if MP Rating > max and `allowPlayDown` false    |
+| Bracket floor        | `minMpRating`           | Block if MP Rating < min                              |
+| Unrated gate         | —                       | Block classified brackets until 1+ verified match     |
+| Provisional gate     | `requireStable`         | Block Intermediate+ for provisional players           |
+| Cross-community gate | `requireCrossCommunity` | Global/inter-club Intermediate+ needs `Lintas klub ✓` |
+| Elite verified gate  | `minVerified: 20`       | Elite bracket requires 20+ verified matches           |
 
-Demo on event-register: max 3.49 for beginner bracket.
+Demo on event-register: Beginner bracket, tennis `maxMpRating: 3.49`.
 
-### 11.6 Endorsements & edge policies (gallery `errors`)
+### 11.6 MP Bracket Classes
+
+Universal labels: Open / Beginner / Intermediate / Advanced / Elite (ID: Terbuka / Pemula / Menengah / Mahir / Atlet). Each maps to `minMpRating`–`maxMpRating` per sport in `BRACKET_CLASSES` (`rank.js`). See §12.4.
+
+### 11.7 Cross-community calibration (Club A vs Club B)
+
+| Scope             | Badge         | Fair for                          |
+| ----------------- | ------------- | --------------------------------- |
+| `club_local`      | Klub / Club   | Same-club brackets, Mabar board   |
+| `cross_community` | Lintas klub ✓ | Global tournaments, BoC, sparring |
+
+Upgrade to `cross_community` when `crossCommunityMatches ≥ 3` and `opponentDiversityPct ≥ 20%`. Before clubs meet, MP Rating 4.0 at Club A is **not** promised equal to 4.0 at Club B. Glicko expected-outcome adjusts both when they play.
+
+### 11.8 Endorsements & edge policies (gallery `errors`)
 
 | Rule                           | Value                                       |
 | ------------------------------ | ------------------------------------------- |
@@ -462,6 +503,7 @@ Demo on event-register: max 3.49 for beginner bracket.
 | `round_robin`    | Round Robin        | Sets            |
 | `group_knockout` | Group → Knockout   | Sets            |
 | `league`         | League             | Sets            |
+| `box_league`     | Box League         | Sets            |
 
 **Scoring modes:** `race_to_n`, `normal_sets`, `best_of_n`, `single_set`, `super_tiebreak`
 
@@ -483,6 +525,22 @@ Demo on event-register: max 3.49 for beginner bracket.
 | Scheduling  | Client-side round generation | Server-authoritative draws           |
 | Concurrency | Single browser tab           | Distributed locks, idempotent writes |
 | Integrity   | Demo players seeded          | Verified participant IDs             |
+
+### 12.4 Tournament bracket classes
+
+Bracket assignment uses **MP Rating** (not Mabar/Global pts). Universal class names; per-sport MP Rating ranges in `BRACKET_CLASSES` (`rank.js`).
+
+| MP Class     | EN           | ID       | Tennis MP Rating | Padel MP Rating | Pickleball MP Rating |
+| ------------ | ------------ | -------- | ---------------- | --------------- | -------------------- |
+| Open         | Open         | Terbuka  | Any rated        | Any rated       | Any rated            |
+| Beginner     | Beginner     | Pemula   | 1.0 – 3.49       | 2.5 – 4.0       | 2.0 – 3.0            |
+| Intermediate | Intermediate | Menengah | 3.5 – 5.49       | 4.0 – 6.0       | 3.0 – 4.0            |
+| Advanced     | Advanced     | Mahir    | 5.5 – 7.49       | 6.0 – 8.0       | 4.0 – 5.0            |
+| Elite        | Elite        | Atlet    | ≥ 7.5            | ≥ 8.0           | ≥ 5.0                |
+
+**Bracket Class** = who can register (MP Rating gate). **Global Tier 1/2/3** = how much Global ladder pts the winner earns.
+
+Event card copy: `Beginner · MP Rating 2.5 – 4.0` (+ optional `≈ WPR` reference hint).
 
 ---
 

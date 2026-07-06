@@ -20,11 +20,13 @@
           <a href="#roles" data-i18n="about.secRoles">Who uses Match Point</a>
           <a href="#communities" data-i18n="about.secCommunities">Communities</a>
           <a href="#rankings" data-i18n="about.secRankings">Rankings</a>
+          <a href="#brackets" data-i18n="about.secBrackets">Tournament brackets</a>
           <a href="#events" data-i18n="about.secEvents">Events &amp; formats</a>
           <a href="#tournaments" data-i18n="about.secTournaments">Global tournaments</a>
           <a href="#boc" data-i18n="about.bocTitle">Battle of Communities</a>
           <a href="#sparring" data-i18n="about.sparringTitle">Community Sparring</a>
           <a href="#fair-play" data-i18n="about.ratingTitle">Ratings &amp; fair play</a>
+          <a href="#sports" data-i18n="about.secSports">Sports &amp; scale</a>
           <a href="#badges" data-i18n="about.badgesTitle">Badges &amp; crests</a>
           <a href="#platform" data-i18n="about.secPlatform">Platform operations</a>
           <a href="#changelog" data-i18n="about.secChangelog">Version history</a>
@@ -49,7 +51,7 @@
         <section id="vision" class="docs-section card">
           <h2 data-i18n="about.secVision">Vision &amp; goals</h2>
           <p>
-            Match Point is a <strong>cross-community reputation and ranking platform</strong> for padel, tennis, and pickleball.
+            Match Point is a <strong>cross-community reputation and ranking platform</strong> for padel, tennis, pickleball, and future racket sports (badminton, table tennis).
             Most play happens outside official federations — recreational leagues, open play, and club events leave no portable record.
             We fix that with verified identity, match results, and rankings that travel with the player.
           </p>
@@ -120,26 +122,86 @@
 
         <section id="rankings" class="docs-section card">
           <h2 data-i18n="about.secRankings">Rankings</h2>
-          <p>Every sport has two parallel tracks:</p>
+          <p data-i18n="about.rankLead">One ranking engine per sport — three numbers on your profile:</p>
           <table class="pa-table docs-table">
             <thead>
-              <tr><th>Track</th><th>Scope</th><th>Feeds from</th></tr>
+              <tr><th data-i18n="about.rankLayer">Layer</th><th data-i18n="about.rankName">Name</th><th data-i18n="about.rankPurpose">Purpose</th></tr>
             </thead>
             <tbody>
               <tr>
-                <td><strong>Mabar rank</strong></td>
-                <td>Within your community</td>
-                <td>Club events, social formats, sparring (weighted)</td>
+                <td><strong>1</strong></td>
+                <td><strong data-i18n="about.mpRating">MP Rating</strong></td>
+                <td data-i18n="about.mpRatingDesc">Trusted skill from verified matches — brackets, seeding, anti-sandbagging</td>
               </tr>
               <tr>
-                <td><strong>Global rank</strong></td>
-                <td>Cross-community, per sport</td>
-                <td>Tiered tournaments, competitive fixtures, monthly snapshots</td>
+                <td><strong>2</strong></td>
+                <td><strong data-i18n="about.mpPts">MP pts</strong> (Mabar / Global)</td>
+                <td data-i18n="about.mpPtsDesc">Club leaderboard &amp; cross-community prestige — starts at <strong>0</strong></td>
+              </tr>
+              <tr>
+                <td><strong>3</strong></td>
+                <td data-i18n="about.journeyTier">Journey tier</td>
+                <td data-i18n="about.journeyDesc">Pemula → Berkembang → Mapan — from ladder pts + stability</td>
               </tr>
             </tbody>
           </table>
-          <p class="form-hint">
-            Endorsements (min 3 endorsers for public skill scores) and share cards complement the numeric rank on your profile.
+          <h3 data-i18n="about.rankLifecycle">MP Rating lifecycle</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th data-i18n="about.rankState">State</th><th data-i18n="about.rankWhatYouSee">What you see</th></tr>
+            </thead>
+            <tbody>
+              <tr><td data-i18n="about.stateUnrated">Unrated</td><td data-i18n="about.stateUnratedDesc">Belum dinilai — no number until match 1</td></tr>
+              <tr><td data-i18n="about.stateProvisional">Provisional</td><td data-i18n="about.stateProvisionalDesc">MP Rating X.XX (est.) — matches 1–4</td></tr>
+              <tr><td data-i18n="about.stateStable">Stable</td><td data-i18n="about.stateStableDesc">MP Rating X.XX ✓ — 5+ verified matches</td></tr>
+            </tbody>
+          </table>
+          <p class="form-hint" data-i18n="about.noImport">
+            Match Point computes ≈ WPR / ≈ UTR / ≈ DUPR reference hints from your matches — we never import federation ratings.
+          </p>
+          <h3 data-i18n="about.mabarGlobal">Mabar vs Global pts</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th data-i18n="about.rankTrack">Track</th><th data-i18n="about.rankScope">Scope</th><th data-i18n="about.rankFeeds">Feeds from</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Mabar</strong></td>
+                <td data-i18n="about.scopeClub">Within your community</td>
+                <td data-i18n="about.feedsClub">Club events, social formats, sparring (weighted)</td>
+              </tr>
+              <tr>
+                <td><strong>Global</strong></td>
+                <td data-i18n="about.scopeCross">Cross-community, per sport</td>
+                <td data-i18n="about.feedsGlobal">Tiered tournaments, inter-club fixtures</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="brackets" class="docs-section card">
+          <h2 data-i18n="about.secBrackets">Tournament brackets</h2>
+          <p data-i18n="about.bracketsLead">Tournaments use <strong>MP Rating</strong>, not ladder pts. Same class names in every sport:</p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th data-i18n="about.bracketClass">Class</th><th>EN</th><th>ID</th><th data-i18n="about.bracketTennis">Tennis MP Rating</th><th data-i18n="about.bracketPadel">Padel MP Rating</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Open</td><td>Open</td><td>Terbuka</td><td colspan="2" data-i18n="about.bracketAny">Any rated player</td></tr>
+              <tr><td>Beginner</td><td>Beginner</td><td>Pemula</td><td>1.0 – 3.49</td><td>2.5 – 4.0</td></tr>
+              <tr><td>Intermediate</td><td>Intermediate</td><td>Menengah</td><td>3.5 – 5.49</td><td>4.0 – 6.0</td></tr>
+              <tr><td>Advanced</td><td>Advanced</td><td>Mahir</td><td>5.5 – 7.49</td><td>6.0 – 8.0</td></tr>
+              <tr><td>Elite</td><td>Elite</td><td>Atlet</td><td>≥ 7.5</td><td>≥ 8.0</td></tr>
+            </tbody>
+          </table>
+          <h3 data-i18n="about.whichTournament">Which tournament should I join?</h3>
+          <ol class="docs-list">
+            <li data-i18n="about.whichStep1">No verified match yet → <strong>Open</strong> only, or play your first match</li>
+            <li data-i18n="about.whichStep2">Provisional (1–4 matches) → <strong>Beginner</strong> or Open</li>
+            <li data-i18n="about.whichStep3">Stable → compare your <strong>MP Rating</strong> to the bracket range on the event card</li>
+          </ol>
+          <p class="form-hint" data-i18n="about.bracketVsTier">
+            <strong>Bracket Class</strong> = who can register. <strong>Global Tier 1–3</strong> = how many Global pts the winner earns.
           </p>
         </section>
 
@@ -155,17 +217,18 @@
               <tr><td>Single / double elimination</td><td>Knockout brackets</td></tr>
               <tr><td>Round robin</td><td>Everyone plays everyone — standings table</td></tr>
               <tr><td>League</td><td>Season schedule with next-match view</td></tr>
+              <tr><td>Box League</td><td>Box groups · round robin within box · promotion/relegation</td></tr>
               <tr><td>Group → knockout</td><td>Pool stage then playoffs</td></tr>
             </tbody>
           </table>
-          <p>Players discover events in the feed, register (with eligibility checks when brackets apply), and join live sessions.</p>
+          <p data-i18n="about.eventsBrackets">Players discover events in the feed, register with <a href="#brackets">MP Rating eligibility</a> when brackets apply, and join live sessions.</p>
         </section>
 
         <section id="tournaments" class="docs-section card">
           <h2 data-i18n="about.secTournaments">Global tournaments</h2>
-          <p>
-            <strong>Platform admin</strong> runs cross-community tournaments (Tier 1–3) that feed <strong>Global rank</strong>.
-            Same 6-step wizard as club events, with entrants from all registered clubs, registration, and live global sessions.
+          <p data-i18n="about.tournamentsLead">
+            <strong>Platform admin</strong> runs cross-community tournaments (Tier 1–3) that feed <strong>Global pts</strong>.
+            Club tournaments use the same <a href="#brackets">bracket classes</a> with MP Rating gates.
           </p>
         </section>
 
@@ -218,25 +281,61 @@
 
         <section id="fair-play" class="docs-section card">
           <h2 data-i18n="about.ratingTitle">Ratings &amp; fair play</h2>
-          <p>
-            <strong>Glicko-2-lite</strong> per sport: skill value, rating deviation (RD), reliability %, provisional state until enough verified matches.
+          <p data-i18n="about.fairPlayLead">
+            <strong>MP Rating</strong> (Glicko-2-lite) per sport: one trusted number from verified matches. Reference hints (≈ WPR, ≈ UTR) are optional — never the gate.
+          </p>
+          <h3 data-i18n="about.crossClubTitle">Is MP Rating fair across clubs?</h3>
+          <p data-i18n="about.crossClubLead">
+            If Club A is stronger than Club B and both only play internally, MP Rating 4.0 at Club A is <strong>not promised</strong> to equal 4.0 at Club B — yet.
           </p>
           <table class="pa-table docs-table">
             <thead>
-              <tr><th>Sport</th><th>Display scale</th><th>Example band</th></tr>
+              <tr><th data-i18n="about.calibScope">Scope</th><th data-i18n="about.calibBadge">Badge</th><th data-i18n="about.calibFair">Fair for</th></tr>
             </thead>
             <tbody>
-              <tr><td>Padel</td><td>WPR-style</td><td>Club ~3.5 – 4.5+</td></tr>
-              <tr><td>Tennis</td><td>UTR / NTRP labels</td><td>NTRP ~3.0 – 4.5+</td></tr>
-              <tr><td>Pickleball</td><td>DUPR-style</td><td>Beginner – Advanced</td></tr>
+              <tr>
+                <td data-i18n="about.calibClub">Club-local</td>
+                <td>Klub / Club</td>
+                <td data-i18n="about.calibClubFair">Same-club brackets, Mabar leaderboard</td>
+              </tr>
+              <tr>
+                <td data-i18n="about.calibCross">Cross-community</td>
+                <td>Lintas klub ✓</td>
+                <td data-i18n="about.calibCrossFair">Global tournaments, BoC, inter-club sparring</td>
+              </tr>
             </tbody>
           </table>
-          <h3>Anti-sandbagging</h3>
+          <p data-i18n="about.crossClubBridge">
+            When clubs meet, verified results calibrate both sides via Glicko expected-outcome — upsets move ratings fairly. Run inter-club sparring to earn <strong>Lintas klub ✓</strong>.
+          </p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th data-i18n="about.sportCol">Sport</th><th data-i18n="about.mpRatingScale">MP Rating scale</th><th data-i18n="about.refHint">Reference hint</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Padel</td><td>0 – 21</td><td>≈ WPR</td></tr>
+              <tr><td>Tennis</td><td>1.0 – 16.5</td><td>≈ UTR</td></tr>
+              <tr><td>Pickleball</td><td>2 – 8</td><td>≈ DUPR</td></tr>
+              <tr><td>Badminton</td><td colspan="2" data-i18n="about.comingSoon">Coming soon</td></tr>
+              <tr><td>Table tennis</td><td colspan="2" data-i18n="about.comingSoon">Coming soon</td></tr>
+            </tbody>
+          </table>
+          <h3 data-i18n="about.antiSandbag">Anti-sandbagging</h3>
           <ul class="docs-list">
-            <li>Event registration: min/max skill brackets</li>
-            <li>Play-up allowed when configured; play-down blocked when not</li>
-            <li>BoC squad slots re-check eligibility before lock</li>
-            <li>Partner ceiling on doubles (when enabled)</li>
+            <li data-i18n="about.antiSand1">Registration: min/max MP Rating per bracket class</li>
+            <li data-i18n="about.antiSand2">Play-up allowed when configured; play-down blocked by default</li>
+            <li data-i18n="about.antiSand3">Global / inter-club Intermediate+ requires Lintas klub ✓ calibration</li>
+            <li data-i18n="about.antiSand4">BoC squad slots re-check eligibility before lock</li>
+          </ul>
+        </section>
+
+        <section id="sports" class="docs-section card">
+          <h2 data-i18n="about.secSports">Sports &amp; scale</h2>
+          <p data-i18n="about.sportsLead">The same ranking rules apply to padel, tennis, and pickleball today — badminton and table tennis use the same engine when launched.</p>
+          <ul class="docs-list">
+            <li data-i18n="about.sportsRule1">One identity, separate MP Rating and ladder per sport — no cross-sport bleed</li>
+            <li data-i18n="about.sportsRule2">Same bracket vocabulary (Beginner / Intermediate / …) — only numeric scale differs</li>
+            <li data-i18n="about.sportsRule3">Adding a sport = new scale calibration in <code>SPORT_PROFILES</code>, not new rules</li>
           </ul>
         </section>
 

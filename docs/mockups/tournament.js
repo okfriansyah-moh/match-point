@@ -10,6 +10,7 @@ window.MP_Tournament = (function () {
     { id: "round_robin", label: "Round Robin", icon: "🔁", descKey: "format.roundRobin" },
     { id: "group_knockout", label: "Group → Knockout", icon: "📊", descKey: "format.groupKo" },
     { id: "league", label: "League", icon: "📅", descKey: "format.league" },
+    { id: "box_league", label: "Box League", icon: "📦", descKey: "format.boxLeague" },
   ];
 
   const SCORING_MODES = [
@@ -111,14 +112,19 @@ window.MP_Tournament = (function () {
     const doubles = opts.eventType === "doubles" || (opts.category && String(opts.category).includes("doubles")) || opts.category === "mixed";
     const courtCount = opts.courtCount || defaultCourtCount(players, doubles && !isSocial({ format: opts.format }));
 
+    const sport = (window.MP_Sport && MP_Sport.get()) || "padel";
+    const bracketClass =
+      opts.bracketClass || opts.eligibility?.bracketClass || "open";
+
     current = {
       id: "ev" + Date.now(),
       format: opts.format || "americano",
       eventType: opts.eventType || "",
       structure: opts.structure || "",
       division: opts.division || "",
+      bracketClass,
       name: opts.name || "Community Event",
-      sport: (window.MP_Sport && MP_Sport.get()) || "padel",
+      sport,
       category: opts.category || "doubles",
       scoring: opts.scoring || defaultScoringForFormat(opts.format),
       raceTo: opts.raceTo || 24,
@@ -142,7 +148,11 @@ window.MP_Tournament = (function () {
       eventType: opts.eventType || "",
       sparringMode: opts.sparringMode || null,
       rankWeight: opts.rankWeight != null ? opts.rankWeight : null,
-      eligibility: opts.eligibility || null,
+      eligibility:
+        opts.eligibility ||
+        (window.MP_Rank && bracketClass
+          ? MP_Rank.eligibilityFromBracket(sport, bracketClass)
+          : null),
       scope: opts.scope || (opts.eventType === "battle_of_communities" || opts.eventType === "community_sparring" ? "inter_community" : "community"),
     };
 
@@ -188,7 +198,7 @@ window.MP_Tournament = (function () {
     if (isSocial(ev)) return Math.max(ev.players.length - 1, 1);
     const entities = isDoublesMatch(ev) ? ev.teams?.length || Math.ceil(ev.players.length / 2) : ev.players.length;
     if (ev.format === "group_knockout") return Math.ceil(entities / 2) + 2;
-    if (ev.format === "league" || ev.format === "round_robin") return Math.max(entities - 1, 1);
+    if (ev.format === "league" || ev.format === "box_league" || ev.format === "round_robin") return Math.max(entities - 1, 1);
     return Math.max(entities - 1, 1);
   }
 
@@ -350,6 +360,30 @@ window.MP_Tournament = (function () {
         ...rd,
         round: i + 1,
         label: "GW " + (i + 1),
+      }));
+      current.totalRounds = current.rounds.length;
+    } else if (current.format === "box_league") {
+      const boxSize = 4;
+      const boxes = [];
+      for (let i = 0; i < entities.length; i += boxSize) {
+        boxes.push(entities.slice(i, i + boxSize));
+      }
+      current.phase = "box_league";
+      current.boxes = boxes.map((box, bi) => ({
+        id: "box" + (bi + 1),
+        label: "Box " + String.fromCharCode(65 + bi),
+        players: box,
+        promoteZone: 2,
+        relegateZone: 2,
+      }));
+      const boxFixtures = [];
+      current.boxes.forEach((box) => {
+        boxFixtures.push(...allPairings(box.players));
+      });
+      current.rounds = chunkIntoRounds(boxFixtures, courts).map((rd, i) => ({
+        ...rd,
+        round: i + 1,
+        label: "Box RR " + (i + 1),
       }));
       current.totalRounds = current.rounds.length;
     } else {
