@@ -1571,6 +1571,31 @@ window.MP_I18N = (function () {
     "about.sparringTitle": { id: "Sparring Komunitas", en: "Community Sparring" },
     "about.ratingTitle": { id: "Rating & fair play", en: "Rating & fair play" },
     "about.badgesTitle": { id: "Badge & crest", en: "Badges & crests" },
+
+    "mascot.trio.lead": {
+      id: "Teman olahraga gemoy Match Point",
+      en: "Meet Match Point's gemoy sport buddies",
+    },
+    "mascot.pipo.name": { id: "Pipo", en: "Pipo" },
+    "mascot.pipo.tagline": {
+      id: "Si gemoy lapangan padel!",
+      en: "Your gemoy padel court buddy!",
+    },
+    "mascot.tenni.name": { id: "Tenni", en: "Tenni" },
+    "mascot.tenni.tagline": {
+      id: "Cheerleader tennis yang ceria!",
+      en: "Your cheerful tennis cheerleader!",
+    },
+    "mascot.dink.name": { id: "Dink", en: "Dink" },
+    "mascot.dink.tagline": {
+      id: "Partner dink paling menggemaskan!",
+      en: "Your adorable dink partner!",
+    },
+    "mascot.rally.name": { id: "Rally", en: "Rally" },
+    "mascot.rally.tagline": {
+      id: "Maskot utama Match Point",
+      en: "Match Point's main mascot",
+    },
   };
 
   function t(key, lang) {
