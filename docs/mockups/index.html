@@ -32,7 +32,21 @@
             data-i18n="hub.openFlow"
             >Buka Alur Interaktif</a
           >
+          <a
+            href="about.html"
+            class="hub-cta"
+            style="
+              background: rgba(255, 255, 255, 0.08);
+              color: #fff;
+              box-shadow: none;
+              border: 1px solid rgba(255, 255, 255, 0.2);
+            "
+            data-i18n="about.title"
+            >About Match Point</a
+          >
         </div>
+
+        <div data-mascot data-mascot-size="md" data-mascot-mood="idle" style="margin-bottom: 1.5rem"></div>
 
         <div class="lang-toggle" style="margin-bottom: 2rem">
           <button class="lang-btn" data-lang="id">ID</button>
@@ -99,11 +113,15 @@
       </div>
     </div>
     <script src="i18n.js"></script>
+    <script src="mascot.js"></script>
+    <script src="feedback.js"></script>
     <script>
       MP_I18N.apply(MP_I18N.getLang());
       document.querySelectorAll(".lang-btn").forEach((btn) => {
         btn.addEventListener("click", () => MP_I18N.setLang(btn.dataset.lang));
       });
+      MP_Mascot.init();
+      MP_Feedback.init();
     </script>
   </body>
 </html>

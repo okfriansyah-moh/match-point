@@ -144,6 +144,7 @@ window.MP_Flow = (function () {
         "</span></div>" +
         '<button type="button" class="profile-menu-item" data-nav="profile" data-i18n="menu.viewProfile">Lihat Profil</button>' +
         '<button type="button" class="profile-menu-item" data-menu-settings data-i18n="menu.settings">Akun &amp; Pengaturan</button>' +
+        '<a href="../about.html" class="profile-menu-item" data-i18n="about.title">About Match Point</a>' +
         '<div class="profile-menu-divider"></div>' +
         '<div class="profile-menu-row"><span data-i18n="menu.language">Language</span>' +
         '<div class="lang-toggle"><button type="button" class="lang-btn" data-lang="id">ID</button>' +
@@ -407,6 +408,23 @@ window.MP_Flow = (function () {
 
       if (current === 1 && window.MP_PlatformLists?.updateDashboardStats) {
         MP_PlatformLists.updateDashboardStats();
+      }
+
+      if (window.MP_BoC) MP_BoC.onStep(current);
+      if (window.MP_InterCommunity) MP_InterCommunity.onStep(current);
+      if (window.MP_Badges) MP_Badges.applyCommunityPage();
+
+      if (current === 10) {
+        const feed = document.querySelector("[data-events-feed]");
+        if (feed) {
+          if (window.MP_InterCommunity) MP_InterCommunity.renderEventsFeedExtras(feed);
+          if (window.MP_BoC) MP_BoC.renderEventsFeedExtras(feed);
+        }
+      }
+
+      if (window.MP_Rank?.applyEligibilityPanel) {
+        const regStep = document.querySelector(".flow-step.active [data-eligibility-panel]");
+        if (regStep) MP_Rank.applyEligibilityPanel();
       }
 
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1218,7 +1236,7 @@ window.MP_Flow = (function () {
 
   return {
     init,
-    go: (n) => goFn && goFn(n),
+    go: (n, opts) => goFn && goFn(n, opts),
     setGuest: (v) => setGuestFn && setGuestFn(v),
   };
 })();

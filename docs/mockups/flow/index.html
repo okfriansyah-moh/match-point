@@ -51,17 +51,20 @@
         </a>
       </div>
 
-      <div class="lang-toggle" style="margin-bottom: 1rem">
+      <div class="lang-toggle flow-picker-lang">
         <button class="lang-btn" data-lang="id">ID</button>
         <button class="lang-btn active" data-lang="en">EN</button>
       </div>
 
-      <a href="../index.html" class="hub-link" data-i18n="flow.backMockups"
-        >← Kembali ke Mockups</a
-      >
+      <footer class="flow-picker-footer">
+        <a href="../index.html" class="flow-picker-back" data-i18n="flow.backMockups"
+          >← Back to Mockups</a
+        >
+      </footer>
     </div>
     <script src="../i18n.js"></script>
     <script src="../device.js"></script>
+    <script src="../feedback.js"></script>
     <script>
       document.querySelectorAll(".lang-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -75,6 +78,7 @@
         });
       });
       MP_I18N.apply(MP_I18N.getLang());
+      MP_Feedback.init();
     </script>
   </body>
 </html>

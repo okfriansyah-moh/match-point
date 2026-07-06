@@ -115,6 +115,7 @@ window.MP_Device = (function () {
     ensureDeviceBar();
     apply(resolveInitialMode());
     bindDeviceButtons();
+    if (window.MP_Feedback) MP_Feedback.init();
 
     window.addEventListener("resize", () => {
       if (userPickedMode()) return;

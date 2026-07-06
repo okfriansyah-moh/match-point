@@ -32,6 +32,7 @@
           </button>
         </div>
         <a href="index.html" class="flow-preview-link">← Menu Flow</a>
+        <a href="../about.html" class="flow-preview-link" data-i18n="about.title">About Match Point</a>
         <div class="device-toggle device-toggle-labeled flow-preview-device">
           <button class="device-btn" data-device="mobile">
             📱 <span class="device-label">Mobile</span>
@@ -139,6 +140,10 @@
                   <button type="button" class="action-card primary" data-flow-goto="7">
                     <span class="action-card-icon">🌍</span>
                     <span class="action-card-body"><strong data-i18n="platform.globalTournamentTitle">Create Global Tournament</strong><span data-i18n="platform.globalTournamentDesc">Tier 1–3 · cross-community · Global rank</span></span>
+                  </button>
+                  <button type="button" class="action-card primary" data-flow-goto="17">
+                    <span class="action-card-icon">⚔️</span>
+                    <span class="action-card-body"><strong data-i18n="boc.title">Battle of Communities</strong><span data-i18n="boc.dashboardDesc">Season · group draw · squad deadlines</span></span>
                   </button>
                   <button
                     type="button"
@@ -560,7 +565,40 @@
                     <span data-theme-label data-i18n="theme.toDark">Dark Mode</span>
                   </button>
                   <button type="button" class="btn btn-danger btn-block mt-2" data-menu-logout data-i18n="flow.logout">Keluar</button>
+                  <div class="card mt-2 mp-help-card">
+                    <p class="text-sm font-bold mb-1" data-i18n="about.helpSection">Help &amp; transparency</p>
+                    <p class="form-hint mb-1" data-i18n="about.linkDesc">Ratings, BoC, sparring &amp; fair play rules</p>
+                    <a href="../about.html" class="btn btn-outline btn-block" data-i18n="about.title">About Match Point →</a>
+                  </div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Step 17: BoC season wizard -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header app-header-feature">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button>
+                    <div class="app-logo app-logo-page-title" data-i18n="boc.title">Battle of Communities</div>
+                    <span class="badge badge-boc badge-boc-header">BoC</span>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow" data-platform-boc-wizard></div>
+              </div>
+            </div>
+
+            <!-- Step 18: BoC fixtures -->
+            <div class="flow-step">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header app-header-feature">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="17" aria-label="Back">←</button>
+                    <div class="app-logo app-logo-page-title" data-i18n="boc.fixturesTitle">BoC Fixtures</div>
+                    <span class="badge badge-boc badge-boc-header">BoC</span>
+                  </div>
+                </header>
+                <div class="app-body" data-platform-boc-fixtures></div>
               </div>
             </div>
           </div>
@@ -587,6 +625,11 @@
     <script src="../platform-approval-flow.js"></script>
     <script src="../platform-analytics.js"></script>
     <script src="../event-wizard.js"></script>
+    <script src="../battle-of-communities.js"></script>
+    <script src="../community-sparring.js"></script>
+    <script src="../badges.js"></script>
+    <script src="../feedback.js"></script>
+    <script src="../mascot.js"></script>
     <script src="flow.js"></script>
     <script>
       MP_Tournament.createEvent({ format: "single_elim", name: "Indonesia Padel Masters", tier: 2, scope: "global", capacity: 8 });
@@ -610,6 +653,8 @@
           { titleKey: "platform.globalLiveTitle", hintKey: "flow.hint.globalLive" },
           { titleKey: "platform.profileTitle", hintKey: "flow.hint.adminProfile" },
           { titleKey: "platform.accountTitle", hintKey: "flow.hint.adminSettings" },
+          { titleKey: "boc.title", hintKey: "boc.hintWizard" },
+          { titleKey: "boc.fixturesTitle", hintKey: "boc.hintFixtures" },
         ],
         wizardStepMap: { 1: 7, 2: 8, 3: 9, 4: 10, 5: 11, 6: 12 },
         resetRoleOnLogin: false,
@@ -637,6 +682,11 @@
       MP_PlatformLists.init();
       MP_PlatformApproval.init();
       MP_PlatformAnalytics.init();
+      MP_BoC.init();
+      MP_InterCommunity.init();
+      MP_Badges.init();
+      MP_Feedback.init();
+      MP_Mascot.init();
     </script>
   </body>
 </html>

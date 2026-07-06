@@ -27,6 +27,7 @@
 ---
 
 ## 1. Problem Statement
+
 Padel and tennis players participate across multiple venues, clubs, and informal social networks. Official competition data, captured by bodies such as ILTL (the Italian Tennis and Padel League), only represents a fraction of total play — league matches, tournaments, and sanctioned events. The vast majority of games occur in recreational leagues, friendly matches, and open play sessions that produce no verifiable outcome record. This creates a critical gap: players lack a portable, trusted reputation that reflects their skill and sportsmanship across communities. Organizers of informal events have no reliable way to seed players, verify identities, or enforce code-of-conduct history. The result is a fragmented ecosystem where reputation resets at every venue, discouraging cross-community participation and enabling problem behavior to follow players undetected.
 
 Match Point addresses this gap by building a cross-community reputation and ranking platform that ingests both official (ILTL) and unofficial match results, normalizes them into a unified ELO-based skill rating, and tracks sportsmanship signals (e.g., forfeits, complaints, verified reviews). It provides a portable player profile that persists across clusters, a trust anchor for event organizers, and a transparent leaderboard that incentivizes fair play. The platform must operate as a neutral intermediary — linking identity (via OAuth or phone) but never requiring a player to commit to a single club or league.
@@ -48,13 +49,13 @@ The problem is rooted in the unorganized nature of recreational racquet sports. 
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|---------------|--------------|--------------|-------|
-| Identity Service | Register, verify, link player accounts | Go, Twilio, OAuth2 | Phone provider, Google/Apple APIs | Backend Team |
-| Match Result Pipeline | Ingest, normalize, deduplicate match results | Go, Kafka, S3 | Identity Service, External API gateways | Data Team |
-| Rating Engine | Compute Glicko-2 updates, persist ratings | Go, PostgreSQL | Match Result Pipeline | Backend Team |
-| Reputation Index | Aggregate sportsmanship flags, aging logic | Go, Redis | Identity Service | Backend Team |
-| Public API | GraphQL gateway for organizers and players | Go, GraphQL federation | All above services | Platform Team |
+| Component             | Responsibility                               | Technologies           | Dependencies                            | Owner         |
+| --------------------- | -------------------------------------------- | ---------------------- | --------------------------------------- | ------------- |
+| Identity Service      | Register, verify, link player accounts       | Go, Twilio, OAuth2     | Phone provider, Google/Apple APIs       | Backend Team  |
+| Match Result Pipeline | Ingest, normalize, deduplicate match results | Go, Kafka, S3          | Identity Service, External API gateways | Data Team     |
+| Rating Engine         | Compute Glicko-2 updates, persist ratings    | Go, PostgreSQL         | Match Result Pipeline                   | Backend Team  |
+| Reputation Index      | Aggregate sportsmanship flags, aging logic   | Go, Redis              | Identity Service                        | Backend Team  |
+| Public API            | GraphQL gateway for organizers and players   | Go, GraphQL federation | All above services                      | Platform Team |
 
 ### Data contracts
 
@@ -118,6 +119,7 @@ sequenceDiagram
 - Trade-off: accepting unvalidated organizer results speeds onboarding but increases trust risk. We mitigate by requiring organizer phone verification and attaching a risk score to each organizer based on flag rate.
 - Open question: should self-reported matches from players be allowed at all? Current decision: yes, but with a strict cap (5/month) and an automatic rating freeze until cross-verified by another party.
 - Open question: how deeply to integrate with ILTL APIs? ILTL may not offer real-time webhooks. Fallback plan: daily batch ETL via SFTP or manual CSV upload by clubs. This is acceptable for v1 but adds latency.
+
 ### Context & Goals
 
 Match Point addresses a critical fragmentation in padel and tennis reputation infrastructure. Today, a player's competitive history is siloed across two incompatible systems:
@@ -134,12 +136,12 @@ The consequence: players invest time building a reputation inside their club or 
 
 **Success criteria for solving the problem:**
 
-| Metric | Target | Measurement Method |
-|--------|--------|--------------------|
-| Cross-community reputation portability | Match Point rating is accepted by ≥80% of partner communities (clubs + tournament organisers) within 12 months of launch | Community adoption audit |
-| Reduction in duplicate/ghost profiles | ≤2% of profiles in each community are confirmed duplicates after 6 months | Admin dashboard resolution reports |
-| Player satisfaction with ranking fairness | NPS ≥ +40 on "I trust the ranking system" question | Quarterly in-app survey |
-| Time to resolve a dispute | ≤72 hours p95 from flag to admin resolution | Logged audit trail timestamps |
+| Metric                                    | Target                                                                                                                   | Measurement Method                 |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| Cross-community reputation portability    | Match Point rating is accepted by ≥80% of partner communities (clubs + tournament organisers) within 12 months of launch | Community adoption audit           |
+| Reduction in duplicate/ghost profiles     | ≤2% of profiles in each community are confirmed duplicates after 6 months                                                | Admin dashboard resolution reports |
+| Player satisfaction with ranking fairness | NPS ≥ +40 on "I trust the ranking system" question                                                                       | Quarterly in-app survey            |
+| Time to resolve a dispute                 | ≤72 hours p95 from flag to admin resolution                                                                              | Logged audit trail timestamps      |
 
 These targets are aggressive but grounded in the early access programmes run with 5 pilot clubs (see Section 8 – Risks, risk #3 "Community adoption inertia").
 
@@ -148,11 +150,11 @@ These targets are aggressive but grounded in the early access programmes run wit
 1. **Do NOT build on top of ILTL or Reclub APIs** – Both platforms provide limited read-only access and no write-back capability for external match data. Forking or extending them would couple Match Point to their release cycles and break the cross-community promise. A greenfield platform with standardised import adapters (CSV upload, manual entry) is chosen.
 
 2. **Dual-ranking system as core differentiator** – The problem demands two complementary views:
-   - *Mabar rank* – informal, community-specific, recalculated on each match submission. Allows players to see progress within their peer group.
-   - *Official global rank* – immutable monthly snapshot computed from validated matches across all communities. Serves as the portable reputation currency.
-   This split directly addresses the gap: ILTL offers only official, slow-moving rankings; Reclub offers only local, ephemeral ones.
+   - _Mabar rank_ – informal, community-specific, recalculated on each match submission. Allows players to see progress within their peer group.
+   - _Official global rank_ – immutable monthly snapshot computed from validated matches across all communities. Serves as the portable reputation currency.
+     This split directly addresses the gap: ILTL offers only official, slow-moving rankings; Reclub offers only local, ephemeral ones.
 
-3. **Player identity first, match validation second** – The most vexing problem is *who* you are playing, not *what* happened. Match Point prioritises a global unique username enforced at signup (see Assumption #5: globally unique usernames required for login) and duplicate name resolution within communities (e.g., `Budi` → `Budi#2`). Match validation (endorser verification, time/location checks) is layered after a stable player graph exists.
+3. **Player identity first, match validation second** – The most vexing problem is _who_ you are playing, not _what_ happened. Match Point prioritises a global unique username enforced at signup (see Assumption #5: globally unique usernames required for login) and duplicate name resolution within communities (e.g., `Budi` → `Budi#2`). Match validation (endorser verification, time/location checks) is layered after a stable player graph exists.
 
 4. **Asymmetric JWT for authentication** – Chosen to decouple auth from any single provider (Google, Apple, email/password) and remain self-hostable. RSA256 asymmetric keys allow auth service to sign tokens while consumer services validate with a public key – no shared secrets. This decision is documented in full in Section 4 (Solution, Auth subsystem) but listed here because it directly shapes the onboarding funnel.
 
@@ -160,12 +162,12 @@ These targets are aggressive but grounded in the early access programmes run wit
 
 ### Component Breakdown: The Gap
 
-| Existing System | What It Provides | What It Misses (Gap Filled by Match Point) |
-|----------------|------------------|--------------------------------------------|
-| ILTL (official) | Sanctioned tournament results, progressive ranking ladder, national-level points | Casual matches, club leagues, player transfer history, cross-club visibility, informal skill endorsements |
-| Reclub (club manager) | Club membership, court booking, intra-club leaderboard, basic match logging | Inter-club ranking, portable player profile, fraud detection at scale, tournament integration outside club |
-| WhatsApp groups / informal score-keeping | Ad-hoc match recording, word-of-mouth reputation | Verifiable history, immutable records, tamper resistance, universal identifier |
-| **Match Point** | Global unique identity, cross-community match history, dual ranking engine, endorsements, shareable ranking cards | *The missing piece: a portable reputation graph that spans all contexts* |
+| Existing System                          | What It Provides                                                                                                  | What It Misses (Gap Filled by Match Point)                                                                 |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| ILTL (official)                          | Sanctioned tournament results, progressive ranking ladder, national-level points                                  | Casual matches, club leagues, player transfer history, cross-club visibility, informal skill endorsements  |
+| Reclub (club manager)                    | Club membership, court booking, intra-club leaderboard, basic match logging                                       | Inter-club ranking, portable player profile, fraud detection at scale, tournament integration outside club |
+| WhatsApp groups / informal score-keeping | Ad-hoc match recording, word-of-mouth reputation                                                                  | Verifiable history, immutable records, tamper resistance, universal identifier                             |
+| **Match Point**                          | Global unique identity, cross-community match history, dual ranking engine, endorsements, shareable ranking cards | _The missing piece: a portable reputation graph that spans all contexts_                                   |
 
 The table above clarifies why Match Point is not a competitor to ILTL or Reclub but a complementary layer that sits above and across them. The product roadmap (Tasks 0–7) builds this layer incrementally: first identity and community (Task 1), then match pipeline (Task 2), then ranking (Task 3), then endorsements (Task 5).
 
@@ -174,58 +176,72 @@ The table above clarifies why Match Point is not a competitor to ILTL or Reclub 
 Current-system data fragments – illustrating the portability gap.
 
 **ILTL match record (simplified):**
+
 ```json
 {
   "tournament_id": "ILTL-2025-0034",
-  "player_a": {"name": "Budi Santoso", "iltl_id": "ILTL-010203"},
-  "player_b": {"name": "Sari Wijaya", "iltl_id": "ILTL-040506"},
+  "player_a": { "name": "Budi Santoso", "iltl_id": "ILTL-010203" },
+  "player_b": { "name": "Sari Wijaya", "iltl_id": "ILTL-040506" },
   "score": "6-3, 4-6, 10-7",
   "round": "Quarterfinal",
   "date": "2025-02-15",
   "sanctioned": true
 }
 ```
-*Limitation: only tournament players, only official IDs. No club affiliations.*
+
+_Limitation: only tournament players, only official IDs. No club affiliations._
 
 **Reclub club match log (simplified):**
+
 ```json
 {
   "club_id": "CLUB-TENNIS-JAKARTA",
   "match_id": "RC-98765",
-  "home_player": {"name": "Budi Santoso", "reclub_id": "RC-USER-5532", "club_member_since": "2024-06-01"},
-  "away_player": {"name": "Rudi Hartono", "reclub_id": "RC-USER-8901"},
+  "home_player": {
+    "name": "Budi Santoso",
+    "reclub_id": "RC-USER-5532",
+    "club_member_since": "2024-06-01"
+  },
+  "away_player": { "name": "Rudi Hartono", "reclub_id": "RC-USER-8901" },
   "result": "6-4, 6-2",
   "logged_by": "admin_budi"
 }
 ```
-*Limitation: rank/score not portable; no global player ID; membership start date irrelevant outside club.*
+
+_Limitation: rank/score not portable; no global player ID; membership start date irrelevant outside club._
 
 **Match Point aggregated profile (target state):**
+
 ```json
 {
   "player_id": "mp-78a2f1b0",
   "display_name": "Budi Santoso",
   "global_username": "budisantoso",
   "communities": [
-    {"id": "ILTL", "local_display": "Budi Santoso", "mabar_rank": 1450},
-    {"id": "CLUB-TENNIS-JAKARTA", "local_display": "Budi#1", "mabar_rank": 1680}
+    { "id": "ILTL", "local_display": "Budi Santoso", "mabar_rank": 1450 },
+    {
+      "id": "CLUB-TENNIS-JAKARTA",
+      "local_display": "Budi#1",
+      "mabar_rank": 1680
+    }
   ],
   "official_rank": 1570,
-  "endorsements": {"technical": 12, "sportsmanship": 8}
+  "endorsements": { "technical": 12, "sportsmanship": 8 }
 }
 ```
-*This profile is the single source of truth that current systems cannot produce.*
+
+_This profile is the single source of truth that current systems cannot produce._
 
 ### Failure Modes
 
 If the fundamental problem is not solved correctly, the following failure modes arise:
 
-| Failure Mode | Description | Detection | Mitigation |
-|--------------|-------------|-----------|------------|
-| **Sybil identity** | One player creates multiple accounts to inflate endorsements or rankings | Email/phone dedup at signup; IP/reputation checks in Task 1; community admin reports | Require verified phone number (SMS OTP) for any ranking that affects global leaderboard |
-| **Ranking island** | A community refuses to share match data, creating an isolated ranking bubble without external portability | Community activity dashboards; adoption metrics below 30% after 90 days | Incentive programme: communities with open data receive featured placement in public leaderboard; opt-in by default, opt-out possible but penalised in visibility |
-| **Data quality decay** | Old match results become irrelevant; stale rankings misrepresent current skill | Ranking freshness score (e.g., fraction of matches in last 30 days) | Decay factor in official ranking formula; matches older than 12 months weighted at 0.5 (see execution_plan Task 3 – Dual-Track Ranking Engine) |
-| **Illegitimate match flooding** | Players submit fake matches to boost rank | Anomaly detection on match frequency per player (e.g., >5 matches/day triggers manual review) | Velocity gate in Task 2 validation pipeline; admin flag with automatic pending state |
+| Failure Mode                    | Description                                                                                               | Detection                                                                                     | Mitigation                                                                                                                                                        |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Sybil identity**              | One player creates multiple accounts to inflate endorsements or rankings                                  | Email/phone dedup at signup; IP/reputation checks in Task 1; community admin reports          | Require verified phone number (SMS OTP) for any ranking that affects global leaderboard                                                                           |
+| **Ranking island**              | A community refuses to share match data, creating an isolated ranking bubble without external portability | Community activity dashboards; adoption metrics below 30% after 90 days                       | Incentive programme: communities with open data receive featured placement in public leaderboard; opt-in by default, opt-out possible but penalised in visibility |
+| **Data quality decay**          | Old match results become irrelevant; stale rankings misrepresent current skill                            | Ranking freshness score (e.g., fraction of matches in last 30 days)                           | Decay factor in official ranking formula; matches older than 12 months weighted at 0.5 (see execution_plan Task 3 – Dual-Track Ranking Engine)                    |
+| **Illegitimate match flooding** | Players submit fake matches to boost rank                                                                 | Anomaly detection on match frequency per player (e.g., >5 matches/day triggers manual review) | Velocity gate in Task 2 validation pipeline; admin flag with automatic pending state                                                                              |
 
 Each failure mode is addressed in the corresponding task. The risk register (Section 8) tracks these with assigned owners and review cadence.
 
@@ -281,19 +297,20 @@ The diagram emphasises how Match Point's components directly attack each pain po
 ### Trade-offs & Open Questions
 
 **Trade-off: Centralised vs. federated trust model**
-- *Decision*: Centralised player graph (Match Point hosts all profiles) with optional community-owned data vaults (federation planned for v2). This simplifies initial development and dispute resolution but creates a single point of failure for reputation data. Federation would require a distributed ledger (blockchain-lite) that is premature for v1 given the open question around endorsement scoring materialisation.
+
+- _Decision_: Centralised player graph (Match Point hosts all profiles) with optional community-owned data vaults (federation planned for v2). This simplifies initial development and dispute resolution but creates a single point of failure for reputation data. Federation would require a distributed ledger (blockchain-lite) that is premature for v1 given the open question around endorsement scoring materialisation.
 
 **Open questions still relevant to the problem statement:**
 
-| # | Question | Impact if Unresolved | Recommended Path |
-|---|----------|----------------------|------------------|
-| 1 | Should minimal endorser count for public skill score be 3 (currently)? | If too low, reputation is easily inflated; if too high, most players never reach threshold → no public score | Keep 3 for v1, monitor distribution monthly; adjust via admin config in Task 7 (Admin Dashboard) |
-| 2 | How to incentivise communities to share match data with the global ranking? | Without data, the portable reputation promise is hollow | Use gamification: "Open Community" badge, featured placement; penalise closed communities with lower trust scores |
-| 3 | What is the exact cache invalidation policy for share cards? | Stale cards mislead viewers; real-time regeneration is expensive | TTL of 1 hour + invalidation on ranking update event (Task 6 – Social Sharing & Ranking Cards) |
-| 4 | How to handle a player inactive for >90 days? | Rankings become stale; official rank may misrepresent skill | Apply exponential decay after 90 days of zero matches; notify player; allow re-activation by playing a single validated match |
-| 5 | Should refresh token rotation use blocklist or version counter? | Security vs. implementation complexity | Use version counter (stateless, stored in JWT `ver` claim) to avoid Redis dependency in Task 0; blocklist added in Task 7 as operational security enhancement |
+| #   | Question                                                                    | Impact if Unresolved                                                                                         | Recommended Path                                                                                                                                              |
+| --- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Should minimal endorser count for public skill score be 3 (currently)?      | If too low, reputation is easily inflated; if too high, most players never reach threshold → no public score | Keep 3 for v1, monitor distribution monthly; adjust via admin config in Task 7 (Admin Dashboard)                                                              |
+| 2   | How to incentivise communities to share match data with the global ranking? | Without data, the portable reputation promise is hollow                                                      | Use gamification: "Open Community" badge, featured placement; penalise closed communities with lower trust scores                                             |
+| 3   | What is the exact cache invalidation policy for share cards?                | Stale cards mislead viewers; real-time regeneration is expensive                                             | TTL of 1 hour + invalidation on ranking update event (Task 6 – Social Sharing & Ranking Cards)                                                                |
+| 4   | How to handle a player inactive for >90 days?                               | Rankings become stale; official rank may misrepresent skill                                                  | Apply exponential decay after 90 days of zero matches; notify player; allow re-activation by playing a single validated match                                 |
+| 5   | Should refresh token rotation use blocklist or version counter?             | Security vs. implementation complexity                                                                       | Use version counter (stateless, stored in JWT `ver` claim) to avoid Redis dependency in Task 0; blocklist added in Task 7 as operational security enhancement |
 
-These open questions are tracked in the canonical state and will be resolved through spike tickets in Tasks 0–1. The problem statement itself remains stable: *player reputation is fragmented across communities, and no single platform provides a portable, trusted, and verified view of a padel/tennis player's skill and behaviour.*
+These open questions are tracked in the canonical state and will be resolved through spike tickets in Tasks 0–1. The problem statement itself remains stable: _player reputation is fragmented across communities, and no single platform provides a portable, trusted, and verified view of a padel/tennis player's skill and behaviour._
 
 ## 2. Solution
 
@@ -301,7 +318,7 @@ Match Point is a cloud-native, modular monolith platform that bridges the gap be
 
 The architecture follows a domain-driven design with bounded contexts: Player, Community, Match, Ranking, Tournament, Endorsement, Social, and Admin. Each domain owns its data and exposes a set of gRPC or REST endpoints (task-dependent) behind an API gateway that enforces authentication, rate limiting, and request validation. The ranking engine is deliberately separated as a stand-alone worker process because of its computational intensity — it recomputes all active player ranks nightly and on-demand after match batch imports. This design allows the engine to scale independently during peak tournament seasons.
 
-The platform’s key innovation is the dual-track ranking: *Mabar* (social, community-specific) and *Official* (global, ILTL-linked). Every match submission triggers a validation pipeline that checks player identity, match metadata, venue plausibility, and duplicate detection. Validated matches are ingested into a normalized `matches` table. A change-data-capture (CDC) stream then notifies the ranking worker to recalculate affected player scores. Monthly official rankings become immutable snapshots stored in a separate partition, serving as the authoritative historical record. This architecture balances real-time social updates with official integrity.
+The platform’s key innovation is the dual-track ranking: _Mabar_ (social, community-specific) and _Official_ (global, ILTL-linked). Every match submission triggers a validation pipeline that checks player identity, match metadata, venue plausibility, and duplicate detection. Validated matches are ingested into a normalized `matches` table. A change-data-capture (CDC) stream then notifies the ranking worker to recalculate affected player scores. Monthly official rankings become immutable snapshots stored in a separate partition, serving as the authoritative historical record. This architecture balances real-time social updates with official integrity.
 
 ### Context & Goals
 
@@ -318,33 +335,33 @@ The platform’s key innovation is the dual-track ranking: *Mabar* (social, comm
 
 ### Decisions
 
-1. **Modular monolith vs. microservices** – Choose a modular monolith for v1 to minimize operational complexity and latency for cross-domain queries (e.g., ranking + endorsement). Each domain is a separate Go package with well-defined interface boundaries, enabling future extraction to independent services. *Rejected alternative*: full microservices would have added service mesh, distributed tracing, and eventual consistency overhead that outpaces the team’s capacity during Tasks 0-3.
+1. **Modular monolith vs. microservices** – Choose a modular monolith for v1 to minimize operational complexity and latency for cross-domain queries (e.g., ranking + endorsement). Each domain is a separate Go package with well-defined interface boundaries, enabling future extraction to independent services. _Rejected alternative_: full microservices would have added service mesh, distributed tracing, and eventual consistency overhead that outpaces the team’s capacity during Tasks 0-3.
 
-2. **Dual-track ranking computation** – Use a single leaderboard worker with a `ranking_type` dimension (mabar / official) rather than two separate services. The official track requires ILTL data ingestion, which runs on a cron schedule. Mabar rankings are incremental after each validated match. Both write to the same `rankings` table partitioned by `community_id` and `ranking_type`. *Rejected alternative*: separate engines would double data pipeline maintenance without clear benefit for v1.
+2. **Dual-track ranking computation** – Use a single leaderboard worker with a `ranking_type` dimension (mabar / official) rather than two separate services. The official track requires ILTL data ingestion, which runs on a cron schedule. Mabar rankings are incremental after each validated match. Both write to the same `rankings` table partitioned by `community_id` and `ranking_type`. _Rejected alternative_: separate engines would double data pipeline maintenance without clear benefit for v1.
 
-3. **Match validation pipeline as an asynchronous state machine** – Represent each match submission as a state machine: `pending → validating → approved | disputed | rejected`. Transition events are published to a RabbitMQ exchange. Consumers (match validator, duplicate detector, admin notifier) read from their own queues. This decouples UI responsiveness from business rule execution. *Rejected alternative*: synchronous validation would block the HTTP request for up to 5 seconds during image/score-sheet uploads.
+3. **Match validation pipeline as an asynchronous state machine** – Represent each match submission as a state machine: `pending → validating → approved | disputed | rejected`. Transition events are published to a RabbitMQ exchange. Consumers (match validator, duplicate detector, admin notifier) read from their own queues. This decouples UI responsiveness from business rule execution. _Rejected alternative_: synchronous validation would block the HTTP request for up to 5 seconds during image/score-sheet uploads.
 
-4. **Authentication with golang-jwt/jwt/v5 using RSA256 asymmetric keys** – Private key remains server-side only; public key is distributed to the API gateway and any trusted microservice. Refresh token rotation uses a version counter stored alongside the user’s `refresh_token_hash` column. Old refresh tokens are invalidated upon rotation. *Rationale*: RSA256 enables third-party services (e.g., ranking card embed) to verify tokens without access to private key. *Rejected alternative*: HMAC would require shared secrets across all consumers.
+4. **Authentication with golang-jwt/jwt/v5 using RSA256 asymmetric keys** – Private key remains server-side only; public key is distributed to the API gateway and any trusted microservice. Refresh token rotation uses a version counter stored alongside the user’s `refresh_token_hash` column. Old refresh tokens are invalidated upon rotation. _Rationale_: RSA256 enables third-party services (e.g., ranking card embed) to verify tokens without access to private key. _Rejected alternative_: HMAC would require shared secrets across all consumers.
 
-5. **Endorsement score computed via materialized view triggered by a queue** – A materialized view `endorsement_scores` is refreshed every 5 minutes via a scheduled job, or on-demand when an admin requests the live score. During peak endorsement events (tournament finals), the queue consumer triggers an immediate refresh for the affected player’s community. *Rationale*: materialization avoids repeated JOIN across 5 tables (player, endorsement, match, community, skill tag). *Rejected alternative*: compute-on-read with Redis caching would cause cold-start latency spikes.
+5. **Endorsement score computed via materialized view triggered by a queue** – A materialized view `endorsement_scores` is refreshed every 5 minutes via a scheduled job, or on-demand when an admin requests the live score. During peak endorsement events (tournament finals), the queue consumer triggers an immediate refresh for the affected player’s community. _Rationale_: materialization avoids repeated JOIN across 5 tables (player, endorsement, match, community, skill tag). _Rejected alternative_: compute-on-read with Redis caching would cause cold-start latency spikes.
 
-6. **Community admin succession via transfer mechanism** – A dedicated `admin_transfer_requests` table stores pending transfers. Outgoing admin starts request → incoming admin accepts within 7 days → platform admin audits and finalizes. Inactive admin >30 days triggers a nomination window for the most active member (by matches submitted in last 30 days). *Rejected alternative*: purely manual process through support was deemed too slow for v1 adoption.
+6. **Community admin succession via transfer mechanism** – A dedicated `admin_transfer_requests` table stores pending transfers. Outgoing admin starts request → incoming admin accepts within 7 days → platform admin audits and finalizes. Inactive admin >30 days triggers a nomination window for the most active member (by matches submitted in last 30 days). _Rejected alternative_: purely manual process through support was deemed too slow for v1 adoption.
 
-7. **Internationalization (i18n) using static JSON bundles** – Indonesian as default, English toggle stored in `user_preferences`. Frontend loads the appropriate bundle at page load via CDN. All user-generated content remains untranslated. *Rationale*: keeps bundle size small and avoids runtime translation API costs. *Rejected alternative*: server-side rendering with locale detection would increase P75 latency.
+7. **Internationalization (i18n) using static JSON bundles** – Indonesian as default, English toggle stored in `user_preferences`. Frontend loads the appropriate bundle at page load via CDN. All user-generated content remains untranslated. _Rationale_: keeps bundle size small and avoids runtime translation API costs. _Rejected alternative_: server-side rendering with locale detection would increase P75 latency.
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner (Task) |
-|-----------|---------------|--------------|--------------|--------------|
-| **API Gateway** | Route requests, authenticate JWT, rate-limit (100 req/s per user), log structured JSON | Go 1.22 + `chi` router, Envoy (optional) | Auth middleware package, Redis for rate-limit counter | Task 0 |
-| **Player Module** | Auth (signup/login), profile CRUD, account linking (multiple emails per player), duplicate username resolution | Go `player/` package, PostgreSQL `players`, `auth_refresh_tokens` | API Gateway, Redis (session), `crypto/rsa` | Task 1 |
-| **Community Module** | Create/join/leave community, role management (admin, member), transfer requests, venue GPS storage | Go `community/` package, PostgreSQL `communities`, `community_memberships` | API Gateway, RabbitMQ (join notifications) | Task 1 |
-| **Match Submission & Validation** | Ingest match results (score, player IDs, date, venue), state machine, duplicate detection, dispute flagging | Go `match/` package, PostgreSQL `matches`, RabbitMQ `match.events` | Player Module (identity), Community Module (verify membership), ILTL data sync (official matches) | Task 2 |
-| **Dual-Track Ranking Engine** | Compute Mabar and Official Elo/Glicko-like ratings, materialize monthly snapshots, notify leaderboard rebuild | Go `ranking/` package + worker, PostgreSQL `rankings`, `ranking_snapshots`, Redis for live leaderboard cache | Match Module (validated matches), ILTL adapter (official data) | Task 3 |
-| **Tournament Engine** | Bracket generation, result ingestion, auto-grading with rank points | Go `tournament/` package, PostgreSQL `tournaments`, `tournament_matches` | Match Module (reuse validation), Ranking Engine (increment official points) | Task 4 |
-| **Endorsement System** | Skill tag CRUD, endorsement CRUD (max 10 per player per tag), materialized view computation | Go `endorsement/` package, PostgreSQL `endorsements`, `endorsement_skills`, materialized view `endorsement_scores` | Player Module (verify endorser/endorsee), Queue (refresh trigger) | Task 5 |
-| **Social Sharing & Ranking Card** | Generate shareable card images via server-side rendering (puppeteer or Go image library), cache with CDN | Node.js or Go image generation, S3 (signed URLs), CloudFront | Ranking Engine (fetch player rank data), Player Module (avatar, name) | Task 6 |
-| **Admin Dashboard** | Superadmin CRUD, community admin tools (manage members, disputes, approve transfers), system analytics (DAU, match volume, ranking distribution) | React frontend (lazy-loaded), Go `/admin/` package, PostgreSQL analytics materialized views | All modules | Task 7 |
+| Component                         | Responsibility                                                                                                                                   | Technologies                                                                                                       | Dependencies                                                                                      | Owner (Task) |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- | ------------ |
+| **API Gateway**                   | Route requests, authenticate JWT, rate-limit (100 req/s per user), log structured JSON                                                           | Go 1.22 + `chi` router, Envoy (optional)                                                                           | Auth middleware package, Redis for rate-limit counter                                             | Task 0       |
+| **Player Module**                 | Auth (signup/login), profile CRUD, account linking (multiple emails per player), duplicate username resolution                                   | Go `player/` package, PostgreSQL `players`, `auth_refresh_tokens`                                                  | API Gateway, Redis (session), `crypto/rsa`                                                        | Task 1       |
+| **Community Module**              | Create/join/leave community, role management (admin, member), transfer requests, venue GPS storage                                               | Go `community/` package, PostgreSQL `communities`, `community_memberships`                                         | API Gateway, RabbitMQ (join notifications)                                                        | Task 1       |
+| **Match Submission & Validation** | Ingest match results (score, player IDs, date, venue), state machine, duplicate detection, dispute flagging                                      | Go `match/` package, PostgreSQL `matches`, RabbitMQ `match.events`                                                 | Player Module (identity), Community Module (verify membership), ILTL data sync (official matches) | Task 2       |
+| **Dual-Track Ranking Engine**     | Compute Mabar and Official Elo/Glicko-like ratings, materialize monthly snapshots, notify leaderboard rebuild                                    | Go `ranking/` package + worker, PostgreSQL `rankings`, `ranking_snapshots`, Redis for live leaderboard cache       | Match Module (validated matches), ILTL adapter (official data)                                    | Task 3       |
+| **Tournament Engine**             | Bracket generation, result ingestion, auto-grading with rank points                                                                              | Go `tournament/` package, PostgreSQL `tournaments`, `tournament_matches`                                           | Match Module (reuse validation), Ranking Engine (increment official points)                       | Task 4       |
+| **Endorsement System**            | Skill tag CRUD, endorsement CRUD (max 10 per player per tag), materialized view computation                                                      | Go `endorsement/` package, PostgreSQL `endorsements`, `endorsement_skills`, materialized view `endorsement_scores` | Player Module (verify endorser/endorsee), Queue (refresh trigger)                                 | Task 5       |
+| **Social Sharing & Ranking Card** | Generate shareable card images via server-side rendering (puppeteer or Go image library), cache with CDN                                         | Node.js or Go image generation, S3 (signed URLs), CloudFront                                                       | Ranking Engine (fetch player rank data), Player Module (avatar, name)                             | Task 6       |
+| **Admin Dashboard**               | Superadmin CRUD, community admin tools (manage members, disputes, approve transfers), system analytics (DAU, match volume, ranking distribution) | React frontend (lazy-loaded), Go `/admin/` package, PostgreSQL analytics materialized views                        | All modules                                                                                       | Task 7       |
 
 ### Data contracts
 
@@ -427,7 +444,7 @@ CREATE TABLE ranking_snapshots (
     "my_score": 6,
     "opponent_score": 4,
     "played_at": "2025-03-15",
-    "venue": { "lat": -6.200000, "lng": 106.816666 }
+    "venue": { "lat": -6.2, "lng": 106.816666 }
   },
   "response_201": {
     "match_id": "uuid",
@@ -435,22 +452,28 @@ CREATE TABLE ranking_snapshots (
     "estimated_validation_seconds": 15
   },
   "errors": {
-    "409": { "code": "DUPLICATE_MATCH", "message": "This match appears to have been already submitted." },
-    "422": { "code": "INVALID_SCORE", "message": "Scores must be between 0 and 7 for a standard set." }
+    "409": {
+      "code": "DUPLICATE_MATCH",
+      "message": "This match appears to have been already submitted."
+    },
+    "422": {
+      "code": "INVALID_SCORE",
+      "message": "Scores must be between 0 and 7 for a standard set."
+    }
   }
 }
 ```
 
 ### Failure modes
 
-| Scenario | Detection | Mitigation |
-|----------|-----------|------------|
-| **Duplicate match submission** — same players, same date, same venue within 2 hours | Match module checks `(player_a_id, player_b_id, played_at, venue_lat, venue_lng)` with a window of ±2 hours. Flag as `duplicate_suspicion` in JSONB. | Return `409 Duplicate` with link to existing match; if forced resubmit, move to `disputed` queue for admin review. |
-| **Ranking engine worker crash** — worker pod OOM or segfault during recompute | Kubernetes liveness probe fails; Prometheus alert on job failure | Worker is stateless (reads from DB, writes to DB). Job retries with exponential backoff (max 3). If still fails, fallback to synchronous recompute for that community during off-peak hours. |
-| **ILTL data sync stale** — official ranking snapshot delayed >48h after month-end | Monitoring checks `ranking_snapshots` for latest official snapshot date. Alert if >2 days old. | Manual re-trigger via admin dashboard; automated retry every 6 hours. In worst case, official rankings show “pending” label. |
-| **Cache stampede on ranking card generation** — viral share card leads to 10k requests / second for same card | Spike in S3 GetObject failures; elevated p95 latency >3s | Pre-generate card on ranking update and upload to S3 with TTL of 1 hour. CDN edge caches serve stale while refreshing. Use request collapsing with `X-Cache: stale-if-error`. |
-| **Database connection pool exhaustion** — a fleet of pods tries to insert thousands of endorsements simultaneously | `max_connections` errors in logs; PgBouncer reports high wait time | Set connection pool size per pod (25 max), use PgBouncer transaction pooling. Queue endorsement writes with a batch insert worker that commits every 500ms. |
-| **Dispute resolution deadlock** — admin is also a player in the disputed match | Community admin role is same as player; conflict of interest | Flag dispute to superadmin if admin player involved. Superadmin assigns a neutral admin from same community (if exists) or platform admin. |
+| Scenario                                                                                                           | Detection                                                                                                                                            | Mitigation                                                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Duplicate match submission** — same players, same date, same venue within 2 hours                                | Match module checks `(player_a_id, player_b_id, played_at, venue_lat, venue_lng)` with a window of ±2 hours. Flag as `duplicate_suspicion` in JSONB. | Return `409 Duplicate` with link to existing match; if forced resubmit, move to `disputed` queue for admin review.                                                                           |
+| **Ranking engine worker crash** — worker pod OOM or segfault during recompute                                      | Kubernetes liveness probe fails; Prometheus alert on job failure                                                                                     | Worker is stateless (reads from DB, writes to DB). Job retries with exponential backoff (max 3). If still fails, fallback to synchronous recompute for that community during off-peak hours. |
+| **ILTL data sync stale** — official ranking snapshot delayed >48h after month-end                                  | Monitoring checks `ranking_snapshots` for latest official snapshot date. Alert if >2 days old.                                                       | Manual re-trigger via admin dashboard; automated retry every 6 hours. In worst case, official rankings show “pending” label.                                                                 |
+| **Cache stampede on ranking card generation** — viral share card leads to 10k requests / second for same card      | Spike in S3 GetObject failures; elevated p95 latency >3s                                                                                             | Pre-generate card on ranking update and upload to S3 with TTL of 1 hour. CDN edge caches serve stale while refreshing. Use request collapsing with `X-Cache: stale-if-error`.                |
+| **Database connection pool exhaustion** — a fleet of pods tries to insert thousands of endorsements simultaneously | `max_connections` errors in logs; PgBouncer reports high wait time                                                                                   | Set connection pool size per pod (25 max), use PgBouncer transaction pooling. Queue endorsement writes with a batch insert worker that commits every 500ms.                                  |
+| **Dispute resolution deadlock** — admin is also a player in the disputed match                                     | Community admin role is same as player; conflict of interest                                                                                         | Flag dispute to superadmin if admin player involved. Superadmin assigns a neutral admin from same community (if exists) or platform admin.                                                   |
 
 ### Mermaid diagram
 
@@ -509,11 +532,13 @@ sequenceDiagram
 ### Cross-cutting concerns
 
 **Observability**
+
 - **Logging**: All services emit structured JSON logs with `trace_id` from a context-propagated span (OpenTelemetry). Minimum fields: `service`, `endpoint`, `duration_ms`, `http_status`, `error`. Logs are shipped via Fluentd to Elasticsearch and visualized in Kibana.
 - **Metrics**: RED metrics (Rate, Errors, Duration) collected for every REST endpoint and queue consumer. Prometheus counters for match submissions by status, ranking computation time, and endorsement writes. Custom dashboard for community admins (match volume, active players, dispute rate).
 - **Tracing**: Distributed tracing via OpenTelemetry with parent–child spans across API Gateway → Module → DB/Queue. Sampled at 5% for production; 100% during canary deployments.
 
 **Security**
+
 - **Authentication**: JWT with RSA256 (2048-bit key). Access token TTL = 15 minutes, refresh token TTL = 7 days with rotation. Private key stored in Vault, rotated every 90 days.
 - **Authorization**: Role-based access control at the module level. API Gateway enforces community membership before allowing match submission or endorsement. Community admin endpoints require `role=admin` in `community_memberships`.
 - **Data privacy**: Player emails are stored hashed for display purposes (only admin sees raw email via separate permission). Avatar URLs are signed S3 URLs with 1-hour expiry.
@@ -531,45 +556,49 @@ sequenceDiagram
 ### Trade-offs & open questions
 
 **Trade-offs**
+
 - **Modular monolith vs. microservices**: Lower operational cost for v1, but will require careful interface governance when extracting services (e.g., ranking engine and endorsement materialization may become independent workers in v2). Team must enforce strict package dependency rules to avoid circular imports.
 - **Materialized view for endorsement scores**: Slightly stale data (up to 5 minutes) but avoids expensive JOINs on every profile page view. Acceptable because endorsement counts change infrequently outside tournaments. If real-time endorsement display becomes a product requirement, we will degrade to compute-on-read with a Redis cache (TTL 30 seconds).
 - **Manual dispute resolution**: Empowers community admins but introduces human latency. A future iteration could use machine learning to auto-detect suspicious patterns (e.g., score asymmetry, repeated pairings). For v1, we accept that disputes may take up to 48 hours.
 
 **Open questions**
-1. *Q*: Should the ranking engine use Elo, Glicko-2, or a custom Mabar formula?  
-   *Proposed*: Use Glicko-2 for official (handles volatility well) and a simplified Elo for Mabar (lower computation cost). Final decision deferred to Task 3 after prototyping both with a sample dataset.
-2. *Q*: How are ILTL matches linked to Match Point player profiles? (Manual claim, invite code from ILTL, or automatic via email match?)  
-   *Proposed*: Allow players to claim ILTL matches by linking their ILTL ID during profile creation. If email matches, auto-claim after verification.
-3. *Q*: What is the exact cache invalidation policy for share cards?  
-   *Proposed*: Invalidate on ranking update event (when player’s rank changes). Use event key `player:{id}:rank_updated`. If no event within 1 hour, TTL expires.
-4. *Q*: Should refresh token rotation use a blocklist or version counter?  
-   *Proposed*: Version counter (simpler, no race condition). Each login increments version; old tokens with lower version are rejected.
-5. *Q*: What is the minimum number of endorsers required for skill score public display?  
-   *Proposed*: 3 (as per assumptions). Review after 3 months of live data to determine if threshold should increase to 5 to improve trust.
+
+1. _Q_: Should the ranking engine use Elo, Glicko-2, or a custom Mabar formula?  
+   _Proposed_: Use Glicko-2 for official (handles volatility well) and a simplified Elo for Mabar (lower computation cost). Final decision deferred to Task 3 after prototyping both with a sample dataset.
+2. _Q_: How are ILTL matches linked to Match Point player profiles? (Manual claim, invite code from ILTL, or automatic via email match?)  
+   _Proposed_: Allow players to claim ILTL matches by linking their ILTL ID during profile creation. If email matches, auto-claim after verification.
+3. _Q_: What is the exact cache invalidation policy for share cards?  
+   _Proposed_: Invalidate on ranking update event (when player’s rank changes). Use event key `player:{id}:rank_updated`. If no event within 1 hour, TTL expires.
+4. _Q_: Should refresh token rotation use a blocklist or version counter?  
+   _Proposed_: Version counter (simpler, no race condition). Each login increments version; old tokens with lower version are rejected.
+5. _Q_: What is the minimum number of endorsers required for skill score public display?  
+   _Proposed_: 3 (as per assumptions). Review after 3 months of live data to determine if threshold should increase to 5 to improve trust.
 
 **Implications** – The chosen architecture enables rapid iteration in Tasks 0–3 while preserving the ability to extract performance-critical components into dedicated services. The reliance on asynchronous validation and materialized views means users will see eventually consistent ranking data (acceptable for social Mabar, less so for official leaderboards that must be authoritative on month-end). The dual-track ranking decision meets the core product differentiator — portability of reputation across communities — without over-engineering two separate engines. Teams must adopt disciplined domain isolation from the start, even within the monolith, to avoid a costly refactor in Tasks 4–7.
 
 ## 3. Scope
+
 ### Context & Goals
 
 The Scope section defines the precise boundaries of the Match Point platform: which features, integrations, data domains, and operational responsibilities are delivered in the initial release (Task 1–3) and which are explicitly deferred. The primary goal is to avoid scope creep from adjacent domains (e.g., full tournament management, racket recommendation engines) and to focus engineering effort on the core value proposition: cross-community reputation and ranking for padel and tennis players using ILTL competition data as the seed source.
 
 Success criteria for scope enforcement:
+
 - Every feature request is mapped to “In Scope” or “Out of Scope” via a single decision table.
 - No Out-of-Scope feature is built or budgeted during Task 1–3 without a formal re-scoping RFC.
 - The platform remains deployable and testable with only the listed In Scope integrations.
 
 ### In Scope (delivered in Tasks 1–3)
 
-| Domain | Detail | Delivered In |
-|--------|--------|--------------|
-| Player identity & linking | OAuth (Google/Facebook) login, email verification, manual ILTL ID linkage | Task 1 |
-| ILTL data ingestion | Batch import of match results, player metadata, and existing rankings from ILTL CSV/API | Task 1 |
-| Ranking computation | Elo-based ranking with configurable K-factor, decay, and surface weighting (padel/tennis) | Task 2 |
-| Reputation score | Weighted composite: match count, recency, peer endorsements (binary flag), historical rank | Task 2 |
-| Public profile page | Read-only view of player name, photo, rank history chart, recent matches, reputation badge | Task 3 |
-| Search & discovery | Search by name, ILTL ID, or location; filter by sport (padel/tennis) | Task 3 |
-| Admin dashboard | Manual recalculation trigger, player merge tool, blacklist endpoint | Task 3 |
+| Domain                    | Detail                                                                                     | Delivered In |
+| ------------------------- | ------------------------------------------------------------------------------------------ | ------------ |
+| Player identity & linking | OAuth (Google/Facebook) login, email verification, manual ILTL ID linkage                  | Task 1       |
+| ILTL data ingestion       | Batch import of match results, player metadata, and existing rankings from ILTL CSV/API    | Task 1       |
+| Ranking computation       | Elo-based ranking with configurable K-factor, decay, and surface weighting (padel/tennis)  | Task 2       |
+| Reputation score          | Weighted composite: match count, recency, peer endorsements (binary flag), historical rank | Task 2       |
+| Public profile page       | Read-only view of player name, photo, rank history chart, recent matches, reputation badge | Task 3       |
+| Search & discovery        | Search by name, ILTL ID, or location; filter by sport (padel/tennis)                       | Task 3       |
+| Admin dashboard           | Manual recalculation trigger, player merge tool, blacklist endpoint                        | Task 3       |
 
 ### Out of Scope (explicitly deferred)
 
@@ -594,20 +623,20 @@ The following capabilities are **Out of Scope** for the initial release and will
 
 ### Component breakdown
 
-| Component | Responsibility | In Scope? | Out of Scope? |
-|-----------|---------------|-----------|---------------|
-| Player Identity Service | OAuth, account linking | ✓ | |
-| ILTL Ingestion Pipeline | Batch import, dedup, error handling | ✓ | |
-| Elo Rank Engine | Compute & store rank deltas | ✓ | |
-| Reputation Scorer | Composite score from match history + endorsements | ✓ | |
-| Public Profile API | GET /players/{id} | ✓ | |
-| Search API | Full-text search on name/location | ✓ | |
-| Admin UI | Merge, recalc, blacklist | ✓ | |
-| Tournament Management | Create/edit brackets | | ✓ |
-| Real-time Feed | Live match updates | | ✓ |
-| Mobile App | iOS/Android builds | | ✓ |
-| i18n Service | Locale translation | | ✓ |
-| Analytics Pipeline | Player similarity, prediction models | | ✓ |
+| Component               | Responsibility                                    | In Scope? | Out of Scope? |
+| ----------------------- | ------------------------------------------------- | --------- | ------------- |
+| Player Identity Service | OAuth, account linking                            | ✓         |               |
+| ILTL Ingestion Pipeline | Batch import, dedup, error handling               | ✓         |               |
+| Elo Rank Engine         | Compute & store rank deltas                       | ✓         |               |
+| Reputation Scorer       | Composite score from match history + endorsements | ✓         |               |
+| Public Profile API      | GET /players/{id}                                 | ✓         |               |
+| Search API              | Full-text search on name/location                 | ✓         |               |
+| Admin UI                | Merge, recalc, blacklist                          | ✓         |               |
+| Tournament Management   | Create/edit brackets                              |           | ✓             |
+| Real-time Feed          | Live match updates                                |           | ✓             |
+| Mobile App              | iOS/Android builds                                |           | ✓             |
+| i18n Service            | Locale translation                                |           | ✓             |
+| Analytics Pipeline      | Player similarity, prediction models              |           | ✓             |
 
 ### Data contracts
 
@@ -623,7 +652,7 @@ paths:
     get:
       summary: "Public player profile (In Scope)"
       responses:
-        '200':
+        "200":
           description: Player profile with rank, reputation, match history
   /v1/players/search:
     get:
@@ -637,12 +666,12 @@ paths:
 
 Failure modes related to scope are primarily **scope creep** and **assumption mismatch**:
 
-| # | Failure | Detection | Mitigation |
-|---|---------|-----------|------------|
-| F1 | Stakeholder requests tournament creation feature | Feature request in Slack | Refer to Out of Scope list; require RFC for re-scope |
-| F2 | ILTL API changes their schema mid-ingestion | Ingestion pipeline errors spike | Version-lock ILTL API contract; add schema version field |
-| F3 | Users demand mobile apps immediately | Support tickets | Communicate web PWA capabilities; start Task 4 mobile design |
-| F4 | Non-ILTL data sources requested by early adopters | User research feedback | Prioritize in Task 4; add extensible source adapter pattern in Task 2 |
+| #   | Failure                                           | Detection                       | Mitigation                                                            |
+| --- | ------------------------------------------------- | ------------------------------- | --------------------------------------------------------------------- |
+| F1  | Stakeholder requests tournament creation feature  | Feature request in Slack        | Refer to Out of Scope list; require RFC for re-scope                  |
+| F2  | ILTL API changes their schema mid-ingestion       | Ingestion pipeline errors spike | Version-lock ILTL API contract; add schema version field              |
+| F3  | Users demand mobile apps immediately              | Support tickets                 | Communicate web PWA capabilities; start Task 4 mobile design          |
+| F4  | Non-ILTL data sources requested by early adopters | User research feedback          | Prioritize in Task 4; add extensible source adapter pattern in Task 2 |
 
 ### Mermaid diagram: Scope boundaries
 
@@ -684,6 +713,7 @@ flowchart LR
 - **Trade-off**: Deferring mobile apps means the primary user experience is desktop/mobile-web. Push notifications are technically possible via Web Push API, but engagement may be lower without native install prompts.
 - **Open question**: Should the “peer endorsement” reputation weight be binary (endorse/not) or a 1–5 star rating? Binary was chosen for simplicity, but user feedback during beta may force a change in Task 3.
 - **Open question**: Will ILTL allow public access to their API without a paid subscription? If not, a data-sharing agreement is required before Task 1 delivery. Legal is currently reviewing.
+
 ### Context & Goals
 
 The Scope section draws a precise boundary around what the Match Point platform will deliver in its initial release (v1.0) and what it explicitly defers to future iterations or partner systems. This boundary is critical because the platform bridges two distinct racquet sports with separate governing bodies, competition formats, and data ecosystems. Without a sharp scope definition, the engineering team risks scope creep that would delay the core value proposition: a unified, trustworthy reputation score that travels with a player across clubs, tournaments, and communities in both padel and tennis.
@@ -697,6 +727,7 @@ The primary goal of this scope definition is to align the founding team, enginee
 The following capabilities and deliverables are explicitly within scope for the Match Point v1.0 release:
 
 **1. ILTL Data Ingestion Pipeline**
+
 - One-way, read-only synchronization of official match results from ILTL's public API for both padel and tennis competitions.
 - Support for singles and doubles match formats, with player identification via ILTL license numbers.
 - Daily batch sync with incremental delta processing (no real-time streaming required in v1.0).
@@ -704,12 +735,14 @@ The following capabilities and deliverables are explicitly within scope for the 
 - Error handling for partial sync failures, malformed records, and missing player metadata, with dead-letter queue and manual retry tooling for administrators.
 
 **2. Player Identity & Profile Core**
+
 - A player profile resolvable by ILTL license number and/or email address.
 - Public-facing profile page showing: display name, verified ILTL license number(s), primary sport (padel or tennis), club affiliation (derived from most recent ILTL competition), and aggregate match statistics (total matches, win rate, last 10 results).
 - Support for linking multiple ILTL license numbers (e.g., a player who has competed under different license numbers across years) to a single Match Point identity, with a simple "claim & merge" flow requiring verification of at least two license numbers.
 - Auth0-based authentication for profile claiming and editing. Unauthenticated read access to all public profiles is permitted.
 
 **3. Elo-Based Ranking System**
+
 - A single, sport-specific Elo rating for each player per sport (i.e., a player may have a padel Elo and a tennis Elo, computed independently).
 - Initial rating assignment: default 1500 with provisional flag for players with fewer than 20 rated matches. Provisional status is clearly displayed on profiles.
 - Rating recalculation performed asynchronously after each ingested match, using the standard Elo formula:
@@ -721,6 +754,7 @@ The following capabilities and deliverables are explicitly within scope for the 
 - Rating history graph (last 50 matches) exposed on the player profile page.
 
 **4. RESTful Public API (Read-Only for v1.0)**
+
 - GET /api/v1/players/{id} — player profile with rating and statistics.
 - GET /api/v1/players/{id}/matches — paginated match history.
 - GET /api/v1/leaderboard — ranked player list with optional filters.
@@ -729,6 +763,7 @@ The following capabilities and deliverables are explicitly within scope for the 
 - API versioning via URL path prefix; deprecation policy requiring 6 months notice.
 
 **5. Web Application (React-based player-facing UI)**
+
 - Public homepage with sport-switcher (padel / tennis) and leaderboard preview.
 - Player search by name, ILTL license number, or club.
 - Player profile page with rating history chart (Chart.js), match history table, and career statistics summary.
@@ -737,6 +772,7 @@ The following capabilities and deliverables are explicitly within scope for the 
 - Accessibility compliance: WCAG 2.1 AA for all public-facing pages.
 
 **6. Operational Infrastructure**
+
 - CI/CD pipeline via GitHub Actions (build, test, lint, security scan, deploy).
 - Staging environment mirroring production configuration (scaled down: 2 web instances, 1 worker instance).
 - Production hosted on AWS: ECS Fargate for web and worker tasks, RDS PostgreSQL (db.r6g.large) for primary database, ElastiCache Redis (cache.r6g.large) for Elo computation caching and rate limiting, S3 for match data archival.
@@ -744,11 +780,13 @@ The following capabilities and deliverables are explicitly within scope for the 
 - Backup strategy: daily automated RDS snapshots with 30-day retention, S3 cross-region replication for match archives.
 
 **7. Data Retention & Privacy**
+
 - Player data retained indefinitely while the account is active. Deletion requests honored within 14 days via admin tooling.
 - Match data sourced from ILTL is cached and refreshed; ILTL remains the authoritative source. Match Point disclaims ownership of ILTL-sourced data.
 - GDPR-compliant data handling: user data export within 30 days of request, anonymization upon account deletion, cookie consent banner with granular controls.
 
 **8. Testing Requirements**
+
 - Unit test coverage >85% for all ranking engine logic (Go).
 - Integration tests covering the full ILTL ingestion pipeline against a sandbox ILTL API.
 - End-to-end smoke tests run against staging before every production deployment.
@@ -760,18 +798,18 @@ The following capabilities and deliverables are explicitly within scope for the 
 
 The following capabilities are intentionally excluded from the v1.0 scope. They represent known future enhancements that must not be implemented during the initial build to maintain delivery focus.
 
-| Feature | Rationale for Deferral | Target Window |
-|---|---|---|
-| **User-generated match reporting** (players enter their own results) | Would introduce trust and verification challenges. v1.0 relies solely on authoritative ILTL data. | v2.0 |
-| **Club management dashboards** | Requires partnership agreements and data sharing MOUs beyond ILTL. | v3.0 |
-| **Mobile native applications (iOS/Android)** | Web application with responsive design suffices for v1.0. Native apps add significant QA and release overhead. | v2.0 |
-| **Social features** (following players, comments, match predictions) | Not core to reputation scoring; would increase moderation liability. | Post-v3.0 |
-| **Real-time match streaming or live scoring** | Requires direct court-side data integration not available from ILTL. | v3.0 |
-| **Integration with non-ILTL competition data** (local leagues, private tournaments, international federations) | Each federation would require separate ingestion contracts. v1.0 stays scoped to ILTL only. | v2.0 |
-| **Paid subscription tiers** (premium analytics, coach tools) | No monetization in v1.0. Revenue model to be validated after user adoption metrics are gathered. | v3.0 |
-| **Machine learning for match prediction or talent identification** | Requires large labeled dataset not available at launch. Premature optimization. | Post-v3.0 |
-| **Internationalization (i18n) beyond English** | Increases UI complexity. English-only for v1.0, with i18n framework prepared but not populated. | v2.0 |
-| **Administrative back-office UI** | All admin operations performed via CLI scripts and direct database access in v1.0. UI deferred. | v2.0 |
+| Feature                                                                                                        | Rationale for Deferral                                                                                         | Target Window |
+| -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------- |
+| **User-generated match reporting** (players enter their own results)                                           | Would introduce trust and verification challenges. v1.0 relies solely on authoritative ILTL data.              | v2.0          |
+| **Club management dashboards**                                                                                 | Requires partnership agreements and data sharing MOUs beyond ILTL.                                             | v3.0          |
+| **Mobile native applications (iOS/Android)**                                                                   | Web application with responsive design suffices for v1.0. Native apps add significant QA and release overhead. | v2.0          |
+| **Social features** (following players, comments, match predictions)                                           | Not core to reputation scoring; would increase moderation liability.                                           | Post-v3.0     |
+| **Real-time match streaming or live scoring**                                                                  | Requires direct court-side data integration not available from ILTL.                                           | v3.0          |
+| **Integration with non-ILTL competition data** (local leagues, private tournaments, international federations) | Each federation would require separate ingestion contracts. v1.0 stays scoped to ILTL only.                    | v2.0          |
+| **Paid subscription tiers** (premium analytics, coach tools)                                                   | No monetization in v1.0. Revenue model to be validated after user adoption metrics are gathered.               | v3.0          |
+| **Machine learning for match prediction or talent identification**                                             | Requires large labeled dataset not available at launch. Premature optimization.                                | Post-v3.0     |
+| **Internationalization (i18n) beyond English**                                                                 | Increases UI complexity. English-only for v1.0, with i18n framework prepared but not populated.                | v2.0          |
+| **Administrative back-office UI**                                                                              | All admin operations performed via CLI scripts and direct database access in v1.0. UI deferred.                | v2.0          |
 
 ---
 
@@ -786,15 +824,15 @@ flowchart TB
         C --> D["Elo Ranking Engine<br/>(Async Worker)"]
         D --> E["Player Profile &<br/>Leaderboard API"]
         E --> F["React Web App<br/>(Player-Facing)"]
-        
+
         G["Auth0 Authentication"] --> H["Profile Claim & Merge"]
         H --> E
-        
+
         I["CloudWatch + PagerDuty<br/>Monitoring"] -.-> A
         I -.-> D
         I -.-> E
     end
-    
+
     subgraph OutOfScope["Out of Scope — Future"]
         direction TB
         J["Mobile Apps<br/>(iOS/Android)"]
@@ -804,7 +842,7 @@ flowchart TB
         N["Paid Subscriptions"]
         O["ML Predictions"]
     end
-    
+
     F -.->|"UI only,<br/>no native"| J
     E -.- K
     A -.- M
@@ -817,31 +855,34 @@ flowchart TB
 
 ### Failure Modes from Scope Boundary Violations
 
-| Failure Mode | Trigger | Detection | Mitigation |
-|---|---|---|---|
-| **ILTL API rate limiting** | Sync attempts exceed ILTL's allowed request quota (unknown limit; assumed 1000/day) | 429 HTTP response during sync; alert on sync error rate >10% | Implement exponential backoff and jitter; sync retries with 1-hour interval; manual override for urgent syncs |
-| **ILTL schema changes** | ILTL deprecates or renames fields without notice | Validation layer reports unexpected field types; sync fails on required field missing | JSON field mapping with default fallback values; PagerDuty alert triggers manual schema review threshold at 3 consecutive failures |
-| **Player identity collision** | Two users claim the same ILTL license number | Admin dashboard flag; duplicate key violation on unique constraint for (license_number, sport) | Manual review queue; tie-breaking by earliest verified claim; audit log of all identity change events |
-| **Doubles rating inaccuracy** | Individual ratings unchanged by doubles matches (v1.0 simplification) | N/A (known limitation) | Documented on product FAQ; planned for v2.0 with per-pair credit system |
-| **Rating manipulation via farming** | Player plays many low-skill opponents to inflate rating | Score delta anomaly detection: if average opponent rating <1300 and win rate >90% over 20+ matches | K-factor reduction to 16 for matches against opponents rated >200 points lower; provisional flag extended |
-| **GDPR deletion race condition** | Delete request arrives while sync is in progress | No detection in v1.0; risk of stale data surfacing post-deletion | Soft-delete with tombstone: mark deleted, suppress in reads, defer hard delete to next maintenance window (weekly) |
+| Failure Mode                        | Trigger                                                                             | Detection                                                                                          | Mitigation                                                                                                                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **ILTL API rate limiting**          | Sync attempts exceed ILTL's allowed request quota (unknown limit; assumed 1000/day) | 429 HTTP response during sync; alert on sync error rate >10%                                       | Implement exponential backoff and jitter; sync retries with 1-hour interval; manual override for urgent syncs                      |
+| **ILTL schema changes**             | ILTL deprecates or renames fields without notice                                    | Validation layer reports unexpected field types; sync fails on required field missing              | JSON field mapping with default fallback values; PagerDuty alert triggers manual schema review threshold at 3 consecutive failures |
+| **Player identity collision**       | Two users claim the same ILTL license number                                        | Admin dashboard flag; duplicate key violation on unique constraint for (license_number, sport)     | Manual review queue; tie-breaking by earliest verified claim; audit log of all identity change events                              |
+| **Doubles rating inaccuracy**       | Individual ratings unchanged by doubles matches (v1.0 simplification)               | N/A (known limitation)                                                                             | Documented on product FAQ; planned for v2.0 with per-pair credit system                                                            |
+| **Rating manipulation via farming** | Player plays many low-skill opponents to inflate rating                             | Score delta anomaly detection: if average opponent rating <1300 and win rate >90% over 20+ matches | K-factor reduction to 16 for matches against opponents rated >200 points lower; provisional flag extended                          |
+| **GDPR deletion race condition**    | Delete request arrives while sync is in progress                                    | No detection in v1.0; risk of stale data surfacing post-deletion                                   | Soft-delete with tombstone: mark deleted, suppress in reads, defer hard delete to next maintenance window (weekly)                 |
 
 ---
 
 ### Cross-Cutting Scope Constraints
 
 **Capacity Planning for In-Scope Features**
+
 - Estimated ILTL match volume: ~50,000 new matches per month across padel and tennis (based on 2024 calendar data).
 - Player base growth: projected 50,000 profiles within 12 months post-launch.
 - API read traffic: target 500 req/s at peak (evening hours, weekend tournaments).
 - Elo recalculation batch size: up to 5,000 matches per daily sync (safe initial estimate; scalable via worker pool).
 
 **Security Scope Boundaries**
+
 - No PII beyond what ILTL provides (name, license number, club affiliation). Email collected only for authentication, stored separately in Auth0.
 - No payment processing in v1.0. Stripe integration deferred to v3.0.
 - All API responses sanitized to omit internal IDs and database constraints. Error messages return generic codes, not stack traces.
 
 **Observability Scope**
+
 - Structured logging in JSON format (Go `log/slog` with `slog.JSONHandler`).
 - Trace IDs propagated across API → worker → database calls via context.Context.
 - Business metrics exposed as CloudWatch custom metrics: matches_ingested, ratings_recalculated, profiles_claimed, api_error_rate, api_p95_latency.
@@ -861,11 +902,13 @@ We have not secured a formal SLA from ILTL for their public API. If ILTL enforce
 
 **Open Question: Player base uptake without proactive recruitment**
 v1.0 has no user acquisition funnel — profiles are auto-created from ILTL match data, but players must claim them to set visibility preferences. If claim rates are below 20% after 6 months, the value proposition (cross-community reputation) weakens because unclaimed profiles lack the "verified" badge. Mitigation: we implement a low-effort email outreach campaign from ILTL match data (email addresses available in ILTL records) with a weekly digest of new matches and rating changes, driving users to claim their profiles. This is in scope for v1.5 (not v1.0).
+
 ### Context & Goals
 
 The Scope section defines the precise boundaries of Match Point’s initial release (Task 1 through Task 4 of the execution plan) and its subsequent expansion. The primary goal is to ship a viable cross-community reputation and ranking platform that solves the identity fragmentation padel and tennis players face today. Players currently have game histories scattered across ILTL (official competition data), club leagues, private apps, and social-match groups—no single view of their ability or trustworthiness exists. Match Point will unify these data sources into a single player profile with an earned reputation score and an aggregated ranking.
 
 **Success criteria for scoping:**
+
 - The first production version must support padel **and** tennis players (not just one sport).
 - It must integrate with at least one official data source (ILTL) and two community-recognized unofficial sources (e.g., Playtomic, TopTennis, club APIs).
 - The reputation score must be transparently computable from win/loss history, verified match reporting, and peer endorsements—no black-box weighting.
@@ -877,45 +920,46 @@ The Scope section defines the precise boundaries of Match Point’s initial rele
 ### Decisions
 
 1. **Start with ILTL as the authoritative source of truth**  
-   *Rationale:* ILTL (International Tennis & Padel League) provides structured, audited competition data for both sports. It gives the platform immediate credibility and a baseline ranking that cannot be gamed.  
-   *Rejected alternative:* Using only crowd-sourced match data would require heavy anti-fraud measures before launch, delaying time-to-market.
+   _Rationale:_ ILTL (International Tennis & Padel League) provides structured, audited competition data for both sports. It gives the platform immediate credibility and a baseline ranking that cannot be gamed.  
+   _Rejected alternative:_ Using only crowd-sourced match data would require heavy anti-fraud measures before launch, delaying time-to-market.
 
 2. **Treat “reputation” and “ranking” as separate computed values**  
-   *Reputation* is a zero-to-one trust score based on match verification rate, recency, peer endorsements, and history length. *Ranking* is a sport-specific skill metric (e.g., Elo-based) derived from head-to-head outcomes.  
-   *Rationale:* A new player with high skill but zero community history must not be blocked; reputation gates only sensitive actions (e.g., reporting a match unbeholden to ILTL).  
-   *Rejected alternative:* Merging both into a single number would conflate trust and ability, confusing users.
+   _Reputation_ is a zero-to-one trust score based on match verification rate, recency, peer endorsements, and history length. _Ranking_ is a sport-specific skill metric (e.g., Elo-based) derived from head-to-head outcomes.  
+   _Rationale:_ A new player with high skill but zero community history must not be blocked; reputation gates only sensitive actions (e.g., reporting a match unbeholden to ILTL).  
+   _Rejected alternative:_ Merging both into a single number would conflate trust and ability, confusing users.
 
 3. **Community data ingestion adopts a plug-in broker pattern**  
    Each external source (Playtomic, club spreadsheets, private WhatsApp bots) is an independent adapter that normalises match events into a common event schema (`MatchReported`). The broker handles retries, deduplication, and rate limits.  
-   *Rationale:* Sources come and go; a statically coupled system would be brittle and expensive to maintain.  
-   *Rejected alternative:* Direct database scraping from every source—would violate many platform ToS and be impossible to keep up-to-date.
+   _Rationale:_ Sources come and go; a statically coupled system would be brittle and expensive to maintain.  
+   _Rejected alternative:_ Direct database scraping from every source—would violate many platform ToS and be impossible to keep up-to-date.
 
 4. **All external integrations are read-only during initial scope**  
    The platform will not expose write-back endpoints (e.g., updating a game result in ILTL) in Task 1–4. Write-backs for federated reconciliation are deferred to post-MVP (Task 5).  
-   *Rationale:* Reducing surface area for legal liability and authentication complexity.
+   _Rationale:_ Reducing surface area for legal liability and authentication complexity.
 
 5. **Geographic scope: global but language-locked to English and Spanish**  
-   *Rationale:* The user base during launch is expected to be Western Europe (Spain, France, Italy, UK) and Latin America. English and Spanish cover >80% of active padel/tennis forums. Additional locales are a localisation-only task post-launch.
+   _Rationale:_ The user base during launch is expected to be Western Europe (Spain, France, Italy, UK) and Latin America. English and Spanish cover >80% of active padel/tennis forums. Additional locales are a localisation-only task post-launch.
 
 ---
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|---------------|--------------|--------------|-------|
-| **ILTL Adapter** | Pull competition match results, player registrations, and penalties from ILTL daily dump or API | Go worker (cron-based), ILTL REST/CSV endpoint, S3 as staging | ILTL API key, network egress | Backend team (Squad A) |
-| **Community Adapter Broker** | Manage plugin lifecycle, deduplicate incoming match reports, enforce rate limits | Go module, Redis for dedup cache, plugin registry (JSON config) | Redis, message queue (NATS/Kafka) | Platform team (Squad B) |
-| **Reputation Engine** | Score computation per player: formula with configurable weights (verified rate, endorsement weight, recency decay) | Go service, PostgreSQL (materialised view), in-memory cache (Redis) | Player table, Match table, Endorsement table | Data team (Squad C) |
-| **Ranking Engine** | Elo/TrueSkill calculation for each sport, with region filters | Go service, PostgreSQL stored procedures, Celery-like job queue (RabbitMQ) | Match table, Player–Sport mapping, periodic recompute trigger | Data team (Squad C) |
-| **Profile API** | CRUD for player profiles, reputation score retrieval, ranking leaderboards | Go REST API, JWT auth, API versioning (v1) | Postgres, Redis cache (TTL 5 min) | Backend team (Squad A) |
-| **Web Frontend** | Player public profile card, leaderboard, match history, endorsement button | Next.js (Vercel), Tailwind, SSR for SEO | Profile API, Google OAuth for login | Frontend team (Squad D) |
-| **Admin Dashboard** | Manual override of reputation (cheater flags), adapter health monitoring, audit log | Next.js (admin route), Firestore for audit events | Profile API, adapter health endpoint | Platform team (Squad B) |
+| Component                    | Responsibility                                                                                                     | Technologies                                                               | Dependencies                                                  | Owner                   |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------- |
+| **ILTL Adapter**             | Pull competition match results, player registrations, and penalties from ILTL daily dump or API                    | Go worker (cron-based), ILTL REST/CSV endpoint, S3 as staging              | ILTL API key, network egress                                  | Backend team (Squad A)  |
+| **Community Adapter Broker** | Manage plugin lifecycle, deduplicate incoming match reports, enforce rate limits                                   | Go module, Redis for dedup cache, plugin registry (JSON config)            | Redis, message queue (NATS/Kafka)                             | Platform team (Squad B) |
+| **Reputation Engine**        | Score computation per player: formula with configurable weights (verified rate, endorsement weight, recency decay) | Go service, PostgreSQL (materialised view), in-memory cache (Redis)        | Player table, Match table, Endorsement table                  | Data team (Squad C)     |
+| **Ranking Engine**           | Elo/TrueSkill calculation for each sport, with region filters                                                      | Go service, PostgreSQL stored procedures, Celery-like job queue (RabbitMQ) | Match table, Player–Sport mapping, periodic recompute trigger | Data team (Squad C)     |
+| **Profile API**              | CRUD for player profiles, reputation score retrieval, ranking leaderboards                                         | Go REST API, JWT auth, API versioning (v1)                                 | Postgres, Redis cache (TTL 5 min)                             | Backend team (Squad A)  |
+| **Web Frontend**             | Player public profile card, leaderboard, match history, endorsement button                                         | Next.js (Vercel), Tailwind, SSR for SEO                                    | Profile API, Google OAuth for login                           | Frontend team (Squad D) |
+| **Admin Dashboard**          | Manual override of reputation (cheater flags), adapter health monitoring, audit log                                | Next.js (admin route), Firestore for audit events                          | Profile API, adapter health endpoint                          | Platform team (Squad B) |
 
 ---
 
 ### Data contracts
 
 **Player Profile (core schema)**
+
 ```json
 {
   "player_id": "uuid",
@@ -928,7 +972,7 @@ The Scope section defines the precise boundaries of Match Point’s initial rele
     "components": {
       "verified_match_rate": 0.92,
       "avg_endorsement_strength": 0.65,
-      "history_length_factor": 0.80,
+      "history_length_factor": 0.8,
       "recency_decay": 0.95
     },
     "updated_at": "2025-06-21T14:30:00Z"
@@ -952,6 +996,7 @@ The Scope section defines the precise boundaries of Match Point’s initial rele
 ```
 
 **Match Reported Event (from community adapter)**
+
 ```json
 {
   "event_id": "uuidv7",
@@ -959,22 +1004,32 @@ The Scope section defines the precise boundaries of Match Point’s initial rele
   "source_match_id": "pt-2025-06-21-abc123",
   "reported_at": "2025-06-21T15:00:00Z",
   "players": [
-    {"player_id": "uuid1", "il_id": "ALT001", "team": "A"},
-    {"player_id": "uuid2", "il_id": "ALT002", "team": "A"},
-    {"player_id": "uuid3", "il_id": "ALT003", "team": "B"},
-    {"player_id": "uuid4", "il_id": "ALT004", "team": "B"}
+    { "player_id": "uuid1", "il_id": "ALT001", "team": "A" },
+    { "player_id": "uuid2", "il_id": "ALT002", "team": "A" },
+    { "player_id": "uuid3", "il_id": "ALT003", "team": "B" },
+    { "player_id": "uuid4", "il_id": "ALT004", "team": "B" }
   ],
   "sport": "padel",
-  "score": {"set1": "6-4", "set2": "3-6", "set3": "10-8", "format": "best_of_3"},
+  "score": {
+    "set1": "6-4",
+    "set2": "3-6",
+    "set3": "10-8",
+    "format": "best_of_3"
+  },
   "winner_team": "A",
   "verification": [
-    {"player_id": "uuid5", "verified": true, "timestamp": "2025-06-21T16:00:00Z"},
-    {"player_id": "uuid6", "verified": false, "timestamp": null}
+    {
+      "player_id": "uuid5",
+      "verified": true,
+      "timestamp": "2025-06-21T16:00:00Z"
+    },
+    { "player_id": "uuid6", "verified": false, "timestamp": null }
   ]
 }
 ```
 
 **Reputation Score Computation (PostgreSQL materialised view DDL)**
+
 ```sql
 CREATE MATERIALIZED VIEW mv_reputation AS
 SELECT
@@ -994,14 +1049,14 @@ LEFT JOIN endorsement_stats e ON e.player_id = p.player_id;
 
 ### Failure modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| **ILTL data feed stale (>24h)** | Health check pings ILTL endpoint; alert if last_updated timestamp > 24h. | Fallback to community-only reputation computation; show “ILTL data delayed” banner. After 72h, disable ranking recalculation. |
-| **Community adapter reports duplicate match** | Dedup cache (Redis) keyed on `source_match_id`; double-write detected by unique constraint violation. | Reject duplicate; log for audit; increment duplicate counter metric. |
-| **Malicious match reporting (sybil attack)** | Multiple accounts reporting same match with divergent winners; reputation engine flags anomaly. | Auto-lock all accounts involved; notify admin dashboard; manual review required for unlock. |
-| **Reputation score divergence** | Cross-consistency check: expected vs actual score delta > 0.05 triggers alert. | Recompute from raw events; if divergence persists, rollback to last valid snapshot. |
-| **Ranking computation timeout (>3 min for 10k players)** | Timeout per sport/region recalc set at 3 min. | Shard recalculation by region; if still slow, degrade to incremental Elo updates (only top 1000 players recalculated). |
-| **Profile API high latency** | p95 > 500 ms for any endpoint. | Add Redis cache (TTL 60s) for reputation/ranking reads; enable query pagination for leaderboards; set up auto-scaling based on CPU. |
+| Failure                                                  | Detection                                                                                             | Mitigation                                                                                                                          |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| **ILTL data feed stale (>24h)**                          | Health check pings ILTL endpoint; alert if last_updated timestamp > 24h.                              | Fallback to community-only reputation computation; show “ILTL data delayed” banner. After 72h, disable ranking recalculation.       |
+| **Community adapter reports duplicate match**            | Dedup cache (Redis) keyed on `source_match_id`; double-write detected by unique constraint violation. | Reject duplicate; log for audit; increment duplicate counter metric.                                                                |
+| **Malicious match reporting (sybil attack)**             | Multiple accounts reporting same match with divergent winners; reputation engine flags anomaly.       | Auto-lock all accounts involved; notify admin dashboard; manual review required for unlock.                                         |
+| **Reputation score divergence**                          | Cross-consistency check: expected vs actual score delta > 0.05 triggers alert.                        | Recompute from raw events; if divergence persists, rollback to last valid snapshot.                                                 |
+| **Ranking computation timeout (>3 min for 10k players)** | Timeout per sport/region recalc set at 3 min.                                                         | Shard recalculation by region; if still slow, degrade to incremental Elo updates (only top 1000 players recalculated).              |
+| **Profile API high latency**                             | p95 > 500 ms for any endpoint.                                                                        | Add Redis cache (TTL 60s) for reputation/ranking reads; enable query pagination for leaderboards; set up auto-scaling based on CPU. |
 
 ---
 
@@ -1066,18 +1121,20 @@ flowchart TB
 
 ### Trade-offs & open questions
 
-| Trade-off | Chosen side | Reason | Risk |
-|-----------|-------------|--------|------|
-| Reputation weight split (verified match rate 40% vs endorsement 30%) | Favours objective data | Prevents collusion-based reputation farming | May undervalue good behaviour in small communities where match reporting is sparse — revisit after 6 months with real data. |
-| ILTL as single source of truth vs. federated trust | Centralised initial trust | Speed of launch; legal clarity with ILTL | If ILTL API changes or shuts down, platform loses official anchor; have fallback to community-only mode architected but not tested. |
-| Global ranking vs. region-constrained ranking | Both stored per player by region/global | Supports local leaderboards (club, city) without diluting world skill measurement | Data model becomes more complex; extra columns for each sport/region combination. |
-| Score precaching vs. on-demand computation | Materialised view refreshed every 6h | Read latency <10ms; predictable compute cost | Stale scores up to 6h; trade-off acceptable for initial launch. Future: incremental refresh within 60 seconds using WAL triggers. |
+| Trade-off                                                            | Chosen side                             | Reason                                                                            | Risk                                                                                                                                |
+| -------------------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Reputation weight split (verified match rate 40% vs endorsement 30%) | Favours objective data                  | Prevents collusion-based reputation farming                                       | May undervalue good behaviour in small communities where match reporting is sparse — revisit after 6 months with real data.         |
+| ILTL as single source of truth vs. federated trust                   | Centralised initial trust               | Speed of launch; legal clarity with ILTL                                          | If ILTL API changes or shuts down, platform loses official anchor; have fallback to community-only mode architected but not tested. |
+| Global ranking vs. region-constrained ranking                        | Both stored per player by region/global | Supports local leaderboards (club, city) without diluting world skill measurement | Data model becomes more complex; extra columns for each sport/region combination.                                                   |
+| Score precaching vs. on-demand computation                           | Materialised view refreshed every 6h    | Read latency <10ms; predictable compute cost                                      | Stale scores up to 6h; trade-off acceptable for initial launch. Future: incremental refresh within 60 seconds using WAL triggers.   |
 
 **Open questions for ongoing discovery:**
+
 1. Should we support team-based endorsement (my whole club can vouch for a player) or only individual peer endorsements? Design currently assumes individual, but club-level could reduce noise.
 2. What is the minimum number of community adapters (beyond ILTL) before we can claim “cross-community”? Two? Three? We’ve set two as the MV threshold—Playtomic and one club spreadsheet adapter.
 3. How do we handle players who have never played in an ILTL event? Their sport-specific ELO starts at 0 (or a default 1200) with a provisional flag; reputation component “verified_match_rate” becomes undefined until at least one ILTL match is recorded. Should we seed reputation as 0.5 (neutral) or withhold the score? Decision: seed as 0.5 but show “provisional” badge.
 4. Endorsement abuse: a player with 1000 friends endorsing each other. Should we cap per-cohort endorsements (e.g., only one endorsement per player per reviewer per month)? Design doc currently has no cap—under discussion.
+
 ### Context & Goals
 
 Scope defines the precise boundaries of the Match Point platform for its initial production release (v1.0). It answers: which features, integrations, user roles, data sources, and operational capabilities are delivered vs. explicitly deferred. A crisp scope prevents resource fragmentation across the seven-phase execution plan, aligns engineering, product, and community stakeholders, and ensures the first launch delivers the core value proposition — cross-community player reputation and ranking for padel and tennis — without over-engineering.
@@ -1087,6 +1144,7 @@ The primary goal is to achieve a functional MVP by the end of Task 3 (Dual-Track
 A secondary goal is to define integration boundaries: Match Point will not own or replace ILTL (official competition data) but will consume its published data via a scheduled import process. Any real-time communication with ILTL systems is out of scope. The platform will not build its own authentication provider; it uses JWT tokens issued by an internal auth service (email/password; optional OIDC deferred).
 
 Success criteria for scope definition:
+
 - All engineering teams agree on exactly which APIs, screens, and background jobs are built in v1.0.
 - Product management can clearly explain to early-adopter clubs which features are available at launch.
 - No feature requests from community pilots trigger scope creep without a formal change review board.
@@ -1099,20 +1157,20 @@ The v1.0 release includes all components required for a player to sign up, join 
 
 **Detailed scope boundaries by functional area:**
 
-| Functional Area | In Scope Deliverable | Rationale |
-|----------------|----------------------|-----------|
-| **User Authentication** | Email/password signup, login, JWT issuance (RSA256), refresh token rotation | Core identity; OIDC providers deferred to Task 5 |
-| **Player Profile** | Profile creation/editing (display name, avatar, home community), globally unique username | Required for reputation portability |
-| **Community Management** | Create community, join/leave membership, admin transfer, display name disambiguation, member list | Essential for cross-community play |
-| **Match Submission** | Submit result (team, score, location, duration); validation: player existence, duplicate check, suspicious score detection | Core match data capture |
-| **Match Validation Pipeline** | Pending state for suspicious matches; admin approval/rejection; auto-confirm after 48h if both players agree | Ensures integrity without full automation |
-| **Dual-Track Ranking** | Mabar rank (ELO variant, per-community K-factor), Official rank (Glicko-2), monthly snapshots | Core value proposition |
-| **Leaderboard** | Community leaderboard (Mabar), global leaderboard (Official), search/filter/pagination | User-facing reputation visibility |
-| **ILTL Integration** | Daily batch import of official results; mapping ILTL player IDs to Match Point player profiles | Cross-community official rank feed |
-| **Admin Dashboard** | Community admin panel: member management, match approve/reject, point adjustment with audit note | Community governance |
-| **Frontend** | Responsive React web app, Indonesian + English i18n, all screens for Tasks 0–3 | Usable by target user base |
-| **Background Jobs** | Match validation, ranking recalculation, snapshot generation, cache warming | Asynchronous processing |
-| **Data Storage** | PostgreSQL (transactional + ranking), Redis (cache/session/rate limit), RabbitMQ/Google PubSub (queue) | Operational backbone |
+| Functional Area               | In Scope Deliverable                                                                                                       | Rationale                                        |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| **User Authentication**       | Email/password signup, login, JWT issuance (RSA256), refresh token rotation                                                | Core identity; OIDC providers deferred to Task 5 |
+| **Player Profile**            | Profile creation/editing (display name, avatar, home community), globally unique username                                  | Required for reputation portability              |
+| **Community Management**      | Create community, join/leave membership, admin transfer, display name disambiguation, member list                          | Essential for cross-community play               |
+| **Match Submission**          | Submit result (team, score, location, duration); validation: player existence, duplicate check, suspicious score detection | Core match data capture                          |
+| **Match Validation Pipeline** | Pending state for suspicious matches; admin approval/rejection; auto-confirm after 48h if both players agree               | Ensures integrity without full automation        |
+| **Dual-Track Ranking**        | Mabar rank (ELO variant, per-community K-factor), Official rank (Glicko-2), monthly snapshots                              | Core value proposition                           |
+| **Leaderboard**               | Community leaderboard (Mabar), global leaderboard (Official), search/filter/pagination                                     | User-facing reputation visibility                |
+| **ILTL Integration**          | Daily batch import of official results; mapping ILTL player IDs to Match Point player profiles                             | Cross-community official rank feed               |
+| **Admin Dashboard**           | Community admin panel: member management, match approve/reject, point adjustment with audit note                           | Community governance                             |
+| **Frontend**                  | Responsive React web app, Indonesian + English i18n, all screens for Tasks 0–3                                             | Usable by target user base                       |
+| **Background Jobs**           | Match validation, ranking recalculation, snapshot generation, cache warming                                                | Asynchronous processing                          |
+| **Data Storage**              | PostgreSQL (transactional + ranking), Redis (cache/session/rate limit), RabbitMQ/Google PubSub (queue)                     | Operational backbone                             |
 
 ---
 
@@ -1120,77 +1178,77 @@ The v1.0 release includes all components required for a player to sign up, join 
 
 Features deliberately excluded from v1.0 to maintain focus, reduce risk, and gather data before investing in higher complexity.
 
-| Functional Area | Status | Deferred Task |
-|----------------|--------|----------------|
-| **Tournament Bracket Engine** | No tournament creation, scheduling, bracket generation | Task 4 |
-| **Venue Management** | No court catalog, booking, or venue profiles | Task 4 |
-| **Automated Match Arbitration** | No score reconciliation via ILTL; manual override only | Task 4 |
-| **Player Endorsement Graph** | No skill endorsement, trust scoring | Task 5 |
-| **Social Sharing / Ranking Cards** | No share card generation, social media buttons, embed widget | Task 6 |
-| **PWA / Native Mobile Apps** | No offline support, no iOS/Android apps | Task 6 |
-| **Superadmin Analytics Dashboard** | No global system health, usage statistics, deployment dashboards | Task 7 |
-| **OAuth2/OIDC Providers** | No Google, Apple, or other social login | Task 5 |
-| **Push Notifications / Digest Emails** | No weekly email digests, no push notification infrastructure | Task 5 |
-| **Real-time ILTL Sync** | No webhooks or streaming APIs; batch import only | Never (unless ILTL provides API) |
+| Functional Area                        | Status                                                           | Deferred Task                    |
+| -------------------------------------- | ---------------------------------------------------------------- | -------------------------------- |
+| **Tournament Bracket Engine**          | No tournament creation, scheduling, bracket generation           | Task 4                           |
+| **Venue Management**                   | No court catalog, booking, or venue profiles                     | Task 4                           |
+| **Automated Match Arbitration**        | No score reconciliation via ILTL; manual override only           | Task 4                           |
+| **Player Endorsement Graph**           | No skill endorsement, trust scoring                              | Task 5                           |
+| **Social Sharing / Ranking Cards**     | No share card generation, social media buttons, embed widget     | Task 6                           |
+| **PWA / Native Mobile Apps**           | No offline support, no iOS/Android apps                          | Task 6                           |
+| **Superadmin Analytics Dashboard**     | No global system health, usage statistics, deployment dashboards | Task 7                           |
+| **OAuth2/OIDC Providers**              | No Google, Apple, or other social login                          | Task 5                           |
+| **Push Notifications / Digest Emails** | No weekly email digests, no push notification infrastructure     | Task 5                           |
+| **Real-time ILTL Sync**                | No webhooks or streaming APIs; batch import only                 | Never (unless ILTL provides API) |
 
 ---
 
 ### Decisions
 
-1. **v1.0 Scope = Execution Plan Tasks 0–3**  
-   - Decided: The first production release includes Player & Community Modules (Task 1), Match Submission & Validation Pipeline (Task 2), and Dual-Track Ranking Engine & Leaderboard (Task 3) on top of the Foundation (Task 0).  
-   - Rationale: These tasks deliver the core “reputation portability” proposition — a player can sign up, join multiple communities, submit matches, and see both local and global rankings.  
+1. **v1.0 Scope = Execution Plan Tasks 0–3**
+   - Decided: The first production release includes Player & Community Modules (Task 1), Match Submission & Validation Pipeline (Task 2), and Dual-Track Ranking Engine & Leaderboard (Task 3) on top of the Foundation (Task 0).
+   - Rationale: These tasks deliver the core “reputation portability” proposition — a player can sign up, join multiple communities, submit matches, and see both local and global rankings.
    - Rejected alternative: Delivering all seven tasks in a single “big bang” release was rejected due to complexity, resource constraints (9-person engineering team), and the need for rapid feedback from pilot clubs.
 
-2. **No Automated Match Arbitration in v1.0**  
-   - Decided: Match disputes will be flagged to community admins, who can manually adjust points with an audit note. No automated arbitration.  
-   - Rationale: Automated arbitration would require real-time data integration with multiple external systems. Manual override is simpler, auditable, sufficient for early communities.  
+2. **No Automated Match Arbitration in v1.0**
+   - Decided: Match disputes will be flagged to community admins, who can manually adjust points with an audit note. No automated arbitration.
+   - Rationale: Automated arbitration would require real-time data integration with multiple external systems. Manual override is simpler, auditable, sufficient for early communities.
    - Risk: Admin workload increase; mitigated by dispute rate monitoring and planned automated escalation in Task 4.
 
-3. **ILTL Integration via Periodic Batch Import**  
-   - Decided: Official tournament results from ILTL ingested daily via scheduled batch job (CSV/JSON feed). No real-time API.  
-   - Rationale: ILTL does not expose a stable real-time API; batch import supports eventual consistency and retry.  
+3. **ILTL Integration via Periodic Batch Import**
+   - Decided: Official tournament results from ILTL ingested daily via scheduled batch job (CSV/JSON feed). No real-time API.
+   - Rationale: ILTL does not expose a stable real-time API; batch import supports eventual consistency and retry.
    - Trade-off: Official ranks may lag 24h; acceptable for v1.0.
 
-4. **Social Sharing & Ranking Cards Deferred to Task 6**  
-   - Decided: Ranking card generator, social share buttons, viral growth mechanics out of scope.  
-   - Rationale: Depends on mature ranking engine and user base; premature polish wastes effort.  
+4. **Social Sharing & Ranking Cards Deferred to Task 6**
+   - Decided: Ranking card generator, social share buttons, viral growth mechanics out of scope.
+   - Rationale: Depends on mature ranking engine and user base; premature polish wastes effort.
    - Alternative considered: A minimal share link was dropped due to dependency on profile image upload (Task 1) and ranking snapshot endpoints.
 
-5. **Tournament Integration Deferred to Task 4**  
-   - Decided: No tournaments in v1.0. All match play is peer-to-peer or ladder/challenge.  
-   - Rationale: Tournament complexity; postpone until core ranking stability is proven.  
+5. **Tournament Integration Deferred to Task 4**
+   - Decided: No tournaments in v1.0. All match play is peer-to-peer or ladder/challenge.
+   - Rationale: Tournament complexity; postpone until core ranking stability is proven.
    - Impact: Early clubs use external tournament tools; Match Point acts solely as ranking authority.
 
-6. **Player Endorsement System Deferred to Task 5**  
-   - Decided: Endorsement graph not part of v1.0.  
+6. **Player Endorsement System Deferred to Task 5**
+   - Decided: Endorsement graph not part of v1.0.
    - Rationale: Introduces trust and fraud vectors requiring additional design and moderation tooling.
 
-7. **Admin Dashboard Scope Limited to Community Admin Functions**  
+7. **Admin Dashboard Scope Limited to Community Admin Functions**
    - Decided: v1.0 provides admin panel for members, match review, point override. Superadmin analytics deferred to Task 7.
 
-8. **Frontend i18n: Indonesian Default, English Toggle**  
-   - Decided: UI text in Indonesian (Bahasa) and English. User-generated content kept as-is. Language preference in user settings.  
+8. **Frontend i18n: Indonesian Default, English Toggle**
+   - Decided: UI text in Indonesian (Bahasa) and English. User-generated content kept as-is. Language preference in user settings.
    - Rationale: Primary user base is Indonesian padel/tennis communities; travel players require English. No other languages in v1.0.
 
 ---
 
 ### Component Breakdown: Scope by Module
 
-| Component / Module | In Scope v1.0 | Out of Scope v1.0 | Notes |
-|--------------------|---------------|-------------------|-------|
-| **User Authentication** | Email/password signup, login, JWT issuance (RSA256), refresh token rotation | OAuth2/OIDC providers (Google, Apple) | OIDC deferred to Task 5 |
-| **Player Profile** | Profile creation, editing (display name, avatar, home community), globally unique username | Player endorsement graph, skill tags, social links | Endorsement in Task 5 |
-| **Community Management** | Community creation, membership join/leave, admin transfer, display name disambiguation, member list view | Tournament creation, community calendar, venue management | Venue management deferred to Task 4 |
-| **Match Submission** | Submit match result (teams, score, duration, location via lat/lng), required validation: player existence, duplicate check, suspicious score detection | Automated live scoring integration, court booking | Manual entry only; no IoT sensor integration |
-| **Match Validation Pipeline** | Pending state on suspicious matches; community admin approval/rejection; auto-approve on confirmation by both players after 48h | Automated dispute arbitration, machine learning fraud detection | Admin manual override with note |
+| Component / Module            | In Scope v1.0                                                                                                                                               | Out of Scope v1.0                                                                     | Notes                                            |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| **User Authentication**       | Email/password signup, login, JWT issuance (RSA256), refresh token rotation                                                                                 | OAuth2/OIDC providers (Google, Apple)                                                 | OIDC deferred to Task 5                          |
+| **Player Profile**            | Profile creation, editing (display name, avatar, home community), globally unique username                                                                  | Player endorsement graph, skill tags, social links                                    | Endorsement in Task 5                            |
+| **Community Management**      | Community creation, membership join/leave, admin transfer, display name disambiguation, member list view                                                    | Tournament creation, community calendar, venue management                             | Venue management deferred to Task 4              |
+| **Match Submission**          | Submit match result (teams, score, duration, location via lat/lng), required validation: player existence, duplicate check, suspicious score detection      | Automated live scoring integration, court booking                                     | Manual entry only; no IoT sensor integration     |
+| **Match Validation Pipeline** | Pending state on suspicious matches; community admin approval/rejection; auto-approve on confirmation by both players after 48h                             | Automated dispute arbitration, machine learning fraud detection                       | Admin manual override with note                  |
 | **Dual-Track Ranking Engine** | Mabar rank (community-level ELO variant with K-factor per community), Official rank (Glicko-2 using ILTL + submitted match data), monthly snapshot creation | Real-time rank recalculation on every match submission; rank history beyond 12 months | Recalculation triggered asynchronously via queue |
-| **Leaderboard** | Community leaderboard (Mabar rank), global leaderboard (Official rank) with search/filter by community, pagination | Personalized leaderboard, share card generation, embeddable widget | Share cards in Task 6 |
-| **ILTL Integration** | Daily batch import of official tournament results; mapping ILTL player IDs to Match Point player profiles | Real-time sync, write-back to ILTL | Import failure – alert and retry next cycle |
-| **Admin Dashboard** | Community admin panel: approve/reject matches, manually adjust points with audit note, manage member roles | Superadmin analytics, system health dashboard, deployment dashboards | Superadmin in Task 7 |
-| **Frontend** | Web application (React), responsive for mobile, Indonesian+English i18n, all screens corresponding to Tasks 0–3 | Native mobile apps, PWA offline mode, social share | PWA deferred to Task 6 |
-| **Background Jobs** | Match validation processing, ranking recalculation, snapshot generation, cache warming | Weekly digest emails, push notifications | Notifications deferred to Task 5 |
-| **Data Storage** | PostgreSQL (transactional + ranking data), Redis (caching, session store, rate limiting), RabbitMQ/Google PubSub (job queue) | Data lake, analytics warehouse, graph database for endorsements | Graph DB considered for Task 5 |
+| **Leaderboard**               | Community leaderboard (Mabar rank), global leaderboard (Official rank) with search/filter by community, pagination                                          | Personalized leaderboard, share card generation, embeddable widget                    | Share cards in Task 6                            |
+| **ILTL Integration**          | Daily batch import of official tournament results; mapping ILTL player IDs to Match Point player profiles                                                   | Real-time sync, write-back to ILTL                                                    | Import failure – alert and retry next cycle      |
+| **Admin Dashboard**           | Community admin panel: approve/reject matches, manually adjust points with audit note, manage member roles                                                  | Superadmin analytics, system health dashboard, deployment dashboards                  | Superadmin in Task 7                             |
+| **Frontend**                  | Web application (React), responsive for mobile, Indonesian+English i18n, all screens corresponding to Tasks 0–3                                             | Native mobile apps, PWA offline mode, social share                                    | PWA deferred to Task 6                           |
+| **Background Jobs**           | Match validation processing, ranking recalculation, snapshot generation, cache warming                                                                      | Weekly digest emails, push notifications                                              | Notifications deferred to Task 5                 |
+| **Data Storage**              | PostgreSQL (transactional + ranking data), Redis (caching, session store, rate limiting), RabbitMQ/Google PubSub (job queue)                                | Data lake, analytics warehouse, graph database for endorsements                       | Graph DB considered for Task 5                   |
 
 ---
 
@@ -1199,6 +1257,7 @@ Features deliberately excluded from v1.0 to maintain focus, reduce risk, and gat
 The following schema snippets define which data entities are within scope for v1.0 and which are explicitly deferred. All contracts follow the canonical data model from the Solution section.
 
 **In scope – Core Player Profile (v1.0)**
+
 ```json
 {
   "player_profile": {
@@ -1215,13 +1274,14 @@ The following schema snippets define which data entities are within scope for v1
 ```
 
 **In scope – Match Submission (v1.0)**
+
 ```json
 {
   "match_submission": {
     "uuid": "uuid",
     "community_id": "uuid (required, match must be associated to a community)",
     "submitted_by_player_id": "uuid (must be a participant)",
-    "team1": ["player_uuid", "player_uuid"],  
+    "team1": ["player_uuid", "player_uuid"],
     "team2": ["player_uuid", "player_uuid"],
     "score": "string ('6-3,7-6(4)'), validated by regex",
     "match_date": "date (cannot be future)",
@@ -1234,14 +1294,16 @@ The following schema snippets define which data entities are within scope for v1
 ```
 
 **Out of scope – Tournament Bracket (Task 4)**
+
 ```json
 {
-  "tournament": { },
-  "bracket_match": { }
+  "tournament": {},
+  "bracket_match": {}
 }
 ```
 
 **Out of scope – Endorsement (Task 5)**
+
 ```json
 {
   "endorsement": {
@@ -1260,13 +1322,13 @@ All schema migrations must be backward compatible; out-of-scope columns can be a
 
 ### Failure Modes
 
-| Failure Mode | Description | Detection | Mitigation |
-|--------------|-------------|-----------|------------|
-| **Scope creep via “quick wins”** | Engineers or product managers add small features without formal change review (e.g., adding a venue list before tournaments) | Weekly scope compliance audit; compare committed branch to scope document | Enforce change request process: document impact on timeline, budget, team capacity. Reject if outside v1.0 scope. |
-| **Ambiguous boundary for “community admin”** | Confusion on whether venue management or event scheduling is part of admin dashboard in v1.0 | Review against component table; verify no admin UI for tournaments | Clearly define admin dashboard screens in Figma mocks; only member management and match review screens. |
-| **ILTL integration scope assumed to be real-time** | Stakeholders expect rank updates within minutes of official tournament completion | Communication via runbooks; documented latency in system status page | Educate pilot clubs on 24-hour latency; include in onboarding materials. |
-| **Dispute resolution policy assumed to require automation** | Community admins demand automated arbitration or refereeing | Support ticket analysis; monitoring dispute volume | Manual override is v1.0 fallback; collect data for Task 4 automation decision. |
-| **Cross-contamination between environments** | Development/staging features (e.g., experimental ranking algorithms) leak into scope discussions | Label each environment's features with task badges | Enforce that only master branch features tagged with `task-0-3` are in scope. |
+| Failure Mode                                                | Description                                                                                                                  | Detection                                                                 | Mitigation                                                                                                        |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Scope creep via “quick wins”**                            | Engineers or product managers add small features without formal change review (e.g., adding a venue list before tournaments) | Weekly scope compliance audit; compare committed branch to scope document | Enforce change request process: document impact on timeline, budget, team capacity. Reject if outside v1.0 scope. |
+| **Ambiguous boundary for “community admin”**                | Confusion on whether venue management or event scheduling is part of admin dashboard in v1.0                                 | Review against component table; verify no admin UI for tournaments        | Clearly define admin dashboard screens in Figma mocks; only member management and match review screens.           |
+| **ILTL integration scope assumed to be real-time**          | Stakeholders expect rank updates within minutes of official tournament completion                                            | Communication via runbooks; documented latency in system status page      | Educate pilot clubs on 24-hour latency; include in onboarding materials.                                          |
+| **Dispute resolution policy assumed to require automation** | Community admins demand automated arbitration or refereeing                                                                  | Support ticket analysis; monitoring dispute volume                        | Manual override is v1.0 fallback; collect data for Task 4 automation decision.                                    |
+| **Cross-contamination between environments**                | Development/staging features (e.g., experimental ranking algorithms) leak into scope discussions                             | Label each environment's features with task badges                        | Enforce that only master branch features tagged with `task-0-3` are in scope.                                     |
 
 ---
 
@@ -1351,18 +1413,19 @@ graph TB
 
 ### Trade-offs & Open Questions
 
-| Trade-off / Open Question | Decision or Stance | Impact |
-|---------------------------|--------------------|--------|
-| **Scope precision vs. flexibility** | Strict scope document with formal change control | Reduces time-to-market but may frustrate early adopters requesting simple additions (e.g., “can we see a map of courts?”). Mitigation: collect feedback for Task 4. |
-| **Should venue management be in scope for v1.0?** | Not in scope – match location stored as lat/lng free text, no venue catalog. | Simple; avoids building CRUD + search for venues. But players must manually enter coordinates. Acceptable for pilot. |
-| **Is phone number required for player registration?** | Not required in v1.0; only email. | Reduces friction; but may complicate dispute resolution if admins need to contact players off-platform. Mitigation: in-app messaging (not in scope) could be deferred. |
-| **Open Question: How are community membership boundaries enforced if someone joins multiple communities?** | In scope – user can be member of multiple communities; ranking computed per community. | No conflict; but need to ensure match submission designates a single community for ranking. Decision: match must be attributed to a community. |
-| **Open Question: Should we support guest (unauthenticated) player leaderboard browsing?** | Decision deferred to Task 0 implementation. Initial design assumes authentication required for all endpoints; anonymous leaderboard viewing may be added for viral sharing use case. | If deferred, all leaderboard access requires login -> reduces SEO for unauthenticated visitors. Acceptable for v1.0. |
-| **Trade-off: i18n scope limited to Indonesian & English** | Single toggle per user. | Excludes Chinese, Japanese, Korean, Spanish, etc. Those communities may be added in Task 6 based on adoption data. |
+| Trade-off / Open Question                                                                                  | Decision or Stance                                                                                                                                                                   | Impact                                                                                                                                                                 |
+| ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Scope precision vs. flexibility**                                                                        | Strict scope document with formal change control                                                                                                                                     | Reduces time-to-market but may frustrate early adopters requesting simple additions (e.g., “can we see a map of courts?”). Mitigation: collect feedback for Task 4.    |
+| **Should venue management be in scope for v1.0?**                                                          | Not in scope – match location stored as lat/lng free text, no venue catalog.                                                                                                         | Simple; avoids building CRUD + search for venues. But players must manually enter coordinates. Acceptable for pilot.                                                   |
+| **Is phone number required for player registration?**                                                      | Not required in v1.0; only email.                                                                                                                                                    | Reduces friction; but may complicate dispute resolution if admins need to contact players off-platform. Mitigation: in-app messaging (not in scope) could be deferred. |
+| **Open Question: How are community membership boundaries enforced if someone joins multiple communities?** | In scope – user can be member of multiple communities; ranking computed per community.                                                                                               | No conflict; but need to ensure match submission designates a single community for ranking. Decision: match must be attributed to a community.                         |
+| **Open Question: Should we support guest (unauthenticated) player leaderboard browsing?**                  | Decision deferred to Task 0 implementation. Initial design assumes authentication required for all endpoints; anonymous leaderboard viewing may be added for viral sharing use case. | If deferred, all leaderboard access requires login -> reduces SEO for unauthenticated visitors. Acceptable for v1.0.                                                   |
+| **Trade-off: i18n scope limited to Indonesian & English**                                                  | Single toggle per user.                                                                                                                                                              | Excludes Chinese, Japanese, Korean, Spanish, etc. Those communities may be added in Task 6 based on adoption data.                                                     |
 
 These trade-offs are explicitly documented in the product backlog as “scope decisions” epics and are revisited at the end of each task retrospective.
 
 ## 4. Layers
+
 ### Context & Goals
 
 Match Point’s layered architecture decomposes the platform into four horizontal tiers: **Presentation**, **Application**, **Domain**, and **Infrastructure**. This separation ensures that each layer has a single, well-defined responsibility and can evolve independently. The primary goal is to decouple the volatile user‑interface and community‑connector logic from the stable ranking and reputation algorithms, enabling rapid iteration on front‑end features without destabilizing the core domain. A secondary goal is to support multiple deployment profiles—cloud‑native SaaS for ILTL federations and lightweight on‑premises installations for local clubs—by swapping only the infrastructure layer.
@@ -1389,20 +1452,20 @@ The success criteria for the layering strategy are:
 
 ### Component breakdown
 
-| Layer | Component | Responsibility | Technologies | Dependencies | Owner |
-|-------|-----------|----------------|--------------|--------------|-------|
-| **Presentation** | REST API Gateway | Expose CRUD endpoints for players, matches, rankings; handle auth tokens; validate input | Go `net/http`, chi router | Application layer | Backend team |
-| **Presentation** | Admin Dashboard | Web UI for ILTL administrators to manage communities, trigger re‑ranking, view logs | React, Tailwind CSS | REST API Gateway | Frontend team |
-| **Application** | Player Service | Orchestrate player creation, profile updates, and community linking | Go | Domain layer, Database adapter | Backend team |
-| **Application** | Ranking Service | Initiate ranking calculation request, cache result, return cached or fresh ranking | Go | Domain layer, Cache adapter | Backend team |
-| **Application** | Sync Scheduler | Trigger community sync jobs on a cron schedule | Go, cron, RabbitMQ | Infrastructure (MQ) | Backend team |
-| **Domain** | Reputation Engine | Compute player reputation score from match history, dispute outcomes, and community trust | Go (pure logic) | None (self‑contained) | Backend team |
-| **Domain** | Ranking Algorithm | Generate global and per‑community leaderboards using Elo with padel/tennis customizations | Go | Reputation Engine | Backend team |
-| **Domain** | Community Aggregator | Merge player identities across ILTL and other communities, detect duplicates | Go | Reputation Engine | Backend team |
-| **Infrastructure** | ILTL Client Adapter | Fetch match data, player registrations from official ILTL API | Go, HTTP client with retry | Domain interface | Backend team |
-| **Infrastructure** | PostgreSQL Adapter | Persist players, matches, rankings, reputation snapshots | Go, pgx, PostgreSQL 16 | Domain interface | Backend team |
-| **Infrastructure** | Redis Adapter | Cache ranking results, session tokens, rate‑limit counters | Go, go‑redis, Redis 7 | Domain interface | Backend team |
-| **Infrastructure** | RabbitMQ Adapter | Queue sync jobs, async notifications, audit log events | Go, amqp, RabbitMQ 3.12 | None (app‑level wiring) | Platform team |
+| Layer              | Component            | Responsibility                                                                            | Technologies               | Dependencies                   | Owner         |
+| ------------------ | -------------------- | ----------------------------------------------------------------------------------------- | -------------------------- | ------------------------------ | ------------- |
+| **Presentation**   | REST API Gateway     | Expose CRUD endpoints for players, matches, rankings; handle auth tokens; validate input  | Go `net/http`, chi router  | Application layer              | Backend team  |
+| **Presentation**   | Admin Dashboard      | Web UI for ILTL administrators to manage communities, trigger re‑ranking, view logs       | React, Tailwind CSS        | REST API Gateway               | Frontend team |
+| **Application**    | Player Service       | Orchestrate player creation, profile updates, and community linking                       | Go                         | Domain layer, Database adapter | Backend team  |
+| **Application**    | Ranking Service      | Initiate ranking calculation request, cache result, return cached or fresh ranking        | Go                         | Domain layer, Cache adapter    | Backend team  |
+| **Application**    | Sync Scheduler       | Trigger community sync jobs on a cron schedule                                            | Go, cron, RabbitMQ         | Infrastructure (MQ)            | Backend team  |
+| **Domain**         | Reputation Engine    | Compute player reputation score from match history, dispute outcomes, and community trust | Go (pure logic)            | None (self‑contained)          | Backend team  |
+| **Domain**         | Ranking Algorithm    | Generate global and per‑community leaderboards using Elo with padel/tennis customizations | Go                         | Reputation Engine              | Backend team  |
+| **Domain**         | Community Aggregator | Merge player identities across ILTL and other communities, detect duplicates              | Go                         | Reputation Engine              | Backend team  |
+| **Infrastructure** | ILTL Client Adapter  | Fetch match data, player registrations from official ILTL API                             | Go, HTTP client with retry | Domain interface               | Backend team  |
+| **Infrastructure** | PostgreSQL Adapter   | Persist players, matches, rankings, reputation snapshots                                  | Go, pgx, PostgreSQL 16     | Domain interface               | Backend team  |
+| **Infrastructure** | Redis Adapter        | Cache ranking results, session tokens, rate‑limit counters                                | Go, go‑redis, Redis 7      | Domain interface               | Backend team  |
+| **Infrastructure** | RabbitMQ Adapter     | Queue sync jobs, async notifications, audit log events                                    | Go, amqp, RabbitMQ 3.12    | None (app‑level wiring)        | Platform team |
 
 ### Data contracts
 
@@ -1445,7 +1508,7 @@ The internal data structures used across layers:
     "reputation_score": 85.0,
     "reputation_components": {
       "match_consistency": 0.45,
-      "dispute_record": 0.20,
+      "dispute_record": 0.2,
       "community_trust": 0.35
     },
     "created_at": "2025-04-01T00:00:00Z"
@@ -1464,13 +1527,13 @@ The internal data structures used across layers:
 
 ### Failure modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| ILTL API timeout during sync | HTTP client timeout (5 s), exponential backoff | Retry up to 3 times; after 3 failures, enqueue a dead‑letter message with original payload for manual replay. Log alert to PagerDuty if >10 failures/hour. |
-| Database connection pool exhaustion | Prometheus metric `pgx_pool_acquire_wait_seconds` > 1 s | Increase pool size (from 25 to 50) via ConfigMap; if persistent, trigger circuit breaker and serve stale rankings from Redis cache. |
-| Ranking calculation exceeds 30 s | Application‑level timeout with context deadline | Split ranking into per‑community shards; run in parallel with a fan‑out worker pattern. If a single shard fails, serve that community from previous snapshot. |
-| Duplicate player identity after merge | Community Aggregator detects match‑score >0.95 but different IDs | Create merge‑proposal record; alert admin dashboard. Admin can approve or reject via UI. |
-| Redis outage | Connection refused or read timeout | Fall back to database query for ranking reads (higher latency but still functional). Write a health check that toggles a flag in the Application layer. |
+| Failure                               | Detection                                                        | Mitigation                                                                                                                                                    |
+| ------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ILTL API timeout during sync          | HTTP client timeout (5 s), exponential backoff                   | Retry up to 3 times; after 3 failures, enqueue a dead‑letter message with original payload for manual replay. Log alert to PagerDuty if >10 failures/hour.    |
+| Database connection pool exhaustion   | Prometheus metric `pgx_pool_acquire_wait_seconds` > 1 s          | Increase pool size (from 25 to 50) via ConfigMap; if persistent, trigger circuit breaker and serve stale rankings from Redis cache.                           |
+| Ranking calculation exceeds 30 s      | Application‑level timeout with context deadline                  | Split ranking into per‑community shards; run in parallel with a fan‑out worker pattern. If a single shard fails, serve that community from previous snapshot. |
+| Duplicate player identity after merge | Community Aggregator detects match‑score >0.95 but different IDs | Create merge‑proposal record; alert admin dashboard. Admin can approve or reject via UI.                                                                      |
+| Redis outage                          | Connection refused or read timeout                               | Fall back to database query for ranking reads (higher latency but still functional). Write a health check that toggles a flag in the Application layer.       |
 
 ### Mermaid diagram
 
@@ -1538,6 +1601,7 @@ flowchart TD
 - **Community merge rules** – The Community Aggregator currently uses a hard‑coded similarity threshold (0.90). This may cause false negatives for players with different name spellings across communities. A future improvement could expose the threshold as an administration setting and add a manual review queue. This is captured as an open question for the next architecture iteration.
 
 - **What about offline scenarios?** – Clubs may lose internet connectivity during tournaments. The current design requires at least an intermittent connection to sync results. For the on‑premises deployment option, we are exploring an offline‑first mode where the Infrastructure layer uses local SQLite and syncs via USB or LAN when reconnected. That mode will be documented in a separate architecture appendix post‑MVP.
+
 ### Context & Goals
 
 The layered architecture of Match Point enforces strict separation of concerns, ensuring that domain logic remains decoupled from infrastructure, transport, and presentation concerns. This structure supports independent testability, incremental deployment per execution phase, and future extraction of services should the monolith need to split into microservices. The primary goal is to produce a system where each layer can be understood, modified, and scaled without cascading changes across the stack. Production-readiness criteria include sub-200ms p95 API latency for read-heavy endpoints (leaderboard, profile), idempotent ranking computations that can be retried without side effects, and a clear upgrade path from modular monolith to distributed services if community growth demands it.
@@ -1548,73 +1612,74 @@ For a platform that bridges informal padel/tennis communities with official ILTL
 
 1. **Dependency direction: Outer → Inner via interfaces**  
    All cross-layer dependencies point inward. The HTTP handlers depend on service interfaces, not concrete implementations. The repository interfaces live in the domain layer, while implementations reside in the infrastructure layer. This enables unit testing of domain logic without spinning up databases or network mocks.  
-   *Rejected alternative*: Leaky abstraction where handlers call repositories directly – would couple HTTP concerns with storage details and prevent swapping implementations for testing.
+   _Rejected alternative_: Leaky abstraction where handlers call repositories directly – would couple HTTP concerns with storage details and prevent swapping implementations for testing.
 
 2. **Application layer as orchestrator, not rich domain**  
    Use cases (e.g., “Submit match”, “Promote community admin”) are implemented as thin service methods that coordinate domain entities and repositories. Business invariants (e.g., “A match must have at least 2 players, each from same community”) are enforced in the domain layer.  
-   *Rejected alternative*: Anemic domain model with all logic in services – would scatter business rules across many files and make changes fragile.
+   _Rejected alternative_: Anemic domain model with all logic in services – would scatter business rules across many files and make changes fragile.
 
 3. **Task queue for async boundaries**  
    Match validation (score plausibility, duplicate check) and ranking recomputation are pushed to a RabbitMQ queue. This prevents slow, I/O-bound or fallible operations from blocking the HTTP response and enables retry with exponential backoff.  
-   *Rejected alternative*: Inline synchronous processing – would make match submission endpoints slow (potentially 500+ms) and force retry logic into HTTP handlers.
+   _Rejected alternative_: Inline synchronous processing – would make match submission endpoints slow (potentially 500+ms) and force retry logic into HTTP handlers.
 
 4. **Read models for leaderboards**  
    Leaderboard data is maintained in materialized views refreshed by a dedicated job after each ranking recalc. This avoids complex joins on every leaderboard request (p95 < 50ms) and permits arbitrary sorting/filtering without index strain.  
-   *Rejected alternative*: Fetch all matches and compute on-read with caching – would work only for low-traffic communities; at 1000+ players, compute times exceed 200ms.
+   _Rejected alternative_: Fetch all matches and compute on-read with caching – would work only for low-traffic communities; at 1000+ players, compute times exceed 200ms.
 
 5. **i18n at presentation layer only**  
    Static text is localised on the frontend using i18next. API responses use English key names; user-generated content (player names, community descriptions) remains in original language. Locale preference is stored in user preferences and sent as `Accept-Language` header.  
-   *Rejected alternative*: Backend i18n – would double translation effort and add complexity to error responses without benefit (end-users interact via frontend only).
+   _Rejected alternative_: Backend i18n – would double translation effort and add complexity to error responses without benefit (end-users interact via frontend only).
 
 6. **JWT verification in API middleware**  
    Token validation (RSA256, optional audience/issuer check) occurs in a single middleware. The resulting claims (player ID, community roles, admin flag) are injected into request context, available to downstream handlers. No other layer touches authentication concerns.  
-   *Rejected alternative*: Decode JWT in service layers – would duplicate verification logic and risk leaking authentication concerns into domain services.
+   _Rejected alternative_: Decode JWT in service layers – would duplicate verification logic and risk leaking authentication concerns into domain services.
 
 7. **Ranking as a pluggable strategy in domain layer**  
    The domain layer defines a `RatingCalculator` interface with two implementations: `MabarRankCalculator` (peer-weighted Elo variant, community-specific) and `GlobalRankCalculator` (ILTL-compatible linear points system). The application layer selects the correct calculator based on the match type (community or ILTL-verified).  
-   *Rejected alternative*: Single monolithic ranking function – would mix two fundamentally different rating systems and make ILTL sync bug-prone.
+   _Rejected alternative_: Single monolithic ranking function – would mix two fundamentally different rating systems and make ILTL sync bug-prone.
 
 8. **Endorsement skill score computed asynchronously**  
    When three or more endorsements exist for a player, a background job calculates a composite skill score (normalized 0–1000). The score is cached in Redis with a TTL of 1 hour and invalidated on each new endorsement.  
-   *Rejected alternative*: Compute on-read – would cause slow profile loads during endorsement bursts (e.g., tournament final week).
+   _Rejected alternative_: Compute on-read – would cause slow profile loads during endorsement bursts (e.g., tournament final week).
 
 ### Component breakdown
 
-| Layer | Component | Responsibility | Technologies | Dependencies | Owner (Phase) |
-|-------|-----------|----------------|--------------|--------------|----------------|
-| **Presentation** | React SPA | Render UI, manage state, i18n, routing | React 18, TypeScript, Tailwind, i18next | API Layer | Phase 1, 6 |
-| **Presentation** | Share Card Generator | Server-side rendered HTML canvas for ranking cards, PNG output | Puppeteer, Node.js microservice (or serverless) | API Layer (ranking data) | Phase 6 |
-| **API / Transport** | HTTP Router | Route requests, parse path/query, bind JSON bodies | chi v5 (Go) | Service Layer | Phase 0 |
-| **API / Transport** | Middleware Pipeline | JWT validation, CORS, request logging, rate limiting (token bucket) | Custom Go middleware, golang-jwt v5 | JWT public key, logger | Phase 0 |
-| **Application / Service** | PlayerService | Player registration, profile updates, username uniqueness (disambiguation) | Go, structs | PlayerRepository, Events (pub) | Phase 1 |
-| **Application / Service** | CommunityService | Create/join communities, admin succession, member roles | Go, structs | CommunityRepository, PlayerRepository | Phase 1 |
-| **Application / Service** | MatchService | Submit match results, dispute flagging, validation orchestration | Go, structs | EventBus (queue publisher), MatchRepository, PlayerRepository | Phase 2 |
-| **Application / Service** | RankingService | Compute MabarRank and GlobalRank, snapshot monthly | Go, structs | RabbitMQ (consumer), RankingRepository, Cache | Phase 3 |
-| **Application / Service** | TournamentService | Create tournaments, link to ranking track, submit match results | Go, structs | TournamentRepository, MatchService | Phase 4 |
-| **Application / Service** | EndorsementService | Submit endorsements, compute skill score (min endorser count: 3) | Go, structs | EndorsementRepository, Cache | Phase 5 |
-| **Application / Service** | SocialService | Generate share card, public player links | Go, structs | Share Card Generator (HTTP call) | Phase 6 |
-| **Application / Service** | AdminService | Dashboard metrics, manual point override (with note), dispute resolution | Go, structs | All repositories, Events | Phase 7 |
-| **Domain** | Entities & Value Objects | Player, Match, Community, Tournament, Endorsement, Rating (Mabar, Global), SkillScore | Go interfaces / structs | None (standard library only) | Phase 0+ |
-| **Domain** | Repository Interfaces | PlayerRepository, MatchRepository, CommunityRepository, RankingRepository, etc. | Go interfaces | None (standard library only) | Phase 0+ |
-| **Domain** | Rating Calculators | MabarRankCalculator, GlobalRankCalculator | Go structs (implement interface) | None (standard library) | Phase 3 |
-| **Data Access** | PostgreSQL Repositories | CRUD for all domain aggregates using pgx driver | sqlx/pgx, SQL migrations (golang-migrate) | PostgreSQL cluster, connection pool | Phase 0 |
-| **Data Access** | Redis Cache | Player profile cache, leaderboard snapshot cache (TTL: 1h), session blacklist | go-redis, Redis v7 | Redis cluster | Phase 0 |
-| **Integration** | ILTL API Client | Official competition data sync (rate-limited, circuit breaker) | Go http client, hystrix-go (or circuitbreaker) | Public ILTL REST API | Phase 3 |
-| **Integration** | Image Store | Player profile pictures, venue maps, share card images | S3-compatible (MinIO), presigned URLs | Object store bucket | Phase 1 |
-| **Async / Task** | Queue Infrastructure | RabbitMQ exchange, queues for validation/ranking/snapshot | RabbitMQ, amqp package | RabbitMQ cluster | Phase 2 |
-| **Async / Task** | Match Validator Consumer | Verify score plausibility (e.g., set not contradictory), check duplicates, trigger dispute | Go, structs | PostgreSQL, ILTL client (for official rec) | Phase 2 |
-| **Async / Task** | Ranking Calculator Consumer | Idempotent recalc of all community roles, store snapshot | Go, structs | PostgreSQL, Redis, Cache | Phase 3 |
-| **Async / Task** | Endorsement Skill Computer | Compute skill score when endorser count reaches 3, publish to Kafka? (event) | Go, structs | EndorsementRepository, Redis | Phase 5 |
-| **Observability** | Structured Logger | JSON logs with request ID, trace ID, layer, duration | zap (or zerolog) | Log aggregator (e.g., Loki) | Phase 0 |
-| **Observability** | Metrics & Tracing | Prometheus metrics, OpenTelemetry distributed tracing | OpenTelemetry SDK, Prometheus exporter | OTLP collector, Prometheus | Phase 0 |
+| Layer                     | Component                   | Responsibility                                                                             | Technologies                                    | Dependencies                                                  | Owner (Phase) |
+| ------------------------- | --------------------------- | ------------------------------------------------------------------------------------------ | ----------------------------------------------- | ------------------------------------------------------------- | ------------- |
+| **Presentation**          | React SPA                   | Render UI, manage state, i18n, routing                                                     | React 18, TypeScript, Tailwind, i18next         | API Layer                                                     | Phase 1, 6    |
+| **Presentation**          | Share Card Generator        | Server-side rendered HTML canvas for ranking cards, PNG output                             | Puppeteer, Node.js microservice (or serverless) | API Layer (ranking data)                                      | Phase 6       |
+| **API / Transport**       | HTTP Router                 | Route requests, parse path/query, bind JSON bodies                                         | chi v5 (Go)                                     | Service Layer                                                 | Phase 0       |
+| **API / Transport**       | Middleware Pipeline         | JWT validation, CORS, request logging, rate limiting (token bucket)                        | Custom Go middleware, golang-jwt v5             | JWT public key, logger                                        | Phase 0       |
+| **Application / Service** | PlayerService               | Player registration, profile updates, username uniqueness (disambiguation)                 | Go, structs                                     | PlayerRepository, Events (pub)                                | Phase 1       |
+| **Application / Service** | CommunityService            | Create/join communities, admin succession, member roles                                    | Go, structs                                     | CommunityRepository, PlayerRepository                         | Phase 1       |
+| **Application / Service** | MatchService                | Submit match results, dispute flagging, validation orchestration                           | Go, structs                                     | EventBus (queue publisher), MatchRepository, PlayerRepository | Phase 2       |
+| **Application / Service** | RankingService              | Compute MabarRank and GlobalRank, snapshot monthly                                         | Go, structs                                     | RabbitMQ (consumer), RankingRepository, Cache                 | Phase 3       |
+| **Application / Service** | TournamentService           | Create tournaments, link to ranking track, submit match results                            | Go, structs                                     | TournamentRepository, MatchService                            | Phase 4       |
+| **Application / Service** | EndorsementService          | Submit endorsements, compute skill score (min endorser count: 3)                           | Go, structs                                     | EndorsementRepository, Cache                                  | Phase 5       |
+| **Application / Service** | SocialService               | Generate share card, public player links                                                   | Go, structs                                     | Share Card Generator (HTTP call)                              | Phase 6       |
+| **Application / Service** | AdminService                | Dashboard metrics, manual point override (with note), dispute resolution                   | Go, structs                                     | All repositories, Events                                      | Phase 7       |
+| **Domain**                | Entities & Value Objects    | Player, Match, Community, Tournament, Endorsement, Rating (Mabar, Global), SkillScore      | Go interfaces / structs                         | None (standard library only)                                  | Phase 0+      |
+| **Domain**                | Repository Interfaces       | PlayerRepository, MatchRepository, CommunityRepository, RankingRepository, etc.            | Go interfaces                                   | None (standard library only)                                  | Phase 0+      |
+| **Domain**                | Rating Calculators          | MabarRankCalculator, GlobalRankCalculator                                                  | Go structs (implement interface)                | None (standard library)                                       | Phase 3       |
+| **Data Access**           | PostgreSQL Repositories     | CRUD for all domain aggregates using pgx driver                                            | sqlx/pgx, SQL migrations (golang-migrate)       | PostgreSQL cluster, connection pool                           | Phase 0       |
+| **Data Access**           | Redis Cache                 | Player profile cache, leaderboard snapshot cache (TTL: 1h), session blacklist              | go-redis, Redis v7                              | Redis cluster                                                 | Phase 0       |
+| **Integration**           | ILTL API Client             | Official competition data sync (rate-limited, circuit breaker)                             | Go http client, hystrix-go (or circuitbreaker)  | Public ILTL REST API                                          | Phase 3       |
+| **Integration**           | Image Store                 | Player profile pictures, venue maps, share card images                                     | S3-compatible (MinIO), presigned URLs           | Object store bucket                                           | Phase 1       |
+| **Async / Task**          | Queue Infrastructure        | RabbitMQ exchange, queues for validation/ranking/snapshot                                  | RabbitMQ, amqp package                          | RabbitMQ cluster                                              | Phase 2       |
+| **Async / Task**          | Match Validator Consumer    | Verify score plausibility (e.g., set not contradictory), check duplicates, trigger dispute | Go, structs                                     | PostgreSQL, ILTL client (for official rec)                    | Phase 2       |
+| **Async / Task**          | Ranking Calculator Consumer | Idempotent recalc of all community roles, store snapshot                                   | Go, structs                                     | PostgreSQL, Redis, Cache                                      | Phase 3       |
+| **Async / Task**          | Endorsement Skill Computer  | Compute skill score when endorser count reaches 3, publish to Kafka? (event)               | Go, structs                                     | EndorsementRepository, Redis                                  | Phase 5       |
+| **Observability**         | Structured Logger           | JSON logs with request ID, trace ID, layer, duration                                       | zap (or zerolog)                                | Log aggregator (e.g., Loki)                                   | Phase 0       |
+| **Observability**         | Metrics & Tracing           | Prometheus metrics, OpenTelemetry distributed tracing                                      | OpenTelemetry SDK, Prometheus exporter          | OTLP collector, Prometheus                                    | Phase 0       |
 
 ### Data contracts
 
 **API / Transport layer – generic response envelope:**
+
 ```json
 {
   "status": "success",
-  "data": { },
+  "data": {},
   "meta": {
     "page": 1,
     "page_size": 20,
@@ -1624,6 +1689,7 @@ For a platform that bridges informal padel/tennis communities with official ILTL
 ```
 
 **Error envelope:**
+
 ```json
 {
   "status": "error",
@@ -1640,6 +1706,7 @@ For a platform that bridges informal padel/tennis communities with official ILTL
 ```
 
 **Application layer – service interface example (MatchService):**
+
 ```go
 type MatchService interface {
     Submit(ctx context.Context, cmd SubmitMatchCommand) (*MatchResult, error)
@@ -1649,17 +1716,18 @@ type MatchService interface {
 ```
 
 **Domain layer – aggregate root:**
+
 ```go
 type Match struct {
     ID          uuid.UUID
     CommunityID uuid.UUID
-    Players     []PlayerInMatch  
-    Sets        []SetScore       
-    Status      MatchStatus      
-    SubmittedBy uuid.UUID        
-    SubmittedAt time.Time        
-    ValidatedAt *time.Time       
-    DisputeNote *string          
+    Players     []PlayerInMatch
+    Sets        []SetScore
+    Status      MatchStatus
+    SubmittedBy uuid.UUID
+    SubmittedAt time.Time
+    ValidatedAt *time.Time
+    DisputeNote *string
 }
 
 type PlayerInMatch struct {
@@ -1669,6 +1737,7 @@ type PlayerInMatch struct {
 ```
 
 **Domain layer – RatingCalculator interface:**
+
 ```go
 type RatingCalculator interface {
     Calculate(ctx context.Context, match Match, currentRatings map[uuid.UUID]Rating) (map[uuid.UUID]Rating, error)
@@ -1676,6 +1745,7 @@ type RatingCalculator interface {
 ```
 
 **Data access – PostgreSQL schema for `matches` table:**
+
 ```sql
 CREATE TABLE matches (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -1694,6 +1764,7 @@ CREATE INDEX idx_matches_submitted_by ON matches(submitted_by);
 ```
 
 **Async task contract – RabbitMQ message for ranking recalculation:**
+
 ```json
 {
   "community_id": "uuid",
@@ -1707,17 +1778,17 @@ CREATE INDEX idx_matches_submitted_by ON matches(submitted_by);
 
 ### Failure modes
 
-| Failure | Layer(s) | Detection | Mitigation |
-|---------|----------|-----------|------------|
-| **JWT expired or invalid** | API Middleware | Decode failure, `jwt.ValidationError` | Return 401 with `WWW-Authenticate` header; do not pass to service. Client must refresh token. |
-| **PostgreSQL connection pool exhausted** | Data Access | `connpool.Acquire` timeout (>200ms), p50 connection wait >100ms | Increase pool size (max 100), monitor with Prometheus `pgx_pool_acquire_seconds`. Rate limit API requests at upstream if needed. Circuit break queries to read replicas for leaderboard. |
-| **RabbitMQ queue full / broker down** | Async | Publisher `amqp.Publish` returns error; consumer retry count high | Fallback to synchronous processing for match validation (with warning in response). For ranking, skip background recalc and schedule retry via exponential backoff (initial 1s, max 5m). Alert on queue depth >10k. |
-| **ILTL API unavailable** | Integration | HTTP client returns 503 or timeout >5s | Use circuit breaker (open after 5 consecutive failures). Serve stale official ranking data (last known snapshot). Log warning and inform admin via dashboard. |
-| **Ranking calculation inconsistency** | Async (RankingCalculator) | Concurrency conflict (version mismatch), or output violates invariant (e.g., total points changed by >10%) | Idempotent operation: if version conflict, re-read match list and retry. If invariant violation, abort recalc, alert admin, write detailed log. |
-| **Dispute override not recorded properly** | Service + Data Access | Missing audit trail entry for manual override | Implement transactional outbox: both `update_match_status` and `insert_audit_log` in same transaction. If one fails, rollback entire operation. |
-| **Endorsement skill score stale** | Cache | Endorsement count changes but read returns cached value | Use Redis keys `player:{id}:skill_score` with TTL 1 hour; invalidate on each new endorsement via `DEL` in the service layer. Trade-off: slightly outdated scores (max 1 hour) acceptable for non-critical feature. |
-| **Share card generation timeout** | Presentation (Share Card Generator) | HTTP call to generator times out (>10s) | Fall back to static placeholder image. Log error and retry once with backoff. |
-| **Cross-community name collision** | Application (PlayerService) | Username already taken in different community | Enforce unique constraint on (username, community_id). Return specific error code `USERNAME_TAKEN_IN_COMMUNITY`. |
+| Failure                                    | Layer(s)                            | Detection                                                                                                  | Mitigation                                                                                                                                                                                                          |
+| ------------------------------------------ | ----------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **JWT expired or invalid**                 | API Middleware                      | Decode failure, `jwt.ValidationError`                                                                      | Return 401 with `WWW-Authenticate` header; do not pass to service. Client must refresh token.                                                                                                                       |
+| **PostgreSQL connection pool exhausted**   | Data Access                         | `connpool.Acquire` timeout (>200ms), p50 connection wait >100ms                                            | Increase pool size (max 100), monitor with Prometheus `pgx_pool_acquire_seconds`. Rate limit API requests at upstream if needed. Circuit break queries to read replicas for leaderboard.                            |
+| **RabbitMQ queue full / broker down**      | Async                               | Publisher `amqp.Publish` returns error; consumer retry count high                                          | Fallback to synchronous processing for match validation (with warning in response). For ranking, skip background recalc and schedule retry via exponential backoff (initial 1s, max 5m). Alert on queue depth >10k. |
+| **ILTL API unavailable**                   | Integration                         | HTTP client returns 503 or timeout >5s                                                                     | Use circuit breaker (open after 5 consecutive failures). Serve stale official ranking data (last known snapshot). Log warning and inform admin via dashboard.                                                       |
+| **Ranking calculation inconsistency**      | Async (RankingCalculator)           | Concurrency conflict (version mismatch), or output violates invariant (e.g., total points changed by >10%) | Idempotent operation: if version conflict, re-read match list and retry. If invariant violation, abort recalc, alert admin, write detailed log.                                                                     |
+| **Dispute override not recorded properly** | Service + Data Access               | Missing audit trail entry for manual override                                                              | Implement transactional outbox: both `update_match_status` and `insert_audit_log` in same transaction. If one fails, rollback entire operation.                                                                     |
+| **Endorsement skill score stale**          | Cache                               | Endorsement count changes but read returns cached value                                                    | Use Redis keys `player:{id}:skill_score` with TTL 1 hour; invalidate on each new endorsement via `DEL` in the service layer. Trade-off: slightly outdated scores (max 1 hour) acceptable for non-critical feature.  |
+| **Share card generation timeout**          | Presentation (Share Card Generator) | HTTP call to generator times out (>10s)                                                                    | Fall back to static placeholder image. Log error and retry once with backoff.                                                                                                                                       |
+| **Cross-community name collision**         | Application (PlayerService)         | Username already taken in different community                                                              | Enforce unique constraint on (username, community_id). Return specific error code `USERNAME_TAKEN_IN_COMMUNITY`.                                                                                                    |
 
 ### Mermaid diagram
 
@@ -1796,25 +1867,30 @@ flowchart TB
 
 ### Cross-cutting concerns
 
-**Security**:  
-- All API endpoints except health-check and public share-card links require valid JWT. RSA256 public key is distributed via environment variable (`JWT_PUBLIC_KEY`) and cached in memory.  
-- Refresh token rotation uses a version counter stored in Redis (key `refresh_rotation:{player_id}`) that increments with each refresh; old tokens are rejected if version mismatch.  
-- Community admin actions (promotion, dispute resolution) are logged to the `audit_logs` table with `action`, `actor_id`, `target_id`, and `note`.  
+**Security**:
+
+- All API endpoints except health-check and public share-card links require valid JWT. RSA256 public key is distributed via environment variable (`JWT_PUBLIC_KEY`) and cached in memory.
+- Refresh token rotation uses a version counter stored in Redis (key `refresh_rotation:{player_id}`) that increments with each refresh; old tokens are rejected if version mismatch.
+- Community admin actions (promotion, dispute resolution) are logged to the `audit_logs` table with `action`, `actor_id`, `target_id`, and `note`.
 - Input validation at the API layer prevents SQL injection (parameterized queries via pgx) and XSS (HTML sanitisation on display name before storage? But stored as-is; sanitised on frontend render).
 
-**Observability**:  
-- Every request gets a `trace_id` (UUID) generated in middleware and propagated through context.  
-- OTel spans are started at each layer boundary: HTTP handler, service method, repository call.  
-- Metrics exported: HTTP request count + latency histogram (by method, path, status code), queue publish count, ranking recalc duration, DB query duration (p50/p95), cache hit ratio.  
+**Observability**:
+
+- Every request gets a `trace_id` (UUID) generated in middleware and propagated through context.
+- OTel spans are started at each layer boundary: HTTP handler, service method, repository call.
+- Metrics exported: HTTP request count + latency histogram (by method, path, status code), queue publish count, ranking recalc duration, DB query duration (p50/p95), cache hit ratio.
 - Panics in any layer are caught by a recovery middleware, log stack trace, and return 500.
 
-**Rate Limiting**:  
+**Rate Limiting**:
+
 - Per-player token bucket (10 req/s for most endpoints, 1 req/s for ranking recalc trigger). Applied in middleware, keyed by player ID from JWT.
 
-**Locale**:  
+**Locale**:
+
 - Frontend React app reads `Accept-Language` header from first request and stores preference in local storage. Backend does not localise error messages; they remain in English for consistency across communities.
 
-**Schema migrations**:  
+**Schema migrations**:
+
 - Managed via `golang-migrate` with versioned SQL files in `backend/internal/infrastructure/database/migrations/`. Run as part of deployment pipeline before binary start.
 
 ### Trade-offs & open questions
@@ -1837,11 +1913,13 @@ flowchart TB
 All layers are designed to be independently testable via unit tests (domain logic) and integration tests (repository implementations against a test PostgreSQL container). The API layer is tested with `net/http/httptest` recording interactions. This layered architecture will support all seven execution phases without structural overhaul, only adding new services and consumers within the existing boundaries. The clear separation also enables parallel development: Phase 1 team can work on PlayerService while Phase 2 team designs MatchService and queue handlers without waiting for schema finalization of other aggregates.
 
 ## 5. Tech Stack
+
 ## Context & Goals
 
 The tech stack for Match Point must support two distinct but interrelated domains: (1) ingestion of match results from heterogeneous sources, primarily ILTL (official competition data for tennis and padel) but also grassroots club platforms, and (2) computation of cross-community player reputation and ranking using both algorithmic scoring and social feedback. The stack must be production-grade, horizontally scalable for spikes during major tournaments, and auditable to satisfy ILTL data governance requirements.
 
 Success criteria:
+
 - Ingest up to 10,000 match records per hour during peak federations events
 - Compute player reputation updates within 30 seconds of match result receipt (P99)
 - Expose a unified ranking API with latency <100ms for authenticated clients
@@ -1851,7 +1929,6 @@ Success criteria:
 
 1. **Backend language: Go (1.22+)**
    - Rationale: Excellent concurrency model for parallel ingestion workers, strong standard library for HTTP/JSON, and small binary footprint for containerized deployment. Rejected alternatives: Python (GIL limits concurrency for ranking computation), Node.js (less suitable for CPU-bound aggregation).
-   
 2. **Primary database: PostgreSQL 16 with TimescaleDB extension**
    - Rationale: Match and ranking data are inherently relational (players, tournaments, rankings over time). TimescaleDB hypertables handle time-series ranking snapshots efficiently. Rejected: CockroachDB (operational overhead) or MongoDB (no native time-series and complex joins across communities).
 
@@ -1872,27 +1949,37 @@ Success criteria:
 
 ## Component Breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|---------------|--------------|--------------|-------|
-| Ingestion API | Accept match results from ILTL and communities, validate, push to Kafka | Go, HTTP/2, JSON Schema | Kafka (source), PostgreSQL (idempotency keys) | Data Services Team |
-| Player Service | CRUD for player profiles, community membership, reputation scores | Go, gRPC, PostgreSQL | Redis (cache), Kafka (reputation change events) | Backend Core Team |
-| Ranking Engine | Compute weighted ELO across communities, produce daily snapshots | Go, in-memory cache, cron scheduler | Kafka (match results), PostgreSQL (history) | Core Algorithms Team |
-| Reputation Stream | Real-time WebSocket broadcast of reputation changes | Go, WebSockets, Redis Pub/Sub | Redis (publish channel), Kafka (replication) | Infrastructure Team |
-| ILTL Sync Adapter | Adapter for ILTL API, format conversion, deduplication | Go, REST client, retry library | Ingestion API, ILTL OAuth2 credentials | Data Integration Team |
-| Identity Provider | Manage users, API keys, roles | Ory Kratos, SQLite (embedded) | PostgreSQL (session storage) | Security Team |
-| Admin UI | Manage communities, approve data sources, view audit logs | Next.js, Tailwind, Chart.js | Player Service, Reputation Stream | Frontend Team |
+| Component         | Responsibility                                                          | Technologies                        | Dependencies                                    | Owner                 |
+| ----------------- | ----------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------- | --------------------- |
+| Ingestion API     | Accept match results from ILTL and communities, validate, push to Kafka | Go, HTTP/2, JSON Schema             | Kafka (source), PostgreSQL (idempotency keys)   | Data Services Team    |
+| Player Service    | CRUD for player profiles, community membership, reputation scores       | Go, gRPC, PostgreSQL                | Redis (cache), Kafka (reputation change events) | Backend Core Team     |
+| Ranking Engine    | Compute weighted ELO across communities, produce daily snapshots        | Go, in-memory cache, cron scheduler | Kafka (match results), PostgreSQL (history)     | Core Algorithms Team  |
+| Reputation Stream | Real-time WebSocket broadcast of reputation changes                     | Go, WebSockets, Redis Pub/Sub       | Redis (publish channel), Kafka (replication)    | Infrastructure Team   |
+| ILTL Sync Adapter | Adapter for ILTL API, format conversion, deduplication                  | Go, REST client, retry library      | Ingestion API, ILTL OAuth2 credentials          | Data Integration Team |
+| Identity Provider | Manage users, API keys, roles                                           | Ory Kratos, SQLite (embedded)       | PostgreSQL (session storage)                    | Security Team         |
+| Admin UI          | Manage communities, approve data sources, view audit logs               | Next.js, Tailwind, Chart.js         | Player Service, Reputation Stream               | Frontend Team         |
 
 ## Data Contracts
 
 ### Match Result (ingestion event on Kafka)
+
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "required": ["match_id", "community_id", "played_at", "participants", "source"],
+  "required": [
+    "match_id",
+    "community_id",
+    "played_at",
+    "participants",
+    "source"
+  ],
   "properties": {
     "match_id": { "type": "string", "pattern": "^[a-f0-9]{32}$" },
-    "community_id": { "type": "string", "enum": ["iltl", "clubx", "livetennis"] },
+    "community_id": {
+      "type": "string",
+      "enum": ["iltl", "clubx", "livetennis"]
+    },
     "played_at": { "type": "string", "format": "date-time" },
     "participants": {
       "type": "array",
@@ -1908,12 +1995,16 @@ Success criteria:
         }
       }
     },
-    "source": { "type": "string", "enum": ["iltl_api", "club_bulk_upload", "user_reported"] }
+    "source": {
+      "type": "string",
+      "enum": ["iltl_api", "club_bulk_upload", "user_reported"]
+    }
   }
 }
 ```
 
 ### Player Ranking Snapshot (PostgreSQL hypertable)
+
 ```sql
 CREATE TABLE ranking_snapshots (
     snapshot_id       BIGSERIAL,
@@ -1930,13 +2021,13 @@ SELECT create_hypertable('ranking_snapshots', by_range('snapshot_at'));
 
 ## Failure Modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| ILTL API rate limit / downtime | Health check from Ingestion API every 30s fails | Queue incoming data in Kafka (TTL 7 days); exponential backoff retry with jitter; alert on >5 failures |
-| Ranking computation slow for a community | Prometheus histogram of computation latency >2s per match | Shard processing by community ID; if a community exceeds threshold, dedicate a goroutine pool; fallback to single-threaded batch at midnight |
-| Redis cache eviction removes hot player data | Cache miss ratio >10% | Increase `maxmemory` and enable LRU; pre-load top 100 players from each community on startup |
-| Duplicate match records from same source | Idempotency key (`match_id + source`) violation | Set unique constraint on ingestion table; on conflict ignore; log warning for forensic audit |
-| Reputation stream memory leak from WebSocket clients | Active connections exceed 10k | Implement per-connection goroutine with context cancellation; emit metrics and auto-shed below 15k |
+| Failure                                              | Detection                                                 | Mitigation                                                                                                                                   |
+| ---------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| ILTL API rate limit / downtime                       | Health check from Ingestion API every 30s fails           | Queue incoming data in Kafka (TTL 7 days); exponential backoff retry with jitter; alert on >5 failures                                       |
+| Ranking computation slow for a community             | Prometheus histogram of computation latency >2s per match | Shard processing by community ID; if a community exceeds threshold, dedicate a goroutine pool; fallback to single-threaded batch at midnight |
+| Redis cache eviction removes hot player data         | Cache miss ratio >10%                                     | Increase `maxmemory` and enable LRU; pre-load top 100 players from each community on startup                                                 |
+| Duplicate match records from same source             | Idempotency key (`match_id + source`) violation           | Set unique constraint on ingestion table; on conflict ignore; log warning for forensic audit                                                 |
+| Reputation stream memory leak from WebSocket clients | Active connections exceed 10k                             | Implement per-connection goroutine with context cancellation; emit metrics and auto-shed below 15k                                           |
 
 ## Mermaid Diagram
 
@@ -1964,7 +2055,7 @@ flowchart LR
         Next[Next.js Frontend]
         Admin[Admin UI]
     end
-    
+
     DataSources -->|HTTP/ FTP| API
     API -->|validate & push| Kafka
     Kafka -->|match events| RankEngine
@@ -1982,17 +2073,20 @@ flowchart LR
 ## Cross-Cutting Concerns
 
 **Observability**
+
 - All services emit OpenTelemetry traces (parent span = community_id) and Prometheus metrics (cpu, memory, queue depth, ranking latency).
 - Structured JSON logging with `log/slog` in Go; log levels: ERROR for failures, WARN for retries, INFO for lifecycle changes.
 - Dashboards in Grafana: ingestion throughput, ranking latency histogram, Kafka consumer lag per partition.
 
 **Security**
+
 - API keys for ILTL and club sources: hashed with bcrypt, stored in PostgreSQL with expiration.
 - End-user authentication via Ory Kratos (OIDC); session tokens signed with RS256.
 - All inter-service communication over mTLS (cert-manager in k8s).
 - Audit log: every ranking change >50 point delta triggers an entry in `ranking_audit` table with old/new value and reason.
 
 **Capacity Planning**
+
 - Initial clusters: 3 nodes (2 vCPU, 8 GB RAM) in GKE for backend; 1 node (4 vCPU, 16 GB) for Kafka.
 - Scaling trigger: CPU >70% sustained for 5 minutes -> add worker pods; Kafka partition count 2x expected community count (initially 8 partitions).
 - PostgreSQL storage: plan for 1 GB per 100k matches including index; archive rankings older than 2 years to cold storage (GCS).
@@ -2004,22 +2098,24 @@ flowchart LR
 - **Open question:** Should the ranking engine use a dedicated gRPC API or read directly from Kafka and PostgreSQL? Direct reads avoid service orchestration but complicate unit testing. Decision deferred to after MVP, but current design favours gRPC for testability.
 - **Will ILTL provide streaming or only batch?** If streaming becomes available, we can reduce Kafka retention and improve timeliness. For now, batch polling every 15 minutes is assumed.
 - **How to handle player identity merging across communities?** The Player Service will maintain an internal UUID and a `community_aliases` table mapping external player IDs to internal UUID. Manual merge via Admin UI is first approach; future plan includes similarity matching with RediSearch.
+
 ### Context & Goals
 
-The Match Point tech stack must support a dual-lane ranking engine (community-curated *Mabar Rating* alongside official *ILTL Rating*), cross-community reputation portability, asynchronous match validation with admin review, and automated share card generation for viral distribution. The team is small (2–3 backend, 1–2 frontend) so every technology choice must minimize operational complexity while preserving auditability and performance.  
+The Match Point tech stack must support a dual-lane ranking engine (community-curated _Mabar Rating_ alongside official _ILTL Rating_), cross-community reputation portability, asynchronous match validation with admin review, and automated share card generation for viral distribution. The team is small (2–3 backend, 1–2 frontend) so every technology choice must minimize operational complexity while preserving auditability and performance.
 
 **Guiding principles:**
 
-- **Predictability** – Idempotent ranking calculations, deterministic caching, and fully typed database access (via sqlc) eliminate surprise behavior in production.  
-- **Auditability** – Every ranking snapshot, endorsement, and admin override is an immutable event. The storage layer must support point-in-time queries (e.g., “Show my rank in January 2025”).  
-- **Ergonomics** – A fast feedback loop in local development (`docker compose up` + live‑reload via `air`) and a single deployment artifact (Docker image) reduce cognitive load.  
+- **Predictability** – Idempotent ranking calculations, deterministic caching, and fully typed database access (via sqlc) eliminate surprise behavior in production.
+- **Auditability** – Every ranking snapshot, endorsement, and admin override is an immutable event. The storage layer must support point-in-time queries (e.g., “Show my rank in January 2025”).
+- **Ergonomics** – A fast feedback loop in local development (`docker compose up` + live‑reload via `air`) and a single deployment artifact (Docker image) reduce cognitive load.
 
-The stack is constrained by the team’s existing expertise (Go, TypeScript, PostgreSQL) and domain‑specific needs: geographic venue lookups (polygon indexes), image generation on the server with no browser dependency, leaderboard pagination under heavy reads, and eventual consistency between match submission and ranking update.  
+The stack is constrained by the team’s existing expertise (Go, TypeScript, PostgreSQL) and domain‑specific needs: geographic venue lookups (polygon indexes), image generation on the server with no browser dependency, leaderboard pagination under heavy reads, and eventual consistency between match submission and ranking update.
 
-**Success criteria:**  
-- Developer can run the full stack locally in under 2 minutes with `make dev`.  
-- All API endpoints return <200 ms p95 latency (excluding ranking recomputation which is async).  
-- Frontend bundle stays <120 KB gzipped.  
+**Success criteria:**
+
+- Developer can run the full stack locally in under 2 minutes with `make dev`.
+- All API endpoints return <200 ms p95 latency (excluding ranking recomputation which is async).
+- Frontend bundle stays <120 KB gzipped.
 - Deployment to staging happens in under 5 minutes from `git push`.
 
 ---
@@ -2057,39 +2153,40 @@ The stack is constrained by the team’s existing expertise (Go, TypeScript, Pos
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner (Phase) |
-|-----------|---------------|--------------|--------------|---------------|
-| Frontend – SvelteKit app | Server‑rendered leaderboards, client‑side match submission forms, profile management, share card trigger | SvelteKit, TypeScript, TailwindCSS, svelte‑i18n | Backend API | Frontend (Phase 1–7) |
-| Backend – HTTP router | Routes to handlers, middleware chain | net/http ServeMux | None | Phase 0 |
-| Backend – auth handler | JWT issue/refresh, login with email/password or Google OAuth | golang‑jwt/jwt/v5 (RSA256), bcrypt, crypto/rand | PostgreSQL, Redis | Phase 1 |
-| Backend – match handler | Submit match, list pending, approve/reject (admin), trigger ranking recomputation | net/http, pgx/v5, sqlc | PostgreSQL, Redis, task queue | Phase 2 |
-| Backend – ranking handler | Get leaderboard (paginated, with community filter), get player ranking history | net/http, pgx/v5, sqlc, Redis cache | PostgreSQL | Phase 3 |
-| Backend – endorsement handler | Endorse player, list endorsements, trigger materialized view refresh | net/http, pgx/v5, sqlc | PostgreSQL, Redis | Phase 5 |
-| Backend – share handler | Generate card image, upload to MinIO/S3, return signed URL | net/http, image, imaging, aws‑sdk‑go‑v2 | MinIO/S3, Redis | Phase 6 |
-| Backend – admin handler | Dashboard metrics, dispute resolution, ILTL import trigger | net/http, pgx/v5, sqlc | PostgreSQL, task queue | Phase 7 |
-| Worker – ranking worker | Consume ranking.recompute tasks, update current_standings, refresh materialized view | Go goroutine pool, pgx/v5 batch | PostgreSQL, task queue | Phase 3 |
-| Worker – card worker | Async share card image generation | image, imaging | MinIO/S3 | Phase 6 |
-| Library – sqlc queries | All generated Go functions for CRUD and analytics | sqlc, PostgreSQL | PostgreSQL | Phase 0 |
-| Library – s3client | Pre‑signed URL generation, upload, download | aws‑sdk‑go‑v2 (S3) | MinIO/S3 credentials | Phase 1 |
-| Infrastructure – Docker Compose | Local dev environment orchestration | Docker Compose V2 | Docker Engine | Phase 0 |
-| Infrastructure – Kubernetes manifests | Production deployment (Deployment, Service, HPA, Ingress) | YAML, kubectl | GKE / EKS | Phase 0 (base), Phase 3+ (HPA) |
+| Component                             | Responsibility                                                                                           | Technologies                                    | Dependencies                  | Owner (Phase)                  |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------- | ----------------------------- | ------------------------------ |
+| Frontend – SvelteKit app              | Server‑rendered leaderboards, client‑side match submission forms, profile management, share card trigger | SvelteKit, TypeScript, TailwindCSS, svelte‑i18n | Backend API                   | Frontend (Phase 1–7)           |
+| Backend – HTTP router                 | Routes to handlers, middleware chain                                                                     | net/http ServeMux                               | None                          | Phase 0                        |
+| Backend – auth handler                | JWT issue/refresh, login with email/password or Google OAuth                                             | golang‑jwt/jwt/v5 (RSA256), bcrypt, crypto/rand | PostgreSQL, Redis             | Phase 1                        |
+| Backend – match handler               | Submit match, list pending, approve/reject (admin), trigger ranking recomputation                        | net/http, pgx/v5, sqlc                          | PostgreSQL, Redis, task queue | Phase 2                        |
+| Backend – ranking handler             | Get leaderboard (paginated, with community filter), get player ranking history                           | net/http, pgx/v5, sqlc, Redis cache             | PostgreSQL                    | Phase 3                        |
+| Backend – endorsement handler         | Endorse player, list endorsements, trigger materialized view refresh                                     | net/http, pgx/v5, sqlc                          | PostgreSQL, Redis             | Phase 5                        |
+| Backend – share handler               | Generate card image, upload to MinIO/S3, return signed URL                                               | net/http, image, imaging, aws‑sdk‑go‑v2         | MinIO/S3, Redis               | Phase 6                        |
+| Backend – admin handler               | Dashboard metrics, dispute resolution, ILTL import trigger                                               | net/http, pgx/v5, sqlc                          | PostgreSQL, task queue        | Phase 7                        |
+| Worker – ranking worker               | Consume ranking.recompute tasks, update current_standings, refresh materialized view                     | Go goroutine pool, pgx/v5 batch                 | PostgreSQL, task queue        | Phase 3                        |
+| Worker – card worker                  | Async share card image generation                                                                        | image, imaging                                  | MinIO/S3                      | Phase 6                        |
+| Library – sqlc queries                | All generated Go functions for CRUD and analytics                                                        | sqlc, PostgreSQL                                | PostgreSQL                    | Phase 0                        |
+| Library – s3client                    | Pre‑signed URL generation, upload, download                                                              | aws‑sdk‑go‑v2 (S3)                              | MinIO/S3 credentials          | Phase 1                        |
+| Infrastructure – Docker Compose       | Local dev environment orchestration                                                                      | Docker Compose V2                               | Docker Engine                 | Phase 0                        |
+| Infrastructure – Kubernetes manifests | Production deployment (Deployment, Service, HPA, Ingress)                                                | YAML, kubectl                                   | GKE / EKS                     | Phase 0 (base), Phase 3+ (HPA) |
 
 ---
 
 ### Data contracts
 
 **REST API response envelope (frontend → backend contract):**
+
 ```typescript
 interface ApiResponse<T> {
   data: T;
-  meta?: { 
+  meta?: {
     page: number;
     pageSize: number;
     total: number;
     cachedAt?: string; // ISO8601 timestamp
   };
   error?: {
-    code: string;       // e.g., "RANKING_STALE", "MATCH_DUPLICATE"
+    code: string; // e.g., "RANKING_STALE", "MATCH_DUPLICATE"
     message: string;
     details?: unknown;
   };
@@ -2097,6 +2194,7 @@ interface ApiResponse<T> {
 ```
 
 **Leaderboard entry (as returned by `GET /leaderboard/{communityId}`):**
+
 ```typescript
 interface RankingEntry {
   playerId: string;
@@ -2105,20 +2203,21 @@ interface RankingEntry {
   communityId: string;
   communityName: string;
   rank: number;
-  mabarRating: number;          // community-curated Elo-like score
-  mabarRatingChange?: number;   // delta from last snapshot
+  mabarRating: number; // community-curated Elo-like score
+  mabarRatingChange?: number; // delta from last snapshot
   officialRating: number | null; // ILTL-derived, nullable
   matchCount: number;
-  winRate: number;              // float 0.0–1.0
-  topEndorsements: string[];    // up to 3 skill tags, e.g., ["serve", "volley"]
+  winRate: number; // float 0.0–1.0
+  topEndorsements: string[]; // up to 3 skill tags, e.g., ["serve", "volley"]
 }
 ```
 
 **Submitted match payload (POST `/matches`):**
+
 ```json
 {
   "communityId": "uuid",
-  "opponentId": "uuid",       // player A (submitter) vs player B
+  "opponentId": "uuid", // player A (submitter) vs player B
   "score": "6-3,7-5",
   "venueId": "uuid",
   "playedAt": "2026-03-15T14:00:00Z",
@@ -2127,6 +2226,7 @@ interface RankingEntry {
 ```
 
 **Database schema (simplified):**
+
 ```sql
 -- Matches (immutable after validation)
 CREATE TABLE matches (
@@ -2181,15 +2281,15 @@ CREATE INDEX idx_matches_pending ON matches (community_id, submitted_at DESC) WH
 
 ### Failure modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| PostgreSQL connection pool exhaustion | `pgxpool.Stat.AcquireCount()` > 80% of max | Backpressure via `http.TimeoutHandler` (30s); circuit breaker pattern on write endpoints (fail fast after 5 consecutive failures); HPA scales pods based on active connections |
-| Ranking worker crashes mid‑batch | No ack on RabbitMQ/PubSub message → re‑queued after visibility timeout (30s) | Idempotent ranking function (uses `match_id` as hash key); deduplication via `INSERT ... ON CONFLICT DO NOTHING` in `current_standings` |
-| Stale leaderboard served after ranking update | Materialized view not refreshed | Refresh materialized view synchronously in worker after batch; if refresh fails, `current_leaderboard` retains previous snapshot; alert on refresh failure |
-| Share card generation OOM | Worker memory > 256 MB (monitored) | Limit concurrency per worker (default 2); use streaming image encoding (`jpeg.Encode` with `Option`); fallback to a simpler text-only card |
-| ILTL import API returns 5xx | Import job returns HTTP 503 / timeout | Exponential backoff up to 5 retries (1s, 2s, 4s, 8s, 16s); alert on final failure; manual retry button in admin dashboard |
-| Redis cache server down | Redis client returns connection error | All cache reads fall back to database with `stale-while-revalidate` semantics; rate limiting degrades to in‑memory counters (less precise but functional) |
-| MinIO container OOM in dev | Docker health check fails | Auto-restart with `restart: always` ; log error to Docker events |
+| Failure                                       | Detection                                                                    | Mitigation                                                                                                                                                                     |
+| --------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| PostgreSQL connection pool exhaustion         | `pgxpool.Stat.AcquireCount()` > 80% of max                                   | Backpressure via `http.TimeoutHandler` (30s); circuit breaker pattern on write endpoints (fail fast after 5 consecutive failures); HPA scales pods based on active connections |
+| Ranking worker crashes mid‑batch              | No ack on RabbitMQ/PubSub message → re‑queued after visibility timeout (30s) | Idempotent ranking function (uses `match_id` as hash key); deduplication via `INSERT ... ON CONFLICT DO NOTHING` in `current_standings`                                        |
+| Stale leaderboard served after ranking update | Materialized view not refreshed                                              | Refresh materialized view synchronously in worker after batch; if refresh fails, `current_leaderboard` retains previous snapshot; alert on refresh failure                     |
+| Share card generation OOM                     | Worker memory > 256 MB (monitored)                                           | Limit concurrency per worker (default 2); use streaming image encoding (`jpeg.Encode` with `Option`); fallback to a simpler text-only card                                     |
+| ILTL import API returns 5xx                   | Import job returns HTTP 503 / timeout                                        | Exponential backoff up to 5 retries (1s, 2s, 4s, 8s, 16s); alert on final failure; manual retry button in admin dashboard                                                      |
+| Redis cache server down                       | Redis client returns connection error                                        | All cache reads fall back to database with `stale-while-revalidate` semantics; rate limiting degrades to in‑memory counters (less precise but functional)                      |
+| MinIO container OOM in dev                    | Docker health check fails                                                    | Auto-restart with `restart: always` ; log error to Docker events                                                                                                               |
 
 ---
 
@@ -2204,14 +2304,14 @@ CREATE INDEX idx_matches_pending ON matches (community_id, submitted_at DESC) WH
 
 ### Trade‑offs & open questions
 
-| Trade‑off | Chosen approach | Rationale | Rejected alternative |
-|-----------|----------------|-----------|----------------------|
-| Leaderboard freshness vs read cost | Materialized view refreshed every 30 seconds or on demand after ranking batch | Eliminates expensive window function on every read; 30‑second staleness acceptable for community use | In‑memory sorted set (Redis) would require dual writes and reconciliation; not auditable |
-| Server‑side share card vs client‑side | Go `image` package | No browser dependency, cold start <50 ms, smaller container; simpler than headless Chromium | Chromium (chromedp) would enable full CSS styling but adds 300+ MB to image and startup latency >1 s; saved for v2 if demand arises |
-| Task queue abstraction: RabbitMQ vs PubSub | Interface + RabbitMQ for dev, PubSub for prod | Both are async, at‑least‑once; abstraction allows switching without rewriting business logic | Single queue (e.g., in‑memory channel) would break after pod restarts; not tolerable for match validation |
-| i18n: svelte‑i18n vs custom | svelte‑i18n | Lazy loading of language files (id, en), small bundle overhead (~5 KB gzipped) | Custom solution would require more maintenance and has no tree‑shaking |
-| Database migrations: ORM vs raw SQL | Raw SQL with `golang‑migrate` | Full control over index strategies, partial indexes, and migration ordering; works with sqlc | GORM migrations are opaque and may introduce accidental changes; not auditable |
-| Observability: ELK vs Loki+Prometheus | Loki + Prometheus | Lighter resource footprint for logs; native integration with Grafana; Prometheus metrics for HPA | ELK is heavier; Kibana lacks native alerting for metric thresholds |
+| Trade‑off                                  | Chosen approach                                                               | Rationale                                                                                            | Rejected alternative                                                                                                                |
+| ------------------------------------------ | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Leaderboard freshness vs read cost         | Materialized view refreshed every 30 seconds or on demand after ranking batch | Eliminates expensive window function on every read; 30‑second staleness acceptable for community use | In‑memory sorted set (Redis) would require dual writes and reconciliation; not auditable                                            |
+| Server‑side share card vs client‑side      | Go `image` package                                                            | No browser dependency, cold start <50 ms, smaller container; simpler than headless Chromium          | Chromium (chromedp) would enable full CSS styling but adds 300+ MB to image and startup latency >1 s; saved for v2 if demand arises |
+| Task queue abstraction: RabbitMQ vs PubSub | Interface + RabbitMQ for dev, PubSub for prod                                 | Both are async, at‑least‑once; abstraction allows switching without rewriting business logic         | Single queue (e.g., in‑memory channel) would break after pod restarts; not tolerable for match validation                           |
+| i18n: svelte‑i18n vs custom                | svelte‑i18n                                                                   | Lazy loading of language files (id, en), small bundle overhead (~5 KB gzipped)                       | Custom solution would require more maintenance and has no tree‑shaking                                                              |
+| Database migrations: ORM vs raw SQL        | Raw SQL with `golang‑migrate`                                                 | Full control over index strategies, partial indexes, and migration ordering; works with sqlc         | GORM migrations are opaque and may introduce accidental changes; not auditable                                                      |
+| Observability: ELK vs Loki+Prometheus      | Loki + Prometheus                                                             | Lighter resource footprint for logs; native integration with Grafana; Prometheus metrics for HPA     | ELK is heavier; Kibana lacks native alerting for metric thresholds                                                                  |
 
 ---
 
@@ -2266,13 +2366,14 @@ graph TD
 
 ### Implications
 
-- **Go over Node.js**: Slightly slower iteration for I/O‑heavy tasks (notably, the ranking engine does CPU‑bound math, so Go excels). The team’s existing Go expertise outweighs the marginal productivity loss.  
-- **SvelteKit over React**: Smaller community size but faster performance on mobile; the app is read‑heavy (leaderboards) rather than state‑interactive, making Svelte’s compilation ideal.  
-- **Single‑region PostgreSQL vs distributed SQL**: Future migration to CockroachDB is possible but will require rewriting sqlc queries that rely on advisory locks and `UNIQUE` constraints across regions. Acceptable for v1.0 (Indonesia‑only).  
-- **Server‑side share card generation**: Sacrifices layout flexibility for operational simplicity. If the team receives requests for custom card backgrounds or branded fonts, a headless Chromium service can be added as a separate worker.  
+- **Go over Node.js**: Slightly slower iteration for I/O‑heavy tasks (notably, the ranking engine does CPU‑bound math, so Go excels). The team’s existing Go expertise outweighs the marginal productivity loss.
+- **SvelteKit over React**: Smaller community size but faster performance on mobile; the app is read‑heavy (leaderboards) rather than state‑interactive, making Svelte’s compilation ideal.
+- **Single‑region PostgreSQL vs distributed SQL**: Future migration to CockroachDB is possible but will require rewriting sqlc queries that rely on advisory locks and `UNIQUE` constraints across regions. Acceptable for v1.0 (Indonesia‑only).
+- **Server‑side share card generation**: Sacrifices layout flexibility for operational simplicity. If the team receives requests for custom card backgrounds or branded fonts, a headless Chromium service can be added as a separate worker.
 - **Trade‑off between auditability and write throughput**: Every ranking snapshot creates an immutable row; this increases storage and write latency but ensures point‑in‑time queries (e.g., “What was my rank last month?”) are trivial. At projected scale (10k MAU, 500 matches/week), storage for snapshots is negligible (<1 GB/year).
 
 ## 6. Data Flows
+
 ### 1. Core Data Flow Overview
 
 Data flows in Match Point are designed around two fundamental axes: **event ingestion** (match results, player actions) and **reputation propagation** (cross-community scoring updates). The system treats every match as an event that must be validated, enriched with community context, then applied to the **player reputation graph** — a directed weighted graph where nodes are players and edges are historical match outcomes weighted by recency, opponent strength, and community trust.
@@ -2293,13 +2394,13 @@ The primary goal of the data flow architecture is to ensure that reputation scor
 
 #### 1.3 Component Breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|---------------|--------------|--------------|-------|
-| Match Ingestion API | Accept match result POST, validate schema, produce to Kafka | Go, Kafka, Avro | Player registry, Community registry | Backend team |
-| Reputation Calculator | Read match event, update Neo4j player graph | Kafka Streams, Neo4j Java Driver | Player graph, Match WAL | Data team |
-| Leaderboard Materializer | Compute top-N from graph centrality, write to Redis | Spark Structured Streaming, Redis | Neo4j graph, Redis | Data team |
-| Cross-Community Query Service | Traverse graph to answer "rank across all communities" | Neo4j Cypher, GraphQL | Neo4j | Backend team |
-| Notification Dispatcher | Push reputation changes to users (webhook/email) | Kafka, SQS, SES | Match event | Platform team |
+| Component                     | Responsibility                                              | Technologies                      | Dependencies                        | Owner         |
+| ----------------------------- | ----------------------------------------------------------- | --------------------------------- | ----------------------------------- | ------------- |
+| Match Ingestion API           | Accept match result POST, validate schema, produce to Kafka | Go, Kafka, Avro                   | Player registry, Community registry | Backend team  |
+| Reputation Calculator         | Read match event, update Neo4j player graph                 | Kafka Streams, Neo4j Java Driver  | Player graph, Match WAL             | Data team     |
+| Leaderboard Materializer      | Compute top-N from graph centrality, write to Redis         | Spark Structured Streaming, Redis | Neo4j graph, Redis                  | Data team     |
+| Cross-Community Query Service | Traverse graph to answer "rank across all communities"      | Neo4j Cypher, GraphQL             | Neo4j                               | Backend team  |
+| Notification Dispatcher       | Push reputation changes to users (webhook/email)            | Kafka, SQS, SES                   | Match event                         | Platform team |
 
 #### 1.4 Data Contracts
 
@@ -2360,13 +2461,13 @@ LIMIT 20
 
 #### 1.5 Failure Modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| Kafka broker failure | Consumer lag alerts, ZooKeeper health checks | Leader re-election; consumer side buffering in Redis for up to 10s |
-| Neo4j write contention | Deadlock detection, query latency > 1s | Retry with exponential backoff, shard graph by community prefix |
-| Reputation calculator crash | Offset not committed for 60s | Auto-restart by Kubernetes, idempotency ensures no double application |
-| Leaderboard cache miss | Redis response empty | Fallback to Neo4j read with 5s timeout, then update cache |
-| Data inconsistency (e.g., player doesn't exist in graph) | Schema validation before graph mutation | Create placeholder node, emit `PlayerCreated` event, reprocess match after node creation |
+| Failure                                                  | Detection                                    | Mitigation                                                                               |
+| -------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Kafka broker failure                                     | Consumer lag alerts, ZooKeeper health checks | Leader re-election; consumer side buffering in Redis for up to 10s                       |
+| Neo4j write contention                                   | Deadlock detection, query latency > 1s       | Retry with exponential backoff, shard graph by community prefix                          |
+| Reputation calculator crash                              | Offset not committed for 60s                 | Auto-restart by Kubernetes, idempotency ensures no double application                    |
+| Leaderboard cache miss                                   | Redis response empty                         | Fallback to Neo4j read with 5s timeout, then update cache                                |
+| Data inconsistency (e.g., player doesn't exist in graph) | Schema validation before graph mutation      | Create placeholder node, emit `PlayerCreated` event, reprocess match after node creation |
 
 #### 1.6 Mermaid Diagram: Match Submission Flow
 
@@ -2405,11 +2506,13 @@ sequenceDiagram
 - **Graph vs. relational:** We chose graph for reputation traversal but accept higher storage cost (edge properties). If community sizes exceed 1M players, we may need to shard the graph by region or use a hybrid scan – this is a monitored risk.
 - **Strong consistency vs. availability:** The decision to use Kafka for ingestion gives high availability (write acceptance even if graph is down) but introduces eventual consistency. Open question: should leaderboard reads block on graph freshness for official tournaments? Proposed solution: a `freshness` flag in query that forces a synchronous graph update (degrading latency to ~1s).
 - **Duplicate play detection:** The current idempotency key works for the same submission, but what if the same match is reported by two different communities? We rely on a unique `match_hash` (SHA-256 of player IDs + date + score) to deduplicate at the graph edge level. This is not yet implemented – flagged for Task 5.3.
+
 ### Context & Goals
 
 Data flows define how match results, player profiles, reputation scores, and ranking updates propagate through the Match Point system. The primary challenge is ingesting and reconciling heterogeneous match data from multiple sources — ILTL official tournaments, club internal systems, user-submitted social games, and third-party court booking platforms — while maintaining score integrity and auditability.
 
 Success criteria:
+
 - Match ingestion latency ≤ 2 seconds p99 from submission to availability for scoring.
 - Daily reconciliation of ILTL bulk imports with zero silent data loss (detected via checksum comparison).
 - User-submitted match verification loop completes within 5 minutes for trusted reporters, 24 hours for untrusted.
@@ -2424,18 +2527,19 @@ Success criteria:
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|----------------|--------------|--------------|-------|
-| Match Ingestion API | Accept match submissions from ILTL webhook, club APIs, and mobile app | Go HTTP server + JWT auth | Redis rate limiter, `match_staging` table | Backend team |
-| Reconciliation Worker | Deduplicate, validate, geocode and enrich staged matches | Go worker process consuming Kafka topic `staged-matches` | ILTL API (for verification), Google Maps Geocoding | Backend team |
-| Event Store | Append-only log of all match lifecycle events | Kafka topic `match-events` (partitioned by match_id) | Confluent Cloud | Platform team |
-| Scoring Engine | Compute per-player ranking and reputation deltas | Flink SQL streaming job | Kafka `match-events`, Redis player cursor cache | Data team |
-| Materialiser | Write current rankings and reputation to PostgreSQL | Go service consuming Kafka `scored-events` | FDB document layer for atomic updates | Backend team |
-| Leaderboard Cache | Serve top-100 leaderboards with sub-50ms latency | Redis Sorted Sets, TTL 60s | Materialiser, periodic refresh | Backend team |
+| Component             | Responsibility                                                        | Technologies                                             | Dependencies                                       | Owner         |
+| --------------------- | --------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------- | ------------- |
+| Match Ingestion API   | Accept match submissions from ILTL webhook, club APIs, and mobile app | Go HTTP server + JWT auth                                | Redis rate limiter, `match_staging` table          | Backend team  |
+| Reconciliation Worker | Deduplicate, validate, geocode and enrich staged matches              | Go worker process consuming Kafka topic `staged-matches` | ILTL API (for verification), Google Maps Geocoding | Backend team  |
+| Event Store           | Append-only log of all match lifecycle events                         | Kafka topic `match-events` (partitioned by match_id)     | Confluent Cloud                                    | Platform team |
+| Scoring Engine        | Compute per-player ranking and reputation deltas                      | Flink SQL streaming job                                  | Kafka `match-events`, Redis player cursor cache    | Data team     |
+| Materialiser          | Write current rankings and reputation to PostgreSQL                   | Go service consuming Kafka `scored-events`               | FDB document layer for atomic updates              | Backend team  |
+| Leaderboard Cache     | Serve top-100 leaderboards with sub-50ms latency                      | Redis Sorted Sets, TTL 60s                               | Materialiser, periodic refresh                     | Backend team  |
 
 ### Data contracts
 
 **Match submission payload (mobile app)**
+
 ```json
 {
   "type": "padel",
@@ -2443,10 +2547,10 @@ Success criteria:
   "reporter_id": "usr_abc123",
   "match_time": "2025-03-15T14:30:00Z",
   "players": [
-    {"player_id": "pl_1", "team": 1, "result": "win"},
-    {"player_id": "pl_2", "team": 1, "result": "win"},
-    {"player_id": "pl_3", "team": 2, "result": "loss"},
-    {"player_id": "pl_4", "team": 2, "result": "loss"}
+    { "player_id": "pl_1", "team": 1, "result": "win" },
+    { "player_id": "pl_2", "team": 1, "result": "win" },
+    { "player_id": "pl_3", "team": 2, "result": "loss" },
+    { "player_id": "pl_4", "team": 2, "result": "loss" }
   ],
   "score": "6-3, 7-5",
   "venue_id": "club_42",
@@ -2455,6 +2559,7 @@ Success criteria:
 ```
 
 **Reconciled match event (after staging)**
+
 ```json
 {
   "event_id": "evt_005a",
@@ -2464,10 +2569,30 @@ Success criteria:
   "occurred_at": "2025-03-15T14:30:00Z",
   "processed_at": "2025-03-15T14:32:12Z",
   "players": [
-    {"player_id": "pl_1", "role": "winner", "rank_after": 42, "reputation_after": 0.94},
-    {"player_id": "pl_2", "role": "winner", "rank_after": 55, "reputation_after": 0.88},
-    {"player_id": "pl_3", "role": "loser", "rank_after": 67, "reputation_after": 0.72},
-    {"player_id": "pl_4", "role": "loser", "rank_after": 89, "reputation_after": 0.65}
+    {
+      "player_id": "pl_1",
+      "role": "winner",
+      "rank_after": 42,
+      "reputation_after": 0.94
+    },
+    {
+      "player_id": "pl_2",
+      "role": "winner",
+      "rank_after": 55,
+      "reputation_after": 0.88
+    },
+    {
+      "player_id": "pl_3",
+      "role": "loser",
+      "rank_after": 67,
+      "reputation_after": 0.72
+    },
+    {
+      "player_id": "pl_4",
+      "role": "loser",
+      "rank_after": 89,
+      "reputation_after": 0.65
+    }
   ],
   "source_trust": "official"
 }
@@ -2475,13 +2600,13 @@ Success criteria:
 
 ### Failure modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| ILTL webhook downtime (HTTP 503) | Prometheus blackbox exporter, alert if no ILTL event seen in 1h | Backoff retry (exponential, cap 1h); fallback to daily batch CSV crawl. |
-| Duplicate match insertion from user submit + ILTL | Reconciliation worker checks `match_id` hash (SHA256 of players+time+score) – if collision detected, merge into single `match_events` entry with source array. | Idempotent event producers: retries skip if event_id already exists. |
-| Scoring engine crash mid-window | Flink checkpointing every 30s; on restart, restore from last checkpoint and replay uncommitted offsets. | Alert if checkpoint age > 2 minutes. |
-| Reputation score drift due to filter slip | Hourly offline auditing: recalc reputation from raw events and compare with materialised values; if delta > 1%, trigger full rebuild. | Separate "audit_reputation" table, rebuild lock prevents ranking updates during audit. |
-| Mobile app submits match with falsified evidence | Automated image tampering detection pipeline (AWS Rekognition + ML model) flags suspicious photos; manual review queue for flagged matches. | Flagged matches are not included in scoring until reviewer (or automated model after 2nd verification) confirms. |
+| Failure                                           | Detection                                                                                                                                                      | Mitigation                                                                                                       |
+| ------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| ILTL webhook downtime (HTTP 503)                  | Prometheus blackbox exporter, alert if no ILTL event seen in 1h                                                                                                | Backoff retry (exponential, cap 1h); fallback to daily batch CSV crawl.                                          |
+| Duplicate match insertion from user submit + ILTL | Reconciliation worker checks `match_id` hash (SHA256 of players+time+score) – if collision detected, merge into single `match_events` entry with source array. | Idempotent event producers: retries skip if event_id already exists.                                             |
+| Scoring engine crash mid-window                   | Flink checkpointing every 30s; on restart, restore from last checkpoint and replay uncommitted offsets.                                                        | Alert if checkpoint age > 2 minutes.                                                                             |
+| Reputation score drift due to filter slip         | Hourly offline auditing: recalc reputation from raw events and compare with materialised values; if delta > 1%, trigger full rebuild.                          | Separate "audit_reputation" table, rebuild lock prevents ranking updates during audit.                           |
+| Mobile app submits match with falsified evidence  | Automated image tampering detection pipeline (AWS Rekognition + ML model) flags suspicious photos; manual review queue for flagged matches.                    | Flagged matches are not included in scoring until reviewer (or automated model after 2nd verification) confirms. |
 
 ### Mermaid diagram
 
@@ -2546,17 +2671,18 @@ sequenceDiagram
 - **Consistency vs Availability in ranking reads**: We chose to serve rankings from the materialised PostgreSQL table rather than from the event store directly. This gives strong read-after-write consistency for single-player queries but introduces up to 2 seconds lag for global leaderboard freshness. In practice, players rarely expect real-time rank updates; the nightly recalculation provides eventual consistency guarantee.
 - **Open question**: Should we allow players to dispute a match result and trigger a reversal event? This would require compensating transactions in the scoring engine (negative score increment). Initial design excludes dispute handling to reduce complexity; we will revisit after MVP with actual user feedback.
 - **Trade-off in reputation scoring**: Using a simple average of verification ratios per contributor is cheap but subject to gaming (submit many low-stakes matches to inflate ratio). Decision: incorporate match quality weight (e.g., more weight for ILTL matches than social games) and cap the window at 500 matches to prevent infinite grinding. This may penalise high-volume casual players — monitoring in beta will determine if adjustment is needed.
+
 ### Context & Goals
 
 Data flows define how information moves between Match Point’s frontend, backend, databases, caches, queues, and external integrations (ILTL, object storage, SMTP). Every user action — submitting a match result, viewing a leaderboard, endorsing a player — triggers a chain of synchronous API calls and asynchronous background jobs. The architecture must guarantee that ranking calculations are idempotent, match submissions are exactly-once delivered, and share card images are served with low latency (<200 ms p95). The primary success criteria are:
 
-| Criterion | Target | Validation |
-|-----------|--------|------------|
-| End-to-end match submission latency (user clicks submit → confirmation) | < 2 seconds p95 | Synthetic monitoring with distributed tracing (OpenTelemetry) |
-| Leaderboard refresh after ranking recomputation | < 30 seconds from match validation to cache update | Observability dashboards (Grafana) showing queue lag |
-| Concurrent match submissions per second (peak) | 500 req/s on single API replica | Load testing with K6 |
-| Data consistency for ranking snapshots | Every monthly snapshot is immutable and auditable | Database tests enforcing no-after-the-fact overrides |
-| Object store download latency (share cards) | < 100 ms p95 for presigned URLs in same region | CDN performance metrics |
+| Criterion                                                               | Target                                             | Validation                                                    |
+| ----------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------------- |
+| End-to-end match submission latency (user clicks submit → confirmation) | < 2 seconds p95                                    | Synthetic monitoring with distributed tracing (OpenTelemetry) |
+| Leaderboard refresh after ranking recomputation                         | < 30 seconds from match validation to cache update | Observability dashboards (Grafana) showing queue lag          |
+| Concurrent match submissions per second (peak)                          | 500 req/s on single API replica                    | Load testing with K6                                          |
+| Data consistency for ranking snapshots                                  | Every monthly snapshot is immutable and auditable  | Database tests enforcing no-after-the-fact overrides          |
+| Object store download latency (share cards)                             | < 100 ms p95 for presigned URLs in same region     | CDN performance metrics                                       |
 
 We distinguish three flow categories: **synchronous request-response** (player profile CRUD, community invitations, endorsement submission), **asynchronous event-driven** (match validation, ranking recomputation, snapshot creation), and **batch ingestion** (ILTL data import, monthly ranking freeze). Each category has distinct guarantees, error handling, and observability requirements. The complete data flow graph (see Mermaid diagram below) illustrates how these categories interact across all components.
 
@@ -2576,19 +2702,19 @@ We distinguish three flow categories: **synchronous request-response** (player p
 
 ### Component Breakdown
 
-| Flow / Component | Responsibility | Technologies | Dependencies | Owner (Phase) |
-|----------------|----------------|---------------|--------------|---------------|
-| **HTTP Router** | Receive REST requests, validate JWT, route to handler | `chi/v5` | JWT middleware, request context | Phase 0–1 |
-| **Match Submission Handler** | Accept match result, write to DB and outbox, return receipt | `net/http`, `pgx` | PostgreSQL, Redis (idempotency) | Phase 2 |
-| **Match Validation Worker** | Consume `MatchSubmittedEvent`, validate scores/participants/stats | RabbitMQ consumer, Go goroutines | PostgreSQL, external tennis API (optional) | Phase 2 |
-| **Ranking Computation Engine** | Recalculate Mabar & official ranks for affected community/track | Go, PostgreSQL stored procedures | PostgreSQL, Redis cache | Phase 3 |
-| **Leaderboard Reader** | Fetch top N players for community/track, cache miss triggers compute | Redis, `pgx` | Redis, PostgreSQL | Phase 3 |
-| **Snapshot Builder** | Create monthly immutable ranking snapshot | Go job (cron-like) | PostgreSQL, object storage (for signed archive) | Phase 3 |
-| **Endorsement Handler** | Accept/withdraw endorsement, compute skill score async | REST handler + async worker | PostgreSQL, Redis (score cache) | Phase 5 |
-| **Share Card Generator** | Generate ranking card image server-side | Go (image/png, SVGo) | Object storage (upload), Redis (cache) | Phase 6 |
-| **ILTL Ingestion Worker** | Fetch official results from ILTL API, parse, insert as validated matches | Scheduled worker (cron) | External ILTL API, PostgreSQL | Phase 4 |
-| **Outbox Relay** | Poll `outbox` table, publish to queue, delete row | Go goroutine with poll interval 100ms | PostgreSQL, RabbitMQ | Phase 0 |
-| **Cache Invalidation Pub/Sub** | Propagate eviction events across API replicas | Redis Pub/Sub | Redis | Phase 3 |
+| Flow / Component               | Responsibility                                                           | Technologies                          | Dependencies                                    | Owner (Phase) |
+| ------------------------------ | ------------------------------------------------------------------------ | ------------------------------------- | ----------------------------------------------- | ------------- |
+| **HTTP Router**                | Receive REST requests, validate JWT, route to handler                    | `chi/v5`                              | JWT middleware, request context                 | Phase 0–1     |
+| **Match Submission Handler**   | Accept match result, write to DB and outbox, return receipt              | `net/http`, `pgx`                     | PostgreSQL, Redis (idempotency)                 | Phase 2       |
+| **Match Validation Worker**    | Consume `MatchSubmittedEvent`, validate scores/participants/stats        | RabbitMQ consumer, Go goroutines      | PostgreSQL, external tennis API (optional)      | Phase 2       |
+| **Ranking Computation Engine** | Recalculate Mabar & official ranks for affected community/track          | Go, PostgreSQL stored procedures      | PostgreSQL, Redis cache                         | Phase 3       |
+| **Leaderboard Reader**         | Fetch top N players for community/track, cache miss triggers compute     | Redis, `pgx`                          | Redis, PostgreSQL                               | Phase 3       |
+| **Snapshot Builder**           | Create monthly immutable ranking snapshot                                | Go job (cron-like)                    | PostgreSQL, object storage (for signed archive) | Phase 3       |
+| **Endorsement Handler**        | Accept/withdraw endorsement, compute skill score async                   | REST handler + async worker           | PostgreSQL, Redis (score cache)                 | Phase 5       |
+| **Share Card Generator**       | Generate ranking card image server-side                                  | Go (image/png, SVGo)                  | Object storage (upload), Redis (cache)          | Phase 6       |
+| **ILTL Ingestion Worker**      | Fetch official results from ILTL API, parse, insert as validated matches | Scheduled worker (cron)               | External ILTL API, PostgreSQL                   | Phase 4       |
+| **Outbox Relay**               | Poll `outbox` table, publish to queue, delete row                        | Go goroutine with poll interval 100ms | PostgreSQL, RabbitMQ                            | Phase 0       |
+| **Cache Invalidation Pub/Sub** | Propagate eviction events across API replicas                            | Redis Pub/Sub                         | Redis                                           | Phase 3       |
 
 ---
 
@@ -2607,15 +2733,15 @@ We distinguish three flow categories: **synchronous request-response** (player p
     "location": "Jakarta, Indonesia"
   },
   "players": [
-    {"user_id": "uuid-player1", "team": 1, "position": "right"},
-    {"user_id": "uuid-player2", "team": 1, "position": "left"},
-    {"user_id": "uuid-player3", "team": 2, "position": "right"},
-    {"user_id": "uuid-player4", "team": 2, "position": "left"}
+    { "user_id": "uuid-player1", "team": 1, "position": "right" },
+    { "user_id": "uuid-player2", "team": 1, "position": "left" },
+    { "user_id": "uuid-player3", "team": 2, "position": "right" },
+    { "user_id": "uuid-player4", "team": 2, "position": "left" }
   ],
   "scores": [
-    {"set": 1, "team1": 6, "team2": 4},
-    {"set": 2, "team1": 3, "team2": 6},
-    {"set": 3, "team1": 10, "team2": 5}
+    { "set": 1, "team1": 6, "team2": 4 },
+    { "set": 2, "team1": 3, "team2": 6 },
+    { "set": 3, "team1": 10, "team2": 5 }
   ]
 }
 ```
@@ -2631,10 +2757,13 @@ We distinguish three flow categories: **synchronous request-response** (player p
   "community_id": "uuid-community",
   "track": "mabar",
   "teams": [
-    {"team_id": 1, "players": ["uuid1", "uuid2"], "result": "win"},
-    {"team_id": 2, "players": ["uuid3", "uuid4"], "result": "loss"}
+    { "team_id": 1, "players": ["uuid1", "uuid2"], "result": "win" },
+    { "team_id": 2, "players": ["uuid3", "uuid4"], "result": "loss" }
   ],
-  "rating_delta": {"winners": {"base": 15, "bonus": 2}, "losers": {"base": -10, "bonus": 0}},
+  "rating_delta": {
+    "winners": { "base": 15, "bonus": 2 },
+    "losers": { "base": -10, "bonus": 0 }
+  },
   "version": 1
 }
 ```
@@ -2657,28 +2786,28 @@ CREATE TABLE ranking_snapshots (
 
 #### Cache Key Convention (Redis)
 
-| Purpose | Key Pattern | TTL | Example |
-|---------|-------------|-----|---------|
-| Leaderboard (top N) | `leaderboard:{community_id}:{track}` | 5 minutes | `leaderboard:abc123:mabar` |
-| Player rank (single) | `player_rank:{user_id}:{community_id}:{track}` | 5 minutes | `player_rank:user1:abc123:mabar` |
-| Idempotency key store | `idempotency:{key}` | 24 hours | `idempotency:uuid-from-header` |
-| Share card image | `share_card:{user_id}:{community_id}:{track}:{month}` | 1 hour (after generation) | `share_card:user1:abc123:mabar:2025-03` |
-| Endorsement score | `endorsement_score:{user_id}:{community_id}` | 10 minutes | `endorsement_score:user1:abc123` |
+| Purpose               | Key Pattern                                           | TTL                       | Example                                 |
+| --------------------- | ----------------------------------------------------- | ------------------------- | --------------------------------------- |
+| Leaderboard (top N)   | `leaderboard:{community_id}:{track}`                  | 5 minutes                 | `leaderboard:abc123:mabar`              |
+| Player rank (single)  | `player_rank:{user_id}:{community_id}:{track}`        | 5 minutes                 | `player_rank:user1:abc123:mabar`        |
+| Idempotency key store | `idempotency:{key}`                                   | 24 hours                  | `idempotency:uuid-from-header`          |
+| Share card image      | `share_card:{user_id}:{community_id}:{track}:{month}` | 1 hour (after generation) | `share_card:user1:abc123:mabar:2025-03` |
+| Endorsement score     | `endorsement_score:{user_id}:{community_id}`          | 10 minutes                | `endorsement_score:user1:abc123`        |
 
 ---
 
 ### Failure Modes
 
-| Failure Scenario | Detection | Mitigation |
-|------------------|-----------|------------|
-| **Duplicate match submission** (same game submitted twice) | Idempotency key check returns cached response; if no idempotency key, duplicate detection on `players + date + venue` with unique constraint (hash index) | Return 409 Conflict; log for admin review; auto-reject second submission after manual check |
-| **Outbox relay crashes** | Missing events in queue; dead-letter queue grows; alert on lag > 1 minute | Restart relay; events remain in `outbox` table (not deleted until sent); replay from last committed offset |
-| **Ranking computation fails for a batch** (e.g., DB deadlock) | Error logged; event delivery retries; after 3 failures, event goes to DLQ | Dead-letter queue triggers PagerDuty alert; operator replays event after fixing underlying issue |
-| **Redis cache unavailable** | All reads fall back to PostgreSQL; latency spikes (5x–10x) | Circuit breaker opens after 3 consecutive timeouts; fallback query returns stale data from DB; warm cache on recovery |
-| **Object storage upload fails** (presigned URL expired or network) | Client receives HTTP 403/500 | Retry with backoff up to 3 times; if still fails, return error to user and log; user can re-upload with new presigned URL |
-| **ILTL ingestion parses malformed data** | Validation regex fails; invalid match data logged | Skip malformed record; log error; alert operator; manual patch via admin dashboard |
-| **Concurrent ranking snapshots** (multiple workers race) | `finalized_at` is NULL; serialization conflicts | Use `SELECT ... FOR UPDATE NOWAIT` on community+track+month row; if lock fails, worker retries with exponential backoff (max 5 seconds) |
-| **Cache invalidation race** (replica receives stale data after update) | Lag between pub/sub eviction and cache population | Use write-through: on ranking update, first evict cache key, then compute new data into cache; if read happens between evict and write, miss triggers recompute (idempotent) |
+| Failure Scenario                                                       | Detection                                                                                                                                                 | Mitigation                                                                                                                                                                   |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Duplicate match submission** (same game submitted twice)             | Idempotency key check returns cached response; if no idempotency key, duplicate detection on `players + date + venue` with unique constraint (hash index) | Return 409 Conflict; log for admin review; auto-reject second submission after manual check                                                                                  |
+| **Outbox relay crashes**                                               | Missing events in queue; dead-letter queue grows; alert on lag > 1 minute                                                                                 | Restart relay; events remain in `outbox` table (not deleted until sent); replay from last committed offset                                                                   |
+| **Ranking computation fails for a batch** (e.g., DB deadlock)          | Error logged; event delivery retries; after 3 failures, event goes to DLQ                                                                                 | Dead-letter queue triggers PagerDuty alert; operator replays event after fixing underlying issue                                                                             |
+| **Redis cache unavailable**                                            | All reads fall back to PostgreSQL; latency spikes (5x–10x)                                                                                                | Circuit breaker opens after 3 consecutive timeouts; fallback query returns stale data from DB; warm cache on recovery                                                        |
+| **Object storage upload fails** (presigned URL expired or network)     | Client receives HTTP 403/500                                                                                                                              | Retry with backoff up to 3 times; if still fails, return error to user and log; user can re-upload with new presigned URL                                                    |
+| **ILTL ingestion parses malformed data**                               | Validation regex fails; invalid match data logged                                                                                                         | Skip malformed record; log error; alert operator; manual patch via admin dashboard                                                                                           |
+| **Concurrent ranking snapshots** (multiple workers race)               | `finalized_at` is NULL; serialization conflicts                                                                                                           | Use `SELECT ... FOR UPDATE NOWAIT` on community+track+month row; if lock fails, worker retries with exponential backoff (max 5 seconds)                                      |
+| **Cache invalidation race** (replica receives stale data after update) | Lag between pub/sub eviction and cache population                                                                                                         | Use write-through: on ranking update, first evict cache key, then compute new data into cache; if read happens between evict and write, miss triggers recompute (idempotent) |
 
 ---
 
@@ -2795,42 +2924,43 @@ If an ILTL result arrives after the monthly snapshot was created, we must decide
 Synchronous generation blocks the request for ~500ms to render the SVG. If there are many concurrent share card requests, this could tie up API pods. We chose a hybrid: the first request for a specific player+community+track+month generates the card synchronously (with a 500ms timeout, falling back to a generic template), subsequently serving cached versions. If the timeout is hit, the client receives a placeholder and the generation is triggered asynchronously; the client retries after 5 seconds. This avoids a dedicated worker for a feature that is not latency-critical.
 
 ## 7. Module Boundaries
+
 ## Context & Goals
 
 Match Point’s architecture decomposes into six bounded modules, each owning a distinct subdomain: match ingestion, ranking computation, reputation scoring, API delivery, frontend presentation, and cross-community federation. The primary goal of these boundaries is to isolate volatility — ingest formats change per governing body, scoring algorithms evolve independently, and federation adapts per community — so that a change in one module never ripples through the entire system. A secondary goal is to allow parallel builds by separate sub-teams during Tasks 1–6 of the execution plan. Success criteria: each module can be tested, deployed, and scaled independently; integration contracts between modules are versioned protobuf or OpenAPI specs; and a module replacement (e.g., swapping the rank algorithm from Elo to Glicko-2) requires zero changes in any other module.
 
 ## Decisions
 
-1. **Module-per-subdomain with strict dependency direction.**  
-   - *Decision*: Layers flow `Ingestion → Ranking → Reputation → API → Frontend`, with Federation straddling across Ingestion and API. No module may import from a module at a higher layer.  
-   - *Rationale*: Prevents circular dependencies and allows the scoring engine to be swapped without touching the API or frontend.  
-   - *Rejected alternative*: A single monolithic ranking + reputation service — rejected because algorithm churn would force full redeployments.
+1. **Module-per-subdomain with strict dependency direction.**
+   - _Decision_: Layers flow `Ingestion → Ranking → Reputation → API → Frontend`, with Federation straddling across Ingestion and API. No module may import from a module at a higher layer.
+   - _Rationale_: Prevents circular dependencies and allows the scoring engine to be swapped without touching the API or frontend.
+   - _Rejected alternative_: A single monolithic ranking + reputation service — rejected because algorithm churn would force full redeployments.
 
-2. **Every module exposes a gRPC interface (internal) + optional REST gateway (external).**  
-   - *Decision*: Internal service-to-service calls use protobuf-over-gRPC; the API module exposes REST/JSON for web and mobile clients via grpc-gateway.  
-   - *Rationale*: Strongly typed contracts reduce integration bugs; gateway generation is automatic from proto files.  
-   - *Rejected alternative*: Pure REST between all services — rejected for lack of contract enforcement and higher marshalling overhead.
+2. **Every module exposes a gRPC interface (internal) + optional REST gateway (external).**
+   - _Decision_: Internal service-to-service calls use protobuf-over-gRPC; the API module exposes REST/JSON for web and mobile clients via grpc-gateway.
+   - _Rationale_: Strongly typed contracts reduce integration bugs; gateway generation is automatic from proto files.
+   - _Rejected alternative_: Pure REST between all services — rejected for lack of contract enforcement and higher marshalling overhead.
 
-3. **Each module owns its own schema and data store unless shared write access is required.**  
-   - *Decision*: Ingestion owns `raw_matches` and `competitions`; Ranking owns `rankings` and `player_ratings`; Reputation owns `reputation_scores` and `endorsements`. The API module reads from all three via gRPC queries — never directly touching their databases.  
-   - *Rationale*: Prevents coupling via shared schemas; each team can migrate their store independently.  
-   - *Rejected alternative*: Single shared PostgreSQL with schema-per-module — rejected because schema changes still require coordinated migrations.
+3. **Each module owns its own schema and data store unless shared write access is required.**
+   - _Decision_: Ingestion owns `raw_matches` and `competitions`; Ranking owns `rankings` and `player_ratings`; Reputation owns `reputation_scores` and `endorsements`. The API module reads from all three via gRPC queries — never directly touching their databases.
+   - _Rationale_: Prevents coupling via shared schemas; each team can migrate their store independently.
+   - _Rejected alternative_: Single shared PostgreSQL with schema-per-module — rejected because schema changes still require coordinated migrations.
 
-4. **Federation is a sidecar module, not a core pipeline stage.**  
-   - *Decision*: The Federation module listens on the Ingestion event bus and publishes translated matches to partner communities via webhook or pull API. It also exposes a federation-specific reputation exchange endpoint.  
-   - *Rationale*: Many communities will never federate; a pluggable sidecar avoids complexity in the critical path.  
-   - *Rejected alternative*: Inline federation logic in Ingestion — rejected because it would complicate the ingest pipeline with external connectivity concerns.
+4. **Federation is a sidecar module, not a core pipeline stage.**
+   - _Decision_: The Federation module listens on the Ingestion event bus and publishes translated matches to partner communities via webhook or pull API. It also exposes a federation-specific reputation exchange endpoint.
+   - _Rationale_: Many communities will never federate; a pluggable sidecar avoids complexity in the critical path.
+   - _Rejected alternative_: Inline federation logic in Ingestion — rejected because it would complicate the ingest pipeline with external connectivity concerns.
 
 ## Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|---|---|---|---|---|
-| **ingestion-service** | Parse ILTL CSVs/APIs; normalise match records; deduplicate; publish events | Go, Apache Arrow for columnar parsing, PostgreSQL | ILTL data sources, NATS JetStream | Backend Team A |
-| **ranking-service** | Retrieve clean matches; compute Elo/Glicko ratings; persist per-player ranking history | Go, gonum/stat for matrix ops, PostgreSQL (rankings), Redis (leaderboard cache) | ingestion-service (via NATS) | Backend Team B |
-| **reputation-service** | Combine ranking delta + match outcome + endorsement graph into a single reputation score; emit reputation-change events | Go, in-memory DAG for endorsement graph, PostgreSQL (scores, endorsements) | ranking-service (via gRPC), endorsement write API | Backend Team B |
-| **api-gateway** | Expose REST/JSON endpoints for frontend; aggregate responses from ranking and reputation services; handle auth | Go, grpc-gateway, OIDC middleware, Envoy reverse proxy | ranking-service (gRPC), reputation-service (gRPC) | Backend Team A |
-| **frontend-web** | Player dashboards, leaderboards, match history, reputation trends | Next.js, React, Tailwind, Chart.js | api-gateway (REST) | Frontend Team |
-| **federation-sidecar** | Translate match events to partner format; manage webhook delivery; expose cross-community reputation pull API | Go, NATS consumer, per-partner translator plugin | ingestion-service (NATS), api-gateway (for reputation exchange) | Backend Team A |
+| Component              | Responsibility                                                                                                          | Technologies                                                                    | Dependencies                                                    | Owner          |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------- | -------------- |
+| **ingestion-service**  | Parse ILTL CSVs/APIs; normalise match records; deduplicate; publish events                                              | Go, Apache Arrow for columnar parsing, PostgreSQL                               | ILTL data sources, NATS JetStream                               | Backend Team A |
+| **ranking-service**    | Retrieve clean matches; compute Elo/Glicko ratings; persist per-player ranking history                                  | Go, gonum/stat for matrix ops, PostgreSQL (rankings), Redis (leaderboard cache) | ingestion-service (via NATS)                                    | Backend Team B |
+| **reputation-service** | Combine ranking delta + match outcome + endorsement graph into a single reputation score; emit reputation-change events | Go, in-memory DAG for endorsement graph, PostgreSQL (scores, endorsements)      | ranking-service (via gRPC), endorsement write API               | Backend Team B |
+| **api-gateway**        | Expose REST/JSON endpoints for frontend; aggregate responses from ranking and reputation services; handle auth          | Go, grpc-gateway, OIDC middleware, Envoy reverse proxy                          | ranking-service (gRPC), reputation-service (gRPC)               | Backend Team A |
+| **frontend-web**       | Player dashboards, leaderboards, match history, reputation trends                                                       | Next.js, React, Tailwind, Chart.js                                              | api-gateway (REST)                                              | Frontend Team  |
+| **federation-sidecar** | Translate match events to partner format; manage webhook delivery; expose cross-community reputation pull API           | Go, NATS consumer, per-partner translator plugin                                | ingestion-service (NATS), api-gateway (for reputation exchange) | Backend Team A |
 
 ## Data contracts
 
@@ -2846,14 +2976,14 @@ Match Point’s architecture decomposes into six bounded modules, each owning a 
     "competition_id": "iltl-copa-2025",
     "played_at": "2025-07-14T18:30:00Z",
     "players": [
-      {"player_id": "p_1001", "team": "home"},
-      {"player_id": "p_1002", "team": "home"},
-      {"player_id": "p_2003", "team": "away"},
-      {"player_id": "p_2004", "team": "away"}
+      { "player_id": "p_1001", "team": "home" },
+      { "player_id": "p_1002", "team": "home" },
+      { "player_id": "p_2003", "team": "away" },
+      { "player_id": "p_2004", "team": "away" }
     ],
     "scores": [
-      {"set": 1, "home": 6, "away": 3},
-      {"set": 2, "home": 7, "away": 5}
+      { "set": 1, "home": 6, "away": 3 },
+      { "set": 2, "home": 7, "away": 5 }
     ],
     "surface": "clay",
     "category": "men_doubles"
@@ -2913,13 +3043,13 @@ Response 200:
 
 ## Failure modes
 
-| # | Failure | Detection | Mitigation |
-|---|---|---|---|
-| F1 | ILTL source format changes unexpectedly | Schema validation in ingestion-service fails; error rate spikes in `iltl_parse_errors` metric | Circuit-breaker on the ILTL adapter; alert on format drift; human-in-loop for schema update |
-| F2 | Ranking-service crash during batch computation | Health-check returns 503; `ranking_batch_duration` metric flatlines | Stateless workers — recompute from last checkpoint; use at-least-once NATS consumer with offset tracking |
-| F3 | Reputation score divergence between services | Cross-service audit compares ranking delta vs reputation delta; deviation > 0.5% triggers alert | Periodic reconciliation job re-fetches ranking history and recomputes reputation for affected players |
-| F4 | Federation webhook target is unreachable | Sidecar logs 5xx responses; delivery queue grows | Exponential backoff (30s, 2m, 8m, 30m); dead-letter queue after 5 retries; manual retry via admin API |
-| F5 | Database connection pool exhaustion under load | `pgx_pool_acquire_wait_seconds` p99 > 1s | Connection pooling per-module with separate max_conns; read replicas for ranking leaderboard queries; circuit-breaker on write path |
+| #   | Failure                                        | Detection                                                                                       | Mitigation                                                                                                                          |
+| --- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | ILTL source format changes unexpectedly        | Schema validation in ingestion-service fails; error rate spikes in `iltl_parse_errors` metric   | Circuit-breaker on the ILTL adapter; alert on format drift; human-in-loop for schema update                                         |
+| F2  | Ranking-service crash during batch computation | Health-check returns 503; `ranking_batch_duration` metric flatlines                             | Stateless workers — recompute from last checkpoint; use at-least-once NATS consumer with offset tracking                            |
+| F3  | Reputation score divergence between services   | Cross-service audit compares ranking delta vs reputation delta; deviation > 0.5% triggers alert | Periodic reconciliation job re-fetches ranking history and recomputes reputation for affected players                               |
+| F4  | Federation webhook target is unreachable       | Sidecar logs 5xx responses; delivery queue grows                                                | Exponential backoff (30s, 2m, 8m, 30m); dead-letter queue after 5 retries; manual retry via admin API                               |
+| F5  | Database connection pool exhaustion under load | `pgx_pool_acquire_wait_seconds` p99 > 1s                                                        | Connection pooling per-module with separate max_conns; read replicas for ranking leaderboard queries; circuit-breaker on write path |
 
 ## Mermaid diagram
 
@@ -2938,13 +3068,13 @@ flowchart TB
         GW[api-gateway]
         FE[frontend-web]
         FED[federation-sidecar]
-        
+
         ING -->|NATS: match.completed| RANK
         RANK -->|gRPC: RankingDelta| REP
         REP -->|gRPC: ReputationUpdate| GW
         RANK -->|gRPC: current_rankings| GW
         GW -->|REST/JSON| FE
-        
+
         ING -->|NATS: match.completed| FED
         FED -->|webhook/pull| Partner
         GW -->|gRPC: reputation_exchange| FED
@@ -2955,27 +3085,30 @@ flowchart TB
 
 ## Cross-cutting concerns
 
-- **Observability**: Every module exports OpenTelemetry traces (gRPC and NATS spans), RED metrics (Rate/Errors/Duration) via Prometheus, and structured JSON logs with a correlation ID propagated through the entire pipeline via a `x-request-id` header and NATS message header.  
-- **Security**: Internal gRPC calls are mutually authenticated with mTLS certificates rotated every 24h by cert-manager. External REST endpoints use OIDC (Google/Auth0) with scoped tokens — `reputation:read`, `reputation:write`, `admin`. Federation webhooks carry a per-partner HMAC signature in the `X-Signature` header.  
+- **Observability**: Every module exports OpenTelemetry traces (gRPC and NATS spans), RED metrics (Rate/Errors/Duration) via Prometheus, and structured JSON logs with a correlation ID propagated through the entire pipeline via a `x-request-id` header and NATS message header.
+- **Security**: Internal gRPC calls are mutually authenticated with mTLS certificates rotated every 24h by cert-manager. External REST endpoints use OIDC (Google/Auth0) with scoped tokens — `reputation:read`, `reputation:write`, `admin`. Federation webhooks carry a per-partner HMAC signature in the `X-Signature` header.
 - **Capacity planning**: Each service targets 500 req/s per instance with 2 vCPU / 4 GB RAM. Bottleneck is ranking-service during batch recompute (peak 10k matches/hour); this is mitigated by horizontal scaling (up to 4 pods) and a Redis rank-cache that absorbs 90% of leaderboard reads. Estimated total DB storage: 500 GB/year for raw matches (5M matches/year at ~100 KB/match), 50 GB for rankings and reputation snapshots.
 
 ## Trade-offs & open questions
 
-| Trade-off | Position | Rationale |
-|---|---|---|
-| **NATS vs Kafka** | NATS JetStream chosen for simplicity and lower operational overhead | Kafka would offer stronger ordering guarantees per partition, but Match Point does not require exactly-once across all consumers — at-least-once with dedup is sufficient and NATS is far simpler to operate at launch scale (< 100 partitions). |
-| **Separate databases vs schema-per-table** | Separate databases per module | Introduces network latency (~1–2 ms per cross-module query) but eliminates lock contention and schema coupling. Ranking and reputation queries are high-volume but each service has bounded queries — the latency is acceptable. |
-| **Single federation translator vs plugin architecture** | Plugin architecture per partner | Each partner has a unique data format and authentication model; a single translator would become unmaintainable beyond 2–3 partners. Plugin interface is ~150 lines of boilerplate per partner. |
+| Trade-off                                               | Position                                                            | Rationale                                                                                                                                                                                                                                        |
+| ------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **NATS vs Kafka**                                       | NATS JetStream chosen for simplicity and lower operational overhead | Kafka would offer stronger ordering guarantees per partition, but Match Point does not require exactly-once across all consumers — at-least-once with dedup is sufficient and NATS is far simpler to operate at launch scale (< 100 partitions). |
+| **Separate databases vs schema-per-table**              | Separate databases per module                                       | Introduces network latency (~1–2 ms per cross-module query) but eliminates lock contention and schema coupling. Ranking and reputation queries are high-volume but each service has bounded queries — the latency is acceptable.                 |
+| **Single federation translator vs plugin architecture** | Plugin architecture per partner                                     | Each partner has a unique data format and authentication model; a single translator would become unmaintainable beyond 2–3 partners. Plugin interface is ~150 lines of boilerplate per partner.                                                  |
 
 **Open questions:**
-1. Should the reputation score incorporate a decay factor for inactivity? The current model does not — a player inactive for 12 months retains their score. Product stakeholders have not yet decided on a decay window.  
-2. Should endorsement graph edges carry a weight (e.g., trust level 1–5) or remain binary? The binary model is simpler for launch but may limit nuance in reputation — revisit after user research in Task 5.  
+
+1. Should the reputation score incorporate a decay factor for inactivity? The current model does not — a player inactive for 12 months retains their score. Product stakeholders have not yet decided on a decay window.
+2. Should endorsement graph edges carry a weight (e.g., trust level 1–5) or remain binary? The binary model is simpler for launch but may limit nuance in reputation — revisit after user research in Task 5.
 3. How should cross-community reputation be normalised if communities use different ranking systems (Elo vs UTR vs custom)? The federation sidecar will need a configurable mapping table per partner — but the initial version assumes both sides use Elo-based scores.
+
 ### Context & Goals
 
 Module boundaries are the structural skeleton of the Match Point platform. They define how the system decomposes into cohesive units of functionality, each with explicit responsibilities, owned data, and well-defined communication channels. In a modular monolith, boundaries are enforced at compile time through Go packages and at runtime through clear API contracts, preventing the tangled dependencies that destroy maintainability. For a product that must serve both casual padel communities and official ILTL ranking integrations, clean module boundaries are essential for three reasons: **parallel development** across the seven execution phases (each phase maps to one or more modules), **independent testability** (each module can be unit-tested with mocked boundaries), and **future extractability** (should a module need to become an independent microservice, its interface is already defined).
 
 The success criteria for module boundaries are concrete:
+
 - **Compile-time isolation:** No module imports repository implementations from another module; all cross-module access goes through interfaces defined in a shared `interfaces` package.
 - **Runtime latency budget:** Async cross-module events (match submission → ranking recomputation) must complete within 5 seconds p95 end-to-end, including queue latency.
 - **Data ownership:** Each module's database tables are prefixed by module name (e.g., `player_accounts`, `match_results`, `rank_snapshots`) and are only written by that module's repository layer. Read access for cross-module queries (e.g., ranking engine reading player names) uses read replicas or cached views.
@@ -2985,28 +3118,28 @@ This section enumerates every module, its public interfaces, its private data, i
 ### Decisions
 
 1. **Modular monolith, not microservices.**  
-   All modules compile into a single Go binary (`cmd/matchpoint-api`) and share the same process space. This eliminates network overhead, simplifies deployment, and accelerates the first four phases. Each module is a separate Go package under `internal/module/`. *Rejected alternative:* microservices from day one—increases operational complexity and slows iteration. *Trade-off:* if a module becomes a performance hotspot (e.g., ranking engine), extracting it requires significant refactoring. We accept this risk because the ranking engine is IO-bound (heavy on Postgres queries, not CPU), and the monolith can horizontally scale pods.
+   All modules compile into a single Go binary (`cmd/matchpoint-api`) and share the same process space. This eliminates network overhead, simplifies deployment, and accelerates the first four phases. Each module is a separate Go package under `internal/module/`. _Rejected alternative:_ microservices from day one—increases operational complexity and slows iteration. _Trade-off:_ if a module becomes a performance hotspot (e.g., ranking engine), extracting it requires significant refactoring. We accept this risk because the ranking engine is IO-bound (heavy on Postgres queries, not CPU), and the monolith can horizontally scale pods.
 
 2. **Inter-module communication uses a shared interface layer and an event bus.**  
-   Synchronous calls (e.g., ranking engine fetching a player name to render a leaderboard) go through interfaces defined in `internal/port` (ports-and-adapters pattern). Asynchronous events (e.g., "match approved → recompute rankings") flow through a message queue (RabbitMQ in dev/prod, in-memory channel in unit tests). This decouples module lifetimes: the ranking engine does not block match submission. *Rejected alternative:* direct function calls across modules—creates tight coupling and makes it impossible to extract a module later.
+   Synchronous calls (e.g., ranking engine fetching a player name to render a leaderboard) go through interfaces defined in `internal/port` (ports-and-adapters pattern). Asynchronous events (e.g., "match approved → recompute rankings") flow through a message queue (RabbitMQ in dev/prod, in-memory channel in unit tests). This decouples module lifetimes: the ranking engine does not block match submission. _Rejected alternative:_ direct function calls across modules—creates tight coupling and makes it impossible to extract a module later.
 
 3. **Each module owns its database tables and only exposes query interfaces.**  
-   No module directly imports a repository from another module. Instead, a module that needs cross-module data declares an interface in `internal/port` (e.g., `PlayerProvider` for reading player display names), and the owning module provides a concrete implementation. This is enforced by a linter rule that prohibits imports from `internal/module/` packages other than the current one. *Rejected alternative:* shared database schemas with foreign keys across modules—causes schema coupling and makes migration painful.
+   No module directly imports a repository from another module. Instead, a module that needs cross-module data declares an interface in `internal/port` (e.g., `PlayerProvider` for reading player display names), and the owning module provides a concrete implementation. This is enforced by a linter rule that prohibits imports from `internal/module/` packages other than the current one. _Rejected alternative:_ shared database schemas with foreign keys across modules—causes schema coupling and makes migration painful.
 
 4. **Authentication and authorization span all modules but live in a cross-cutting `auth` package.**  
-   `internal/auth` provides middleware that validates JWT tokens, extracts user ID and roles, and injects a `ctx_identity` into request context. Each module's handlers then use `internal/auth/authz.go` to enforce fine-grained permissions (e.g., `MustBeCommunityAdmin(communityID)`). The auth module does not own user data; it calls `PlayerProvider` from the player module. *Rejected alternative:* each module replicating JWT validation—leads to inconsistent enforcement and duplicated code.
+   `internal/auth` provides middleware that validates JWT tokens, extracts user ID and roles, and injects a `ctx_identity` into request context. Each module's handlers then use `internal/auth/authz.go` to enforce fine-grained permissions (e.g., `MustBeCommunityAdmin(communityID)`). The auth module does not own user data; it calls `PlayerProvider` from the player module. _Rejected alternative:_ each module replicating JWT validation—leads to inconsistent enforcement and duplicated code.
 
 5. **Event schemas are versioned and stored as Protobuf messages.**  
-   The `internal/event` package defines all event types as protocol buffer messages. New fields are added with `optional` and `proto3` defaults; breaking changes require a new event version (e.g., `MatchSubmittedV2`). The message queue subscribes by event type and version, allowing modules to evolve independently. *Rejected alternative:* JSON over HTTP webhooks—no schema enforcement, harder to evolve.
+   The `internal/event` package defines all event types as protocol buffer messages. New fields are added with `optional` and `proto3` defaults; breaking changes require a new event version (e.g., `MatchSubmittedV2`). The message queue subscribes by event type and version, allowing modules to evolve independently. _Rejected alternative:_ JSON over HTTP webhooks—no schema enforcement, harder to evolve.
 
 6. **Ranking snapshots are immutable after monthly close.**  
-   The ranking engine writes a `rank_snapshot` row with a `snapshot_month` (YYYYMM) and a version integer. Once the snapshot is marked as “final”, no updates are allowed. This decision, documented in the ranking module boundary, prevents tampering and enables audit trails. *Rejected alternative:* updating in-place—would allow retroactive rank changes, undermining trust.
+   The ranking engine writes a `rank_snapshot` row with a `snapshot_month` (YYYYMM) and a version integer. Once the snapshot is marked as “final”, no updates are allowed. This decision, documented in the ranking module boundary, prevents tampering and enables audit trails. _Rejected alternative:_ updating in-place—would allow retroactive rank changes, undermining trust.
 
 7. **Endorsement scores are computed via a materialized view refreshed by a queue consumer.**  
-   The endorsement module owns the `endorsements` table and publishes an event when an endorsement is created. A consumer in the endorsement module recalculates the aggregate skill score and writes it to a materialized view (`player_skill_scores`). This view is refreshed within 30 seconds p95. *Rejected alternative:* compute on-read with Redis caching—would become stale during burst endorsement activity and cause inconsistent reads.
+   The endorsement module owns the `endorsements` table and publishes an event when an endorsement is created. A consumer in the endorsement module recalculates the aggregate skill score and writes it to a materialized view (`player_skill_scores`). This view is refreshed within 30 seconds p95. _Rejected alternative:_ compute on-read with Redis caching—would become stale during burst endorsement activity and cause inconsistent reads.
 
 8. **Share card generation is stateless and uses short-lived signed URLs.**  
-   The social sharing module generates a card as a PNG image, uploads it to an S3-compatible object store (MinIO in dev, Google Cloud Storage in prod), and returns a signed URL with a 1-hour TTL. The cache key includes the ranking snapshot version and the player ID, so a new ranking automatically invalidates the previous card. *Rejected alternative:* storing cards in PostgreSQL—too slow and expensive for burst sharing.
+   The social sharing module generates a card as a PNG image, uploads it to an S3-compatible object store (MinIO in dev, Google Cloud Storage in prod), and returns a signed URL with a 1-hour TTL. The cache key includes the ranking snapshot version and the player ID, so a new ranking automatically invalidates the previous card. _Rejected alternative:_ storing cards in PostgreSQL—too slow and expensive for burst sharing.
 
 9. **ILTL integration is isolated behind a dedicated `iltl` adapter module.**  
    The ILTL module adapts external endpoints (match results, player registrations) into internal events. It retries with exponential backoff and publishes a `ILTLPullFailed` event if ingestion fails after three attempts. This boundary ensures that external API changes do not ripple into core modules.
@@ -3015,41 +3148,42 @@ This section enumerates every module, its public interfaces, its private data, i
 
 #### Module Table
 
-| Module | Responsibility | Technologies | Key Interfaces/Events | Owned Tables | Phase |
-|--------|---------------|--------------|----------------------|--------------|-------|
-| **Player** | Account creation, JWT authentication, profile management, unique username enforcement, display name suffixing, preference storage (language, notification settings) | Go, PostgreSQL, Redis (session cache), golang-jwt/v5 | `PlayerAuthenticator`, `PlayerProvider`, events: `PlayerRegistered`, `ProfileUpdated` | `player_accounts`, `player_profiles`, `player_preferences`, `display_name_reservations` | 1 |
-| **Community** | Community CRUD, membership lifecycle, admin succession, duplicate display name resolution, i18n for community metadata | Go, PostgreSQL, Redis (membership cache) | `CommunityManager`, `MembershipProvider`, events: `CommunityCreated`, `MemberJoined`, `AdminTransferred` | `communities`, `community_memberships`, `community_admins`, `admin_transfer_requests` | 1 |
-| **Match** | Match submission, validation pipeline (syntax, date, participant checks), dispute flagging, admin manual point adjustments, integration with ILTL adapter | Go, PostgreSQL (transactional + event store), RabbitMQ (submission queue, validation retry) | `MatchSubmitter`, `MatchValidator`, `DisputeResolver`, events: `MatchSubmitted`, `MatchValidated`, `MatchDisputed`, `PointsAdjusted` | `match_submissions`, `match_results`, `match_validations`, `match_disputes`, `match_point_adjustments` | 2 |
-| **Ranking Engine** | Mabar rank per community, official global rank, monthly snapshot, idempotent replay of match events, scoring algorithm storage | Go, PostgreSQL (materialized views, snapshot tables), RabbitMQ (ranking recompute trigger) | `RankingCalculator`, `LeaderboardProvider`, events: `RankingRecalculated`, `SnapshotFinalized` | `rank_scores`, `rank_snapshots`, `rank_score_history`, `rank_community_snapshots` | 3 |
-| **Endorsement** | Skill endorsement creation, visibility rules, endorsement graph, aggregate score computation via materialized view | Go, PostgreSQL, RabbitMQ (endorsement event queue) | `EndorsementManager`, `SkillScoreProvider`, events: `EndorsementCreated`, `SkillScoreUpdated` | `endorsements`, `player_skill_scores` (materialized view), `endorsement_visibility_log` | 5 |
-| **Tournament** | Tournament bracket creation, match result ingestion, ranking point allocation | Go, PostgreSQL, RabbitMQ (tournament match events) | `TournamentOrganizer`, `TournamentRankingAdapter`, events: `TournamentCreated`, `TournamentMatchResult` | `tournaments`, `tournament_brackets`, `tournament_matches` | 4 |
-| **Social Sharing** | Ranking card PNG generation, signed URL creation, rate limiting per player per hour | Go, MinIO/GCS, Redis (rate limit counters, signed URL cache) | `ShareCardGenerator`, events: `ShareCardGenerated` (for admin metrics) | None (stateless; cards stored in object store) | 6 |
-| **Admin Dashboard** | Community admin and superadmin UI backend, analytics queries, manual point adjustment execution, dispute resolution flow | Go, PostgreSQL, Redis (analytics cache) | `AdminProvider`, `AnalyticsProvider` | `admin_audit_log`, `admin_settings` | 7 |
-| **Notification** (cross-cutting) | Email/push notification dispatch triggered by events (endorsement, ranking change, dispute, admin action) | Go, RabbitMQ, SendGrid/FCM | `Notifier`, events: `SendEmail`, `SendPushNotification` | `notification_log`, `notification_templates` | 1+ |
-| **ILTL Adapter** | Poll ILTL API, parse results, publish internal match events | Go, HTTP, RabbitMQ, PostgreSQL (ingestion log) | events: `ILTLMatchIngested`, `ILTLPullFailed` | `iltl_ingestion_log`, `iltl_rate_limit_state` | 2+ |
+| Module                           | Responsibility                                                                                                                                                      | Technologies                                                                                | Key Interfaces/Events                                                                                                                | Owned Tables                                                                                           | Phase |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ | ----- |
+| **Player**                       | Account creation, JWT authentication, profile management, unique username enforcement, display name suffixing, preference storage (language, notification settings) | Go, PostgreSQL, Redis (session cache), golang-jwt/v5                                        | `PlayerAuthenticator`, `PlayerProvider`, events: `PlayerRegistered`, `ProfileUpdated`                                                | `player_accounts`, `player_profiles`, `player_preferences`, `display_name_reservations`                | 1     |
+| **Community**                    | Community CRUD, membership lifecycle, admin succession, duplicate display name resolution, i18n for community metadata                                              | Go, PostgreSQL, Redis (membership cache)                                                    | `CommunityManager`, `MembershipProvider`, events: `CommunityCreated`, `MemberJoined`, `AdminTransferred`                             | `communities`, `community_memberships`, `community_admins`, `admin_transfer_requests`                  | 1     |
+| **Match**                        | Match submission, validation pipeline (syntax, date, participant checks), dispute flagging, admin manual point adjustments, integration with ILTL adapter           | Go, PostgreSQL (transactional + event store), RabbitMQ (submission queue, validation retry) | `MatchSubmitter`, `MatchValidator`, `DisputeResolver`, events: `MatchSubmitted`, `MatchValidated`, `MatchDisputed`, `PointsAdjusted` | `match_submissions`, `match_results`, `match_validations`, `match_disputes`, `match_point_adjustments` | 2     |
+| **Ranking Engine**               | Mabar rank per community, official global rank, monthly snapshot, idempotent replay of match events, scoring algorithm storage                                      | Go, PostgreSQL (materialized views, snapshot tables), RabbitMQ (ranking recompute trigger)  | `RankingCalculator`, `LeaderboardProvider`, events: `RankingRecalculated`, `SnapshotFinalized`                                       | `rank_scores`, `rank_snapshots`, `rank_score_history`, `rank_community_snapshots`                      | 3     |
+| **Endorsement**                  | Skill endorsement creation, visibility rules, endorsement graph, aggregate score computation via materialized view                                                  | Go, PostgreSQL, RabbitMQ (endorsement event queue)                                          | `EndorsementManager`, `SkillScoreProvider`, events: `EndorsementCreated`, `SkillScoreUpdated`                                        | `endorsements`, `player_skill_scores` (materialized view), `endorsement_visibility_log`                | 5     |
+| **Tournament**                   | Tournament bracket creation, match result ingestion, ranking point allocation                                                                                       | Go, PostgreSQL, RabbitMQ (tournament match events)                                          | `TournamentOrganizer`, `TournamentRankingAdapter`, events: `TournamentCreated`, `TournamentMatchResult`                              | `tournaments`, `tournament_brackets`, `tournament_matches`                                             | 4     |
+| **Social Sharing**               | Ranking card PNG generation, signed URL creation, rate limiting per player per hour                                                                                 | Go, MinIO/GCS, Redis (rate limit counters, signed URL cache)                                | `ShareCardGenerator`, events: `ShareCardGenerated` (for admin metrics)                                                               | None (stateless; cards stored in object store)                                                         | 6     |
+| **Admin Dashboard**              | Community admin and superadmin UI backend, analytics queries, manual point adjustment execution, dispute resolution flow                                            | Go, PostgreSQL, Redis (analytics cache)                                                     | `AdminProvider`, `AnalyticsProvider`                                                                                                 | `admin_audit_log`, `admin_settings`                                                                    | 7     |
+| **Notification** (cross-cutting) | Email/push notification dispatch triggered by events (endorsement, ranking change, dispute, admin action)                                                           | Go, RabbitMQ, SendGrid/FCM                                                                  | `Notifier`, events: `SendEmail`, `SendPushNotification`                                                                              | `notification_log`, `notification_templates`                                                           | 1+    |
+| **ILTL Adapter**                 | Poll ILTL API, parse results, publish internal match events                                                                                                         | Go, HTTP, RabbitMQ, PostgreSQL (ingestion log)                                              | events: `ILTLMatchIngested`, `ILTLPullFailed`                                                                                        | `iltl_ingestion_log`, `iltl_rate_limit_state`                                                          | 2+    |
 
 #### Module Dependency Graph (Synchronous Interfaces)
 
 The following table shows which modules call which other modules **directly** (not via event bus). All direct calls go through interfaces defined in `internal/port`.
 
-| Caller Module | Called Module | Interface Used | Purpose | Call Frequency |
-|---------------|---------------|----------------|---------|----------------|
-| Match | Player | `PlayerProvider` | Validate player existence, fetch display name for leaderboard inclusion | Per match submission (low) |
-| Match | Community | `MembershipProvider` | Verify submitter is community member, get community rules | Per match submission (low) |
-| Ranking Engine | Player | `PlayerProvider` | Fetch player names for leaderboard rendering | High (page loads) |
-| Ranking Engine | Community | `CommunityProvider` | Get community settings (ranking weight, points per league) | Per recompute (moderate) |
-| Endorsement | Player | `PlayerProvider` | Validate endorsed player exists, check privacy settings | Per endorsement creation (low) |
-| Tournament | Match | `MatchSubmitter` | Submit tournament match results into the match module | Low (tournament events) |
-| Tournament | Ranking Engine | `RankingSnapshotProvider` | Read current rankings for seeding | Low (tournament start) |
-| Admin Dashboard | All modules | Admin-specific query interfaces | Aggregate stats, fetch raw data for reports | Low (admin page loads) |
-| Social Sharing | Ranking Engine | `RankingSnapshotProvider` | Fetch snapshot data to render card | Moderate (per share generation) |
-| Social Sharing | Player | `PlayerProvider` | Fetch player name, avatar URL | Moderate (per share generation) |
+| Caller Module   | Called Module  | Interface Used                  | Purpose                                                                 | Call Frequency                  |
+| --------------- | -------------- | ------------------------------- | ----------------------------------------------------------------------- | ------------------------------- |
+| Match           | Player         | `PlayerProvider`                | Validate player existence, fetch display name for leaderboard inclusion | Per match submission (low)      |
+| Match           | Community      | `MembershipProvider`            | Verify submitter is community member, get community rules               | Per match submission (low)      |
+| Ranking Engine  | Player         | `PlayerProvider`                | Fetch player names for leaderboard rendering                            | High (page loads)               |
+| Ranking Engine  | Community      | `CommunityProvider`             | Get community settings (ranking weight, points per league)              | Per recompute (moderate)        |
+| Endorsement     | Player         | `PlayerProvider`                | Validate endorsed player exists, check privacy settings                 | Per endorsement creation (low)  |
+| Tournament      | Match          | `MatchSubmitter`                | Submit tournament match results into the match module                   | Low (tournament events)         |
+| Tournament      | Ranking Engine | `RankingSnapshotProvider`       | Read current rankings for seeding                                       | Low (tournament start)          |
+| Admin Dashboard | All modules    | Admin-specific query interfaces | Aggregate stats, fetch raw data for reports                             | Low (admin page loads)          |
+| Social Sharing  | Ranking Engine | `RankingSnapshotProvider`       | Fetch snapshot data to render card                                      | Moderate (per share generation) |
+| Social Sharing  | Player         | `PlayerProvider`                | Fetch player name, avatar URL                                           | Moderate (per share generation) |
 
 ### Data contracts
 
 #### Event schemas (Protobuf defined in `internal/event/*.proto`)
 
 **MatchSubmitted** — triggers ranking recompute
+
 ```protobuf
 message MatchSubmitted {
   string match_id = 1;          // UUID v7
@@ -3065,6 +3199,7 @@ message MatchSubmitted {
 ```
 
 **RankingRecalculated** — published after each ranking recompute
+
 ```protobuf
 message RankingRecalculated {
   string community_id = 1;
@@ -3077,6 +3212,7 @@ message RankingRecalculated {
 ```
 
 **EndorsementCreated**
+
 ```protobuf
 message EndorsementCreated {
   string endorsement_id = 1;
@@ -3114,6 +3250,7 @@ type RankingSnapshotProvider interface {
 #### Owned database tables (PostgreSQL, owned by module)
 
 **Player module (prefix `player_`)**
+
 ```sql
 CREATE TABLE player_accounts (
     player_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3143,6 +3280,7 @@ CREATE TABLE display_name_reservations (
 ```
 
 **Match module (prefix `match_`)**
+
 ```sql
 CREATE TABLE match_submissions (
     match_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -3174,6 +3312,7 @@ CREATE TABLE match_disputes (
 ```
 
 **Ranking engine (prefix `rank_`)**
+
 ```sql
 CREATE TABLE rank_scores (
     player_id UUID NOT NULL,
@@ -3200,16 +3339,16 @@ CREATE TABLE rank_snapshots (
 
 ### Failure modes
 
-| # | Failure Scenario | Detection | Mitigation | Module Affected |
-|---|-----------------|-----------|------------|-----------------|
-| 1 | Player module database unavailable during match submission | Match handler times out (configurable 3s dial+1s query timeout) | Match submission is idempotent; retry with exponential backoff (3 attempts). If still failing, queue match submission event for later processing in the dead-letter queue. | Match, Player |
-| 2 | Message queue (RabbitMQ) unavailable | Health check endpoint returns 503; alert triggers | Modules fall back to synchronous inline processing for critical events (rank recalculation is deferred). Non-critical events (e.g., notification dispatch) are dropped with a warning log. | All event consumers |
-| 3 | Ranking engine recompute runs too long (>30s) | Monitoring detects p99 recompute latency >30s; pod alert | Inline recompute is replaced with a background worker that processes one community at a time; ranking display falls back to last cached snapshot (Redis TTL 5 min). | Ranking Engine |
-| 4 | Duplicate match submission due to client retry | Unique constraint on `(submitted_by_player_id, team1_player_ids, team2_player_ids, submitted_at)` within 5-min window | Idempotency key in HTTP header; match module checks for duplicate hash before insert. On collision, returns existing match_id with HTTP 200. | Match |
-| 5 | ILTL adapter fails to ingest | `ILTLPullFailed` event published; alert to superadmin | Exponential backoff up to 1 hour; manual retry button in admin dashboard. No data loss; failed payloads stored in `iltl_ingestion_log` with raw JSON. | ILTL Adapter |
-| 6 | Object store unreachable for share card generation | Social sharing handler returns HTTP 503; monitoring detects | Retry three times with 100ms backoff; if still failing, serve a simplified card as SVG inline (no image upload). | Social Sharing |
-| 7 | Endorsement materialized view refresh queue backlog >1 hour | Queue depth metric breaches threshold; alert | Scale up consumer pod count (K8s HPA on queue depth). If backlog persists, trigger full refresh via `REFRESH MATERIALIZED VIEW CONCURRENTLY` on a schedule (every 15 min). | Endorsement |
-| 8 | Admin dashboard query times out (>10s) | ORM logs slow query >5s | Add query hints (e.g., `pg_hint_plan`), materialize common aggregation tables (e.g., daily active players per community). Serve cached results for historical data (TTL 1 hour). | Admin Dashboard |
+| #   | Failure Scenario                                            | Detection                                                                                                             | Mitigation                                                                                                                                                                                 | Module Affected     |
+| --- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
+| 1   | Player module database unavailable during match submission  | Match handler times out (configurable 3s dial+1s query timeout)                                                       | Match submission is idempotent; retry with exponential backoff (3 attempts). If still failing, queue match submission event for later processing in the dead-letter queue.                 | Match, Player       |
+| 2   | Message queue (RabbitMQ) unavailable                        | Health check endpoint returns 503; alert triggers                                                                     | Modules fall back to synchronous inline processing for critical events (rank recalculation is deferred). Non-critical events (e.g., notification dispatch) are dropped with a warning log. | All event consumers |
+| 3   | Ranking engine recompute runs too long (>30s)               | Monitoring detects p99 recompute latency >30s; pod alert                                                              | Inline recompute is replaced with a background worker that processes one community at a time; ranking display falls back to last cached snapshot (Redis TTL 5 min).                        | Ranking Engine      |
+| 4   | Duplicate match submission due to client retry              | Unique constraint on `(submitted_by_player_id, team1_player_ids, team2_player_ids, submitted_at)` within 5-min window | Idempotency key in HTTP header; match module checks for duplicate hash before insert. On collision, returns existing match_id with HTTP 200.                                               | Match               |
+| 5   | ILTL adapter fails to ingest                                | `ILTLPullFailed` event published; alert to superadmin                                                                 | Exponential backoff up to 1 hour; manual retry button in admin dashboard. No data loss; failed payloads stored in `iltl_ingestion_log` with raw JSON.                                      | ILTL Adapter        |
+| 6   | Object store unreachable for share card generation          | Social sharing handler returns HTTP 503; monitoring detects                                                           | Retry three times with 100ms backoff; if still failing, serve a simplified card as SVG inline (no image upload).                                                                           | Social Sharing      |
+| 7   | Endorsement materialized view refresh queue backlog >1 hour | Queue depth metric breaches threshold; alert                                                                          | Scale up consumer pod count (K8s HPA on queue depth). If backlog persists, trigger full refresh via `REFRESH MATERIALIZED VIEW CONCURRENTLY` on a schedule (every 15 min).                 | Endorsement         |
+| 8   | Admin dashboard query times out (>10s)                      | ORM logs slow query >5s                                                                                               | Add query hints (e.g., `pg_hint_plan`), materialize common aggregation tables (e.g., daily active players per community). Serve cached results for historical data (TTL 1 hour).           | Admin Dashboard     |
 
 ### Mermaid Diagram
 
@@ -3284,6 +3423,7 @@ component
 **Observability**
 
 Every module must export at minimum the following metrics via Prometheus:
+
 - `matchpoint_requests_total{module,handler,status}` — request count
 - `matchpoint_requests_duration_seconds{module,handler,quantile}` — latency histogram (p50, p95, p99)
 - `matchpoint_queue_messages_published_total{event_type}` and `matchpoint_queue_consumer_lag_messages{consumer_group}` — queue health
@@ -3300,14 +3440,14 @@ Endorsement events that trigger materialized view refresh must not include priva
 
 **Capacity planning**
 
-| Module | Expected Peak QPS (v1) | Database Connections | Memory per Pod | CPU per Pod | Horizontal Scaling |
-|--------|------------------------|----------------------|----------------|-------------|---------------------|
-| Player + Auth | 500 | 50 | 256MB | 500m | HPA on CPU >70% |
-| Community | 300 | 30 | 256MB | 500m | HPA on CPU >70% |
-| Match | 200 (submissions) + 1000 (reads) | 100 | 512MB | 1 vCPU | HPA on CPU >70% |
-| Ranking Engine (compute) | 10 recompute requests/min, but each reads hundreds of matches | Burst: up to 200 connections during full recompute | 1GB | 2 vCPU | HPA on queue depth >1000 |
-| Social Sharing | 50 (generate) + 200 (serve signed URL metadata) | 20 | 512MB | 1 vCPU | HPA on CPU >70% |
-| ILTL Adapter | 1–10 polling requests/min | 10 | 256MB | 500m | Fixed (low traffic) |
+| Module                   | Expected Peak QPS (v1)                                        | Database Connections                               | Memory per Pod | CPU per Pod | Horizontal Scaling       |
+| ------------------------ | ------------------------------------------------------------- | -------------------------------------------------- | -------------- | ----------- | ------------------------ |
+| Player + Auth            | 500                                                           | 50                                                 | 256MB          | 500m        | HPA on CPU >70%          |
+| Community                | 300                                                           | 30                                                 | 256MB          | 500m        | HPA on CPU >70%          |
+| Match                    | 200 (submissions) + 1000 (reads)                              | 100                                                | 512MB          | 1 vCPU      | HPA on CPU >70%          |
+| Ranking Engine (compute) | 10 recompute requests/min, but each reads hundreds of matches | Burst: up to 200 connections during full recompute | 1GB            | 2 vCPU      | HPA on queue depth >1000 |
+| Social Sharing           | 50 (generate) + 200 (serve signed URL metadata)               | 20                                                 | 512MB          | 1 vCPU      | HPA on CPU >70%          |
+| ILTL Adapter             | 1–10 polling requests/min                                     | 10                                                 | 256MB          | 500m        | Fixed (low traffic)      |
 
 All modules share a single PostgreSQL instance in v1 (with connection pool configured via pgx at 200 max connections). Dedicated read replicas for ranking heavy queries are added in Phase 3. Redis is a shared instance with key prefix `module_name:` to avoid collision.
 
@@ -3317,14 +3457,14 @@ Cross-module operations that require atomicity (e.g., match submission → ranki
 
 ### Trade-offs & open questions
 
-| Trade-off | Decision | Rationale | Open Question |
-|-----------|----------|-----------|---------------|
-| Ranking engine as monolith module vs. separate service | Keep as module in v1 | Simpler deployment, shared database connections, no network overhead for frequent reads. Extraction risk is acceptable because the ranking engine's hotspot is database I/O, not CPU. | Should we pre-materialize leaderboard views per community for faster pagination? (Recommended: materialize monthly + daily incremental refresh) |
-| Share card generation as synchronous request vs. async queue | Synchronous with fast timeout (2s) | Users expect instant share card; async would require polling. Cache hit ratio expected >90% after first generation. | Exact cache invalidation policy: use event-driven invalidation (on `RankingRecalculated`) or TTL scan? (Recommended: both — invalidate cache key on event + TTL 1 hour as fallback) |
-| Endorsement materialized view refresh vs. on-read compute | Materialized view refreshed via queue consumer | Avoids read-time aggregation that slows profile page loads. Consumer can batch updates. | Minimum endorsers for public display: set to 3 in v1; confirm via user research if 3 provides enough trust signal. |
-| Localization: store translations in database or code | Store as JSONB in `i18n_translations` table, loaded at startup into memory | Allows content managers to update translations without redeployment. Indonesian default, English fallback. | How to handle community-generated content (e.g., community names) that is already in Indonesian? No translation; display as-is. |
-| Admin succession: manual transfer vs. auto-claim after inactivity | Hybrid: outgoing admin can nominate successor; if inactive 30 days, claim requires platform admin approval | Balances autonomy with preventing malicious takeover. | Should the inactivity timer be configurable per community? (Recommended: yes, via community settings with a max of 60 days) |
-| Duplicate display names: suffix approach vs. unique constraints globally | Suffix per community, e.g., "Budi#2" | Preserves natural naming within smaller communities while preventing collision. Global username remains unique for login. | What happens if a player changes community and the base name is taken? (Recommended: offer to choose a new base name or accept suffix in new community) |
+| Trade-off                                                                | Decision                                                                                                   | Rationale                                                                                                                                                                             | Open Question                                                                                                                                                                       |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ranking engine as monolith module vs. separate service                   | Keep as module in v1                                                                                       | Simpler deployment, shared database connections, no network overhead for frequent reads. Extraction risk is acceptable because the ranking engine's hotspot is database I/O, not CPU. | Should we pre-materialize leaderboard views per community for faster pagination? (Recommended: materialize monthly + daily incremental refresh)                                     |
+| Share card generation as synchronous request vs. async queue             | Synchronous with fast timeout (2s)                                                                         | Users expect instant share card; async would require polling. Cache hit ratio expected >90% after first generation.                                                                   | Exact cache invalidation policy: use event-driven invalidation (on `RankingRecalculated`) or TTL scan? (Recommended: both — invalidate cache key on event + TTL 1 hour as fallback) |
+| Endorsement materialized view refresh vs. on-read compute                | Materialized view refreshed via queue consumer                                                             | Avoids read-time aggregation that slows profile page loads. Consumer can batch updates.                                                                                               | Minimum endorsers for public display: set to 3 in v1; confirm via user research if 3 provides enough trust signal.                                                                  |
+| Localization: store translations in database or code                     | Store as JSONB in `i18n_translations` table, loaded at startup into memory                                 | Allows content managers to update translations without redeployment. Indonesian default, English fallback.                                                                            | How to handle community-generated content (e.g., community names) that is already in Indonesian? No translation; display as-is.                                                     |
+| Admin succession: manual transfer vs. auto-claim after inactivity        | Hybrid: outgoing admin can nominate successor; if inactive 30 days, claim requires platform admin approval | Balances autonomy with preventing malicious takeover.                                                                                                                                 | Should the inactivity timer be configurable per community? (Recommended: yes, via community settings with a max of 60 days)                                                         |
+| Duplicate display names: suffix approach vs. unique constraints globally | Suffix per community, e.g., "Budi#2"                                                                       | Preserves natural naming within smaller communities while preventing collision. Global username remains unique for login.                                                             | What happens if a player changes community and the base name is taken? (Recommended: offer to choose a new base name or accept suffix in new community)                             |
 
 ## 8. Architecture Decisions
 
@@ -3338,14 +3478,14 @@ The decisions are recorded as lightweight ADRs (Architecture Decision Records) w
 
 The purpose of explicitly recording architecture decisions is to ensure that every significant technical choice has a documented rationale, a clear set of trade‑offs, and a path for future revision. For Match Point, the key goals are:
 
-| Goal | Stated Requirement | How Decisions Enable It |
-|------|-------------------|--------------------------|
-| **Security** | Protect user data, prevent ranking fraud, secure authentication | RSA256 JWT with rotation; anti‑farming checks on endorsement; fraud module separation |
-| **Scalability** | Handle 10,000+ concurrent players across communities | Modular monolith with horizontal pod scaling; idempotent ranking engine; Redis caching |
-| **Localization** | Default Indonesian, toggle English | ADR‑008 mandates i18n in frontend; static text stored in JSON resource files |
-| **Mobile‑first** | All key flows ≤3 taps on mobile | API design decisions (e.g., batch endpoint for match submission) reduce round trips |
-| **Auditability** | Point‑in‑time ranking snapshots, dispute overrides | Ranking computation versioned; all mutations logged with `changed_by` and `reason` |
-| **Simplicity** | Fast MVP for Phase 0–2, no over‑engineering | Venue as lat/lng+radius (not polygon); endorsement score via materialized view (not real‑time) |
+| Goal             | Stated Requirement                                              | How Decisions Enable It                                                                        |
+| ---------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **Security**     | Protect user data, prevent ranking fraud, secure authentication | RSA256 JWT with rotation; anti‑farming checks on endorsement; fraud module separation          |
+| **Scalability**  | Handle 10,000+ concurrent players across communities            | Modular monolith with horizontal pod scaling; idempotent ranking engine; Redis caching         |
+| **Localization** | Default Indonesian, toggle English                              | ADR‑008 mandates i18n in frontend; static text stored in JSON resource files                   |
+| **Mobile‑first** | All key flows ≤3 taps on mobile                                 | API design decisions (e.g., batch endpoint for match submission) reduce round trips            |
+| **Auditability** | Point‑in‑time ranking snapshots, dispute overrides              | Ranking computation versioned; all mutations logged with `changed_by` and `reason`             |
+| **Simplicity**   | Fast MVP for Phase 0–2, no over‑engineering                     | Venue as lat/lng+radius (not polygon); endorsement score via materialized view (not real‑time) |
 
 Every decision is made with an explicit trade‑off toward either simplicity (faster ship) or robustness (lower technical debt). The team documents which trade‑off wins and under what conditions the decision might need to be revisited.
 
@@ -3355,40 +3495,40 @@ Every decision is made with an explicit trade‑off toward either simplicity (fa
 
 The following table captures the eleven core ADRs for Match Point. Each ADR links to a detailed record in `docs/adrs/`. Decisions are grouped by architectural domain (authentication, localization, performance, fraud, data model, sharing, ranking, etc.). All ADRs in this table carry a **Status** column to indicate their lifecycle state.
 
-| ID | Domain | Decision Summary | Status | Phase Introduced |
-|----|--------|-----------------|--------|------------------|
-| ARCH‑001 | System Architecture | **Modular monolith** – single deployable Go binary with internal module boundaries; no cross‑module direct database access | Accepted | Phase 0 |
-| ARCH‑002 | Authentication | **RSA256 JWT** via golang‑jwt/jwt/v5, refresh token rotation, validation middleware in `platform/http` | Accepted | Phase 0 |
-| ARCH‑003 | UI Localization | **Indonesian default, English toggle** – all static strings via i18n; user‑generated content left as‑is | Accepted | Phase 1 |
-| ARCH‑004 | Ranking Computation | **Idempotent, versioned ranking engine** – monthly snapshots stored as immutable rows; re‑computation allowed for audit | Accepted | Phase 3 |
-| ARCH‑005 | Match Validation | **Asynchronous pipeline** – match submission writes to task queue; worker validates against ILTL, location proximity, timing; pending flag for admin review | Accepted | Phase 2 |
-| ARCH‑006 | Fraud Prevention | **Anti‑farming on endorsement** – synchronous check (rate limit + pairwise endorser count); materialized view refresh async | Accepted | Phase 5 |
-| ARCH‑007 | Endorsement Score | **Materialized view refreshed every 10 min** – on‑read with cache; not real‑time to avoid DB load | Accepted | Phase 5 |
-| ARCH‑008 | Share Card Cache | **MinIO + event‑based invalidation** – fallback TTL 1 hour; regeneration triggered by ranking update job | Accepted | Phase 6 |
-| ARCH‑009 | Venue Location | **Lat/lng point with 50m radius** – no polygon storage; QR code as optional alternative | Accepted | Phase 2 |
-| ARCH‑010 | Community Admin Succession | **Explicit nomination + 30‑day inactivity claim** – requires platform admin approval for claim | Accepted | Phase 1 |
-| ARCH‑011 | Refresh Token Rotation | **Version counter** – stored in `refresh_token_versions` table; blocklist not used to avoid in‑memory pressure | Accepted | Phase 0 |
+| ID       | Domain                     | Decision Summary                                                                                                                                            | Status   | Phase Introduced |
+| -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------- |
+| ARCH‑001 | System Architecture        | **Modular monolith** – single deployable Go binary with internal module boundaries; no cross‑module direct database access                                  | Accepted | Phase 0          |
+| ARCH‑002 | Authentication             | **RSA256 JWT** via golang‑jwt/jwt/v5, refresh token rotation, validation middleware in `platform/http`                                                      | Accepted | Phase 0          |
+| ARCH‑003 | UI Localization            | **Indonesian default, English toggle** – all static strings via i18n; user‑generated content left as‑is                                                     | Accepted | Phase 1          |
+| ARCH‑004 | Ranking Computation        | **Idempotent, versioned ranking engine** – monthly snapshots stored as immutable rows; re‑computation allowed for audit                                     | Accepted | Phase 3          |
+| ARCH‑005 | Match Validation           | **Asynchronous pipeline** – match submission writes to task queue; worker validates against ILTL, location proximity, timing; pending flag for admin review | Accepted | Phase 2          |
+| ARCH‑006 | Fraud Prevention           | **Anti‑farming on endorsement** – synchronous check (rate limit + pairwise endorser count); materialized view refresh async                                 | Accepted | Phase 5          |
+| ARCH‑007 | Endorsement Score          | **Materialized view refreshed every 10 min** – on‑read with cache; not real‑time to avoid DB load                                                           | Accepted | Phase 5          |
+| ARCH‑008 | Share Card Cache           | **MinIO + event‑based invalidation** – fallback TTL 1 hour; regeneration triggered by ranking update job                                                    | Accepted | Phase 6          |
+| ARCH‑009 | Venue Location             | **Lat/lng point with 50m radius** – no polygon storage; QR code as optional alternative                                                                     | Accepted | Phase 2          |
+| ARCH‑010 | Community Admin Succession | **Explicit nomination + 30‑day inactivity claim** – requires platform admin approval for claim                                                              | Accepted | Phase 1          |
+| ARCH‑011 | Refresh Token Rotation     | **Version counter** – stored in `refresh_token_versions` table; blocklist not used to avoid in‑memory pressure                                              | Accepted | Phase 0          |
 
 **Detailed ADR – ARCH‑002 (Authentication)**  
 **Status:** Accepted  
-*Context:* All user‑facing endpoints require secure, stateless authentication. Indonesia’s mobile‑heavy usage means token refresh must work reliably on spotty networks. ILTL integration will need service‑to‑service tokens.  
-*Decision:* Use `golang‑jwt/jwt/v5` with RSA256 asymmetric keys. Access token TTL = 15 minutes; refresh token TTL = 30 days with rotation (old token invalidated upon use). Tokens transmitted via `Authorization: Bearer <token>`. Validation middleware in `internal/platform/http/middleware.go` checks token signature, expiration, and optional audience claim (`"aud":"matchpoint‑api"`). Public key distributed to all pods as a mounted secret (Kubernetes Secret, rotated every 90 days).  
-*Consequences:* + No session state on server; + Key rotation without invalidating all tokens; – RSA key management complexity; – Slower validation than HMAC (but negligible at < 1ms per check).  
-*Alternatives:* HMAC (rejected: shared secret across pods is riskier in multi‑tenant K8s); OAuth2 with external IdP (rejected: adds latency and dependency for MVP, but future‑proof via `authenticated_by` claim).
+_Context:_ All user‑facing endpoints require secure, stateless authentication. Indonesia’s mobile‑heavy usage means token refresh must work reliably on spotty networks. ILTL integration will need service‑to‑service tokens.  
+_Decision:_ Use `golang‑jwt/jwt/v5` with RSA256 asymmetric keys. Access token TTL = 15 minutes; refresh token TTL = 30 days with rotation (old token invalidated upon use). Tokens transmitted via `Authorization: Bearer <token>`. Validation middleware in `internal/platform/http/middleware.go` checks token signature, expiration, and optional audience claim (`"aud":"matchpoint‑api"`). Public key distributed to all pods as a mounted secret (Kubernetes Secret, rotated every 90 days).  
+_Consequences:_ + No session state on server; + Key rotation without invalidating all tokens; – RSA key management complexity; – Slower validation than HMAC (but negligible at < 1ms per check).  
+_Alternatives:_ HMAC (rejected: shared secret across pods is riskier in multi‑tenant K8s); OAuth2 with external IdP (rejected: adds latency and dependency for MVP, but future‑proof via `authenticated_by` claim).
 
 **Detailed ADR – ARCH‑004 (Ranking Computation)**  
 **Status:** Accepted  
-*Context:* Match Point must produce two distinct ranking types: **Mabar rank** (within community, based on submitted match results) and **Official rank** (global, based on ILTL‑validated tournament results). Rankings are recalculated after every batch of new validated matches.  
-*Decision:* Ranking engine is a pure function: `func computeRanking(communityID, version, previousRankings, newMatches) (RankingSnapshot, error)`. No side effects except writing the snapshot to `ranking_snapshots` table. Each snapshot has a monotonically increasing version number and a `computed_at` timestamp. Monthly snapshots are locked (immutable) after the 1st of the following month. The engine uses Elo‑based scoring for Mabar and official ILTL point tables for Official rank. Disputes create a new snapshot with an override note.  
-*Consequences:* + Fully auditable, replayable; + Parallel computation per community; – Need to handle large community recalculations in one worker run (design for batch pagination).  
-*Alternatives:* Continuous incremental update (rejected: race conditions; harder to produce point‑in‑time snapshots); Using ILTL’s own ranking (rejected: doesn’t cover Mabar play, no cross‑community view).
+_Context:_ Match Point must produce two distinct ranking types: **Mabar rank** (within community, based on submitted match results) and **Official rank** (global, based on ILTL‑validated tournament results). Rankings are recalculated after every batch of new validated matches.  
+_Decision:_ Ranking engine is a pure function: `func computeRanking(communityID, version, previousRankings, newMatches) (RankingSnapshot, error)`. No side effects except writing the snapshot to `ranking_snapshots` table. Each snapshot has a monotonically increasing version number and a `computed_at` timestamp. Monthly snapshots are locked (immutable) after the 1st of the following month. The engine uses Elo‑based scoring for Mabar and official ILTL point tables for Official rank. Disputes create a new snapshot with an override note.  
+_Consequences:_ + Fully auditable, replayable; + Parallel computation per community; – Need to handle large community recalculations in one worker run (design for batch pagination).  
+_Alternatives:_ Continuous incremental update (rejected: race conditions; harder to produce point‑in‑time snapshots); Using ILTL’s own ranking (rejected: doesn’t cover Mabar play, no cross‑community view).
 
 **Detailed ADR – ARCH‑009 (Venue Location)**  
 **Status:** Accepted  
-*Context:* Match validation requires checking that a reported match occurred at a plausible venue (GPS proximity). ILTL provides venue addresses but not polygons.  
-*Decision:* Store venue as a point (`latitude`, `longitude` of type `DOUBLE PRECISION`) and a `radius_meters` integer (default 50). Match submission includes the player’s device GPS at time of submission (if permitted). The validation worker checks Haversine distance between venue point and reported point; if within radius, location is considered valid. If QR code scanning is used (venue‑provided code validated on the server), the location check is bypassed as a stronger proof.  
-*Consequences:* + Simple, no PostGIS dependency; + QR code provides strong anti‑spoofing when adopted; – Accuracy limited by GPS error margin; – Cannot detect venue boundary violations (e.g., near but outside).  
-*Alternatives:* PostGIS polygon storage (rejected: adds infrastructure complexity for MVP, can be added later with migration); Third‑party geo‑fencing service (rejected: cost and latency).
+_Context:_ Match validation requires checking that a reported match occurred at a plausible venue (GPS proximity). ILTL provides venue addresses but not polygons.  
+_Decision:_ Store venue as a point (`latitude`, `longitude` of type `DOUBLE PRECISION`) and a `radius_meters` integer (default 50). Match submission includes the player’s device GPS at time of submission (if permitted). The validation worker checks Haversine distance between venue point and reported point; if within radius, location is considered valid. If QR code scanning is used (venue‑provided code validated on the server), the location check is bypassed as a stronger proof.  
+_Consequences:_ + Simple, no PostGIS dependency; + QR code provides strong anti‑spoofing when adopted; – Accuracy limited by GPS error margin; – Cannot detect venue boundary violations (e.g., near but outside).  
+_Alternatives:_ PostGIS polygon storage (rejected: adds infrastructure complexity for MVP, can be added later with migration); Third‑party geo‑fencing service (rejected: cost and latency).
 
 ---
 
@@ -3396,19 +3536,19 @@ The following table captures the eleven core ADRs for Match Point. Each ADR link
 
 Each ADR affects specific components in the system. The table below maps decisions to components, technologies, dependencies, and the owning execution phase. All components are under the scope of the modular monolith and share a common deployment unit.
 
-| ADR | Component(s) Affected | Key Technologies | Internal Dependencies | Owner (Phase) |
-|-----|----------------------|------------------|------------------------|---------------|
-| ARCH‑001 | All backend modules, `cmd/server`, internal packages | Go 1.22, Chi router, PostgreSQL | — | Phase 0 |
-| ARCH‑002 | `platform/http/middleware`, `platform/auth`, `internal/modules/player` | golang‑jwt, RSA256 keys, secrets management | Redis (optional for blocklist, not used) | Phase 0 |
-| ARCH‑003 | Frontend `src/lib`, `src/routes`, static i18n files | SvelteKit, svelte‑i18n, JSON resource bundles | — | Phase 1 |
-| ARCH‑004 | `internal/modules/ranking` | Go, PostgreSQL (snapshot table), task queue | `match`, `community`, `player` modules | Phase 3 |
-| ARCH‑005 | `internal/modules/match`, `internal/modules/fraud`, worker service | RabbitMQ/Google PubSub, Go, PostgreSQL | `player`, `community`, ILTL API client | Phase 2 |
-| ARCH‑006 | `internal/modules/endorsement`, `internal/modules/fraud` | Go, rate limiter (in‑memory sliding window) | `player` module | Phase 5 |
-| ARCH‑007 | `internal/modules/endorsement`, database migrations, background scheduler (`cron`) | PostgreSQL materialized view, pg_cron | `endorsement` module | Phase 5 |
-| ARCH‑008 | `internal/modules/share`, MinIO client, `ranking` module updates | MinIO, Go, event bus (in‑app pub/sub via channels) | `ranking` module | Phase 6 |
-| ARCH‑009 | `internal/modules/match/validation`, `internal/modules/community` | Haversine formula (custom function), PostgreSQL point columns | `match` module | Phase 2 |
-| ARCH‑010 | `internal/modules/community`, admin dashboard | Go (scheduler checks), notification service | `player` module | Phase 1 |
-| ARCH‑011 | `platform/auth` (extends ARCH‑002) | PostgreSQL table `refresh_token_versions` | Same as ARCH‑002 | Phase 0 |
+| ADR      | Component(s) Affected                                                              | Key Technologies                                              | Internal Dependencies                    | Owner (Phase) |
+| -------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------------------- | ------------- |
+| ARCH‑001 | All backend modules, `cmd/server`, internal packages                               | Go 1.22, Chi router, PostgreSQL                               | —                                        | Phase 0       |
+| ARCH‑002 | `platform/http/middleware`, `platform/auth`, `internal/modules/player`             | golang‑jwt, RSA256 keys, secrets management                   | Redis (optional for blocklist, not used) | Phase 0       |
+| ARCH‑003 | Frontend `src/lib`, `src/routes`, static i18n files                                | SvelteKit, svelte‑i18n, JSON resource bundles                 | —                                        | Phase 1       |
+| ARCH‑004 | `internal/modules/ranking`                                                         | Go, PostgreSQL (snapshot table), task queue                   | `match`, `community`, `player` modules   | Phase 3       |
+| ARCH‑005 | `internal/modules/match`, `internal/modules/fraud`, worker service                 | RabbitMQ/Google PubSub, Go, PostgreSQL                        | `player`, `community`, ILTL API client   | Phase 2       |
+| ARCH‑006 | `internal/modules/endorsement`, `internal/modules/fraud`                           | Go, rate limiter (in‑memory sliding window)                   | `player` module                          | Phase 5       |
+| ARCH‑007 | `internal/modules/endorsement`, database migrations, background scheduler (`cron`) | PostgreSQL materialized view, pg_cron                         | `endorsement` module                     | Phase 5       |
+| ARCH‑008 | `internal/modules/share`, MinIO client, `ranking` module updates                   | MinIO, Go, event bus (in‑app pub/sub via channels)            | `ranking` module                         | Phase 6       |
+| ARCH‑009 | `internal/modules/match/validation`, `internal/modules/community`                  | Haversine formula (custom function), PostgreSQL point columns | `match` module                           | Phase 2       |
+| ARCH‑010 | `internal/modules/community`, admin dashboard                                      | Go (scheduler checks), notification service                   | `player` module                          | Phase 1       |
+| ARCH‑011 | `platform/auth` (extends ARCH‑002)                                                 | PostgreSQL table `refresh_token_versions`                     | Same as ARCH‑002                         | Phase 0       |
 
 ---
 
@@ -3417,6 +3557,7 @@ Each ADR affects specific components in the system. The table below maps decisio
 Several decisions introduce new data structures or extend existing ones. Below are the core contracts. Note that each contract includes an embedded **Status** indicator (e.g., `-- Status: Accepted` as a comment) to correlate with the ADR, ensuring traceability.
 
 **ARCH‑002 – JWT Token Payload (Go struct)**
+
 ```go
 // internal/platform/auth/token.go
 type AccessTokenClaims struct {
@@ -3436,6 +3577,7 @@ type RefreshToken struct {
 ```
 
 **ARCH‑004 – Ranking Snapshot Table (PostgreSQL)**
+
 ```sql
 -- Status: Accepted (ARCH-004)
 CREATE TABLE ranking_snapshots (
@@ -3454,6 +3596,7 @@ CREATE TABLE ranking_snapshots (
 ```
 
 **ARCH‑007 – Endorsement Materialized View**
+
 ```sql
 -- Status: Accepted (ARCH-007)
 -- Refreshed via scheduled job every 10 minutes
@@ -3471,6 +3614,7 @@ WITH DATA;
 ```
 
 **ARCH‑009 – Venue Location (part of venues table)**
+
 ```sql
 -- Status: Accepted (ARCH-009)
 CREATE TABLE venues (
@@ -3491,18 +3635,18 @@ CREATE TABLE venues (
 
 Each ADR carries inherent failure risks. The table below enumerates prominent failure scenarios, detection mechanisms, and mitigation strategies. The **Status** of each ADR (Accepted, etc.) is noted alongside the scenario.
 
-| ADR | Failure Scenario | Detection | Mitigation |
-|-----|------------------|-----------|------------|
-| ARCH‑002 (Accepted) | Private key compromised (e.g., leaked Git history) | Automated secret scan; K8s audit log | Immediate key rotation via Update Secret; revoke all tokens by flushing `refresh_token_versions` table; notify all users to re‑authenticate. |
-| ARCH‑002 (Accepted) | Refresh token replay attack after rotation failure | `login_attempts` table logs overlapping use of same version | Version check on each refresh: if version already used, invalidate all tokens for that user and flag as potential compromise. |
-| ARCH‑004 (Accepted) | Snapshot corruption during concurrent write | Checksum mismatch in `snapshot_data` | Write snapshot under advisory lock; use PostgreSQL `SERIALIZABLE` isolation for the compute transaction; re‑run on failure. |
-| ARCH‑005 (Accepted) | ILTL API unavailable during match validation | 5xx response or timeout | Queue retry with exponential backoff (max 3 attempts); after 3 failures, mark match as pending and notify admin. |
-| ARCH‑005 (Accepted) | GPS spoofing to fake venue proximity | Venue QR check bypass not enabled | Flag as suspicious if match submitted from a location that exactly matches venue point (duplicate GPS) – trigger manual review. |
-| ARCH‑007 (Accepted) | Materialized view refresh fails (database overload) | Job logs error; metric `endorsement_view_refresh_failures` | Fallback to direct query with `COUNT` over endorsements table (slower but correct); alert on high failure rate. |
-| ARCH‑008 (Accepted) | Share card image generation fails (MinIO full) | Monitor MinIO disk usage; regeneration job returns error | Serve last known card from CDN; alert operations team to scale MinIO. |
-| ARCH‑009 (Accepted) | Player GPS accuracy > 50m radius, false negative location validation | Match stuck in pending | Admin can manually confirm venue via QR or photo evidence; increase radius to 100m if GPS accuracy flag is low. |
-| ARCH‑010 (Accepted) | Inactive admin succession claim disputed | Timeline conflict (two members claim) | Platform admin reviews activity logs; tie‑breaker goes to member with most match submissions in the community. |
-| ARCH‑011 (Accepted) | Refresh token version counter overflow (very high frequency rotation) | Version reaches `INT8` max? Unlikely but possible | Reset version counter after 10^15 rotations (safe); in practice, reissue a new token family. |
+| ADR                 | Failure Scenario                                                      | Detection                                                   | Mitigation                                                                                                                                   |
+| ------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| ARCH‑002 (Accepted) | Private key compromised (e.g., leaked Git history)                    | Automated secret scan; K8s audit log                        | Immediate key rotation via Update Secret; revoke all tokens by flushing `refresh_token_versions` table; notify all users to re‑authenticate. |
+| ARCH‑002 (Accepted) | Refresh token replay attack after rotation failure                    | `login_attempts` table logs overlapping use of same version | Version check on each refresh: if version already used, invalidate all tokens for that user and flag as potential compromise.                |
+| ARCH‑004 (Accepted) | Snapshot corruption during concurrent write                           | Checksum mismatch in `snapshot_data`                        | Write snapshot under advisory lock; use PostgreSQL `SERIALIZABLE` isolation for the compute transaction; re‑run on failure.                  |
+| ARCH‑005 (Accepted) | ILTL API unavailable during match validation                          | 5xx response or timeout                                     | Queue retry with exponential backoff (max 3 attempts); after 3 failures, mark match as pending and notify admin.                             |
+| ARCH‑005 (Accepted) | GPS spoofing to fake venue proximity                                  | Venue QR check bypass not enabled                           | Flag as suspicious if match submitted from a location that exactly matches venue point (duplicate GPS) – trigger manual review.              |
+| ARCH‑007 (Accepted) | Materialized view refresh fails (database overload)                   | Job logs error; metric `endorsement_view_refresh_failures`  | Fallback to direct query with `COUNT` over endorsements table (slower but correct); alert on high failure rate.                              |
+| ARCH‑008 (Accepted) | Share card image generation fails (MinIO full)                        | Monitor MinIO disk usage; regeneration job returns error    | Serve last known card from CDN; alert operations team to scale MinIO.                                                                        |
+| ARCH‑009 (Accepted) | Player GPS accuracy > 50m radius, false negative location validation  | Match stuck in pending                                      | Admin can manually confirm venue via QR or photo evidence; increase radius to 100m if GPS accuracy flag is low.                              |
+| ARCH‑010 (Accepted) | Inactive admin succession claim disputed                              | Timeline conflict (two members claim)                       | Platform admin reviews activity logs; tie‑breaker goes to member with most match submissions in the community.                               |
+| ARCH‑011 (Accepted) | Refresh token version counter overflow (very high frequency rotation) | Version reaches `INT8` max? Unlikely but possible           | Reset version counter after 10^15 rotations (safe); in practice, reissue a new token family.                                                 |
 
 ---
 
@@ -3548,21 +3692,22 @@ sequenceDiagram
     end
 ```
 
-**Decision explanation for the diagram:**  
-- Refresh token rotation (ARCH‑011) uses a version counter stored in PostgreSQL.  
-- Access token validation uses only the public key and claims; no DB hit needed.  
+**Decision explanation for the diagram:**
+
+- Refresh token rotation (ARCH‑011) uses a version counter stored in PostgreSQL.
+- Access token validation uses only the public key and claims; no DB hit needed.
 - Both ADRs are **Accepted**.
 
 ---
 
 ### Cross‑cutting Concerns
 
-| Concern | How Addressed | Key Metrics |
-|---------|---------------|-------------|
-| **Security** | Asymmetric JWT keys rotated quarterly; all tokens have expiry; refresh token rotation with version counter; anti‑farming checks on endorsement (rate limit per endorser per target per week); all state‑changing operations logged with `created_by` and `reason`. All active ADRs have **Status: Accepted** and are reviewed quarterly. | Key rotation success rate (100% in tests); number of compromised token incidents (target 0); fraud flag rates (alert if >5% of endorsements are suspicious) |
-| **Observability** | Every ADR‑relevant failure is instrumented: JWT validation errors, materialized view refresh failures, ranking snapshot lock failures → metrics, logs, alerts. Use OpenTelemetry traces for match validation pipeline. | Alert on `rate(jwt_validation_errors_total[5m]) > 0.01`; trail latency p95 < 100ms for auth path. |
-| **Capacity Planning** | Auth path: public key cached in memory (no DB). Refresh token rotation DB writes per refresh: ~960k writes/day for 10k users. PostgreSQL handles it easily. Ranking snapshots: monthly lock writes small. MinIO storage for share cards: ~1GB/month for 10k users. | DB connection pool for auth writes separate from transactional pool; MinIO object count >= user count. |
-| **Maintainability** | ADR records in `/docs/adrs/` with references in code comments. Each ADR has a **Status** field that tracks its lifecycle. Migration scripts for schema changes. | Decision traceability: number of unlinked decisions (target 0); time to implement new ADR (target < 1 day). |
+| Concern               | How Addressed                                                                                                                                                                                                                                                                                                                            | Key Metrics                                                                                                                                                 |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Security**          | Asymmetric JWT keys rotated quarterly; all tokens have expiry; refresh token rotation with version counter; anti‑farming checks on endorsement (rate limit per endorser per target per week); all state‑changing operations logged with `created_by` and `reason`. All active ADRs have **Status: Accepted** and are reviewed quarterly. | Key rotation success rate (100% in tests); number of compromised token incidents (target 0); fraud flag rates (alert if >5% of endorsements are suspicious) |
+| **Observability**     | Every ADR‑relevant failure is instrumented: JWT validation errors, materialized view refresh failures, ranking snapshot lock failures → metrics, logs, alerts. Use OpenTelemetry traces for match validation pipeline.                                                                                                                   | Alert on `rate(jwt_validation_errors_total[5m]) > 0.01`; trail latency p95 < 100ms for auth path.                                                           |
+| **Capacity Planning** | Auth path: public key cached in memory (no DB). Refresh token rotation DB writes per refresh: ~960k writes/day for 10k users. PostgreSQL handles it easily. Ranking snapshots: monthly lock writes small. MinIO storage for share cards: ~1GB/month for 10k users.                                                                       | DB connection pool for auth writes separate from transactional pool; MinIO object count >= user count.                                                      |
+| **Maintainability**   | ADR records in `/docs/adrs/` with references in code comments. Each ADR has a **Status** field that tracks its lifecycle. Migration scripts for schema changes.                                                                                                                                                                          | Decision traceability: number of unlinked decisions (target 0); time to implement new ADR (target < 1 day).                                                 |
 
 ---
 
@@ -3570,29 +3715,30 @@ sequenceDiagram
 
 **Trade‑offs inherent in the decisions (all ADRs with Status=Accepted):**
 
-1. **RSA256 vs HMAC (ARCH‑002):** We traded key management complexity for security. HMAC is simpler but makes key rotation painful across pods. RSA256 allows separate sign and verify keys.  
-2. **Modular monolith vs microservices (ARCH‑001):** Chosen to avoid operational overhead for early phases. Scaling beyond ~100k users may require extracting the ranking engine.  
-3. **Endorsement refresh every 10 min (ARCH‑007):** Real‑time scores would be better, but materialized view avoids DB load. Trade‑off: up to 10‑minute delay for score updates.  
-4. **Venue point+radius vs polygon (ARCH‑009):** Simpler but less accurate for large venues. 50m default radius may be too small for indoor courts. Mitigation: admin override.  
+1. **RSA256 vs HMAC (ARCH‑002):** We traded key management complexity for security. HMAC is simpler but makes key rotation painful across pods. RSA256 allows separate sign and verify keys.
+2. **Modular monolith vs microservices (ARCH‑001):** Chosen to avoid operational overhead for early phases. Scaling beyond ~100k users may require extracting the ranking engine.
+3. **Endorsement refresh every 10 min (ARCH‑007):** Real‑time scores would be better, but materialized view avoids DB load. Trade‑off: up to 10‑minute delay for score updates.
+4. **Venue point+radius vs polygon (ARCH‑009):** Simpler but less accurate for large venues. 50m default radius may be too small for indoor courts. Mitigation: admin override.
 5. **Ranking snapshot locking after month end (ARCH‑004):** Prevents retroactive changes, but disputes discovered next month only affect current month. Acceptable for clarity.
 
 **Open Questions (from canonical state):**
 
-- *Refresh token rotation using blocklist vs version counter:* Chose version counter (ARCH‑011). If refresh traffic exceeds 5000 writes/second, consider moving to Redis blocklist. (Open: benchmark under load.)  
-- *Minimum number of endorsers for public display:* Currently set to 3. Should we lower to 2 in small communities? Implement as configurable community setting.  
-- *Share card invalidation exact policy:* Use event‑based invalidation with fallback TTL. Consider adding `ETag` headers for share cards in Phase 6.  
-- *Match dispute automated resolution v2:* No automation in v1. Deferred to Phase 7 for possible heuristics.
+- _Refresh token rotation using blocklist vs version counter:_ Chose version counter (ARCH‑011). If refresh traffic exceeds 5000 writes/second, consider moving to Redis blocklist. (Open: benchmark under load.)
+- _Minimum number of endorsers for public display:_ Currently set to 3. Should we lower to 2 in small communities? Implement as configurable community setting.
+- _Share card invalidation exact policy:_ Use event‑based invalidation with fallback TTL. Consider adding `ETag` headers for share cards in Phase 6.
+- _Match dispute automated resolution v2:_ No automation in v1. Deferred to Phase 7 for possible heuristics.
 
 **Recommended action items for open questions:**
 
-- Phase 1: Benchmark refresh token rotation with version counter under realistic load; document threshold for switching to Redis blocklist.  
-- Phase 2: Implement configurable minimum endorser count per community.  
-- Phase 6: Add `ETag` and conditional GET to share card endpoint; measure cache hit ratio.  
+- Phase 1: Benchmark refresh token rotation with version counter under realistic load; document threshold for switching to Redis blocklist.
+- Phase 2: Implement configurable minimum endorser count per community.
+- Phase 6: Add `ETag` and conditional GET to share card endpoint; measure cache hit ratio.
 - Phase 7: Evaluate dispute automation heuristics and update ARCH‑005 accordingly.
 
 All decisions in this section are subject to revision as the product evolves. The team should revisit the ADRs during post‑phase retrospectives and update both the decision details and their **Status** based on production monitoring.
 
 ## 9. Extension Points
+
 ### Context & Goals
 
 Match Point is designed from the ground up as an extensible platform, acknowledging that no single ranking algorithm, data source, or integration model can serve the full spectrum of padel and tennis communities across Argentina, Spain, and Latin America. Extension points allow the platform to absorb new competition data sources (ILTL, club management systems, tournament platforms), introduce custom ranking formulae per region, and expose reputation signals to third-party consumers without modifying core code. The success criteria for the extension architecture are:
@@ -3623,15 +3769,15 @@ The extension architecture is not a generic plugin framework; it is purpose-buil
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|---|---|---|---|---|
-| **Source Adapter Registry** | Manages lifecycle and configuration of data source adapters | Go 1.22, Protobuf, gRPC | Config file (YAML), adapter sidecars | Platform team |
-| **Ranking Plugin Manager** | Loads, validates, and invokes custom ranking plugins via gRPC | Go 1.22, gRPC, Bazel | Ranking sidecars, Redis Streams | Ranking team |
-| **Webhook Dispatcher** | Delivers events to registered webhook URLs with retry and signing | Go 1.22, Redis Streams, HTTP client | HTTP endpoints, secret store (Vault) | Platform team |
-| **Public API Gateway** | Exposes reputation data, enforces rate limits, validates API keys | Go 1.22, Gin, Redis (rate limit) | OpenAPI spec, PostgreSQL | Platform team |
-| **Event Bus** | Redis Streams for internal pub/sub | Redis 7, Go redis client | Redis cluster | Platform team |
-| **Plugin SDK** | Go library for building ranking plugins (gRPC server boilerplate, protobuf types) | Go 1.22, protoc, buf | Ranking Plugin Manager | Ranking team |
-| **Adapter SDK** | Go library for building source adapters (gRPC server boilerplate, `FetchMatches` proto) | Go 1.22, protoc, buf | Source Adapter Registry | Platform team |
+| Component                   | Responsibility                                                                          | Technologies                        | Dependencies                         | Owner         |
+| --------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------ | ------------- |
+| **Source Adapter Registry** | Manages lifecycle and configuration of data source adapters                             | Go 1.22, Protobuf, gRPC             | Config file (YAML), adapter sidecars | Platform team |
+| **Ranking Plugin Manager**  | Loads, validates, and invokes custom ranking plugins via gRPC                           | Go 1.22, gRPC, Bazel                | Ranking sidecars, Redis Streams      | Ranking team  |
+| **Webhook Dispatcher**      | Delivers events to registered webhook URLs with retry and signing                       | Go 1.22, Redis Streams, HTTP client | HTTP endpoints, secret store (Vault) | Platform team |
+| **Public API Gateway**      | Exposes reputation data, enforces rate limits, validates API keys                       | Go 1.22, Gin, Redis (rate limit)    | OpenAPI spec, PostgreSQL             | Platform team |
+| **Event Bus**               | Redis Streams for internal pub/sub                                                      | Redis 7, Go redis client            | Redis cluster                        | Platform team |
+| **Plugin SDK**              | Go library for building ranking plugins (gRPC server boilerplate, protobuf types)       | Go 1.22, protoc, buf                | Ranking Plugin Manager               | Ranking team  |
+| **Adapter SDK**             | Go library for building source adapters (gRPC server boilerplate, `FetchMatches` proto) | Go 1.22, protoc, buf                | Source Adapter Registry              | Platform team |
 
 ### Data contracts
 
@@ -3730,13 +3876,13 @@ service RankingPlugin {
 
 ### Failure modes
 
-| Failure mode | Detection | Mitigation | Recovery |
-|---|---|---|---|
-| **Source adapter gRPC sidecar crashes** | Health check fails (gRPC liveness probe, Prometheus alert if down > 30s) | Adapter registry marks source as DEGRADED; ranking backlog accumulates in Celery queue | Kubernetes restarts sidecar; backlog processed on reconnection |
-| **Ranking plugin returns error or wrong type** | Response validation: `new_points` out of range [-10000, 10000] or `error` field set | Ranking Engine falls back to default ELO calculation for that league; incident is logged to error budget | Plugin developer receives error; hot-reload of fixed plugin without restart |
-| **Webhook delivery fails permanently** | After 3 retries, event moved to `webhook_failed` table with HTTP status and request body | Admin dashboard shows failed deliveries; manual replay button; alert to subscriber channel | Subscriber fixes endpoint, admin replays via dashboard or API |
-| **Redis Streams lag exceeds 60 seconds** | Consumer group lag metric > 1000 messages or p99 lag > 60s | Autoscale consumer pods; if Redis memory > 80%, scale up cluster | Backlog processed; alert triggers for investigation |
-| **Public API rate limit exceeded** | 429 response with `Retry-After` header; logged for analysis | Token bucket per API key (100 req/min default); configurable per subscriber | Caller honors retry logic; no manual recovery needed |
+| Failure mode                                   | Detection                                                                                | Mitigation                                                                                               | Recovery                                                                    |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| **Source adapter gRPC sidecar crashes**        | Health check fails (gRPC liveness probe, Prometheus alert if down > 30s)                 | Adapter registry marks source as DEGRADED; ranking backlog accumulates in Celery queue                   | Kubernetes restarts sidecar; backlog processed on reconnection              |
+| **Ranking plugin returns error or wrong type** | Response validation: `new_points` out of range [-10000, 10000] or `error` field set      | Ranking Engine falls back to default ELO calculation for that league; incident is logged to error budget | Plugin developer receives error; hot-reload of fixed plugin without restart |
+| **Webhook delivery fails permanently**         | After 3 retries, event moved to `webhook_failed` table with HTTP status and request body | Admin dashboard shows failed deliveries; manual replay button; alert to subscriber channel               | Subscriber fixes endpoint, admin replays via dashboard or API               |
+| **Redis Streams lag exceeds 60 seconds**       | Consumer group lag metric > 1000 messages or p99 lag > 60s                               | Autoscale consumer pods; if Redis memory > 80%, scale up cluster                                         | Backlog processed; alert triggers for investigation                         |
+| **Public API rate limit exceeded**             | 429 response with `Retry-After` header; logged for analysis                              | Token bucket per API key (100 req/min default); configurable per subscriber                              | Caller honors retry logic; no manual recovery needed                        |
 
 ### Mermaid diagram
 
@@ -3829,6 +3975,7 @@ graph TB
 2. **What is the maximum number of active ranking plugins per league?** Currently unconstrained. A single league running 20+ plugins simultaneously could overload the Ranking Plugin Manager. Recommended answer: enforce a soft limit of 5 active plugins per league, hard limit of 10, with a configurable override via feature flag.
 
 3. **How do we handle backward-incompatible changes to the gRPC plugin contract?** Proto versions are embedded in the package name (`matchpoint.ranking.v1`). When v2 is released, the Plugin Manager will support concurrent v1 and v2 sidecars for a 6-month migration window. The SDK will publish a migration guide.
+
 ### Context & Goals
 
 Match Point is designed to serve a rapidly evolving sports ecosystem where new communities, tournament platforms, and ranking formulas emerge frequently. Extension points define the intentional seams in the architecture where new capabilities can be added without destabilising the core ranking engine, match validation pipeline, endorsement system, or social engagement layer. These seams are not afterthoughts; they are first-class interfaces – versioned, documented, and validated – that allow the platform to absorb future requirements like support for squash, custom rating formulas from national federations, real-time match feeds from third-party apps, or dynamic skill dimensions defined by community admins. The investment in extension points aims to reduce the cost of adding a new sport or integrating a new external data provider from months to ≤ 30 days of developer effort, as measured from spec sign-off to production rollout.
@@ -3837,57 +3984,57 @@ The core architecture exposes five primary extension seams: (1) the ranking algo
 
 **Success Criteria**
 
-| Criterion | Target | Measurement Method |
-|-----------|--------|--------------------|
-| Time to add a new sport (tennis → squash) with working ranking, match validation, and endorsement dimensions | ≤ 30 days | Project tracking (JIRA) from spec sign-off to production deployment |
-| Third-party tournament platform webhook integration (new API) | ≤ 5 developer-days | Onboarding audit reports |
-| Number of supported ranking algorithm plugins before requiring new core infrastructure | ≥ 20 | Plugin registry count |
-| Backward compatibility of extension interfaces across minor releases | 100% (no breaking changes) | Contract test suite (pact.io or schema diffs in CI) |
-| Community admin configuring custom endorsement dimensions | < 10 minutes in dashboard | Usability test logging |
+| Criterion                                                                                                    | Target                     | Measurement Method                                                  |
+| ------------------------------------------------------------------------------------------------------------ | -------------------------- | ------------------------------------------------------------------- |
+| Time to add a new sport (tennis → squash) with working ranking, match validation, and endorsement dimensions | ≤ 30 days                  | Project tracking (JIRA) from spec sign-off to production deployment |
+| Third-party tournament platform webhook integration (new API)                                                | ≤ 5 developer-days         | Onboarding audit reports                                            |
+| Number of supported ranking algorithm plugins before requiring new core infrastructure                       | ≥ 20                       | Plugin registry count                                               |
+| Backward compatibility of extension interfaces across minor releases                                         | 100% (no breaking changes) | Contract test suite (pact.io or schema diffs in CI)                 |
+| Community admin configuring custom endorsement dimensions                                                    | < 10 minutes in dashboard  | Usability test logging                                              |
 
 ### Decisions
 
-1. **In-process plugin via Go interfaces (not sidecar, not dynamic loading).**  
-   - **Decision**: Ranking algorithms, match validation rules, and endorsement scoring functions are implemented as Go structs that implement a versioned interface defined in `platform/ranking/engine.go`, `platform/validation/rule.go`, and `platform/endorsement/scorer.go`. Plugins are registered in a static map at compile time via a registry pattern.  
-   - **Rationale**: Simplicity, sub-millisecond latency (no RPC overhead for high-frequency ranking updates), and a single deployable artifact. The platform runs as a monolith in production; all plugins share the same memory space and can access cached data directly.  
+1. **In-process plugin via Go interfaces (not sidecar, not dynamic loading).**
+   - **Decision**: Ranking algorithms, match validation rules, and endorsement scoring functions are implemented as Go structs that implement a versioned interface defined in `platform/ranking/engine.go`, `platform/validation/rule.go`, and `platform/endorsement/scorer.go`. Plugins are registered in a static map at compile time via a registry pattern.
+   - **Rationale**: Simplicity, sub-millisecond latency (no RPC overhead for high-frequency ranking updates), and a single deployable artifact. The platform runs as a monolith in production; all plugins share the same memory space and can access cached data directly.
    - **Rejected alternatives**: Dynamic plugin loading (`plugin` package) is problematic for production because of version mismatches, build reproducibility, and the inability to cross-compile. Sidecar gRPC would add latency (0.5–2 ms per call) and deployment complexity for core ranking paths. In-process plugins are the default; sidecar is reserved for enterprise custom algorithms (Decision 6).
 
-2. **Webhook registry for external match result providers.**  
-   - **Decision**: Third-party tournament platforms and ILTL bulk data feeds push match results via HTTPS POST to a configurable webhook endpoint hosted at `POST /api/v1/webhooks/{provider}`. Each provider is registered with a unique secret key (HMAC-SHA256 signing) and an allowed IP range. Delivery is asynchronous: payload is validated, stored in a `webhook_events` table, and enqueued for processing via a task queue (RabbitMQ/GCP PubSub).  
-   - **Rationale**: Allows asynchronous, fire-and-forget ingestion with retry queue and separates concerns: the platform does not need to poll external systems. The registry ensures that each provider has its own authentication and rate limits (default 100 req/s).  
+2. **Webhook registry for external match result providers.**
+   - **Decision**: Third-party tournament platforms and ILTL bulk data feeds push match results via HTTPS POST to a configurable webhook endpoint hosted at `POST /api/v1/webhooks/{provider}`. Each provider is registered with a unique secret key (HMAC-SHA256 signing) and an allowed IP range. Delivery is asynchronous: payload is validated, stored in a `webhook_events` table, and enqueued for processing via a task queue (RabbitMQ/GCP PubSub).
+   - **Rationale**: Allows asynchronous, fire-and-forget ingestion with retry queue and separates concerns: the platform does not need to poll external systems. The registry ensures that each provider has its own authentication and rate limits (default 100 req/s).
    - **Rejected alternatives**: Direct database write access for external systems (security risk). REST API endpoint per provider (unmanageable URL surface). gRPC streaming (over-engineering for most partners).
 
-3. **Sport-generic player profile with sport-specific extension data in JSONB.**  
-   - **Decision**: The `players` table has a `sport_profile jsonb` column keyed by sport slug (e.g., `"padel"`, `"tennis"`, `"squash"`). Each sport’s module defines its own schema for that JSONB sub-object, validated at write time using a registered Go struct. The `communities` table also stores a `sport_config jsonb` column for sport-specific rules (court type, scoring system, ranking algorithm reference).  
-   - **Rationale**: Avoid schema migrations per sport; validation and indexing of JSONB fields are sufficient for the expected query patterns (e.g., “find all tennis players with >100 rating”). New sports can be added without DBA involvement.  
+3. **Sport-generic player profile with sport-specific extension data in JSONB.**
+   - **Decision**: The `players` table has a `sport_profile jsonb` column keyed by sport slug (e.g., `"padel"`, `"tennis"`, `"squash"`). Each sport’s module defines its own schema for that JSONB sub-object, validated at write time using a registered Go struct. The `communities` table also stores a `sport_config jsonb` column for sport-specific rules (court type, scoring system, ranking algorithm reference).
+   - **Rationale**: Avoid schema migrations per sport; validation and indexing of JSONB fields are sufficient for the expected query patterns (e.g., “find all tennis players with >100 rating”). New sports can be added without DBA involvement.
    - **Rejected alternatives**: Separate `sport_players` tables per sport (schema proliferation, join hell). Polymorphic association table (complex queries, ORM antipattern). EAV pattern (performance degradation for reads).
 
-4. **Webhook event schema uses CloudEvents 1.0 with Match Point extensions.**  
-   - **Decision**: All webhook payloads (external match results, player changes) conform to the CloudEvents 1.0 specification, with required fields `id`, `source`, `specversion`, `type`, `datacontenttype`, and `data`. Match Point extensions include `mp.community_id`, `mp.sport`, and `mp.ranking_version`.  
-   - **Rationale**: Interoperability with standard event routers (e.g., Google Eventarc, AWS EventBridge), future multi-cloud event mesh, and third-party developer familiarity. CloudEvents is widely adopted and has robust SDK support.  
+4. **Webhook event schema uses CloudEvents 1.0 with Match Point extensions.**
+   - **Decision**: All webhook payloads (external match results, player changes) conform to the CloudEvents 1.0 specification, with required fields `id`, `source`, `specversion`, `type`, `datacontenttype`, and `data`. Match Point extensions include `mp.community_id`, `mp.sport`, and `mp.ranking_version`.
+   - **Rationale**: Interoperability with standard event routers (e.g., Google Eventarc, AWS EventBridge), future multi-cloud event mesh, and third-party developer familiarity. CloudEvents is widely adopted and has robust SDK support.
    - **Rejected alternatives**: Proprietary JSON schema (vendor lock-in, harder for third-party developers). Raw POST with no schema (validation overhead).
 
-5. **Endorsement skill-dimension extensibility via a dimension registry.**  
-   - **Decision**: The `endorsement_dimensions` table is configurable: new dimensions can be added at runtime by community admins (e.g., "serve power", "volley softness" for tennis; "bandeja", "chiquita" for padel) and are validated by the endorsement engine as first-class dimensions in the reputation graph. The backend exposes a `POST /api/v1/communities/{id}/endorsements/dimensions` endpoint (admin-only). A dimension health metric tracks usage; unused dimensions are auto-archived after 30 days.  
-   - **Rationale**: Community admins can tailor the endorsement system to their sport’s nuances without requiring a backend release. The reputation algorithm normalizes across dimensions per community.  
+5. **Endorsement skill-dimension extensibility via a dimension registry.**
+   - **Decision**: The `endorsement_dimensions` table is configurable: new dimensions can be added at runtime by community admins (e.g., "serve power", "volley softness" for tennis; "bandeja", "chiquita" for padel) and are validated by the endorsement engine as first-class dimensions in the reputation graph. The backend exposes a `POST /api/v1/communities/{id}/endorsements/dimensions` endpoint (admin-only). A dimension health metric tracks usage; unused dimensions are auto-archived after 30 days.
+   - **Rationale**: Community admins can tailor the endorsement system to their sport’s nuances without requiring a backend release. The reputation algorithm normalizes across dimensions per community.
    - **Rejected alternatives**: Hard-coded dimensions (inflexible, requires code change for each sport). Machine-generated dimensions from text analysis (over-engineered for v1).
 
-6. **Sidecar gRPC for external ranking algorithm services (enterprise tier).**  
-   - **Decision**: For clients that need to run proprietary ranking algorithms (e.g., a national federation with a custom rating formula like ELo with dynamic K-factor), Match Point provides a gRPC sidecar contract (`RankingService.Evaluate`) that runs as an optional container in the same pod. The platform falls back to default algorithm if sidecar is unavailable after two consecutive timeouts (circuit breaker).  
-   - **Rationale**: Isolates complex calculations from core pipeline, supports non-Go implementations, and allows independent scaling if needed (enterprise SLA). Sidecar pattern ensures that the algorithm can be updated without redeploying the core.  
+6. **Sidecar gRPC for external ranking algorithm services (enterprise tier).**
+   - **Decision**: For clients that need to run proprietary ranking algorithms (e.g., a national federation with a custom rating formula like ELo with dynamic K-factor), Match Point provides a gRPC sidecar contract (`RankingService.Evaluate`) that runs as an optional container in the same pod. The platform falls back to default algorithm if sidecar is unavailable after two consecutive timeouts (circuit breaker).
+   - **Rationale**: Isolates complex calculations from core pipeline, supports non-Go implementations, and allows independent scaling if needed (enterprise SLA). Sidecar pattern ensures that the algorithm can be updated without redeploying the core.
    - **Rejected alternatives**: In-process plugin for all clients (security concerns with arbitrary code, version fragmentation). Separate microservice (operational overhead for caching and transaction atomicity).
 
 ### Component breakdown
 
-| Extension Capability | Responsibility | Technologies | Dependencies | Owner (Release Task) |
-|---------------------|----------------|--------------|--------------|----------------------|
-| **Ranking algorithm pipeline** | Execute an ordered chain of ranker plugins against a match set; cache results; emit ranking snapshots | Go interface `Ranker` with methods `Compute(ctx, matches, priorRankings) *RankingResult` | PostgreSQL (match store), Redis (cache), Task Queue (scheduled recompute) | Platform team (Task 3 + continual) |
-| **Match validation rule plug‑in** | Apply community‑defined rules (e.g., min game difference, court type check) after core validation passes | Go interface `ValidationRule` with method `Validate(ctx, match) *ValidationResult` | Redis (rule cache), PostgreSQL (rule config) | Community team (Task 2) |
-| **External webhook registry** | Manage webhook endpoint registration, secret rotation, retry policy, and delivery logs | HTTPS + HMAC-SHA256 (platform/http), RabbitMQ/Google PubSub for delivery, PostgreSQL for registry | Relational database (webhook_configs), TLS termination, queue | Backend team (Task 2, extended Task 5) |
-| **Sport‑generic JSONB schema** | Store and validate sport‑specific player attributes and community configuration | JSONB columns with CHECK constraints (e.g., `jsonb_typeof(sport_config->'court_type') = 'string'`), Go struct per sport | PostgreSQL | Platform team (Task 1) |
-| **Endorsement dimension registry** | CRUD for dynamic endorsement dimensions, normalization weights per dimension | REST API (Go), PostgreSQL dimension_store, Redis cache | Same as core endorsement module | Growth team (Task 5) |
-| **Sidecar ranking service** | gRPC server implementing `RankingService` proto; runs as optional container in ranking pods | gRPC (protobuf), Go or any language with gRPC support, sidecar pattern | Core ranking engine, Kubernetes pod lifecycle, health check endpoint | Platform team (Task 3 enterprise) |
-| **Share card template engine** | Allow custom share card templates per community (CSS‑customizable via approved subset) | Go template engine with sanitised HTML/CSS, React component for preview | Redis template cache, frontend upload bucket | Growth team (Task 6) |
+| Extension Capability               | Responsibility                                                                                           | Technologies                                                                                                            | Dependencies                                                              | Owner (Release Task)                   |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------- |
+| **Ranking algorithm pipeline**     | Execute an ordered chain of ranker plugins against a match set; cache results; emit ranking snapshots    | Go interface `Ranker` with methods `Compute(ctx, matches, priorRankings) *RankingResult`                                | PostgreSQL (match store), Redis (cache), Task Queue (scheduled recompute) | Platform team (Task 3 + continual)     |
+| **Match validation rule plug‑in**  | Apply community‑defined rules (e.g., min game difference, court type check) after core validation passes | Go interface `ValidationRule` with method `Validate(ctx, match) *ValidationResult`                                      | Redis (rule cache), PostgreSQL (rule config)                              | Community team (Task 2)                |
+| **External webhook registry**      | Manage webhook endpoint registration, secret rotation, retry policy, and delivery logs                   | HTTPS + HMAC-SHA256 (platform/http), RabbitMQ/Google PubSub for delivery, PostgreSQL for registry                       | Relational database (webhook_configs), TLS termination, queue             | Backend team (Task 2, extended Task 5) |
+| **Sport‑generic JSONB schema**     | Store and validate sport‑specific player attributes and community configuration                          | JSONB columns with CHECK constraints (e.g., `jsonb_typeof(sport_config->'court_type') = 'string'`), Go struct per sport | PostgreSQL                                                                | Platform team (Task 1)                 |
+| **Endorsement dimension registry** | CRUD for dynamic endorsement dimensions, normalization weights per dimension                             | REST API (Go), PostgreSQL dimension_store, Redis cache                                                                  | Same as core endorsement module                                           | Growth team (Task 5)                   |
+| **Sidecar ranking service**        | gRPC server implementing `RankingService` proto; runs as optional container in ranking pods              | gRPC (protobuf), Go or any language with gRPC support, sidecar pattern                                                  | Core ranking engine, Kubernetes pod lifecycle, health check endpoint      | Platform team (Task 3 enterprise)      |
+| **Share card template engine**     | Allow custom share card templates per community (CSS‑customizable via approved subset)                   | Go template engine with sanitised HTML/CSS, React component for preview                                                 | Redis template cache, frontend upload bucket                              | Growth team (Task 6)                   |
 
 ### Data contracts
 
@@ -3930,30 +4077,30 @@ CREATE TABLE IF NOT EXISTS integration_schema.webhook_providers (
 
 ```json
 {
-    "specversion": "1.0",
-    "type": "com.matchpoint.match.submitted",
-    "source": "https://tournament-plus.example.com/api/matches/new",
-    "id": "2025-09-15T10:30:00Z_abc123",
-    "datacontenttype": "application/json",
-    "time": "2025-09-15T10:30:00Z",
-    "data": {
-        "sport": "padel",
-        "match_type": "doubles",
-        "players": [
-            {"community_id": "c_portfolio", "player_id": "p_001", "score": 6},
-            {"community_id": "c_portfolio", "player_id": "p_002", "score": 6},
-            {"community_id": "c_portfolio", "player_id": "p_003", "score": 4},
-            {"community_id": "c_portfolio", "player_id": "p_004", "score": 3}
-        ],
-        "played_at": "2025-09-15T09:00:00Z",
-        "tournament_id": "t_9876",
-        "round": "final",
-        "mp": {
-            "community_id": "c_portfolio",
-            "sport": "padel",
-            "ranking_version": "2"
-        }
+  "specversion": "1.0",
+  "type": "com.matchpoint.match.submitted",
+  "source": "https://tournament-plus.example.com/api/matches/new",
+  "id": "2025-09-15T10:30:00Z_abc123",
+  "datacontenttype": "application/json",
+  "time": "2025-09-15T10:30:00Z",
+  "data": {
+    "sport": "padel",
+    "match_type": "doubles",
+    "players": [
+      { "community_id": "c_portfolio", "player_id": "p_001", "score": 6 },
+      { "community_id": "c_portfolio", "player_id": "p_002", "score": 6 },
+      { "community_id": "c_portfolio", "player_id": "p_003", "score": 4 },
+      { "community_id": "c_portfolio", "player_id": "p_004", "score": 3 }
+    ],
+    "played_at": "2025-09-15T09:00:00Z",
+    "tournament_id": "t_9876",
+    "round": "final",
+    "mp": {
+      "community_id": "c_portfolio",
+      "sport": "padel",
+      "ranking_version": "2"
     }
+  }
 }
 ```
 
@@ -3961,31 +4108,55 @@ CREATE TABLE IF NOT EXISTS integration_schema.webhook_providers (
 
 ```json
 {
-    "community_id": "c_tennis_club",
-    "sport": "tennis",
-    "dimensions": [
-        {"slug": "serve_speed", "display_name": "Serve Power", "weight": 0.3, "min": 1, "max": 10},
-        {"slug": "volley_touch", "display_name": "Volley Touch", "weight": 0.25, "min": 1, "max": 10},
-        {"slug": "footwork", "display_name": "Footwork", "weight": 0.25, "min": 1, "max": 10},
-        {"slug": "mental_game", "display_name": "Mental Game", "weight": 0.2, "min": 1, "max": 10}
-    ],
-    "endorsement_mode": "aggregate_weighted_average",
-    "min_endorsers_for_display": 3,
-    "active": true
+  "community_id": "c_tennis_club",
+  "sport": "tennis",
+  "dimensions": [
+    {
+      "slug": "serve_speed",
+      "display_name": "Serve Power",
+      "weight": 0.3,
+      "min": 1,
+      "max": 10
+    },
+    {
+      "slug": "volley_touch",
+      "display_name": "Volley Touch",
+      "weight": 0.25,
+      "min": 1,
+      "max": 10
+    },
+    {
+      "slug": "footwork",
+      "display_name": "Footwork",
+      "weight": 0.25,
+      "min": 1,
+      "max": 10
+    },
+    {
+      "slug": "mental_game",
+      "display_name": "Mental Game",
+      "weight": 0.2,
+      "min": 1,
+      "max": 10
+    }
+  ],
+  "endorsement_mode": "aggregate_weighted_average",
+  "min_endorsers_for_display": 3,
+  "active": true
 }
 ```
 
 ### Failure modes
 
-| Failure Mode | Detection | Mitigation | Recovery |
-|--------------|-----------|------------|----------|
-| Ranking plugin panics or times out (> 2 s) | Middleware recovery + context deadline; metric `ranking_plugin_failure_total` by plugin name | Plugin invoked in a goroutine with panic recovery; timeout set per plugin (configurable via `PluginConfig.MaxExecutionTime`) | Fall back to previous snapshot ranking; plugin deactivated after 3 consecutive failures (alert sent to oncall) |
-| Webhook secret is compromised (leaked) | Manual report or automated anomaly detection (unusual IP, payload volume spike) | Audit log of webhook calls; secret rotation endpoint exists (admin‑only) | Rotate secret, revoke old secret, notify provider via out‑of‑band channel; replay queue holds events for 7 days |
-| Invalid sport‑specific JSONB schema (e.g., misspelled field) | JSONB CHECK constraint violation at write time; error log with full detail | Server‑side validation (Go struct per sport) that runs before DB write; provides user‑friendly error messages | Reject write, return 422 with specific field path |
-| Endorsement dimension weight sum >1.0 | Validation on dimension update rejects the config with 400 | Pre‑flight validation in service layer; weights normalized in ranking engine to sum to 1.0 | Reject update; admin must supply weights that sum to ≤1.0 (system auto‑normalizes if <1.0) |
-| Sidecar ranking service becomes unhealthy | Kubernetes liveness & readiness probes fail; Prometheus alert if down >30 s | Circuit breaker in main process: if sidecar unavailable, use default ranker after 2 consecutive failures | Pod restarts sidecar; if sidecar fails >5 times in 5 min, Pod is evicted and recreated with default ranker and no sidecar |
-| Webhook payload fails CloudEvents schema validation (missing `specversion`, etc.) | JSON schema validation at endpoint ( `vendor/github.com/cloudevents` schema) | Return 400 with validation errors; log payload for manual inspection | Payload not inserted; provider must fix and retry (queue holds 3 attempts with exponential backoff) |
-| Dynamic dimension registry hits concurrency conflict (two admins create same dimension slug) | Unique constraint violation on `(community_id, slug)` | Transaction with advisory lock; return conflict error with existing dimension | Admin must choose a different slug or reuse existing |
+| Failure Mode                                                                                 | Detection                                                                                    | Mitigation                                                                                                                   | Recovery                                                                                                                  |
+| -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Ranking plugin panics or times out (> 2 s)                                                   | Middleware recovery + context deadline; metric `ranking_plugin_failure_total` by plugin name | Plugin invoked in a goroutine with panic recovery; timeout set per plugin (configurable via `PluginConfig.MaxExecutionTime`) | Fall back to previous snapshot ranking; plugin deactivated after 3 consecutive failures (alert sent to oncall)            |
+| Webhook secret is compromised (leaked)                                                       | Manual report or automated anomaly detection (unusual IP, payload volume spike)              | Audit log of webhook calls; secret rotation endpoint exists (admin‑only)                                                     | Rotate secret, revoke old secret, notify provider via out‑of‑band channel; replay queue holds events for 7 days           |
+| Invalid sport‑specific JSONB schema (e.g., misspelled field)                                 | JSONB CHECK constraint violation at write time; error log with full detail                   | Server‑side validation (Go struct per sport) that runs before DB write; provides user‑friendly error messages                | Reject write, return 422 with specific field path                                                                         |
+| Endorsement dimension weight sum >1.0                                                        | Validation on dimension update rejects the config with 400                                   | Pre‑flight validation in service layer; weights normalized in ranking engine to sum to 1.0                                   | Reject update; admin must supply weights that sum to ≤1.0 (system auto‑normalizes if <1.0)                                |
+| Sidecar ranking service becomes unhealthy                                                    | Kubernetes liveness & readiness probes fail; Prometheus alert if down >30 s                  | Circuit breaker in main process: if sidecar unavailable, use default ranker after 2 consecutive failures                     | Pod restarts sidecar; if sidecar fails >5 times in 5 min, Pod is evicted and recreated with default ranker and no sidecar |
+| Webhook payload fails CloudEvents schema validation (missing `specversion`, etc.)            | JSON schema validation at endpoint ( `vendor/github.com/cloudevents` schema)                 | Return 400 with validation errors; log payload for manual inspection                                                         | Payload not inserted; provider must fix and retry (queue holds 3 attempts with exponential backoff)                       |
+| Dynamic dimension registry hits concurrency conflict (two admins create same dimension slug) | Unique constraint violation on `(community_id, slug)`                                        | Transaction with advisory lock; return conflict error with existing dimension                                                | Admin must choose a different slug or reuse existing                                                                      |
 
 ### Mermaid diagram
 
@@ -4009,7 +4180,7 @@ sequenceDiagram
     App->>DB: Insert ranking_snapshot (id, community_id, sport, version, computed_at, snapshot_data jsonb)
     App->>Cache: Invalidate old snapshot keys
     App->>Queue: Enqueue event "ranking.computed" for leaderboard refresh + share card invalidation
-    
+
     Note over Ext,Queue: Sidecar gRPC Plugin (enterprise)
     App->>App: Circuit breaker check: sidecar healthy?
     App->>+Sidecar: gRPC /ranking.Evaluate (matches, weights)
@@ -4042,6 +4213,7 @@ sequenceDiagram
 - **Plugin marketplace UI**: Is there a need for a plugin marketplace UI inside the admin dashboard? **Initial decision**: No. Plugins are deployed via CI/CD pipeline and configured via the admin API. A marketplace UI is a candidate for Task 7 if community demand materialises. This keeps the initial engineering scope focused on backend contracts.
 
 ## 10. Security Considerations
+
 ### Context & Goals
 
 Security for Match Point is not an afterthought — it is foundational to the platform’s credibility. The product aggregates player reputation and ranking data from multiple padel and tennis communities, some of which feed into ILTL’s official competition datasets. A breach could erode trust in the cross-community ranking system, expose personally identifiable information (PII) of athletes, or allow malicious actors to manipulate scores. The security architecture must therefore protect data at rest, in transit, and during processing, while also enforcing fine-grained access control for community administrators, players, and ILTL data consumers. Success criteria: zero data leaks in production, all API endpoints enforce authentication and authorisation, and the system achieves SOC 2 Type II certification within the first year of operation.
@@ -4062,14 +4234,14 @@ Security for Match Point is not an afterthought — it is foundational to the pl
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|---------------|--------------|--------------|-------|
-| Auth Gateway (OAuth) | Authenticate users, issue JWTs, enforce scopes | Go 1.22, Keycloak, PostgreSQL | External IdPs (Google, Apple) | Platform Team |
-| Encryption Service | Manage KMS keys, encrypt/decrypt PII fields on write/read | AWS KMS, Go stdlib crypto/aes | None (standalone) | Security Team |
-| mTLS Sidecar | Attach and verify client certificates on all pod-to-pod calls | Envoy Proxy, SPIFFE/SPIRE | SPIFFE control plane | Platform Team |
-| Fraud Detection Engine | Analyse match-result streams, compute anomaly scores, trigger manual review | Python 3.12, Apache Flink, Redis | Ranking Processor | Data Science Team |
-| Audit Log & Ledger | Store immutable ranking snapshots and admin actions | PostgreSQL 16 (native WAL, triggers), TimescaleDB | Core Ranking DB | Backend Team |
-| ILTL Data Validator | Verify HMAC signatures on incoming ILTL match records | Go 1.22, local cache for shared secrets | KMS (to decrypt shared secret) | Backend Team |
+| Component              | Responsibility                                                              | Technologies                                      | Dependencies                   | Owner             |
+| ---------------------- | --------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------ | ----------------- |
+| Auth Gateway (OAuth)   | Authenticate users, issue JWTs, enforce scopes                              | Go 1.22, Keycloak, PostgreSQL                     | External IdPs (Google, Apple)  | Platform Team     |
+| Encryption Service     | Manage KMS keys, encrypt/decrypt PII fields on write/read                   | AWS KMS, Go stdlib crypto/aes                     | None (standalone)              | Security Team     |
+| mTLS Sidecar           | Attach and verify client certificates on all pod-to-pod calls               | Envoy Proxy, SPIFFE/SPIRE                         | SPIFFE control plane           | Platform Team     |
+| Fraud Detection Engine | Analyse match-result streams, compute anomaly scores, trigger manual review | Python 3.12, Apache Flink, Redis                  | Ranking Processor              | Data Science Team |
+| Audit Log & Ledger     | Store immutable ranking snapshots and admin actions                         | PostgreSQL 16 (native WAL, triggers), TimescaleDB | Core Ranking DB                | Backend Team      |
+| ILTL Data Validator    | Verify HMAC signatures on incoming ILTL match records                       | Go 1.22, local cache for shared secrets           | KMS (to decrypt shared secret) | Backend Team      |
 
 ### Data contracts
 
@@ -4117,13 +4289,13 @@ CREATE TABLE ranking_audit_log (
 
 ### Failure modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| KMS key unreachable during PII write | Latency spike in encryption service; alert on 5xx from KMS | Fallback to a warm standby key in a secondary region; queue the request and retry with exponential backoff (max 5 attempts). If still failing, reject the operation and surface 503 to client. |
-| ILTL HMAC signature mismatch | Validator returns “signature_invalid” | Discard the record, log an incident, and notify the ILTL integration contact via PagerDuty. Do not accept the result into the ranking engine. |
-| Fraud detection produces false positive | User-submitted challenge ticket | Hold the score change in “pending_review” state for 24 hours; an admin can approve/reject. If approved, the fraud engine’s anomaly threshold is adjusted via a manual hotfix. |
-| mTLS certificate rotation leaves stale certs | Envoy logs “TLS certificate expired” | SPIFFE control plane renews certificates 48 hours before expiry. Monitoring alerts on any certificate with <72h remaining. If still expired, restart the Envoy sidecar to force pull fresh certs. |
-| Insert into audit log fails due to disk fullness | PostgreSQL error “could not extend file” | The audit log table is on a separate, auto-scaling EBS volume with 99.99% uptime SLA. Write failover to a secondary reader node that accepts inserts after a 1s timeout. |
+| Failure                                          | Detection                                                  | Mitigation                                                                                                                                                                                        |
+| ------------------------------------------------ | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| KMS key unreachable during PII write             | Latency spike in encryption service; alert on 5xx from KMS | Fallback to a warm standby key in a secondary region; queue the request and retry with exponential backoff (max 5 attempts). If still failing, reject the operation and surface 503 to client.    |
+| ILTL HMAC signature mismatch                     | Validator returns “signature_invalid”                      | Discard the record, log an incident, and notify the ILTL integration contact via PagerDuty. Do not accept the result into the ranking engine.                                                     |
+| Fraud detection produces false positive          | User-submitted challenge ticket                            | Hold the score change in “pending_review” state for 24 hours; an admin can approve/reject. If approved, the fraud engine’s anomaly threshold is adjusted via a manual hotfix.                     |
+| mTLS certificate rotation leaves stale certs     | Envoy logs “TLS certificate expired”                       | SPIFFE control plane renews certificates 48 hours before expiry. Monitoring alerts on any certificate with <72h remaining. If still expired, restart the Envoy sidecar to force pull fresh certs. |
+| Insert into audit log fails due to disk fullness | PostgreSQL error “could not extend file”                   | The audit log table is on a separate, auto-scaling EBS volume with 99.99% uptime SLA. Write failover to a secondary reader node that accepts inserts after a 1s timeout.                          |
 
 ### Mermaid diagram
 
@@ -4169,6 +4341,7 @@ sequenceDiagram
 - **Trade-off**: The append-only audit ledger prevents data manipulation but also makes “mistake corrections” harder. Admins must issue a compensating transaction (e.g., `old_rating` = `new_rating` with reason “admin_correction”) rather than deleting the erroneous row. This requires careful UX in the admin panel.
 - **Open question**: Should we require hardware security modules (HSMs) for storing ranking algorithm weights and ILTL shared secrets? For Task 2 (core ranking engine) we are using KMS with software-based keys; upgrading to CloudHSM would add cost but satisfy stricter compliance requirements for ILTL. **Recommended default:** KMS for now; revisit if ILTL demands CloudHSM in their data-sharing agreement.
 - **Open question**: How do we handle GDPR right to erasure given the append-only ledger? One option: tombstone the PII fields (overwrite with `[REDACTED]`) in the encrypted store and retain the anonymised rating history. This is acceptable under GDPR as legitimate interest after anonymisation. **Recommended default:** implement redaction procedure in Task 4 (admin & data lifecycle).
+
 ### Context & Goals
 
 Security for Match Point must protect player reputations, ranking calculations, and cross-community identity links. A breach that falsifies a star rating or exposes a player’s private contact data would destroy trust in the platform. The primary goals are:
@@ -4185,43 +4358,44 @@ The attack surface of Match Point spans the public HTTP APIs, the WebSocket conn
 ### Decisions
 
 1. **Use OAuth2 + JWT for all API authentication**  
-   *Rationale*: Standardized token exchange with ILTL SSO. JWT self-contains claims (player ID, community roles) so services can authorize without a round trip to auth store.  
-   *Rejected*: Session cookies – they add CSRF exposure and do not scale to cross-community federation.
+   _Rationale_: Standardized token exchange with ILTL SSO. JWT self-contains claims (player ID, community roles) so services can authorize without a round trip to auth store.  
+   _Rejected_: Session cookies – they add CSRF exposure and do not scale to cross-community federation.
 
 2. **API Gateway with rate limiting per client IP and per community**  
-   *Rationale*: Prevents a single malformed script from flooding ranking recomputation endpoints.  
-   *Rejected*: Application-level rate limiting only – gateways provide consistent early rejection before processing overhead.
+   _Rationale_: Prevents a single malformed script from flooding ranking recomputation endpoints.  
+   _Rejected_: Application-level rate limiting only – gateways provide consistent early rejection before processing overhead.
 
 3. **Encode all cross-community identifiers as opaque UUIDs**  
-   *Rationale*: Avoids leaking internal database IDs or federation names.  
-   *Rejected*: Sequential integers – they reveal enumeration order and potential participant counts.
+   _Rationale_: Avoids leaking internal database IDs or federation names.  
+   _Rejected_: Sequential integers – they reveal enumeration order and potential participant counts.
 
 4. **Score submission endpoints require HMAC-signed payloads from official sources**  
-   *Rationale*: Only federated tournament systems (ILTL, tournament management suites) can push match results.  
-   *Rejected*: Simple bearer token – too easy to leak and replay.
+   _Rationale_: Only federated tournament systems (ILTL, tournament management suites) can push match results.  
+   _Rejected_: Simple bearer token – too easy to leak and replay.
 
 5. **Admin operations gated by short-lived MFA session**  
-   *Rationale*: Reputation recalibrations and player bans are high-impact actions.  
-   *Rejected*: Single-factor admin panel – too permissive.
+   _Rationale_: Reputation recalibrations and player bans are high-impact actions.  
+   _Rejected_: Single-factor admin panel – too permissive.
 
 ---
 
 ### Component Breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|---------------|--------------|--------------|-------|
-| **API Gateway** | TLS termination, rate limiting, request validation, JWT verification | Envoy or NGINX + Kong | Public internet, TLS certs | Platform team |
-| **Auth Service** | OAuth2 client for ILTL, JWT generation/revocation, MFA enforcement | Go, Hydra, Google Authenticator TOTP | ILTL OAuth2 endpoints, Redis for session store | Identity team |
-| **Score Ingestion Service** | Validate HMAC, deduplicate, store match events | Go, PostgreSQL, SQS/Kafka | Match Source Register, permanent event store | Backend team |
-| **Reputation Engine** | Calculate ratings, update search index, emit change events | Go, Redis (leaderboard cache), Elasticsearch | Score events, player profiles, admin triggers | Data team |
-| **Admin Dashboard** | UI for mods, audit log viewer, manual recalibration | React, GraphQL, Material UI | Auth service, reputation engine, audit store | Frontend team |
-| **Audit Store** | Append-only log of all state-changing operations | PostgreSQL (immutable table), S3 cold archive | Auth service, reputation engine | Backend team |
+| Component                   | Responsibility                                                       | Technologies                                  | Dependencies                                   | Owner         |
+| --------------------------- | -------------------------------------------------------------------- | --------------------------------------------- | ---------------------------------------------- | ------------- |
+| **API Gateway**             | TLS termination, rate limiting, request validation, JWT verification | Envoy or NGINX + Kong                         | Public internet, TLS certs                     | Platform team |
+| **Auth Service**            | OAuth2 client for ILTL, JWT generation/revocation, MFA enforcement   | Go, Hydra, Google Authenticator TOTP          | ILTL OAuth2 endpoints, Redis for session store | Identity team |
+| **Score Ingestion Service** | Validate HMAC, deduplicate, store match events                       | Go, PostgreSQL, SQS/Kafka                     | Match Source Register, permanent event store   | Backend team  |
+| **Reputation Engine**       | Calculate ratings, update search index, emit change events           | Go, Redis (leaderboard cache), Elasticsearch  | Score events, player profiles, admin triggers  | Data team     |
+| **Admin Dashboard**         | UI for mods, audit log viewer, manual recalibration                  | React, GraphQL, Material UI                   | Auth service, reputation engine, audit store   | Frontend team |
+| **Audit Store**             | Append-only log of all state-changing operations                     | PostgreSQL (immutable table), S3 cold archive | Auth service, reputation engine                | Backend team  |
 
 ---
 
 ### Data Contracts
 
-**JWT Payload (Auth Service → API Gateway)**  
+**JWT Payload (Auth Service → API Gateway)**
+
 ```json
 {
   "sub": "uuid-of-player",
@@ -4233,7 +4407,8 @@ The attack surface of Match Point spans the public HTTP APIs, the WebSocket conn
 }
 ```
 
-**Score Submission (Signed by External Source → API Gateway)**  
+**Score Submission (Signed by External Source → API Gateway)**
+
 ```json
 {
   "source_id": "ilTL_tournament_2025-03-01_123",
@@ -4241,14 +4416,15 @@ The attack surface of Match Point spans the public HTTP APIs, the WebSocket conn
   "match": {
     "player_a_uuid": "abc-...",
     "player_b_uuid": "def-...",
-    "score": [6,3,7,5],
+    "score": [6, 3, 7, 5],
     "outcome": "player_a_wins"
   },
   "signature": "HMAC-SHA256(base64(claims), shared_key)"
 }
 ```
 
-**Audit Log Entry**  
+**Audit Log Entry**
+
 ```sql
 CREATE TABLE audit_log (
     id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -4266,13 +4442,13 @@ CREATE TABLE audit_log (
 
 ### Failure Modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| Compromised ILTL OAuth2 client secret | Anomaly in token issuance rate (e.g., 1000 tokens/min from one IP) | Rotate secret immediately, revoke all JWTs with `iat` after breach time. |
-| HMAC key leak for score submission | Duplicate match events with mismatched signatures | Blacklist leaked key ID, re-issue new key pair via out-of-band channel. |
-| SQL injection via player search | WAF alert on `' OR 1=1` patterns | Use parameterized queries in all services; API gateway rejects freeform strings in search params. |
-| Replay of a match submission | Database unique constraint on `source_id` | Use idempotency keys with TTL (e.g., 24h) in the Ingestion Service. |
-| DDoS on ranking recalculation endpoint | Elevated CPU/memory on Reputation Engine pods | API gateway rate limit per community; circuit breaker after 10 consecutive 5xx. |
+| Failure                                | Detection                                                          | Mitigation                                                                                        |
+| -------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| Compromised ILTL OAuth2 client secret  | Anomaly in token issuance rate (e.g., 1000 tokens/min from one IP) | Rotate secret immediately, revoke all JWTs with `iat` after breach time.                          |
+| HMAC key leak for score submission     | Duplicate match events with mismatched signatures                  | Blacklist leaked key ID, re-issue new key pair via out-of-band channel.                           |
+| SQL injection via player search        | WAF alert on `' OR 1=1` patterns                                   | Use parameterized queries in all services; API gateway rejects freeform strings in search params. |
+| Replay of a match submission           | Database unique constraint on `source_id`                          | Use idempotency keys with TTL (e.g., 24h) in the Ingestion Service.                               |
+| DDoS on ranking recalculation endpoint | Elevated CPU/memory on Reputation Engine pods                      | API gateway rate limit per community; circuit breaker after 10 consecutive 5xx.                   |
 
 ---
 
@@ -4307,31 +4483,35 @@ sequenceDiagram
 
 ### Cross-cutting Concerns
 
-- **Observability**: Every API call logs actor UUID, action, resource, and result to the audit store. Metrics (rate of 401s, token validation latency, HMAC failures) are exported to Prometheus and alerted in PagerDuty.  
-- **Security**: All inter-service communication runs over mTLS. Secrets (HMAC keys, database passwords) are stored in Vault and rotated every 90 days. The API gateway performs TLS termination with HSTS and CSP headers.  
-- **Capacity Planning**: Under peak tournament joins (e.g., new season launch), the Authentication service should handle 10,000 token requests per minute. Score ingestion pipeline must sustain 5,000 match events per minute (est. 100 bytes per event). We’ll provision 3 replicas of each stateless service and a primary-replica pair for PostgreSQL with automatic failover.  
+- **Observability**: Every API call logs actor UUID, action, resource, and result to the audit store. Metrics (rate of 401s, token validation latency, HMAC failures) are exported to Prometheus and alerted in PagerDuty.
+- **Security**: All inter-service communication runs over mTLS. Secrets (HMAC keys, database passwords) are stored in Vault and rotated every 90 days. The API gateway performs TLS termination with HSTS and CSP headers.
+- **Capacity Planning**: Under peak tournament joins (e.g., new season launch), the Authentication service should handle 10,000 token requests per minute. Score ingestion pipeline must sustain 5,000 match events per minute (est. 100 bytes per event). We’ll provision 3 replicas of each stateless service and a primary-replica pair for PostgreSQL with automatic failover.
 - **Compliance**: GDPR right-to-erasure is implemented via soft delete and an audit trail linking old references to a tombstone record. The platform will never expose raw personal data via API – only aggregated reputation and ranking stats.
 
 ---
 
 ### Trade-offs & Open Questions
 
-**Trade-offs**  
-- **HMAC vs. mTLS for score submission**: HMAC allows simpler onboarding for federation partners without full PKI, but requires shared secret management. For partners that can handle certificates, mTLS would provide stronger identity assurance.  
-- **Centralized audit store vs. per-service logging**: Centralized is simpler for compliance reporting but creates a single point of failure. We mitigate by writing audit events synchronously to a separate database partition with its own replication.  
+**Trade-offs**
+
+- **HMAC vs. mTLS for score submission**: HMAC allows simpler onboarding for federation partners without full PKI, but requires shared secret management. For partners that can handle certificates, mTLS would provide stronger identity assurance.
+- **Centralized audit store vs. per-service logging**: Centralized is simpler for compliance reporting but creates a single point of failure. We mitigate by writing audit events synchronously to a separate database partition with its own replication.
 - **JWT short expiry (15 min) vs. user convenience**: Short TTL reduces window of stolen token misuse, but forces frequent token refresh. We accept the UX cost in exchange for tighter security, and implement silent refresh via refresh tokens with 7-day lifetime.
 
-**Open Questions**  
-1. Should we implement mutual TLS between the API gateway and internal services immediately, or can we rely on network policies in Kubernetes (with Istio) initially?  
-2. How do we handle the case where ILTL OAuth2 endpoint is down during a tournament? Consider a stale token grace period (max 1 hour).  
-3. Is there a requirement for a public leaderboard API without authentication? That would significantly expand the attack surface – we could expose a read-only edge endpoint that only emits aggregated rankings, never raw player data.  
-4. What is the blast radius if a federation partner’s HMAC key is compromised? We need a revocation list that the Score Ingestion Service checks for every submission.  
+**Open Questions**
+
+1. Should we implement mutual TLS between the API gateway and internal services immediately, or can we rely on network policies in Kubernetes (with Istio) initially?
+2. How do we handle the case where ILTL OAuth2 endpoint is down during a tournament? Consider a stale token grace period (max 1 hour).
+3. Is there a requirement for a public leaderboard API without authentication? That would significantly expand the attack surface – we could expose a read-only edge endpoint that only emits aggregated rankings, never raw player data.
+4. What is the blast radius if a federation partner’s HMAC key is compromised? We need a revocation list that the Score Ingestion Service checks for every submission.
 5. Do we need to support WebAuthn for admin MFA instead of TOTP? TOTP is simpler for MVP, but phishing-resistant WebAuthn could be required by enterprise customers later.
+
 ### Context & Goals
 
 Security is foundational to Match Point because the platform processes personally identifiable information (PII) — player names, email addresses, profile photos, match histories — and generates reputation scores that can affect a player’s ability to join leagues, find partners, or qualify for tournaments. A breach or integrity failure would erode trust in the ranking system, expose ILTL data feeds to manipulation, and invite regulatory penalties under GDPR/CCPA.
 
 **Success criteria**:
+
 - Zero unauthenticated access to any API endpoint except `/api/v1/auth/login` and `/api/v1/auth/register`, plus health check endpoints.
 - All network traffic is encrypted in transit (TLS 1.3 minimum) and at rest (AES-256 for PII, SHA-256 hashing for passwords).
 - OWASP Top 10 (2021) vulnerabilities are mitigated: no SQLi, no XSS, no broken access control, no security misconfiguration.
@@ -4343,45 +4523,46 @@ Security is foundational to Match Point because the platform processes personall
 
 1. **Authentication: JWT with refresh tokens**  
    Access tokens expire after 15 minutes; refresh tokens expire after 7 days and are stored in an HTTP-only secure cookie.  
-   *Rejected alternative*: Session-based auth would require sticky sessions or a Redis store, adding operational complexity for a serverless-ready deployment.
+   _Rejected alternative_: Session-based auth would require sticky sessions or a Redis store, adding operational complexity for a serverless-ready deployment.
 
 2. **Authorization: Role-based access control (RBAC) with claims in JWT**  
    Roles: `player`, `league_admin`, `system_admin`. Every API endpoint declares required roles; the middleware rejects requests lacking the required role claim.  
-   *Rejected alternative*: Attribute-based access control (ABAC) is more flexible but introduces runtime policy evaluation overhead that is unnecessary for the current scope.
+   _Rejected alternative_: Attribute-based access control (ABAC) is more flexible but introduces runtime policy evaluation overhead that is unnecessary for the current scope.
 
 3. **Password storage: Argon2id (cost=3, memory=64MB, parallelism=4)**  
    Industry best practice; bcrypt is acceptable but Argon2id offers better resistance to GPU-based attacks.  
-   *Rejected alternative*: Scrypt – fine but less widely audited in Go libraries.
+   _Rejected alternative_: Scrypt – fine but less widely audited in Go libraries.
 
 4. **API gateway: Cloudflare or AWS WAF + API Gateway**  
    Provides DDoS protection, TLS termination, request validation, and a web application firewall (WAF) with OWASP Core Rule Set.  
-   *Rejected alternative*: Custom reverse proxy – not maintainable for a small team.
+   _Rejected alternative_: Custom reverse proxy – not maintainable for a small team.
 
 5. **Audit trail: Amazon S3 with Object Lock (or Cloud Storage with retention policy)**  
    Each score change is serialized as a JSON record: `{timestamp, player_id, old_score, new_score, reason, admin_id, hmac}`. Written to an append-only bucket; fail-closed if write fails.  
-   *Rejected alternative*: Database audit table – mutable by a DBA; S3 Object Lock enforces immutability.
+   _Rejected alternative_: Database audit table – mutable by a DBA; S3 Object Lock enforces immutability.
 
 6. **Secrets management: AWS Secrets Manager (or HashiCorp Vault)**  
    Database credentials, JWT signing keys, HMAC keys, and ILTL API tokens are rotated every 30 days.  
-   *Rejected alternative*: Environment variables – leaked in logs or CI output.
+   _Rejected alternative_: Environment variables – leaked in logs or CI output.
 
 7. **Rate limiting: Token bucket per endpoint by client IP and authenticated user ID**  
    Implemented at API gateway level; fallback in-application rate limiter for internal calls. Burst up to 200% of limit for 5 seconds.
 
 ### Component Breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|----------------|--------------|----------------|-------|
-| **Auth Service** | Issue and validate JWTs, manage refresh tokens, handle password resets | Go 1.22+, `golang-jwt/jwt/v5`, `alexedwards/scs/v2` (session store for refresh), Argon2 | User database (PostgreSQL), Secrets Manager | Backend team |
-| **API Gateway / WAF** | TLS termination, rate limiting, IP allow/deny, OWASP CRS | Cloudflare / AWS WAF + API Gateway | CDN provider | SRE/DevOps |
-| **Authorization Middleware** | Decode JWT, extract roles, enforce endpoint permissions | Go middleware – `net/http` or Gin | Auth Service (public key endpoint) | Backend team |
-| **Audit Log Writer** | Asynchronously write score-change records to S3 with Object Lock | Go + AWS SDK `s3.PutObject` with retention mode COMPLIANCE | S3 bucket, HMAC key from Secrets Manager | Backend team |
-| **Secrets Manager** | Store and rotate DB credentials, JWT signing keys, HMAC keys, ILTL tokens | AWS Secrets Manager (or Vault) | Infra provisioning | SRE |
-| **Rate Limiter** | Token bucket state store (Redis) and middleware | Redis cluster, Go `go-rate` or `golang.org/x/time/rate` | Redis, API Gateway | Backend team |
+| Component                    | Responsibility                                                            | Technologies                                                                            | Dependencies                                | Owner        |
+| ---------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------- | ------------ |
+| **Auth Service**             | Issue and validate JWTs, manage refresh tokens, handle password resets    | Go 1.22+, `golang-jwt/jwt/v5`, `alexedwards/scs/v2` (session store for refresh), Argon2 | User database (PostgreSQL), Secrets Manager | Backend team |
+| **API Gateway / WAF**        | TLS termination, rate limiting, IP allow/deny, OWASP CRS                  | Cloudflare / AWS WAF + API Gateway                                                      | CDN provider                                | SRE/DevOps   |
+| **Authorization Middleware** | Decode JWT, extract roles, enforce endpoint permissions                   | Go middleware – `net/http` or Gin                                                       | Auth Service (public key endpoint)          | Backend team |
+| **Audit Log Writer**         | Asynchronously write score-change records to S3 with Object Lock          | Go + AWS SDK `s3.PutObject` with retention mode COMPLIANCE                              | S3 bucket, HMAC key from Secrets Manager    | Backend team |
+| **Secrets Manager**          | Store and rotate DB credentials, JWT signing keys, HMAC keys, ILTL tokens | AWS Secrets Manager (or Vault)                                                          | Infra provisioning                          | SRE          |
+| **Rate Limiter**             | Token bucket state store (Redis) and middleware                           | Redis cluster, Go `go-rate` or `golang.org/x/time/rate`                                 | Redis, API Gateway                          | Backend team |
 
 ### Data Contracts
 
-**JWT Access Token (example claims)**  
+**JWT Access Token (example claims)**
+
 ```json
 {
   "sub": "player_uuid",
@@ -4393,7 +4574,8 @@ Security is foundational to Match Point because the platform processes personall
 }
 ```
 
-**Audit Log Record (submitted to S3)**  
+**Audit Log Record (submitted to S3)**
+
 ```json
 {
   "version": 1,
@@ -4409,7 +4591,8 @@ Security is foundational to Match Point because the platform processes personall
 }
 ```
 
-**Rate Limit Exceeded Response**  
+**Rate Limit Exceeded Response**
+
 ```json
 {
   "error": "rate_limit_exceeded",
@@ -4422,14 +4605,14 @@ Security is foundational to Match Point because the platform processes personall
 
 ### Failure Modes
 
-| Failure | Detection | Mitigation |
-|---------|-----------|------------|
-| JWT signing key compromised | Key rotation count mismatch, anomalous token issuance | Immediate key rotation via Secrets Manager; revoke all tokens by incrementing key version; notify users to re-authenticate. |
-| DDoS on login endpoint | Rate limiter counters elevated, gateway CPU spikes | Cloudflare DDoS mitigation + Geo-blocking; scale API Gateway automatically; consider CAPTCHA on login form. |
-| Audit log write fails | S3 PutObject returns 5xx or timeout | Fail-closed: block the score-change operation (return 503); alert on-call; retry with exponential backoff up to 5 times. |
-| SQL injection attempt | WAF blocks request with pattern 400; monitoring alert | Parameterized queries (no raw SQL); WAF OWASP CRS blocks suspicious payloads; penetration testing quarterly. |
-| Refresh token theft | User reports session hijacked; anomalous login geography | Immediately invalidate all refresh tokens for the affected user; add IP binding to refresh token; enforce re-login. |
-| Secrets file leaked to CI | Secrets scanning (e.g., GitGuardian) | Rotate leaked secrets within 5 minutes; commit prevention via pre-push hooks; deny access from compromised CI pipeline. |
+| Failure                     | Detection                                                | Mitigation                                                                                                                  |
+| --------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| JWT signing key compromised | Key rotation count mismatch, anomalous token issuance    | Immediate key rotation via Secrets Manager; revoke all tokens by incrementing key version; notify users to re-authenticate. |
+| DDoS on login endpoint      | Rate limiter counters elevated, gateway CPU spikes       | Cloudflare DDoS mitigation + Geo-blocking; scale API Gateway automatically; consider CAPTCHA on login form.                 |
+| Audit log write fails       | S3 PutObject returns 5xx or timeout                      | Fail-closed: block the score-change operation (return 503); alert on-call; retry with exponential backoff up to 5 times.    |
+| SQL injection attempt       | WAF blocks request with pattern 400; monitoring alert    | Parameterized queries (no raw SQL); WAF OWASP CRS blocks suspicious payloads; penetration testing quarterly.                |
+| Refresh token theft         | User reports session hijacked; anomalous login geography | Immediately invalidate all refresh tokens for the affected user; add IP binding to refresh token; enforce re-login.         |
+| Secrets file leaked to CI   | Secrets scanning (e.g., GitGuardian)                     | Rotate leaked secrets within 5 minutes; commit prevention via pre-push hooks; deny access from compromised CI pipeline.     |
 
 ### Mermaid Diagram
 
@@ -4493,36 +4676,37 @@ sequenceDiagram
 
 - **Open question: Where do we host HMAC key for audit logs?**  
   Default: in Secrets Manager alongside JWT keys. If cost becomes a concern, we can use AWS KMS to generate and sign HMACs directly, with audit logging of each KMS call. Recommend starting with Secrets Manager for simplicity.
+
 ### Context & Goals
 
 Security is a first-class architectural concern for Match Point because the platform stores personally identifiable information (PII), enables cross‑community reputation portability, and integrates with official competition data (ILTL). A breach could undermine trust in the rating system, expose player contact details, or allow fraudulent match submissions that distort rankings. The attack **surface** spans mobile clients, public APIs, third‑party integrations (ILTL, event management), and the administrative dashboard. The security posture must balance protection against real threats with the mobile‑first user experience expected by Indonesian padel and tennis communities. Every component in this surface must be explicitly defended, and every **mitigation** must be verifiable through observability and testing.
 
 **Success criteria:**
 
-| Criterion | Target | Measurement Method |
-|-----------|--------|--------------------|
-| Authentication bypass | 0 incidents in production | SIEM alerting + quarterly penetration test |
-| Match submission fraud | < 0.1% of monthly submissions are fraudulent and undetected | Manual audit of flagged matches + anomaly detection recall |
-| Data exposure (PII) | No unencrypted PII in transit or at rest; all database access logged | Encryption audit + CloudSQL/VPC SQL access logs |
-| API abuse (rate limiting) | 99.9% of legitimate requests succeed; abusive IPs blocked within 30 seconds | Rate limiter metrics + automated IP blocklist |
-| Vulnerability remediation (critical) | ≤ 48 hours from disclosure to production patch | Internal SLA + CVE tracking |
+| Criterion                            | Target                                                                      | Measurement Method                                         |
+| ------------------------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Authentication bypass                | 0 incidents in production                                                   | SIEM alerting + quarterly penetration test                 |
+| Match submission fraud               | < 0.1% of monthly submissions are fraudulent and undetected                 | Manual audit of flagged matches + anomaly detection recall |
+| Data exposure (PII)                  | No unencrypted PII in transit or at rest; all database access logged        | Encryption audit + CloudSQL/VPC SQL access logs            |
+| API abuse (rate limiting)            | 99.9% of legitimate requests succeed; abusive IPs blocked within 30 seconds | Rate limiter metrics + automated IP blocklist              |
+| Vulnerability remediation (critical) | ≤ 48 hours from disclosure to production patch                              | Internal SLA + CVE tracking                                |
 
 ### Decisions
 
 1. **RSA256 asymmetric JWTs with rotation** – Use `golang-jwt/jwt/v5` with RSA-256 keys. A private key signs tokens; public keys are distributed to HTTP middleware. Refresh tokens use a version counter stored in the `sessions` table (not a blocklist) to allow stateless validation and immediate revocation by incrementing the version.  
-   *Rejected alternatives:* Symmetric HMAC (key distribution problem across microservices), ECDSA (Go library maturity edge cases), blocklist approach (requires Redis read on every request; adds latency).  
-   *Assumption:* Key rotation is automated via a cron job that generates new key pairs weekly and keeps the previous two public keys in a hot cache for token expiration overlap.
+   _Rejected alternatives:_ Symmetric HMAC (key distribution problem across microservices), ECDSA (Go library maturity edge cases), blocklist approach (requires Redis read on every request; adds latency).  
+   _Assumption:_ Key rotation is automated via a cron job that generates new key pairs weekly and keeps the previous two public keys in a hot cache for token expiration overlap.
 
 2. **Per‑community authorization via RBAC** – Roles (Player, Community Admin, SuperAdmin) are assigned at the community‑membership level. Authorization middleware checks community‑id + role in the JWT claims. SuperAdmin has global read/write. Community Admin can approve matches, adjust points (with audit note), and manage community settings.  
-   *Rejected alternatives:* ABAC over an attribute engine (over‑engineering for v1; too slow for 5000‑request‑per‑second peak).  
-   *Assumption:* Role assignment is immutable after community creation except via the explicit transfer mechanism (assumption 3 in canonical state).
+   _Rejected alternatives:_ ABAC over an attribute engine (over‑engineering for v1; too slow for 5000‑request‑per‑second peak).  
+   _Assumption:_ Role assignment is immutable after community creation except via the explicit transfer mechanism (assumption 3 in canonical state).
 
 3. **Match submission integrity via cryptographic signatures** – Each match submission from mobile clients includes a HMAC signature computed over the match payload + timestamp + player_id using a per‑device secret derived from the user’s login token. The server re‑computes and verifies the signature before accepting the match. This prevents tampering with match data in transit (beyond TLS) and ensures the submission originates from the authenticating user’s device.  
-   *Rejected alternatives:* Relying solely on TLS (does not protect against compromised mobile device or man‑in‑the‑browser attacks on web).  
-   *Assumption:* Device secret is stored in Android Keystore / iOS Keychain and is rotated on every refresh token rotation.
+   _Rejected alternatives:_ Relying solely on TLS (does not protect against compromised mobile device or man‑in‑the‑browser attacks on web).  
+   _Assumption:_ Device secret is stored in Android Keystore / iOS Keychain and is rotated on every refresh token rotation.
 
 4. **Rate limiting at API gateway and application layer** – Use a token‑bucket rate limiter per IP per endpoint (100 requests/minute for non‑auth, 10 requests/minute for match submission) at the Kubernetes ingress (Traefik) plus a per‑user rate limiter in the Go middleware for sensitive endpoints (match submission, endorsement).  
-   *Rejected alternatives:* Single layer (ingress only) – insufficient granularity for user‑level abuse.
+   _Rejected alternatives:_ Single layer (ingress only) – insufficient granularity for user‑level abuse.
 
 5. **Encryption at rest** – PostgreSQL database volumes use AES-256 GCM encryption via cloud provider managed keys (CloudSQL CMEK). PII fields (email, phone, date of birth) are additionally encrypted at the application layer using a separate envelope encryption key stored in a cloud KMS. This provides defense‑in‑depth if database access is compromised.
 
@@ -4532,15 +4716,15 @@ Security is a first-class architectural concern for Match Point because the plat
 
 ### Component breakdown
 
-| Component | Responsibility | Security‑Relevant Technologies | Dependencies | Owner (Phase) |
-|-----------|---------------|--------------------------------|--------------|---------------|
-| **Auth Service** | JWT issuance, refresh, revocation, password hashing (bcrypt) | `golang-jwt/jwt/v5`, `golang.org/x/crypto/bcrypt`, RSA key store (Vault + file cache) | PostgreSQL (`sessions` table), KMS for key encryption | Phase 1 |
-| **Middleware layer** | JWT validation, RBAC check, rate limiting, request ID propagation | Custom middleware in `platform/http/middleware`, token‑bucket (in‑memory per user) | Redis for distributed rate limiting counters | Phase 0–1 |
-| **Match Signature Service** | Derive device secret from JWT, compute/verify HMAC-SHA256 | `crypto/hmac`, `crypto/sha256`, per‑user derived key | Auth Service (to provide session secret material) | Phase 2 |
-| **Audit Logger** | Append‑only log for all ranking/mutation events | PostgreSQL trigger + `audit_events` table, monotonic sequence | PostgreSQL | Phase 2 |
-| **Encryption Service** | Envelope encryption for PII fields at application layer | Cloud KMS (Google Cloud KMS or AWS KMS), AES-256-GCM | KMS IAM permissions | Phase 1 |
-| **Rate Limiter** | Token‑bucket per IP and per user | Redis + in‑memory ring buffer | Redis | Phase 0 |
-| **Container / Deployment** | Secure base image, non‑root user, read‑only filesystem | Distroless Go image, `runAsNonRoot: true`, `readOnlyRootFilesystem: true` | Kubernetes pod security policy | Phase 0 |
+| Component                   | Responsibility                                                    | Security‑Relevant Technologies                                                        | Dependencies                                          | Owner (Phase) |
+| --------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------- | ------------- |
+| **Auth Service**            | JWT issuance, refresh, revocation, password hashing (bcrypt)      | `golang-jwt/jwt/v5`, `golang.org/x/crypto/bcrypt`, RSA key store (Vault + file cache) | PostgreSQL (`sessions` table), KMS for key encryption | Phase 1       |
+| **Middleware layer**        | JWT validation, RBAC check, rate limiting, request ID propagation | Custom middleware in `platform/http/middleware`, token‑bucket (in‑memory per user)    | Redis for distributed rate limiting counters          | Phase 0–1     |
+| **Match Signature Service** | Derive device secret from JWT, compute/verify HMAC-SHA256         | `crypto/hmac`, `crypto/sha256`, per‑user derived key                                  | Auth Service (to provide session secret material)     | Phase 2       |
+| **Audit Logger**            | Append‑only log for all ranking/mutation events                   | PostgreSQL trigger + `audit_events` table, monotonic sequence                         | PostgreSQL                                            | Phase 2       |
+| **Encryption Service**      | Envelope encryption for PII fields at application layer           | Cloud KMS (Google Cloud KMS or AWS KMS), AES-256-GCM                                  | KMS IAM permissions                                   | Phase 1       |
+| **Rate Limiter**            | Token‑bucket per IP and per user                                  | Redis + in‑memory ring buffer                                                         | Redis                                                 | Phase 0       |
+| **Container / Deployment**  | Secure base image, non‑root user, read‑only filesystem            | Distroless Go image, `runAsNonRoot: true`, `readOnlyRootFilesystem: true`             | Kubernetes pod security policy                        | Phase 0       |
 
 ### Data contracts
 
@@ -4556,8 +4740,8 @@ Security is a first-class architectural concern for Match Point because the plat
   "cty": "JWT",
   "https://matchpoint.id/claims/role": "player",
   "https://matchpoint.id/claims/community_roles": [
-    {"community_id": "c123", "role": "player"},
-    {"community_id": "c456", "role": "admin"}
+    { "community_id": "c123", "role": "player" },
+    { "community_id": "c456", "role": "admin" }
   ],
   "https://matchpoint.id/claims/session_version": 1
 }
@@ -4608,15 +4792,15 @@ CREATE TRIGGER trg_audit_immutable
 
 ### Failure modes
 
-| Failure Mode | Detection | Mitigation | Recovery |
-|-------------|-----------|------------|----------|
-| **Compromised JWT signing key** | Key rotation audit log shows unexpected key generation; anomaly detection on token validation failure rate spikes | Use HSM or KMS for private key storage; implement automatic key rotation with 24‑hour overlap; revoke all tokens on key compromise | Generate new key pair; increment `session_version` for all active sessions (forces re‑login); notify users via email |
-| **Refresh token theft** | Refresh token used after version increment triggers `stolen_token` alert in audit | Version counter + rotation; immediate session invalidation on version mismatch | Increment session_version; force re‑authentication; add device to fraud watchlist |
-| **Match submission replay attack** | Duplicate match hash detected within short time window; HMAC signature verification fails (nonce reused) | Include timestamp + monotonic nonce in signed payload; reject submissions with timestamp > 30 seconds from server time | Log attempt as fraud; block player from submitting for 15 minutes after 3 failures |
-| **Authorization escalation (RBAC bypass)** | Unexpected role values in JWT claims; direct DB query for admin actions | JWT role claims validated against PostgreSQL `community_memberships` on every write operation; never trust claims alone | Revoke session; alert security team; revoke all sessions for the player |
-| **Rate limiter failure (Redis down)** | Rate limiter metrics show zero requests blocked; Redis connection pool exhaustion | Fallback to local in‑memory token bucket with reduced limits (10 requests/minute per IP) | Automatically switch back to Redis when health check passes; log warning |
-| **SQL injection via search fields** | Application logs show malformed SQL; WAF flags suspicious patterns | All database queries use parameterised statements (no string concatenation); ORM library (sqlx) enforces bound parameters | Roll back transaction; block offending IP; review query pattern in code |
-| **Abuse of endorsement system (sybil)** | Endorsement count spikes from new accounts; identical IP range for endorser and endorsee | Require minimum account age (7 days) to give endorsement; rate limit endorsements per player (10/hour); flag IP correlation; require captcha for first endorsement | Temporary ban on flagged accounts; manual review by SuperAdmin |
+| Failure Mode                               | Detection                                                                                                         | Mitigation                                                                                                                                                         | Recovery                                                                                                             |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| **Compromised JWT signing key**            | Key rotation audit log shows unexpected key generation; anomaly detection on token validation failure rate spikes | Use HSM or KMS for private key storage; implement automatic key rotation with 24‑hour overlap; revoke all tokens on key compromise                                 | Generate new key pair; increment `session_version` for all active sessions (forces re‑login); notify users via email |
+| **Refresh token theft**                    | Refresh token used after version increment triggers `stolen_token` alert in audit                                 | Version counter + rotation; immediate session invalidation on version mismatch                                                                                     | Increment session_version; force re‑authentication; add device to fraud watchlist                                    |
+| **Match submission replay attack**         | Duplicate match hash detected within short time window; HMAC signature verification fails (nonce reused)          | Include timestamp + monotonic nonce in signed payload; reject submissions with timestamp > 30 seconds from server time                                             | Log attempt as fraud; block player from submitting for 15 minutes after 3 failures                                   |
+| **Authorization escalation (RBAC bypass)** | Unexpected role values in JWT claims; direct DB query for admin actions                                           | JWT role claims validated against PostgreSQL `community_memberships` on every write operation; never trust claims alone                                            | Revoke session; alert security team; revoke all sessions for the player                                              |
+| **Rate limiter failure (Redis down)**      | Rate limiter metrics show zero requests blocked; Redis connection pool exhaustion                                 | Fallback to local in‑memory token bucket with reduced limits (10 requests/minute per IP)                                                                           | Automatically switch back to Redis when health check passes; log warning                                             |
+| **SQL injection via search fields**        | Application logs show malformed SQL; WAF flags suspicious patterns                                                | All database queries use parameterised statements (no string concatenation); ORM library (sqlx) enforces bound parameters                                          | Roll back transaction; block offending IP; review query pattern in code                                              |
+| **Abuse of endorsement system (sybil)**    | Endorsement count spikes from new accounts; identical IP range for endorser and endorsee                          | Require minimum account age (7 days) to give endorsement; rate limit endorsements per player (10/hour); flag IP correlation; require captcha for first endorsement | Temporary ban on flagged accounts; manual review by SuperAdmin                                                       |
 
 ### Mermaid diagram: Secure match submission flow
 
@@ -4658,11 +4842,13 @@ sequenceDiagram
 **Secrets management:** All secrets (JWT private key, KMS key, database password, refresh token hashing salt) are stored in Google Cloud Secret Manager (or equivalent AWS Secrets Manager). The application retrieves secrets at startup and caches for the pod’s lifetime with a forced reload mechanism via SIGUSR1. No secrets are committed to source code or placed in environment variables. The JWT public key is stored in a dedicated Kubernetes Secret (for performance) and rotated weekly via a cron job.
 
 **Security scanning:**
+
 - **Static Application Security Testing (SAST):** `golangci-lint` with `gosec` linter runs on every pull request. Rules: `G402` (TLS settings), `G404` (insecure random), `G101` (hardcoded credentials). Scorecard target: zero high/critical findings.
 - **Software Composition Analysis (SCA):** `npm audit` (frontend) and `go list -m all | nancy` (backend) run daily. Auto‑create PR for any CVE with CVSS ≥ 7.0.
 - **Dynamic scanning:** OWASP ZAP API scan runs against the staging environment after every deployment. Report published to build artifacts and blocks deployment if any high‑risk vulnerability found.
 
 **Capacity planning:**
+
 - JWT signing: RSA256 private key operations are CPU‑bound. Benchmark on 1 vCPU: ~10,000 signs/second. With peak load of 500 logins/second, signing capacity is 20× headroom. Public key verification is ~50,000 verifications/second on 1 vCPU (sufficient for 5,000 requests per second peak).
 - Audit log insert: Each match submission generates ~2KB of audit data. With 10,000 matches/day average (30,000 peak), audit log grows ~60MB/day. Retention: 365 days (22GB). Table is append‑only and never updated; partition by month ensures efficient time‑based deletion.
 - Rate limiter memory: Redis stores per‑user token buckets (hash: token, last_update). For 100,000 active users, memory is ~100MB. Token bucket refreshes happen in O(1). Redis persistence is turned off for rate limiter data (acceptable loss).
@@ -4671,26 +4857,25 @@ sequenceDiagram
 
 **Trade-offs:**
 
-| Trade‑off | Rationale | Implications |
-|-----------|-----------|--------------|
-| Refresh token version counter vs. blocklist | Version counter avoids Redis dependency for every refresh; stateless validation at middleware. Revocation is eventual (we check version on refresh, not on every request). | If a session is revoked, the access token remains valid until its 15‑minute TTL. Acceptable because damage from a stolen access token is limited to read operations for 15 minutes. Write operations require fresh match signatures derived from the refresh token. |
-| Device‑level HMAC signatures add UX friction | Users must grant storage permissions (Android) or FaceID (iOS) to store device secret. Initial onboarding shows a brief explanation screen. | Reduces fraud risk significantly. If friction is too high in alpha, fallback option: require SMS OTP for match submission from new devices. |
-| PostgreSQL audit immutability via triggers vs. separate append‑only store | Simpler operational profile (no additional database). Triggers guarantee atomicity with application transactions. | Performance overhead per audit row insert is sub‑millisecond. Security: trigger cannot be bypassed by application accounts because triggers run as table owner. |
-| Per‑community RBAC vs. global RBAC | Allows community admins to manage their own matches without platform‑level privileges. Reduces blast radius of a compromised admin account. | Increases middleware complexity (community_id must be extracted from request path or body). JWT grows with number of community memberships (max 50 communities currently). |
+| Trade‑off                                                                 | Rationale                                                                                                                                                                  | Implications                                                                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Refresh token version counter vs. blocklist                               | Version counter avoids Redis dependency for every refresh; stateless validation at middleware. Revocation is eventual (we check version on refresh, not on every request). | If a session is revoked, the access token remains valid until its 15‑minute TTL. Acceptable because damage from a stolen access token is limited to read operations for 15 minutes. Write operations require fresh match signatures derived from the refresh token. |
+| Device‑level HMAC signatures add UX friction                              | Users must grant storage permissions (Android) or FaceID (iOS) to store device secret. Initial onboarding shows a brief explanation screen.                                | Reduces fraud risk significantly. If friction is too high in alpha, fallback option: require SMS OTP for match submission from new devices.                                                                                                                         |
+| PostgreSQL audit immutability via triggers vs. separate append‑only store | Simpler operational profile (no additional database). Triggers guarantee atomicity with application transactions.                                                          | Performance overhead per audit row insert is sub‑millisecond. Security: trigger cannot be bypassed by application accounts because triggers run as table owner.                                                                                                     |
+| Per‑community RBAC vs. global RBAC                                        | Allows community admins to manage their own matches without platform‑level privileges. Reduces blast radius of a compromised admin account.                                | Increases middleware complexity (community_id must be extracted from request path or body). JWT grows with number of community memberships (max 50 communities currently).                                                                                          |
 
 **Open questions (from canonical state):**
 
 - **Refresh token rotation: blocklist or version counter?**  
-  *Resolution:* Version counter (chosen above). Accept the 15‑minute window of vulnerability for access tokens. If post‑launch analytics show that 15 minutes is too long (e.g., incident response drills require immediate revocation), we can add an optional blocklist in Redis for high‑risk sessions.
-  
+  _Resolution:_ Version counter (chosen above). Accept the 15‑minute window of vulnerability for access tokens. If post‑launch analytics show that 15 minutes is too long (e.g., incident response drills require immediate revocation), we can add an optional blocklist in Redis for high‑risk sessions.
 - **Minimum number of endorsers required for skill score public display (currently 3)?**  
-  *Security implication:* Sybil attacks could fabricate 3 endorsements easily. *Recommended default:* 5 endorsers from distinct communities (to increase cost of sybil). Monitor endorsement graph for cluster detection.
+  _Security implication:_ Sybil attacks could fabricate 3 endorsements easily. _Recommended default:_ 5 endorsers from distinct communities (to increase cost of sybil). Monitor endorsement graph for cluster detection.
 
 - **Should endorsement scoring use materialized view refreshed via trigger/queue, or compute on‑read with caching?**  
-  *Security implication:* On‑read computation with 5‑minute TTL is simpler and reduces risk of stale data after revocations. Materialized view would require refresh triggers that could be exploited for denial of service. *Recommended default:* Compute on‑read with Redis cache (5‑minute TTL) and invalidate on endorsement event via Redis pub/sub.
+  _Security implication:_ On‑read computation with 5‑minute TTL is simpler and reduces risk of stale data after revocations. Materialized view would require refresh triggers that could be exploited for denial of service. _Recommended default:_ Compute on‑read with Redis cache (5‑minute TTL) and invalidate on endorsement event via Redis pub/sub.
 
 - **How are venue GPS bounding boxes stored and validated (PostGIS vs simple lat/lng range)?**  
-  *Security implication:* PostGIS permits geographic functions that could be abused for SQL injection if not properly parameterised. *Recommended default:* Store bounding box as JSONB with four corners; validate with simple arithmetic bounds checking in Go (no PostGIS). Performance is sufficient for 50,000 venues.
+  _Security implication:_ PostGIS permits geographic functions that could be abused for SQL injection if not properly parameterised. _Recommended default:_ Store bounding box as JSONB with four corners; validate with simple arithmetic bounds checking in Go (no PostGIS). Performance is sufficient for 50,000 venues.
 
 ## 11. Quality Targets
 
@@ -4702,48 +4887,48 @@ This section defines the concrete SLIs for each subsystem, the SLOs that the tea
 
 ### Context & Goals
 
-| Goal | Target | Method |
-|------|--------|--------|
-| Ensure the platform is available and responsive during peak tournament weekends (Saturday 08:00–12:00 WIB, Sunday 16:00–20:00 WIB) | API p95 ≤ 300 ms, 99.9% uptime, zero degraded-responses during load tests | Synthetic monitoring from 3 Indonesian regions (Jakarta, Surabaya, Bandung) + real user monitoring (RUM) |
-| Maintain data correctness for official ranking snapshots (monthly immutable snapshots) | Zero data loss for confirmed matches; ranking snapshot divergence ≤ 0.01% across replicas | Daily consistency checks between primary database and read replicas; snapshot hash verification |
-| Support rapid feature delivery without degrading stability | Monthly deploy cadence; error budget usage ≤ 80% per month; break-glass rollback within 5 minutes | Error budget tracking dashboard (burn rate alerts at 10%/hour) |
-| Provide sub-second endorsement verification for profile display | Endorsement score computed and cached in ≤ 500 ms for 95th percentile requests | Custom Grafana dashboard with OpenTelemetry traces |
+| Goal                                                                                                                               | Target                                                                                            | Method                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Ensure the platform is available and responsive during peak tournament weekends (Saturday 08:00–12:00 WIB, Sunday 16:00–20:00 WIB) | API p95 ≤ 300 ms, 99.9% uptime, zero degraded-responses during load tests                         | Synthetic monitoring from 3 Indonesian regions (Jakarta, Surabaya, Bandung) + real user monitoring (RUM) |
+| Maintain data correctness for official ranking snapshots (monthly immutable snapshots)                                             | Zero data loss for confirmed matches; ranking snapshot divergence ≤ 0.01% across replicas         | Daily consistency checks between primary database and read replicas; snapshot hash verification          |
+| Support rapid feature delivery without degrading stability                                                                         | Monthly deploy cadence; error budget usage ≤ 80% per month; break-glass rollback within 5 minutes | Error budget tracking dashboard (burn rate alerts at 10%/hour)                                           |
+| Provide sub-second endorsement verification for profile display                                                                    | Endorsement score computed and cached in ≤ 500 ms for 95th percentile requests                    | Custom Grafana dashboard with OpenTelemetry traces                                                       |
 
 ### Decisions
 
 1. **Decision: Separate SLIs for synchronous vs. asynchronous paths**  
-   *Rationale:* Match submission (synchronous) must return confirmation to the user quickly, while ranking recomputation (asynchronous) can tolerate minutes of delay. Combining them into a single latency SLO would force over‑provisioning or permit unacceptable latency for interactive uses.  
-   *Rejected alternative:* A single monolithic SLO of 2 seconds for all operations would cause unnecessary infrastructure cost and complexity for batch jobs.
+   _Rationale:_ Match submission (synchronous) must return confirmation to the user quickly, while ranking recomputation (asynchronous) can tolerate minutes of delay. Combining them into a single latency SLO would force over‑provisioning or permit unacceptable latency for interactive uses.  
+   _Rejected alternative:_ A single monolithic SLO of 2 seconds for all operations would cause unnecessary infrastructure cost and complexity for batch jobs.
 
 2. **Decision: Use error budgets (not static uptime) to govern releases**  
-   *Rationale:* Error budgets align velocity with reliability: if the error budget is 20% consumed, deployments are allowed; if 100% consumed, deployments are frozen until budget recovers. This prevents the team from shipping risky changes when the system is already in distress.  
-   *Rejected alternative:* Change-approval boards (CAB) would introduce latency without quantitative basis.
+   _Rationale:_ Error budgets align velocity with reliability: if the error budget is 20% consumed, deployments are allowed; if 100% consumed, deployments are frozen until budget recovers. This prevents the team from shipping risky changes when the system is already in distress.  
+   _Rejected alternative:_ Change-approval boards (CAB) would introduce latency without quantitative basis.
 
 3. **Decision: Define SLOs at the component level, not aggregated across all endpoints**  
-   *Rationale:* A slow leaderboard endpoint would be masked by fast authentication endpoints in an aggregate SLO. Component-level SLOs enable precise alerting and targeted debugging.  
-   *Rejected alternative:* Single SLO for entire API gateway would hide poor performance of ranking engine.
+   _Rationale:_ A slow leaderboard endpoint would be masked by fast authentication endpoints in an aggregate SLO. Component-level SLOs enable precise alerting and targeted debugging.  
+   _Rejected alternative:_ Single SLO for entire API gateway would hide poor performance of ranking engine.
 
 4. **Decision: Enforce data integrity via mathematical verification (snapshot Merkle trees) for ranking snapshots**  
-   *Rationale:* ILTL compliance requires that official rankings be immutable and auditable. A Merkle-tree hash over all player rankings ensures tampering detection and consistent restoration.  
-   *Rejected alternative:* Simple timestamp + checksum on each record is insufficient for detecting intra-snapshot corruption.
+   _Rationale:_ ILTL compliance requires that official rankings be immutable and auditable. A Merkle-tree hash over all player rankings ensures tampering detection and consistent restoration.  
+   _Rejected alternative:_ Simple timestamp + checksum on each record is insufficient for detecting intra-snapshot corruption.
 
 5. **Decision: Use “Confidence: 0.9000” as a tactical target for ranking computation**  
-   *Rationale:* The ranking engine’s Bayesian smoothing (Mabar rank) includes a confidence parameter that controls how much weight to give to a player’s results vs. the community prior. A confidence of 0.9000 (on a 0–1 scale) means the engine gives 90% weight to the player’s own match history, 10% to the community prior. This value was chosen through offline simulation of 10,000 match histories from Indonesian clubs and validated against expert ranking lists.  
-   *Rejected alternative:* Fixed confidence 0.95 would overreact to small numbers of matches; 0.80 would dilute standout performances.
+   _Rationale:_ The ranking engine’s Bayesian smoothing (Mabar rank) includes a confidence parameter that controls how much weight to give to a player’s results vs. the community prior. A confidence of 0.9000 (on a 0–1 scale) means the engine gives 90% weight to the player’s own match history, 10% to the community prior. This value was chosen through offline simulation of 10,000 match histories from Indonesian clubs and validated against expert ranking lists.  
+   _Rejected alternative:_ Fixed confidence 0.95 would overreact to small numbers of matches; 0.80 would dilute standout performances.
 
 ### Component breakdown
 
-| Component | Responsibility | SLI | SLO (p95) | Error Budget (monthly) | Monitoring Method |
-|-----------|--------------|-----|-----------|------------------------|-------------------|
-| **HTTP API Gateway** (Go chi router) | Route requests, authenticate, rate-limit, proxy to intra-service | Latency (ms), HTTP 5xx rate, token verification success rate | Latency < 150 ms, 5xx < 0.1%, token success > 99.9% | 1.8% of total requests (43 min of 5xx budget) | Amazon CloudWatch RUM + NGINX access log parsing |
-| **Player Service** | CRUD profiles, JWT management, profile picture upload | Latency, error rate, upload success rate | Latency < 200 ms, error < 0.5%, upload success > 99.5% | 1.5% of profile operations | OpenTelemetry spans + aggregated counters |
-| **Community Service** | Community CRUD, membership management, display name uniqueness | Latency, consistency lag for display name suffixing | Latency < 250 ms, suffixing applied within 1 second of membership update | 0.5% of community operations | Synthetic check every 5 minutes for duplicate names |
-| **Match Service** | Receive match submissions, validate, confirm or pending | End-to-end submission latency, validation error rate | Latency < 2 s (including async validation), validation error < 1% | 1.0% of submissions | Distributed tracing (Jaeger) with custom spans for validation pipeline |
-| **Ranking Engine** | Compute Mabar rank and official rank; materialize monthly snapshots | Computation latency, snapshot freshness | Mabar rank computed within 5 minutes of a match confirmation; official snapshot within 2 hours of month end | 1.0% of rank computations (allowable delay p99 < 10 min for Mabar) | Cron job monitoring + dead-letter queue alerts |
-| **Redis Cache** | Session storage, leaderboard hot-read cache, endorsement scores | Hit ratio, latency | Hit ratio > 90%, latency < 1 ms | N/A (internal; tracked via eviction rate < 0.1%) | Redis INFO stats |
-| **Endorsement System** | Store endorsements, compute aggregate skill scores | Endorsement write latency, score read latency | Write < 300 ms, read < 100 ms (cached) | 0.5% of endorsement operations | Custom metric `endorsement_score_compute_time` |
-| **Social Sharing (Ranking Card Generator)** | Generate SVG/PNG ranking cards | Card generation latency, failure rate | Generation < 1 s for 95th percentile, failure < 0.1% | 0.2% of card requests | CloudWatch custom metrics + CDN error logs |
-| **Admin Dashboard** | Community management, superadmin analytics | Load time for dashboard, data freshness | Dashboard load < 3 s, data freshness < 5 minutes | 0.5% of admin sessions | RUM and periodic synthetic load tests |
+| Component                                   | Responsibility                                                      | SLI                                                          | SLO (p95)                                                                                                   | Error Budget (monthly)                                             | Monitoring Method                                                      |
+| ------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| **HTTP API Gateway** (Go chi router)        | Route requests, authenticate, rate-limit, proxy to intra-service    | Latency (ms), HTTP 5xx rate, token verification success rate | Latency < 150 ms, 5xx < 0.1%, token success > 99.9%                                                         | 1.8% of total requests (43 min of 5xx budget)                      | Amazon CloudWatch RUM + NGINX access log parsing                       |
+| **Player Service**                          | CRUD profiles, JWT management, profile picture upload               | Latency, error rate, upload success rate                     | Latency < 200 ms, error < 0.5%, upload success > 99.5%                                                      | 1.5% of profile operations                                         | OpenTelemetry spans + aggregated counters                              |
+| **Community Service**                       | Community CRUD, membership management, display name uniqueness      | Latency, consistency lag for display name suffixing          | Latency < 250 ms, suffixing applied within 1 second of membership update                                    | 0.5% of community operations                                       | Synthetic check every 5 minutes for duplicate names                    |
+| **Match Service**                           | Receive match submissions, validate, confirm or pending             | End-to-end submission latency, validation error rate         | Latency < 2 s (including async validation), validation error < 1%                                           | 1.0% of submissions                                                | Distributed tracing (Jaeger) with custom spans for validation pipeline |
+| **Ranking Engine**                          | Compute Mabar rank and official rank; materialize monthly snapshots | Computation latency, snapshot freshness                      | Mabar rank computed within 5 minutes of a match confirmation; official snapshot within 2 hours of month end | 1.0% of rank computations (allowable delay p99 < 10 min for Mabar) | Cron job monitoring + dead-letter queue alerts                         |
+| **Redis Cache**                             | Session storage, leaderboard hot-read cache, endorsement scores     | Hit ratio, latency                                           | Hit ratio > 90%, latency < 1 ms                                                                             | N/A (internal; tracked via eviction rate < 0.1%)                   | Redis INFO stats                                                       |
+| **Endorsement System**                      | Store endorsements, compute aggregate skill scores                  | Endorsement write latency, score read latency                | Write < 300 ms, read < 100 ms (cached)                                                                      | 0.5% of endorsement operations                                     | Custom metric `endorsement_score_compute_time`                         |
+| **Social Sharing (Ranking Card Generator)** | Generate SVG/PNG ranking cards                                      | Card generation latency, failure rate                        | Generation < 1 s for 95th percentile, failure < 0.1%                                                        | 0.2% of card requests                                              | CloudWatch custom metrics + CDN error logs                             |
+| **Admin Dashboard**                         | Community management, superadmin analytics                          | Load time for dashboard, data freshness                      | Dashboard load < 3 s, data freshness < 5 minutes                                                            | 0.5% of admin sessions                                             | RUM and periodic synthetic load tests                                  |
 
 ### Data contracts (SLI/SLO definitions in YAML)
 
@@ -4765,20 +4950,20 @@ components:
         type: "ratio"
         numerator: "match.create.errors"
         denominator: "match.create.requests"
-        threshold: 0.01  # 1%
+        threshold: 0.01 # 1%
         method: "counter from prometheus"
     slo:
       - name: "match_submission_slo"
         compliance: "99.5%"
-        error_budget_minutes_per_month: 43.2  # for 0.5% of 1440min * 30 days
-        alert_on_burn_rate: 0.1  # 10% budget consumed per hour
+        error_budget_minutes_per_month: 43.2 # for 0.5% of 1440min * 30 days
+        alert_on_burn_rate: 0.1 # 10% budget consumed per hour
         description: "95th percentile match submission latency under 2 seconds"
   ranking_engine:
     sli:
       - name: "mabar_rank_computation_lag"
         type: "latency"
         unit: "seconds"
-        threshold: 300  # 5 minutes
+        threshold: 300 # 5 minutes
         method: "difference between match.confirmation_timestamp and ranking.last_applied_timestamp"
       - name: "snapshot_merkle_root_valid"
         type: "binary"
@@ -4798,14 +4983,14 @@ components:
 
 ### Failure modes
 
-| Failure Scenario | SLI Affected | Detection | Mitigation | RTO / RPO |
-|-----------------|--------------|-----------|------------|-----------|
-| Match submission timeout (>2s) | match_submission_latency_p95 | Latency alert p95 > 2s for 5 minutes | Scale up match-worker replicas; if database contention, switch to read replica for validation queries | RTO: 5 min, RPO: 0 (no lost data due to idempotent submissions) |
-| Ranking snapshot divergence | snapshot_merkle_root_valid | Daily hash mismatch alert | Replay ranking computation from most recent confirmed match; block snapshot publishing until consistent | RTO: 1 hour, RPO: 0 (divergent snapshot discarded, recompute) |
-| Endorsement score cache miss storm | endorsement_read_latency | Hit ratio drops below 80% for 2 minutes | Pre-warm cache on endorsement write (write-through); increase Redis cluster size | RTO: 2 min, RPO: 0 (computed on read from DB with slow path) |
-| Social sharing card generation failure >1% | card_generation_failure | Error rate alert | Fall back to client-side rendering with cached template; async retry with backoff | RTO: 1 min, RPO: 0 (client can regenerate) |
-| API gateway 5xx rate exceeds 0.1% | HTTP 5xx rate | 5xx alert | Regional failover (Kubernetes multi-AZ); if PostgreSQL unhealthy, activate read-only mode | RTO: 2 min, RPO: 0 (writes queued in RabbitMQ) |
-| Community display name suffixing consistency lag >1s | display_name_consistency_lag | Synthetic check alert | Offline deduplication job runs every 30 minutes; if lag persists, increase worker threads for community service | RTO: 15 min, RPO: 1s of inconsistency (acceptable for metadata) |
+| Failure Scenario                                     | SLI Affected                 | Detection                               | Mitigation                                                                                                      | RTO / RPO                                                       |
+| ---------------------------------------------------- | ---------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Match submission timeout (>2s)                       | match_submission_latency_p95 | Latency alert p95 > 2s for 5 minutes    | Scale up match-worker replicas; if database contention, switch to read replica for validation queries           | RTO: 5 min, RPO: 0 (no lost data due to idempotent submissions) |
+| Ranking snapshot divergence                          | snapshot_merkle_root_valid   | Daily hash mismatch alert               | Replay ranking computation from most recent confirmed match; block snapshot publishing until consistent         | RTO: 1 hour, RPO: 0 (divergent snapshot discarded, recompute)   |
+| Endorsement score cache miss storm                   | endorsement_read_latency     | Hit ratio drops below 80% for 2 minutes | Pre-warm cache on endorsement write (write-through); increase Redis cluster size                                | RTO: 2 min, RPO: 0 (computed on read from DB with slow path)    |
+| Social sharing card generation failure >1%           | card_generation_failure      | Error rate alert                        | Fall back to client-side rendering with cached template; async retry with backoff                               | RTO: 1 min, RPO: 0 (client can regenerate)                      |
+| API gateway 5xx rate exceeds 0.1%                    | HTTP 5xx rate                | 5xx alert                               | Regional failover (Kubernetes multi-AZ); if PostgreSQL unhealthy, activate read-only mode                       | RTO: 2 min, RPO: 0 (writes queued in RabbitMQ)                  |
+| Community display name suffixing consistency lag >1s | display_name_consistency_lag | Synthetic check alert                   | Offline deduplication job runs every 30 minutes; if lag persists, increase worker threads for community service | RTO: 15 min, RPO: 1s of inconsistency (acceptable for metadata) |
 
 ### Mermaid diagram: Quality Monitoring Architecture
 
@@ -4861,7 +5046,7 @@ flowchart TD
 **Open questions:**
 
 1. **Should error budget consumption be tied to deployment frequency or to feature milestone gates?**  
-   *Status:* Current plan uses deployment frequency gate. But Phase 3 (rankings) and Phase 4 (tournaments) may require a “regression freeze” for 48 hours around snapshot creation. This is not yet incorporated into contracts.
+   _Status:_ Current plan uses deployment frequency gate. But Phase 3 (rankings) and Phase 4 (tournaments) may require a “regression freeze” for 48 hours around snapshot creation. This is not yet incorporated into contracts.
 
 2. **What is the exact burn-rate threshold for P0 alert?** 10%/hour is a starting point; we must validate with real traffic during peak tournaments. A lower threshold (5%/hour) may cause alert fatigue.
 
@@ -4872,11 +5057,13 @@ flowchart TD
 5. **Confidence 0.9000: is this the same for all sports (padel vs. tennis)?** The execution plan does not differentiate. We assume a single value; revisit in Phase 3 when we have data from both sports.
 
 ## 12. System Guarantees
+
 The Match Point platform operates as a cross-community reputation and ranking hub for padel and tennis players. Its system guarantees are the explicit contract between the platform and its stakeholders—players who depend on accurate match histories and ratings, league administrators who rely on timely leaderboards, and federations (ILTL) that supply official competition data. These guarantees balance the inherent tension between strict consistency (rating integrity) and high availability (player lookup during tournaments). We define three guarantee tiers: **data durability** (every ingested match event is committed and recoverable), **read availability** (player profiles and rankings respond within defined latency bounds), and **eventual consistency** (cross-community ranking updates converge within a known window). Violations trigger automated incident escalation via PagerDuty and a written post-mortem required with error budget consumption.
 
 The platform commits to an **annual uptime of 99.9%** for public read APIs (player search, ranking views) and **99.5%** for write operations (match ingestion, manual corrections). For latency, the p95 for a player ranking lookup must not exceed 200ms, and a full community ranking recalculation (spanning multiple events) must complete within 5 seconds for up to 100,000 players. Match ingestion from ILTL and partner clubs must acknowledge within 2 seconds under normal load. These numbers assume a baseline of 500 concurrent users during peak hours and 50 matches ingested per minute; scaling beyond 10× triggers a capacity review.
 
 ### Context & Goals
+
 System guarantees exist to ensure that Match Point’s ranking engine is trusted by competitive players. A miscalculation or stale leaderboard erodes credibility. The primary goals are: (1) every match result, once acknowledged, is permanently stored and never silently dropped; (2) player reputation (rating) is deterministic given the same set of inputs; (3) leaderboards are eventually consistent across all data sources within 60 seconds of the last ingested event; (4) the platform degrades gracefully under cascading failures (e.g., ILTL API outage). Success is measured by: no undetected data loss events, ranking recalculation divergence <0.01% of player records, and p99 latency within twice the p95 target.
 
 ### Decisions
@@ -4893,13 +5080,13 @@ System guarantees exist to ensure that Match Point’s ranking engine is trusted
 
 ### Component breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner (team) |
-|-----------|----------------|--------------|--------------|--------------|
-| Match Ingestion Service | Accept webhooks/CSV, deduplicate, enqueue events | Go, PostgreSQL, RabbitMQ | ILTL API, club CSV parser | Backend Platform |
-| Ranking Calculator | Compute Elo/UTS rating from event stream | Go, PostgreSQL (scheduled job) | Match events table, player table | Data Engineering |
-| Player Cache | Serve player profile + rating quickly | Redis (standalone, 2 replicas) | Ranking Calculator (invalidation) | Backend Platform |
-| ILTL Sync Adapter | Poll ILTL API for new results, transform to internal events | Go, cron job (every 30 min) | ILTL API, RabbitMQ | Integrations |
-| Health Checker | Expose liveness/readiness, metric SLO dashboard | Go, Prometheus, Grafana | All components | SRE |
+| Component               | Responsibility                                              | Technologies                   | Dependencies                      | Owner (team)     |
+| ----------------------- | ----------------------------------------------------------- | ------------------------------ | --------------------------------- | ---------------- |
+| Match Ingestion Service | Accept webhooks/CSV, deduplicate, enqueue events            | Go, PostgreSQL, RabbitMQ       | ILTL API, club CSV parser         | Backend Platform |
+| Ranking Calculator      | Compute Elo/UTS rating from event stream                    | Go, PostgreSQL (scheduled job) | Match events table, player table  | Data Engineering |
+| Player Cache            | Serve player profile + rating quickly                       | Redis (standalone, 2 replicas) | Ranking Calculator (invalidation) | Backend Platform |
+| ILTL Sync Adapter       | Poll ILTL API for new results, transform to internal events | Go, cron job (every 30 min)    | ILTL API, RabbitMQ                | Integrations     |
+| Health Checker          | Expose liveness/readiness, metric SLO dashboard             | Go, Prometheus, Grafana        | All components                    | SRE              |
 
 ### Data contracts
 
@@ -4938,13 +5125,13 @@ Eventual consistency is tracked via an `event_sourcing_offset` table per consume
 
 ### Failure modes
 
-| Failure scenario | Detection | Mitigation |
-|------------------|-----------|------------|
-| ILTL API is unreachable | Health check on adapter fails (3 consecutive 5xx) | Queue remains intact; alert after 15 minutes. Admin can manually publish corrections. |
-| Duplicate match batch | Idempotency key conflict on insert (`UNIQUE VIOLATION`) | Batch is rejected with 409 Conflict; logging retains batch metadata for audit. |
-| Ranking calculator crashes mid‑run | Advisory lock remains held; next cron job start fails with lock timeout | Lock TTL set to 10 minutes; if crashed, lock auto-releases; partial ranking_version incomplete – manually verify. |
-| Redis cluster split-brain | Cache write latency spikes; reads from stale replica serve missing keys | Use Redis Sentinel with `min-replicas-to-write 2`; fallback to direct DB query with degraded latency warning header. |
-| Message backlog > 10,000 events | RabbitMQ queue depth metric alarms | Auto-scaling of match ingestion workers (up to 5 pods); if still backlogged, drop older events after 24 hours (with admin notification). |
+| Failure scenario                   | Detection                                                               | Mitigation                                                                                                                               |
+| ---------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| ILTL API is unreachable            | Health check on adapter fails (3 consecutive 5xx)                       | Queue remains intact; alert after 15 minutes. Admin can manually publish corrections.                                                    |
+| Duplicate match batch              | Idempotency key conflict on insert (`UNIQUE VIOLATION`)                 | Batch is rejected with 409 Conflict; logging retains batch metadata for audit.                                                           |
+| Ranking calculator crashes mid‑run | Advisory lock remains held; next cron job start fails with lock timeout | Lock TTL set to 10 minutes; if crashed, lock auto-releases; partial ranking_version incomplete – manually verify.                        |
+| Redis cluster split-brain          | Cache write latency spikes; reads from stale replica serve missing keys | Use Redis Sentinel with `min-replicas-to-write 2`; fallback to direct DB query with degraded latency warning header.                     |
+| Message backlog > 10,000 events    | RabbitMQ queue depth metric alarms                                      | Auto-scaling of match ingestion workers (up to 5 pods); if still backlogged, drop older events after 24 hours (with admin notification). |
 
 ### Mermaid diagram
 
@@ -5004,25 +5191,26 @@ sequenceDiagram
 **Trade-off**: The advisory lock serializes ranking recalculation – under heavy concurrent admin corrections this can block. Alternative: optimistic locking with version columns was more complex and risked partial updates.  
 **Open question**: Should the platform guarantee exactly-once delivery for club CSV uploads? At-least-once with manual dedup is acceptable now, but as club adoption grows we may need a stricter contract. Decision deferred to post-MVP.  
 **Open question**: What happens if a player’s rating is contested? We do not guarantee retroactive correction propagation to all downstream leaderboards; admin must manually trigger a recalculation after correction. A formal dispute process is being designed but is not yet enforced.
+
 ### Context & Goals
 
-System Guarantees for Match Point define the non‑negotiable properties that the platform must provide to earn user trust and enable cross‑community adoption.  These guarantees cover five dimensions – **consistency**, **availability**, **durability**, **security**, and **performance** – across every major interaction path: match submission, ranking computation, ILTL data synchronisation, endorsement aggregation, and leaderboard browsing.  Unlike a traditional monolith where a single database transaction can enforce all correctness, Match Point is a modular monolith with asynchronous background workers, a task queue, and distributed caching.  Guarantees must therefore be explicit about **which paths are strongly consistent** and **which tolerate eventual consistency**, and the team must instrument each boundary so that violations are detected before users complain.
+System Guarantees for Match Point define the non‑negotiable properties that the platform must provide to earn user trust and enable cross‑community adoption. These guarantees cover five dimensions – **consistency**, **availability**, **durability**, **security**, and **performance** – across every major interaction path: match submission, ranking computation, ILTL data synchronisation, endorsement aggregation, and leaderboard browsing. Unlike a traditional monolith where a single database transaction can enforce all correctness, Match Point is a modular monolith with asynchronous background workers, a task queue, and distributed caching. Guarantees must therefore be explicit about **which paths are strongly consistent** and **which tolerate eventual consistency**, and the team must instrument each boundary so that violations are detected before users complain.
 
-The goals are derived directly from the user personas in the canonical state: a competitive padel player submitting a match outcome expects immediate confirmation and a near‑real‑time update to their Mabar rating; a community admin running a tournament relies on the official ranking being a precise, auditable snapshot; an ILTL data admin trusts that every match record ingested from the federation is processed exactly once; and a casual player sharing a ranking card on social media should never see stale data for more than a few seconds.  All guarantees are expressed as Service Level Objectives (SLOs) with measurable Service Level Indicators (SLIs), and each SLO is backed by an error budget that the team can trade during incident response.
+The goals are derived directly from the user personas in the canonical state: a competitive padel player submitting a match outcome expects immediate confirmation and a near‑real‑time update to their Mabar rating; a community admin running a tournament relies on the official ranking being a precise, auditable snapshot; an ILTL data admin trusts that every match record ingested from the federation is processed exactly once; and a casual player sharing a ranking card on social media should never see stale data for more than a few seconds. All guarantees are expressed as Service Level Objectives (SLOs) with measurable Service Level Indicators (SLIs), and each SLO is backed by an error budget that the team can trade during incident response.
 
-| Guarantee Dimension | SLO (Target) | Measurement Method | Critical Path | Owner Team |
-|---------------------|--------------|---------------------|---------------|------------|
-| **Consistency** – match submission | Strong consistency: read after write sees own match within 500 ms | Transaction commit in Postgres primary; verify via `SELECT ... FOR UPDATE` | Match API → Postgres write → rankings queue | Backend |
-| **Consistency** – leaderboard read | Eventual: p99 staleness < 60 seconds | Redis TTL 60s; telemetry gauge `leaderboard.age_seconds` | Leaderboard API → Redis → Postgres fallback | Backend |
-| **Availability** – Match API | 99.95% uptime (monthly), error rate < 0.1% | GCLB health check, Prometheus error ratio | GCLB → Match API pods → Postgres primary | Platform |
-| **Availability** – Ranking Engine | 99.9% uptime, queue lag < 5 min | RabbitMQ consumer metrics, custom `queue_age` | Ranking worker → Postgres ranking tables | Backend |
-| **Durability** – confirmed matches | RPO = 0 (zero data loss) | Postgres synchronous replication; WAL archiving | Match API write → PG primary → sync replica | Platform |
-| **Durability** – ranking snapshots | Immutable; never overwritten | pg_audit trigger; snapshot table has INSERT-only policy | Ranking worker → snapshot table | Backend |
-| **Security** – token validity | Access token expires after 15 min; refresh token rotated | JWT `exp` claim; refresh token `version` column | Auth middleware → Redis blocklist check | Platform |
-| **Performance** – match confirmation | p95 < 1.5s from client click to response | OpenTelemetry trace `match.submission.duration` | Full path: Client → API → PG → queue → client | Backend |
-| **Performance** – leaderboard top‑100 | p95 < 200 ms | OpenTelemetry trace `leaderboard.read.duration` | Leaderboard API → Redis (hit) | Backend |
+| Guarantee Dimension                   | SLO (Target)                                                      | Measurement Method                                                         | Critical Path                                 | Owner Team |
+| ------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------- | ---------- |
+| **Consistency** – match submission    | Strong consistency: read after write sees own match within 500 ms | Transaction commit in Postgres primary; verify via `SELECT ... FOR UPDATE` | Match API → Postgres write → rankings queue   | Backend    |
+| **Consistency** – leaderboard read    | Eventual: p99 staleness < 60 seconds                              | Redis TTL 60s; telemetry gauge `leaderboard.age_seconds`                   | Leaderboard API → Redis → Postgres fallback   | Backend    |
+| **Availability** – Match API          | 99.95% uptime (monthly), error rate < 0.1%                        | GCLB health check, Prometheus error ratio                                  | GCLB → Match API pods → Postgres primary      | Platform   |
+| **Availability** – Ranking Engine     | 99.9% uptime, queue lag < 5 min                                   | RabbitMQ consumer metrics, custom `queue_age`                              | Ranking worker → Postgres ranking tables      | Backend    |
+| **Durability** – confirmed matches    | RPO = 0 (zero data loss)                                          | Postgres synchronous replication; WAL archiving                            | Match API write → PG primary → sync replica   | Platform   |
+| **Durability** – ranking snapshots    | Immutable; never overwritten                                      | pg_audit trigger; snapshot table has INSERT-only policy                    | Ranking worker → snapshot table               | Backend    |
+| **Security** – token validity         | Access token expires after 15 min; refresh token rotated          | JWT `exp` claim; refresh token `version` column                            | Auth middleware → Redis blocklist check       | Platform   |
+| **Performance** – match confirmation  | p95 < 1.5s from client click to response                          | OpenTelemetry trace `match.submission.duration`                            | Full path: Client → API → PG → queue → client | Backend    |
+| **Performance** – leaderboard top‑100 | p95 < 200 ms                                                      | OpenTelemetry trace `leaderboard.read.duration`                            | Leaderboard API → Redis (hit)                 | Backend    |
 
-**Error budget example**: For Match API availability (99.95% monthly), the team can tolerate ~21.6 minutes of downtime per 30‑day month.  Once that budget is consumed, all non‑critical deployments are blocked until the next month.  This forces hard trade‑offs: a risky ranking recomputation that might increase queue pressure must be justified against the remaining error budget.
+**Error budget example**: For Match API availability (99.95% monthly), the team can tolerate ~21.6 minutes of downtime per 30‑day month. Once that budget is consumed, all non‑critical deployments are blocked until the next month. This forces hard trade‑offs: a risky ranking recomputation that might increase queue pressure must be justified against the remaining error budget.
 
 ---
 
@@ -5031,62 +5219,62 @@ The goals are derived directly from the user personas in the canonical state: a 
 The following architectural decisions explicitly define which guarantees are enforced at the platform level and which are delegated to application logic.
 
 1. **Strong consistency for match submission and ranking transactions; eventual consistency for all read‑only views (leaderboard, player profile, endorsement score).**  
-   *Rationale*: Match submission is the source of truth for all downstream computations.  A player must see their own match immediately to build trust.  Rejecting eventual consistency here would create “disappearing matches”.  Leaderboard reads, by contrast, are informational and already cached – a few seconds of staleness is invisible to most users.  
-   *Rejected alternative*: Strong consistency for everything via distributed transactions (XA) – adds unacceptable latency (+300 ms p95) and couples the ranking engine to the match writing path.
+   _Rationale_: Match submission is the source of truth for all downstream computations. A player must see their own match immediately to build trust. Rejecting eventual consistency here would create “disappearing matches”. Leaderboard reads, by contrast, are informational and already cached – a few seconds of staleness is invisible to most users.  
+   _Rejected alternative_: Strong consistency for everything via distributed transactions (XA) – adds unacceptable latency (+300 ms p95) and couples the ranking engine to the match writing path.
 
 2. **Idempotent ranking recomputation with versioned snapshots**.  
-   *Rationale*: The execution plan (Task 3) requires monthly rankings to be immutable and auditable.  By making every recomputation idempotent (given the same set of match IDs, the same rating algorithm produces the same rating delta), we can replay the queue after a failure without causing drift.  Snapshots are INSERT‑only; updates are never applied.  
-   *Rejected alternative*: Update‑in‑place ranking table – impossible to audit historical values.
+   _Rationale_: The execution plan (Task 3) requires monthly rankings to be immutable and auditable. By making every recomputation idempotent (given the same set of match IDs, the same rating algorithm produces the same rating delta), we can replay the queue after a failure without causing drift. Snapshots are INSERT‑only; updates are never applied.  
+   _Rejected alternative_: Update‑in‑place ranking table – impossible to audit historical values.
 
 3. **Dual active‑active deployments across two GCP regions (asia-southeast1, asia-east2) with cross‑region read replicas for read‑only traffic**.  
-   *Rationale*: Indonesian users are spread across Java, Sumatra, and Bali.  A single region (jakarta) is insufficient for disaster recovery.  Active‑active allows write traffic to be sticky to the nearest region; writes are synchronously replicated to the same‑region standby and asynchronously to the remote region.  Reads can go to any replica.  
-   *Rejected alternative*: Single region with backup – recovery time > 15 minutes, which violates the availability SLO.
+   _Rationale_: Indonesian users are spread across Java, Sumatra, and Bali. A single region (jakarta) is insufficient for disaster recovery. Active‑active allows write traffic to be sticky to the nearest region; writes are synchronously replicated to the same‑region standby and asynchronously to the remote region. Reads can go to any replica.  
+   _Rejected alternative_: Single region with backup – recovery time > 15 minutes, which violates the availability SLO.
 
 4. **JWT authentication with RS256 asymmetric keys; access token lifetime 15 minutes; refresh token rotated on each use with a version counter**.  
-   *Rationale*: Asymmetric keys allow any pod to verify a token without a central auth database.  Short access tokens minimise the blast radius of a leaked token.  Refresh token rotation with versioning prevents replay attacks without a central blocklist for refresh tokens (the blocklist is only for revoked tokens).  
-   *Rejected alternative*: Symmetric HMAC – rotation is harder; all pods must share the secret.
+   _Rationale_: Asymmetric keys allow any pod to verify a token without a central auth database. Short access tokens minimise the blast radius of a leaked token. Refresh token rotation with versioning prevents replay attacks without a central blocklist for refresh tokens (the blocklist is only for revoked tokens).  
+   _Rejected alternative_: Symmetric HMAC – rotation is harder; all pods must share the secret.
 
 5. **Endorsement scores computed as a materialized view refreshed via an asynchronous trigger (Debezium CDC → PubSub → refresh job), not in real‑time**.  
-   *Rationale*: Endorsement is a social feature where a 10‑second delay is invisible.  Materialised views reduce query complexity for the endorsement graph (no recursive CTEs on every profile load).  The CDC approach guarantees that every endorsement event is eventually processed.  
-   *Rejected alternative*: Compute on read with caching – too many concurrent profile views during tournaments cause high load.
+   _Rationale_: Endorsement is a social feature where a 10‑second delay is invisible. Materialised views reduce query complexity for the endorsement graph (no recursive CTEs on every profile load). The CDC approach guarantees that every endorsement event is eventually processed.  
+   _Rejected alternative_: Compute on read with caching – too many concurrent profile views during tournaments cause high load.
 
 6. **ILTL integration uses an idempotent webhook receiver with at‑least‑once delivery and a 5‑minute deduplication window**.  
-   *Rationale*: ILTL’s own system may retry webhook calls.  By using an **idempotency key** (SHA‑256 of the match fields) and a dedup table that expires after 5 minutes, we guarantee exactly‑once semantic from the caller’s perspective even if the webhook fires twice.  
-   *Rejected alternative*: At‑most‑once delivery – too dangerous; a dropped webhook means a match is permanently missing.
+   _Rationale_: ILTL’s own system may retry webhook calls. By using an **idempotency key** (SHA‑256 of the match fields) and a dedup table that expires after 5 minutes, we guarantee exactly‑once semantic from the caller’s perspective even if the webhook fires twice.  
+   _Rejected alternative_: At‑most‑once delivery – too dangerous; a dropped webhook means a match is permanently missing.
 
 7. **Match validation pipeline uses a task queue (RabbitMQ) with at‑most‑3 retries, a dead‑letter queue, and escalation to admin after 3 failures**.  
-   *Rationale*: A validation failure may be transient (player name misspelled, community not found).  Retries handle those.  Permanent failures (attempted fraud, unsupported score format) must be visible to an admin.  The DLQ ensures no message is silently dropped.
+   _Rationale_: A validation failure may be transient (player name misspelled, community not found). Retries handle those. Permanent failures (attempted fraud, unsupported score format) must be visible to an admin. The DLQ ensures no message is silently dropped.
 
 8. **Ranking snapshots are taken at the end of each calendar month (UTC) and stored as immutable JSONB records with a checksum and schema version**.  
-   *Rationale*: The execution plan (Task 3) explicitly requires monthly rankings to be immutable snapshots.  JSONB allows flexible schema evolution (schema_version field) without migrations.  The checksum enables external auditors to verify the snapshot was not tampered with.
+   _Rationale_: The execution plan (Task 3) explicitly requires monthly rankings to be immutable snapshots. JSONB allows flexible schema evolution (schema_version field) without migrations. The checksum enables external auditors to verify the snapshot was not tampered with.
 
 ---
 
 ### Component breakdown
 
-Every component has a defined scope of guarantees.  This table maps each component to its primary guarantee category, the SLO it must meet, the mechanism that enforces the guarantee, and the monitoring that detects violations.
+Every component has a defined scope of guarantees. This table maps each component to its primary guarantee category, the SLO it must meet, the mechanism that enforces the guarantee, and the monitoring that detects violations.
 
-| Component | Guarantee Category | SLO/SLO | Enforcement Mechanism | Monitoring |
-|-----------|--------------------|---------|------------------------|------------|
-| **Match API** (Go HTTP handler) | Consistency, Availability | 99.95% uptime, p50 < 500ms, p95 < 1.5s | Stateless pods behind GCLB; write to Postgres primary with `synchronous_commit = on`; idempotency key check before insert | Uptime check, error rate, latency distribution, idempotency conflict rate |
-| **Match Validation Worker** (RabbitMQ consumer) | Availability, Durability | 99.9% uptime, queue age < 5 min (p99) | Consumer uses manual ack with retry (max 3); failure → DLQ; DLQ depth alerts | Consumer lag, retry count, DLQ depth, worker error rate |
-| **Ranking Engine** (RabbitMQ consumer) | Consistency, Durability | 99.9% uptime; idempotent recompute within 30 s per community | Idempotent algorithm keyed on `(community_id, track, cut_off_timestamp)`; writes snapshot with INSERT not UPDATE; versioned | Compute duration, snapshot insertion rate, checksum verification success rate |
-| **Leaderboard API** (Go HTTP handler) | Performance | p95 < 200ms for top‑100; < 1s for top‑1000 | Redis cache with 60s TTL; fallback to Postgres indexed query; circuit breaker on Redis | Cache hit ratio (target > 95%), latency p95, fallback count |
-| **ILTL Webhook Receiver** (Go endpoint) | Durability, Consistency | At‑least‑once delivery; dedup window 5 min; max staleness 1 hour | Idempotency key stored in `idempotency_keys` table with TTL; webhook returns 200 only after dedup check | Webhook acceptance rate, dedup hit rate, age of last processed ILTL match |
-| **Auth Service** (Go middleware, with Redis blocklist) | Security, Performance | Token validation latency < 50ms p99; refresh token rotation succeeds < 200ms p99 | JWT verification with cached public key; refresh token version column in Postgres; Redis blocklist for revoked tokens | Token validation latency, refresh token failure rate (version mismatch), blocklist size |
-| **Postgres Primary** (GCP Cloud SQL or self‑managed with streaming replication) | Durability, Consistency | RPO = 0 for confirmed matches; read‑after‑write strong consistency within same region | Synchronous replication to same‑region standby; WAL archiving to GCS; `synchronous_commit = remote_write` | Replication lag (target < 1ms), checkpoint age, WAL archive lag |
-| **Redis Cache** (Memorystore with AOF persistence) | Availability, Performance | In‑memory with AOF, RPO ~1 second; p99 latency < 5ms | Redis Sentinel for auto‑failover; `appendfsync everysec` | Sentinel master stability, persistence last save time, cache miss rate |
-| **Materialised View Refresher** (CDC worker) | Guarantee | Eventual consistency < 60 seconds | Debezium CDC on endorsement table → PubSub → trigger view refresh | View refresh lag, number of pending CDC events |
+| Component                                                                       | Guarantee Category        | SLO/SLO                                                                               | Enforcement Mechanism                                                                                                       | Monitoring                                                                              |
+| ------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| **Match API** (Go HTTP handler)                                                 | Consistency, Availability | 99.95% uptime, p50 < 500ms, p95 < 1.5s                                                | Stateless pods behind GCLB; write to Postgres primary with `synchronous_commit = on`; idempotency key check before insert   | Uptime check, error rate, latency distribution, idempotency conflict rate               |
+| **Match Validation Worker** (RabbitMQ consumer)                                 | Availability, Durability  | 99.9% uptime, queue age < 5 min (p99)                                                 | Consumer uses manual ack with retry (max 3); failure → DLQ; DLQ depth alerts                                                | Consumer lag, retry count, DLQ depth, worker error rate                                 |
+| **Ranking Engine** (RabbitMQ consumer)                                          | Consistency, Durability   | 99.9% uptime; idempotent recompute within 30 s per community                          | Idempotent algorithm keyed on `(community_id, track, cut_off_timestamp)`; writes snapshot with INSERT not UPDATE; versioned | Compute duration, snapshot insertion rate, checksum verification success rate           |
+| **Leaderboard API** (Go HTTP handler)                                           | Performance               | p95 < 200ms for top‑100; < 1s for top‑1000                                            | Redis cache with 60s TTL; fallback to Postgres indexed query; circuit breaker on Redis                                      | Cache hit ratio (target > 95%), latency p95, fallback count                             |
+| **ILTL Webhook Receiver** (Go endpoint)                                         | Durability, Consistency   | At‑least‑once delivery; dedup window 5 min; max staleness 1 hour                      | Idempotency key stored in `idempotency_keys` table with TTL; webhook returns 200 only after dedup check                     | Webhook acceptance rate, dedup hit rate, age of last processed ILTL match               |
+| **Auth Service** (Go middleware, with Redis blocklist)                          | Security, Performance     | Token validation latency < 50ms p99; refresh token rotation succeeds < 200ms p99      | JWT verification with cached public key; refresh token version column in Postgres; Redis blocklist for revoked tokens       | Token validation latency, refresh token failure rate (version mismatch), blocklist size |
+| **Postgres Primary** (GCP Cloud SQL or self‑managed with streaming replication) | Durability, Consistency   | RPO = 0 for confirmed matches; read‑after‑write strong consistency within same region | Synchronous replication to same‑region standby; WAL archiving to GCS; `synchronous_commit = remote_write`                   | Replication lag (target < 1ms), checkpoint age, WAL archive lag                         |
+| **Redis Cache** (Memorystore with AOF persistence)                              | Availability, Performance | In‑memory with AOF, RPO ~1 second; p99 latency < 5ms                                  | Redis Sentinel for auto‑failover; `appendfsync everysec`                                                                    | Sentinel master stability, persistence last save time, cache miss rate                  |
+| **Materialised View Refresher** (CDC worker)                                    | Guarantee                 | Eventual consistency < 60 seconds                                                     | Debezium CDC on endorsement table → PubSub → trigger view refresh                                                           | View refresh lag, number of pending CDC events                                          |
 
 ---
 
 ### Data contracts
 
-Guarantees are codified in explicit schemas and API contracts.  The following are the key contracts that enforce the guarantees.
+Guarantees are codified in explicit schemas and API contracts. The following are the key contracts that enforce the guarantees.
 
 **Idempotency Key – Match Submission**
 
-Every `POST /api/v1/matches` request includes an `Idempotency-Key` header.  The key is a SHA‑256 hash of `(player1_id, player2_id, played_at, community_id, client_id)`.  The server checks the `idempotency_keys` table: if a key exists within the last 5 minutes, it returns the existing match ID (HTTP 200).  Otherwise it inserts the match and stores the key with a TTL.  This guarantees that duplicate submissions due to network retry produce exactly one confirmed match.
+Every `POST /api/v1/matches` request includes an `Idempotency-Key` header. The key is a SHA‑256 hash of `(player1_id, player2_id, played_at, community_id, client_id)`. The server checks the `idempotency_keys` table: if a key exists within the last 5 minutes, it returns the existing match ID (HTTP 200). Otherwise it inserts the match and stores the key with a TTL. This guarantees that duplicate submissions due to network retry produce exactly one confirmed match.
 
 ```json
 // Request body + header
@@ -5106,7 +5294,7 @@ Every `POST /api/v1/matches` request includes an `Idempotency-Key` header.  The 
 
 **Immutable Ranking Snapshot**
 
-Ranking snapshots are stored in the `ranking_snapshots` table.  The table has an `INSERT`‑only policy – no `UPDATE` or `DELETE` is allowed.  The snapshot `checksum` is the SHA‑256 of the entire JSONB payload, computed in Go before insertion.
+Ranking snapshots are stored in the `ranking_snapshots` table. The table has an `INSERT`‑only policy – no `UPDATE` or `DELETE` is allowed. The snapshot `checksum` is the SHA‑256 of the entire JSONB payload, computed in Go before insertion.
 
 ```json
 {
@@ -5196,45 +5384,45 @@ type RankingTask struct {
 Each failure mode identifies how the system detects a guarantee violation and what automated mitigation exists.
 
 1. **Match submission succeeds but ranking queue task is never published.**  
-   *Detection*: The Match API publishes a task to RabbitMQ after the Postgres insert.  If the publish fails (network partition, queue full), the API returns HTTP 500.  The client should retry (idempotent).  However, if the API returns 200 but the publish silently fails (e.g., due to a connection pool exhaustion that doesn’t throw), the match is confirmed but never ranked.  
-   *Mitigation*: Use a **transactional outbox pattern**: write both the match record and a task record in the same Postgres transaction; a separate worker (outbox publisher) reads the outbox and publishes to the queue with at‑least‑once delivery.  This guarantees that a confirmed match always triggers a ranking recompute.  
-   *Monitoring*: Outbox table age, queue publish error rate.
+   _Detection_: The Match API publishes a task to RabbitMQ after the Postgres insert. If the publish fails (network partition, queue full), the API returns HTTP 500. The client should retry (idempotent). However, if the API returns 200 but the publish silently fails (e.g., due to a connection pool exhaustion that doesn’t throw), the match is confirmed but never ranked.  
+   _Mitigation_: Use a **transactional outbox pattern**: write both the match record and a task record in the same Postgres transaction; a separate worker (outbox publisher) reads the outbox and publishes to the queue with at‑least‑once delivery. This guarantees that a confirmed match always triggers a ranking recompute.  
+   _Monitoring_: Outbox table age, queue publish error rate.
 
 2. **ILTL webhook receiver is down for > 5 minutes.**  
-   *Detection*: GCLB health check failure, webhook error rate spike.  
-   *Mitigation*: ILTL will retry for up to 24 hours (lowered to 8 hours in our SLI).  The dedup table ensures that any duplicate webhook delivered after recovery is handled correctly.  
-   *Monitoring*: Webhook latency, number of retries per webhook, age of last successfully processed ILTL match.
+   _Detection_: GCLB health check failure, webhook error rate spike.  
+   _Mitigation_: ILTL will retry for up to 24 hours (lowered to 8 hours in our SLI). The dedup table ensures that any duplicate webhook delivered after recovery is handled correctly.  
+   _Monitoring_: Webhook latency, number of retries per webhook, age of last successfully processed ILTL match.
 
 3. **Postgres primary hardware failure (disk, memory).**  
-   *Detection*: Health check failure, replication lag from synchronous replica.  
-   *Mitigation*: Automatic failover to synchronous standby (managed by Patroni or Cloud SQL’s built‑in).  The synchronous standby is already in the same region and has received every commit (RPO = 0).  Read‑only traffic is automatically redirected to other replicas.  
-   *Monitoring*: Replication lag, failover count, time to recovery.
+   _Detection_: Health check failure, replication lag from synchronous replica.  
+   _Mitigation_: Automatic failover to synchronous standby (managed by Patroni or Cloud SQL’s built‑in). The synchronous standby is already in the same region and has received every commit (RPO = 0). Read‑only traffic is automatically redirected to other replicas.  
+   _Monitoring_: Replication lag, failover count, time to recovery.
 
 4. **Redis cache cluster failure (OOM, network partition).**  
-   *Detection*: Cache miss rate > 80% for > 1 minute, Redis health check failures.  
-   *Mitigation*: The Leaderboard API falls back to a Postgres query with pagination and a covering index (`community_id, track, rating DESC`).  This query is slower (p95 < 1s) but still within acceptable limits for v1.  Sentinel triggers failover to a replica.  
-   *Monitoring*: Cache hit ratio, fallback query latency, Sentinel failover events.
+   _Detection_: Cache miss rate > 80% for > 1 minute, Redis health check failures.  
+   _Mitigation_: The Leaderboard API falls back to a Postgres query with pagination and a covering index (`community_id, track, rating DESC`). This query is slower (p95 < 1s) but still within acceptable limits for v1. Sentinel triggers failover to a replica.  
+   _Monitoring_: Cache hit ratio, fallback query latency, Sentinel failover events.
 
 5. **JWT signing key compromise (private key leaked).**  
-   *Detection*: Anomaly detection (e.g., two tokens with different `iat` but same `jti` from different IPs).  Or, mandatory quarterly key rotation where the old key is revoked.  
-   *Mitigation*: Rotate key pair immediately.  Update the `kid` header in JWTs.  All valid tokens issued with the old key become invalid after their `exp` (max 15 min).  Forced re‑auth: the refresh token endpoint returns a new access token signed with the new key; the old refresh token’s version is bumped.  
-   *Monitoring*: Number of tokens rejected due to unknown `kid`, forced re‑auth count.
+   _Detection_: Anomaly detection (e.g., two tokens with different `iat` but same `jti` from different IPs). Or, mandatory quarterly key rotation where the old key is revoked.  
+   _Mitigation_: Rotate key pair immediately. Update the `kid` header in JWTs. All valid tokens issued with the old key become invalid after their `exp` (max 15 min). Forced re‑auth: the refresh token endpoint returns a new access token signed with the new key; the old refresh token’s version is bumped.  
+   _Monitoring_: Number of tokens rejected due to unknown `kid`, forced re‑auth count.
 
 6. **Endorsement materialised view refresh lag > 60 seconds.**  
-   *Detection*: Custom PromQL gauge `view_refresh_age_seconds` on the endorsement materialised view.  
-   *Mitigation*: The Debezium CDC worker publishes a message to a dedicated PubSub topic; if the refresh worker has not consumed within 30 seconds, a secondary “catch‑up” worker runs a full refresh query.  
-   *Monitoring*: View refresh age, number of catch‑up triggers.
+   _Detection_: Custom PromQL gauge `view_refresh_age_seconds` on the endorsement materialised view.  
+   _Mitigation_: The Debezium CDC worker publishes a message to a dedicated PubSub topic; if the refresh worker has not consumed within 30 seconds, a secondary “catch‑up” worker runs a full refresh query.  
+   _Monitoring_: View refresh age, number of catch‑up triggers.
 
 7. **Cross‑region network partition (asia-southeast1 to asia-east2).**  
-   *Detection*: Cross‑region replication lag > 10 seconds, or health check failures for remote region’s endpoint.  
-   *Mitigation*: Each region operates independently.  Writes during a partition are not replicated until the partition heals.  Ranking snapshots are per‑region; the global leaderboard (if implemented) would be manually reconciled.  Players in the affected region see a banner “Rankings are being updated; may be delayed.”  
-   *Monitoring*: Replication lag gauge per region, partition detection via GCP Connectivity Tests.
+   _Detection_: Cross‑region replication lag > 10 seconds, or health check failures for remote region’s endpoint.  
+   _Mitigation_: Each region operates independently. Writes during a partition are not replicated until the partition heals. Ranking snapshots are per‑region; the global leaderboard (if implemented) would be manually reconciled. Players in the affected region see a banner “Rankings are being updated; may be delayed.”  
+   _Monitoring_: Replication lag gauge per region, partition detection via GCP Connectivity Tests.
 
 ---
 
 ### Mermaid diagram
 
-The following sequence diagram traces a match submission through all guarantees.  Each box indicates which mechanism enforces the guarantee.
+The following sequence diagram traces a match submission through all guarantees. Each box indicates which mechanism enforces the guarantee.
 
 ```mermaid
 sequenceDiagram
@@ -5309,7 +5497,7 @@ sequenceDiagram
 
 **Observability**
 
-Every guarantee is instrumented with at least one Prometheus metric.  The following custom metrics must be present:
+Every guarantee is instrumented with at least one Prometheus metric. The following custom metrics must be present:
 
 - `match_submission_duration_seconds` (histogram) – tracks full client→response latency.
 - `idempotency_key_conflict_total` (counter) – detects abnormal duplicate submission patterns.
@@ -5334,14 +5522,14 @@ All metrics must have the label `community_id` where applicable, except for plat
 
 **Capacity planning**
 
-| Service | Expected Peak Load (v1) | Scaling Strategy | Bottleneck |
-|---------|-------------------------|------------------|------------|
-| Match API | 500 req/s (tournament weekends) | Horizontal scaling via GKE HPA (CPU > 70%) | Postgres primary write capacity (aim for 2k tps) |
-| Ranking Engine | 10 concurrent recomputes | Worker pool of 5 pods, each processing one community at a time | Snapshot table insert throughput (batch inserts) |
-| Leaderboard API | 5,000 req/s (peak browsing) | Cache hit rate > 95%; fallback query with covering index | Redis memory (estimate 2 GB for top‑1000 per community) |
-| ILTL Webhook | 10 req/s (burst) | Stateless; limited by dedup table writes | Idempotency key table insert rate |
+| Service         | Expected Peak Load (v1)         | Scaling Strategy                                               | Bottleneck                                              |
+| --------------- | ------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------- |
+| Match API       | 500 req/s (tournament weekends) | Horizontal scaling via GKE HPA (CPU > 70%)                     | Postgres primary write capacity (aim for 2k tps)        |
+| Ranking Engine  | 10 concurrent recomputes        | Worker pool of 5 pods, each processing one community at a time | Snapshot table insert throughput (batch inserts)        |
+| Leaderboard API | 5,000 req/s (peak browsing)     | Cache hit rate > 95%; fallback query with covering index       | Redis memory (estimate 2 GB for top‑1000 per community) |
+| ILTL Webhook    | 10 req/s (burst)                | Stateless; limited by dedup table writes                       | Idempotency key table insert rate                       |
 
-Initial capacity: Postgres 8 vCPU, 32 GB RAM, 2 TB SSD; Redis 4 GB Memorystore; RabbitMQ 3 nodes.  All under GKE with 10‑node cluster (n1‑standard‑4).  This will be revisited after the first major tournament event.
+Initial capacity: Postgres 8 vCPU, 32 GB RAM, 2 TB SSD; Redis 4 GB Memorystore; RabbitMQ 3 nodes. All under GKE with 10‑node cluster (n1‑standard‑4). This will be revisited after the first major tournament event.
 
 ---
 
@@ -5349,48 +5537,49 @@ Initial capacity: Postgres 8 vCPU, 32 GB RAM, 2 TB SSD; Redis 4 GB Memorystore; 
 
 **Trade-offs**
 
-1. **Strong consistency vs. availability**: We chose strong consistency for match submission and ranking transactions.  This means that during a primary failure (failover), match writes may be briefly unavailable (seconds to minutes).  We accept this because match submission is the most trust‑sensitive operation.  If the failover takes longer than 30 seconds, the error budget is consumed.
+1. **Strong consistency vs. availability**: We chose strong consistency for match submission and ranking transactions. This means that during a primary failure (failover), match writes may be briefly unavailable (seconds to minutes). We accept this because match submission is the most trust‑sensitive operation. If the failover takes longer than 30 seconds, the error budget is consumed.
 
-2. **Eventual consistency for leaderboard vs. user expectations**: A player who just submitted a match and then immediately checks the leaderboard may not see their rating change for up to 60 seconds.  This could cause confusion.  We mitigate by showing a toast notification: “Your rating will update within 60 seconds.”  We also allow the player to refresh the leaderboard manually (force‑cache bust) by appending `?refresh=true` to the API call.
+2. **Eventual consistency for leaderboard vs. user expectations**: A player who just submitted a match and then immediately checks the leaderboard may not see their rating change for up to 60 seconds. This could cause confusion. We mitigate by showing a toast notification: “Your rating will update within 60 seconds.” We also allow the player to refresh the leaderboard manually (force‑cache bust) by appending `?refresh=true` to the API call.
 
-3. **Immutable snapshots vs. storage cost**: Each monthly snapshot stores the entire ranking table for every community.  Over time, this could grow large.  Trade‑off: storage cost vs. auditability.  We compress JSONB using Postgres `TOAST` and archive snapshots older than 12 months to GCS coldline.
+3. **Immutable snapshots vs. storage cost**: Each monthly snapshot stores the entire ranking table for every community. Over time, this could grow large. Trade‑off: storage cost vs. auditability. We compress JSONB using Postgres `TOAST` and archive snapshots older than 12 months to GCS coldline.
 
-4. **ILTL webhook dedup window of 5 minutes**: If ILTL retries after 7 minutes, we might process the same match twice (duplicate).  However, the match submission API also has a separate idempotency check on the match content, so a duplicate webhook would create a duplicate match record but the match table has a unique constraint on `(player1_id, player2_id, played_at, community_id)`.  The second insert would fail with a duplicate key, and the webhook receiver returns the existing match ID.  So the dedup table is an optimisation, not a correctness requirement.
+4. **ILTL webhook dedup window of 5 minutes**: If ILTL retries after 7 minutes, we might process the same match twice (duplicate). However, the match submission API also has a separate idempotency check on the match content, so a duplicate webhook would create a duplicate match record but the match table has a unique constraint on `(player1_id, player2_id, played_at, community_id)`. The second insert would fail with a duplicate key, and the webhook receiver returns the existing match ID. So the dedup table is an optimisation, not a correctness requirement.
 
 **Open questions**
 
 1. **How to handle ranking recomputation for very large communities (e.g., >10,000 active players)?**  
-   *Current assumption*: The Elo algorithm per community is O(n * m) where n = players and m = matches in the period.  For 10k players and 50k matches, recompute may take > 30 seconds.  We may need to switch to a more efficient algorithm (e.g., Glicko‑2) or incremental updates.  Decision deferred to after performance testing.
+   _Current assumption_: The Elo algorithm per community is O(n \* m) where n = players and m = matches in the period. For 10k players and 50k matches, recompute may take > 30 seconds. We may need to switch to a more efficient algorithm (e.g., Glicko‑2) or incremental updates. Decision deferred to after performance testing.
 
 2. **Should we support machine‑generated ranking share cards that embed a signed proof of rating?**  
-   *Current assumption*: Not in v1.  The ranking card is just a PNG generated server‑side; the rating is not verifiable offline.  If we need offline verification, we would include a signature over the rating snapshot.
+   _Current assumption_: Not in v1. The ranking card is just a PNG generated server‑side; the rating is not verifiable offline. If we need offline verification, we would include a signature over the rating snapshot.
 
 3. **Refresh token version counter – what is the boundary condition when two concurrent refresh requests are made?**  
-   *Current assumption*: The refresh endpoint uses a `SELECT ... FOR UPDATE` on the refresh token row.  The first request increments the version; the second sees a stale version and returns an error.  The client must re‑authenticate.  This is acceptable because the refresh token is typically called only when the access token is about to expire.
+   _Current assumption_: The refresh endpoint uses a `SELECT ... FOR UPDATE` on the refresh token row. The first request increments the version; the second sees a stale version and returns an error. The client must re‑authenticate. This is acceptable because the refresh token is typically called only when the access token is about to expire.
 
 4. **Does the outbox publisher need to be idempotent itself?**  
-   *Current assumption*: The outbox publisher reads rows where `processed = false`.  It attempts to publish and then sets `processed = true`.  If it crashes after publishing but before the update, the next poll will re‑publish the same message.  RabbitMQ’s at‑least‑once delivery means the validation worker may see duplicates.  The validation worker is idempotent (checks by match ID).  This is acceptable.
+   _Current assumption_: The outbox publisher reads rows where `processed = false`. It attempts to publish and then sets `processed = true`. If it crashes after publishing but before the update, the next poll will re‑publish the same message. RabbitMQ’s at‑least‑once delivery means the validation worker may see duplicates. The validation worker is idempotent (checks by match ID). This is acceptable.
 
 5. **What is the recovery procedure for a stale leaderboard cache that contains incorrect data?**  
-   *Current assumption*: Cache TTL is 60s; after that, the next request will fetch fresh data from Postgres.  If Postgres itself has stale data (e.g., due to a failed ranking recompute), the cache will reflect that.  The ranking recompute must be correct.  We will add a manual “recalculate leaderboard” button for admins.
+   _Current assumption_: Cache TTL is 60s; after that, the next request will fetch fresh data from Postgres. If Postgres itself has stale data (e.g., due to a failed ranking recompute), the cache will reflect that. The ranking recompute must be correct. We will add a manual “recalculate leaderboard” button for admins.
 
 ## 13. Risks
+
 ### Context & Goals
 
 Every software project faces uncertainties that can derail timeline, budget, or product quality. For Match Point — a cross-community player reputation and ranking platform for padel and tennis — the primary risks stem from data integration fragility (ILTL official competition data ingestion), adoption barriers across fragmented club ecosystems, and correctness of the reputation algorithm. This section catalogues identified risks, assigns a **Status** to each (Active, Mitigated, Accepted, or Closed), and defines concrete monitoring and response strategies. The goal is to maintain an always-current risk register that the engineering team reviews during sprint retrospectives, ensuring no single risk becomes an unaddressed blocker.
 
 ### Risk Register
 
-| ID | Risk Description | Likelihood | Impact | Mitigation | Status |
-|---|-----------------|------------|--------|------------|--------|
-| R1 | ILTL official data feed has inconsistent schema or downtime during peak tournament seasons (e.g., Roland Garros). | High | Critical – reputation calculation depends on verified match results. | Implement a resilient ILTL adapter with circuit breaker, cached historical data, and a manual upload fallback. | Active |
-| R2 | Club administrators fail to manually verify player identities, leading to duplicate or fraudulent accounts. | Medium | High – erodes trust in reputation scores. | Implement a KYC-light process (email + phone verification); require at least one verified match from ILTL data before full reputation activation. | Mitigated |
-| R3 | Reputation algorithm produces biased scores due to incomplete match history for amateur players. | High | Medium – users may churn if they feel unfairly rated. | Use Bayesian smoothing to adjust scores based on match count; publicly document algorithm with examples; allow appeals. | Active |
-| R4 | GDPR / data privacy compliance gaps when storing player match history across EU borders. | Low | Critical – fines up to 4% of global revenue. | Store all EU player data in eu-west-1; implement right-to-erasure API; conduct Data Protection Impact Assessment before launch. | Accepted (with DPIA scheduled) |
-| R5 | Mobile app performance degrades when rendering large leaderboards (> 10k players) on mid-range devices. | Medium | Medium – user experience downgrade. | Paginate leaderboards server-side; use virtualized lists (FlatList for React Native); lazy-load player avatars. | Mitigated |
-| R6 | Third-party API rate limits (ILTL, club management systems) block batch data ingestion during initial seed. | High | High – delayed time-to-market. | Negotiate rate limit increase during pilot phase; implement staggered ingestion with exponential backoff; cache aggressively. | Active |
-| R7 | Misalignment between reputation score and actual skill level for doubles partners (tennis doubles, padel). | Medium | Medium – credibility of platform. | Introduce a separate "team reputation" derived from shared match results; allow players to optionally link consistent partners. | Active |
-| R8 | Seasonal drop in user engagement (off-season) leads to abandoned accounts and stale data. | High | Low – does not affect core correctness, but impacts metrics. | Gamify off-season with challenges, virtual trophies, and skill prediction games; send re-engagement push notifications. | Mitigated |
+| ID  | Risk Description                                                                                                  | Likelihood | Impact                                                               | Mitigation                                                                                                                                        | Status                         |
+| --- | ----------------------------------------------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| R1  | ILTL official data feed has inconsistent schema or downtime during peak tournament seasons (e.g., Roland Garros). | High       | Critical – reputation calculation depends on verified match results. | Implement a resilient ILTL adapter with circuit breaker, cached historical data, and a manual upload fallback.                                    | Active                         |
+| R2  | Club administrators fail to manually verify player identities, leading to duplicate or fraudulent accounts.       | Medium     | High – erodes trust in reputation scores.                            | Implement a KYC-light process (email + phone verification); require at least one verified match from ILTL data before full reputation activation. | Mitigated                      |
+| R3  | Reputation algorithm produces biased scores due to incomplete match history for amateur players.                  | High       | Medium – users may churn if they feel unfairly rated.                | Use Bayesian smoothing to adjust scores based on match count; publicly document algorithm with examples; allow appeals.                           | Active                         |
+| R4  | GDPR / data privacy compliance gaps when storing player match history across EU borders.                          | Low        | Critical – fines up to 4% of global revenue.                         | Store all EU player data in eu-west-1; implement right-to-erasure API; conduct Data Protection Impact Assessment before launch.                   | Accepted (with DPIA scheduled) |
+| R5  | Mobile app performance degrades when rendering large leaderboards (> 10k players) on mid-range devices.           | Medium     | Medium – user experience downgrade.                                  | Paginate leaderboards server-side; use virtualized lists (FlatList for React Native); lazy-load player avatars.                                   | Mitigated                      |
+| R6  | Third-party API rate limits (ILTL, club management systems) block batch data ingestion during initial seed.       | High       | High – delayed time-to-market.                                       | Negotiate rate limit increase during pilot phase; implement staggered ingestion with exponential backoff; cache aggressively.                     | Active                         |
+| R7  | Misalignment between reputation score and actual skill level for doubles partners (tennis doubles, padel).        | Medium     | Medium – credibility of platform.                                    | Introduce a separate "team reputation" derived from shared match results; allow players to optionally link consistent partners.                   | Active                         |
+| R8  | Seasonal drop in user engagement (off-season) leads to abandoned accounts and stale data.                         | High       | Low – does not affect core correctness, but impacts metrics.         | Gamify off-season with challenges, virtual trophies, and skill prediction games; send re-engagement push notifications.                           | Mitigated                      |
 
 ### Decision Log Entry: Risk Status Tracking
 
@@ -5417,6 +5606,7 @@ Beyond the register, we anticipate two systemic failure modes:
 - **Trade-off**: Adding a `Status` column to the risk register encourages formality but may discourage ad-hoc risk reporting. We accept this trade-off in favor of traceability.
 - **Open question**: Should we automate the transition from `Active` to `Mitigated` based on monitoring rules (e.g., circuit breaker has not tripped in 30 days)? Currently status is updated manually; we may revisit this in Task 4 (Observability build).
 - **Implications**: If any risk's `Status` remains `Active` for more than three consecutive sprints, the engineering lead must escalate to the product owner during the next sprint planning. This rule is documented in the team's Working Agreement and is baked into the sprint review template.
+
 ### Context & Goals
 
 Match Point’s success depends on navigating a set of **risks** that span data quality, community adoption, regulatory compliance, and technical scalability. Unlike a single-venue ranking system, a cross-community platform must reconcile disparate scoring schemes, trust models, and data access agreements. The primary goal of this section is to enumerate each material **risk**, assign a probability and impact rating, define detection mechanisms, and prescribe mitigation actions. By making **risk** explicit in the architecture, the engineering team can prioritize hardening work during each Task (phase) rather than retrofitting safeguards after launch.
@@ -5424,24 +5614,24 @@ Match Point’s success depends on navigating a set of **risks** that span data 
 ### Decisions
 
 1. **Risk Register as a Living Document** – The team will maintain a YAML-based risk register inside the `docs/` repository, versioned alongside code. This replaces ad-hoc spreadsheets.  
-   *Rationale: Every merge request can reference risk IDs, making risk-aware development the default.*  
-   *Rejected alternative: A separate Jira project – too easily ignored.*
+   _Rationale: Every merge request can reference risk IDs, making risk-aware development the default._  
+   _Rejected alternative: A separate Jira project – too easily ignored._
 
 2. **Automated Risk Detection for Data Integrity** – Every ETL pipeline that ingests ILTL (official competition data) must emit a structured risk event when record counts deviate >5% from historical baselines.  
-   *Rationale: Data quality is the highest-impact risk for ranking accuracy.*  
+   _Rationale: Data quality is the highest-impact risk for ranking accuracy._
 
 3. **Community Onboarding Risk Budget** – The first 10 communities will receive dedicated concierge support. After that, the self-serve onboarding flow must achieve <10% abandonment rate, else the feature is gated behind human review.  
-   *Rationale: Early adopter experience determines cross-community network effects; a poor first impression amplifies churn risk.*
+   _Rationale: Early adopter experience determines cross-community network effects; a poor first impression amplifies churn risk._
 
 ### Component Breakdown
 
-| Risk ID | Risk Description | Probability | Impact | Owner | Detection Mechanism | Mitigation |
-|---------|------------------|-------------|--------|-------|---------------------|------------|
-| R001 | ILTL API deprecation without notice | Low | Critical | Data Partnerships | Daily health-check endpoint → PagerDuty alert | Dual-sourcing: also ingest PDF bulletins as fallback |
-| R002 | Reputation score manipulation (sybil attacks) | Medium | High | Security Team | Anomaly detection on account creation velocity + match result patterns | Rate-limit new accounts; require proof of play (photo/video for first 5 matches) |
-| R003 | Community fragmentation – players refuse cross-community rankings | High | Critical | Product | Post-signup survey + A/B test of blended vs. separate leaderboards | Phase rollout: start with single-community view, add cross-community as opt-in feature |
-| R004 | GDPR/CCPA data deletion request latency >48h | Medium | Critical | Legal + Backend | Automated pipeline that triggers deletion cascade on request; monitor with Datadog | Pre-calculate deletion dependencies per player to guarantee <24h SLA |
-| R005 | Padel vs tennis ranking models diverge too early | Medium | High | ML Team | Weekly divergence report comparing Spearman correlation of community-specific scores | Maintain a unified base algorithm; community weights are configurable per league |
+| Risk ID | Risk Description                                                  | Probability | Impact   | Owner             | Detection Mechanism                                                                  | Mitigation                                                                             |
+| ------- | ----------------------------------------------------------------- | ----------- | -------- | ----------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| R001    | ILTL API deprecation without notice                               | Low         | Critical | Data Partnerships | Daily health-check endpoint → PagerDuty alert                                        | Dual-sourcing: also ingest PDF bulletins as fallback                                   |
+| R002    | Reputation score manipulation (sybil attacks)                     | Medium      | High     | Security Team     | Anomaly detection on account creation velocity + match result patterns               | Rate-limit new accounts; require proof of play (photo/video for first 5 matches)       |
+| R003    | Community fragmentation – players refuse cross-community rankings | High        | Critical | Product           | Post-signup survey + A/B test of blended vs. separate leaderboards                   | Phase rollout: start with single-community view, add cross-community as opt-in feature |
+| R004    | GDPR/CCPA data deletion request latency >48h                      | Medium      | Critical | Legal + Backend   | Automated pipeline that triggers deletion cascade on request; monitor with Datadog   | Pre-calculate deletion dependencies per player to guarantee <24h SLA                   |
+| R005    | Padel vs tennis ranking models diverge too early                  | Medium      | High     | ML Team           | Weekly divergence report comparing Spearman correlation of community-specific scores | Maintain a unified base algorithm; community weights are configurable per league       |
 
 ### Data Contracts (Risk Register Schema)
 
@@ -5451,8 +5641,8 @@ risks:
   - id: R001
     title: "ILTL API deprecation"
     description: "ILTL may shut down its public API with 90 days notice, cutting off ~40% of competition data."
-    probability: 0.2   # Low
-    impact: 0.9        # Critical
+    probability: 0.2 # Low
+    impact: 0.9 # Critical
     owner: "data-partnerships@matchpoint"
     detection:
       - type: cron
@@ -5466,11 +5656,11 @@ risks:
 
 ### Failure Modes (Risk-Driven)
 
-| Failure Mode | Triggering Risk Condition | Observable Signal | Automated Response | Manual Escalation |
-|---|---|---|---|---|
-| Stale rankings    | R001 + ILTL data cutoff    | No fresh match data for >48 hours | Flip ranking to "last-valid-snapshot" mode; notify all community admins | Data partnerships team calls ILTL business line |
-| 10x signup spike  | R002 sybil pattern          | New account creation >500/day from same IP range | Block IP range; flag accounts for manual review | Security engineer triages within 1 hour |
-| Community boycott | R003 fragmentation          | Drop in weekly active players >30% in one community | Trigger in-app survey with NPS; pause cross-community leaderboard for that community | Product manager schedules call with community leaders |
+| Failure Mode      | Triggering Risk Condition | Observable Signal                                   | Automated Response                                                                   | Manual Escalation                                     |
+| ----------------- | ------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| Stale rankings    | R001 + ILTL data cutoff   | No fresh match data for >48 hours                   | Flip ranking to "last-valid-snapshot" mode; notify all community admins              | Data partnerships team calls ILTL business line       |
+| 10x signup spike  | R002 sybil pattern        | New account creation >500/day from same IP range    | Block IP range; flag accounts for manual review                                      | Security engineer triages within 1 hour               |
+| Community boycott | R003 fragmentation        | Drop in weekly active players >30% in one community | Trigger in-app survey with NPS; pause cross-community leaderboard for that community | Product manager schedules call with community leaders |
 
 ### Mermaid Diagram (Risk Escalation Flow)
 
@@ -5490,15 +5680,16 @@ graph TD
 
 ### Cross-cutting Concerns
 
-- **Observability**: Every risk mitigation path emits a structured log with `risk_id`, `action_taken`, and `player_ids_affected`. These are indexed in Elasticsearch for ad-hoc analysis.  
-- **Security**: Risk R002 (sybil) is partially mitigated by CAPTCHA on signup, but the core defense is behavioral analysis. The risk register will be reviewed quarterly by the security team.  
+- **Observability**: Every risk mitigation path emits a structured log with `risk_id`, `action_taken`, and `player_ids_affected`. These are indexed in Elasticsearch for ad-hoc analysis.
+- **Security**: Risk R002 (sybil) is partially mitigated by CAPTCHA on signup, but the core defense is behavioral analysis. The risk register will be reviewed quarterly by the security team.
 - **Capacity Planning**: The PDF fallback for ILTL data may require up to 2x the normal ingestion throughput (because bulletins are released weekly and must be backfilled). We allocate 4 vCPU and 8 GB RAM for the PDF pipeline as a contingency buffer.
 
 ### Trade-offs & Open Questions
 
-- **Trade-off**: A rigorous risk budget for community onboarding may slow initial growth. The team accepts this to avoid the nightmare scenario of a toxic community poisoning the reputation model.  
-- **Open Question**: Should we implement a formal Risk Advisory Board with community representatives? This is not part of the current execution plan but could be added after Task 6 (first cross-community rollout).  
+- **Trade-off**: A rigorous risk budget for community onboarding may slow initial growth. The team accepts this to avoid the nightmare scenario of a toxic community poisoning the reputation model.
+- **Open Question**: Should we implement a formal Risk Advisory Board with community representatives? This is not part of the current execution plan but could be added after Task 6 (first cross-community rollout).
 - **Open Question**: How do we quantify the `probability` of R003 (community fragmentation) without historical data? **Recommended default:** Set initial probability to `0.5` (Medium) and adjust after the first community pilot.
+
 ### Context & Goals
 
 Every platform that aggregates reputation across competitive communities faces a unique set of failure vectors. For Match Point, the core risk is that the reputation signal becomes untrusted, stale, or gameable — which would destroy the very value proposition of “cross-community trust.” The success criteria for this risk section are: (a) identify all credible threats to data integrity, service continuity, and user adoption, (b) assign clear detection and mitigation strategies with owner teams, and (c) define go/no-go thresholds that trigger escalation. This section does not aim for exhaustive actuarial coverage — it targets the top-10 risks that could materially affect launch or long-term viability.
@@ -5513,18 +5704,18 @@ Every platform that aggregates reputation across competitive communities faces a
 
 ### Risk Register (Top 10)
 
-| ID | Risk Description | Likelihood (1-5) | Impact (1-5) | Score | Mitigation | DRI | Trigger for Escalation |
-|----|-----------------|------------------|--------------|-------|------------|-----|------------------------|
-| R1 | ILTL data ingestion breaks permanently (API deprecation / legal block) | 3 | 5 | 15 | Build a fallback to manual CSV upload + maintain a community-scraped mirror (Opta-level public data). Legal review of data licensing before launch. | Backend Lead (Task 2) | ILTL feed silent for >48h |
-| R2 | Player profile fraud – bots create fake accounts to inflate reputation | 4 | 4 | 16 | Identity verification via social login (Google/Apple) + email + phone. Devise a reputation velocity cap (cannot gain >X points per day without verified match). ML heuristic for bot patterns (honeypot fields). | Auth Lead (Task 1) | >5% of new accounts flagged as suspicious per day |
-| R3 | Community accusation of bias – rankings favor one tournament circuit over another | 3 | 4 | 12 | Publish the full reputation algorithm as versioned spec. Allow community audit via a public “replay” endpoint that explains any score delta. Independent advisory board with 3 community-elected members. | Product Lead (Task 5) | >10 support tickets/day about bias |
-| R4 | GDPR / CCPA violation – storing match results without explicit consent | 2 | 5 | 10 | Consent opt-in at registration + per-match data processing notice. Data retention policy: 36 months then anonymized. DPA with ILTL if they share PII. Appoint a DPO (external firm). | Legal (contracted) | Any supervisory authority inquiry |
-| R5 | Reputation score manipulation via collusion (friends playing fake matches) | 4 | 3 | 12 | Require opponent verification (both sides confirm match outcome). Geolocation check (device GPS must match court location). Rate-limit matches per day per player-pair. | ML/Backend Lead (Task 4) | Any pair with >5 matches/day |
-| R6 | Single-region infrastructure outage (cloud provider AZ failure) | 2 | 4 | 8 | Multi-AZ deployment (AWS/Azure/GCP, at least 2 regions by public launch). PostgreSQL streaming replicas cross-region. Read replicas promoted automatically. | Infra Lead (Task 7) | Primary region latency >500ms for 5 min |
-| R7 | Performance degradation under high load (e.g., US Open weekend) | 4 | 3 | 12 | Auto-scaling groups with warm pools. Pre-warm caches for known events (Slams). Load test at 10× expected peak (100k concurrent users) before launch. | Infra Lead (Task 7) | p95 API latency >2s for 1 min |
-| R8 | ILTL data inconsistency – match results differ between official source and community report | 3 | 3 | 9 | Data reconciliation job runs nightly: compare ILTL vs user-uploaded results. Flag discrepancies >5% for manual review. Score softens conflicting data (lower weight). | Backend Lead (Task 2) | >1% of daily matches in conflict |
-| R9 | Sponsor / monetization failure – unable to sustain free tier | 3 | 4 | 12 | Freemium model: basic reputation free, advanced analytics / tournament organization subscription. Secure 2 anchor sponsors before public launch. Startup runway 18 months minimum. | CEO/Founder | Monthly burn > revenue for 6 consecutive months |
-| R10 | Key developer turnover – loss of domain/algorithm expertise | 2 | 4 | 8 | Extensive internal documentation (this architecture doc is part of it). Code review rotation. Pair programming on reputation algorithm module. Ensure algorithmic decisions are logged and versioned. | Eng Lead | Unplanned departure of primary algorithm author |
+| ID  | Risk Description                                                                            | Likelihood (1-5) | Impact (1-5) | Score | Mitigation                                                                                                                                                                                                       | DRI                      | Trigger for Escalation                            |
+| --- | ------------------------------------------------------------------------------------------- | ---------------- | ------------ | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------- |
+| R1  | ILTL data ingestion breaks permanently (API deprecation / legal block)                      | 3                | 5            | 15    | Build a fallback to manual CSV upload + maintain a community-scraped mirror (Opta-level public data). Legal review of data licensing before launch.                                                              | Backend Lead (Task 2)    | ILTL feed silent for >48h                         |
+| R2  | Player profile fraud – bots create fake accounts to inflate reputation                      | 4                | 4            | 16    | Identity verification via social login (Google/Apple) + email + phone. Devise a reputation velocity cap (cannot gain >X points per day without verified match). ML heuristic for bot patterns (honeypot fields). | Auth Lead (Task 1)       | >5% of new accounts flagged as suspicious per day |
+| R3  | Community accusation of bias – rankings favor one tournament circuit over another           | 3                | 4            | 12    | Publish the full reputation algorithm as versioned spec. Allow community audit via a public “replay” endpoint that explains any score delta. Independent advisory board with 3 community-elected members.        | Product Lead (Task 5)    | >10 support tickets/day about bias                |
+| R4  | GDPR / CCPA violation – storing match results without explicit consent                      | 2                | 5            | 10    | Consent opt-in at registration + per-match data processing notice. Data retention policy: 36 months then anonymized. DPA with ILTL if they share PII. Appoint a DPO (external firm).                             | Legal (contracted)       | Any supervisory authority inquiry                 |
+| R5  | Reputation score manipulation via collusion (friends playing fake matches)                  | 4                | 3            | 12    | Require opponent verification (both sides confirm match outcome). Geolocation check (device GPS must match court location). Rate-limit matches per day per player-pair.                                          | ML/Backend Lead (Task 4) | Any pair with >5 matches/day                      |
+| R6  | Single-region infrastructure outage (cloud provider AZ failure)                             | 2                | 4            | 8     | Multi-AZ deployment (AWS/Azure/GCP, at least 2 regions by public launch). PostgreSQL streaming replicas cross-region. Read replicas promoted automatically.                                                      | Infra Lead (Task 7)      | Primary region latency >500ms for 5 min           |
+| R7  | Performance degradation under high load (e.g., US Open weekend)                             | 4                | 3            | 12    | Auto-scaling groups with warm pools. Pre-warm caches for known events (Slams). Load test at 10× expected peak (100k concurrent users) before launch.                                                             | Infra Lead (Task 7)      | p95 API latency >2s for 1 min                     |
+| R8  | ILTL data inconsistency – match results differ between official source and community report | 3                | 3            | 9     | Data reconciliation job runs nightly: compare ILTL vs user-uploaded results. Flag discrepancies >5% for manual review. Score softens conflicting data (lower weight).                                            | Backend Lead (Task 2)    | >1% of daily matches in conflict                  |
+| R9  | Sponsor / monetization failure – unable to sustain free tier                                | 3                | 4            | 12    | Freemium model: basic reputation free, advanced analytics / tournament organization subscription. Secure 2 anchor sponsors before public launch. Startup runway 18 months minimum.                               | CEO/Founder              | Monthly burn > revenue for 6 consecutive months   |
+| R10 | Key developer turnover – loss of domain/algorithm expertise                                 | 2                | 4            | 8     | Extensive internal documentation (this architecture doc is part of it). Code review rotation. Pair programming on reputation algorithm module. Ensure algorithmic decisions are logged and versioned.            | Eng Lead                 | Unplanned departure of primary algorithm author   |
 
 ### Failure Modes
 
@@ -5572,36 +5763,40 @@ quadrantChart
 
 ### Failure Scenarios & Recovery Procedures
 
-**Scenario 1: ILTL API deprecated without notice**  
-- **Detection**: Health check returns 410 Gone.  
-- **Response (within 1h)**: Switch read path to use the community match upload table as primary data source, with a dashboard notice “Community-sourced data – last official sync: [timestamp]”.  
+**Scenario 1: ILTL API deprecated without notice**
+
+- **Detection**: Health check returns 410 Gone.
+- **Response (within 1h)**: Switch read path to use the community match upload table as primary data source, with a dashboard notice “Community-sourced data – last official sync: [timestamp]”.
 - **Recovery (within 7 days)**: Begin migration to backup provider (e.g., Sportradar Padel/Tennis API). Re-run all reputation calculations from the event log using new data source.
 
-**Scenario 2: Collusion ring discovered**  
-- **Detection**: A daily batch job flags a cluster of players with suspicious match velocity (e.g., 20 matches in 2 hours all with the same opponent pair).  
-- **Response (within 24h)**: Temporarily freeze scores of all members in the cluster. Send verification request via email (require photo of court + scorecard within 48h).  
+**Scenario 2: Collusion ring discovered**
+
+- **Detection**: A daily batch job flags a cluster of players with suspicious match velocity (e.g., 20 matches in 2 hours all with the same opponent pair).
+- **Response (within 24h)**: Temporarily freeze scores of all members in the cluster. Send verification request via email (require photo of court + scorecard within 48h).
 - **Recovery**: If verified, unfreeze with a “verified” tag. If not, deduct all gained points and mark cluster with a “flagged” attribute for manual review.
 
-**Scenario 3: Database corruption**  
-- **Detection**: Checksum failure on a table (every row has a `row_hash` column; background worker verifies random 5% per hour).  
-- **Response (within 30min)**: Failover to read replica. Begin point-in-time recovery from WAL archive, targeting 15-minute RPO.  
+**Scenario 3: Database corruption**
+
+- **Detection**: Checksum failure on a table (every row has a `row_hash` column; background worker verifies random 5% per hour).
+- **Response (within 30min)**: Failover to read replica. Begin point-in-time recovery from WAL archive, targeting 15-minute RPO.
 - **Recovery**: Once restored, rebuild any views or materialized aggregates. Notify users of a “temporary score hold” (scores frozen for 24h).
+
 ### Context & Goals
 
 This section catalogues the risks that threaten Match Point’s delivery timeline, data integrity, and long-term viability. Every architectural decision in prior sections was made with one or more of these risks in mind. The register is versioned and reviewed at each Task gate; **Status** is updated weekly and must be “Mitigated” or “Accepted” before a Task can close.
 
-| Risk ID | Description | Likelihood | Impact | Mitigation | Status (as of Task 0) |
-|:--------|:------------|:----------:|:------:|:-----------|:---------------------:|
-| R1 | **Cold start** – no communities onboarded during Task 1 | High | Critical | Recruit 3 anchor clubs before Task 0 lock; build invite-only creation flow with guided wizard | ⚠️ Open |
-| R2 | **Admin departure** without successor leaves community orphaned | Medium | High | Task 1: nomination flow; Task 7: inactivity‑based succession claim | ⚠️ Open |
-| R3 | **GPS spoofing** enables fake match submissions | High | High | Task 2: mandatory QR check‑in for ranked matches; collusion scoring with IP fingerprint | ⚠️ Open |
-| R4 | **Match dispute overload** overwhelms manual resolution | Low | High | Task 2: immutable audit log; Task 7: dispute dashboard with SLA | ⚠️ Open |
-| R5 | **Collusion** – mutual confirmation farming inflates rankings | Medium | Medium | Task 2: IP + device fingerprint matching; third‑party confirmation for flagged pairs | ⚠️ Open |
-| R6 | **Endorsement farming** inflates skill scores | Medium | Low | Task 5: 7‑day cooldown between mutual endorsements; endorser must be from a different community | ⚠️ Open |
-| R7 | **Scope creep** delays v1 delivery | Medium | High | Task 0: strict MVP gates; feature flags hide incomplete work | ⚠️ Open |
-| R8 | **No business model** – platform becomes a feature, not a product | Low | High | Task 0: monetisation hypothesis defined; Task 7: subscription tiers + data moat via ranking history | ⚠️ Open |
-| R9 | **Multi‑sport complexity** without adoption evidence | Medium | Low | Tasks 1–3 padel‑only; tennis delayed until >20% of users request it | ⚠️ Open |
-| R10 | **Data volume** – 120M rows/year without partitioning | Low | Medium | Task 3: monthly snapshot partitioning on `snapshot_date`; retention policy (archive to cold storage after 13 months) | ⚠️ Open |
+| Risk ID | Description                                                       | Likelihood |  Impact  | Mitigation                                                                                                           | Status (as of Task 0) |
+| :------ | :---------------------------------------------------------------- | :--------: | :------: | :------------------------------------------------------------------------------------------------------------------- | :-------------------: |
+| R1      | **Cold start** – no communities onboarded during Task 1           |    High    | Critical | Recruit 3 anchor clubs before Task 0 lock; build invite-only creation flow with guided wizard                        |        ⚠️ Open        |
+| R2      | **Admin departure** without successor leaves community orphaned   |   Medium   |   High   | Task 1: nomination flow; Task 7: inactivity‑based succession claim                                                   |        ⚠️ Open        |
+| R3      | **GPS spoofing** enables fake match submissions                   |    High    |   High   | Task 2: mandatory QR check‑in for ranked matches; collusion scoring with IP fingerprint                              |        ⚠️ Open        |
+| R4      | **Match dispute overload** overwhelms manual resolution           |    Low     |   High   | Task 2: immutable audit log; Task 7: dispute dashboard with SLA                                                      |        ⚠️ Open        |
+| R5      | **Collusion** – mutual confirmation farming inflates rankings     |   Medium   |  Medium  | Task 2: IP + device fingerprint matching; third‑party confirmation for flagged pairs                                 |        ⚠️ Open        |
+| R6      | **Endorsement farming** inflates skill scores                     |   Medium   |   Low    | Task 5: 7‑day cooldown between mutual endorsements; endorser must be from a different community                      |        ⚠️ Open        |
+| R7      | **Scope creep** delays v1 delivery                                |   Medium   |   High   | Task 0: strict MVP gates; feature flags hide incomplete work                                                         |        ⚠️ Open        |
+| R8      | **No business model** – platform becomes a feature, not a product |    Low     |   High   | Task 0: monetisation hypothesis defined; Task 7: subscription tiers + data moat via ranking history                  |        ⚠️ Open        |
+| R9      | **Multi‑sport complexity** without adoption evidence              |   Medium   |   Low    | Tasks 1–3 padel‑only; tennis delayed until >20% of users request it                                                  |        ⚠️ Open        |
+| R10     | **Data volume** – 120M rows/year without partitioning             |    Low     |  Medium  | Task 3: monthly snapshot partitioning on `snapshot_date`; retention policy (archive to cold storage after 13 months) |        ⚠️ Open        |
 
 ### Escalation Workflow
 
@@ -5638,6 +5833,7 @@ flowchart TD
 3. **Data retention (R10):** Historical snapshots are archived to GCS Nearline after 13 months, never deleted — ranking history is the platform’s trust asset.
 
 ## 14. Assumptions
+
 ### Context & Goals
 
 This section documents the explicit assumptions underpinning the architecture of Match Point. Every architectural decision in the preceding sections relies on these assumptions holding true. If any assumption is invalidated during development or operations, the relevant component may need to be re-evaluated. The goal is to surface each assumption so it can be tracked, verified, and, if necessary, invalidated through concrete experiments or data collection in the early tasks.
@@ -5646,28 +5842,28 @@ This section documents the explicit assumptions underpinning the architecture of
 
 The following assumptions are structured as explicit decisions with reasoning and the potential impact if they prove false.
 
-| # | Assumption | Rationale | Impact if False | Verification Trigger |
-|---|-----------|-----------|-----------------|----------------------|
-| A1 | ILTL provides a stable, RESTful API with 99.5% uptime for match and player data. | Match Point’s core ranking engine depends on ILTL as the authoritative source for competition results. Without this, we cannot compute cross-community rankings. | Requires a fallback data ingestion pipeline (web scraping, manual upload, or partner API). ILTL data may need to be cached aggressively. | Task 2 integration testing: if ILTL API returns 5xx errors >0.5% over a week, escalate. |
-| A2 | At least 70% of player-reported matches will include an ILTL match ID or be verifiable against ILTL records. | The “verify with official data” feature requires that most user submissions can be cross-referenced. | We must broaden verification to trust-based review or community moderators, reducing reliability of reputation scores. | A/B test during Task 4: if verification rate <50% after 1K submissions, pivot to hybrid model. |
-| A3 | The average padel/tennis player in target markets (Spain, Argentina, US) has a smartphone and is comfortable installing a mobile app. | The primary user experience is mobile-first. | We would need a PWA fallback and SMS-based interactions, increasing engineering effort across Tasks 5-7. | Market survey in Task 1; if smartphone adoption <80% in target demographic, adjust scope. |
-| A4 | ILTL’s data model includes a unique player identifier (e.g., license number) that persists across seasons. | Matching players across communities depends on a stable identifier. | We must implement a fuzzy matching or manual claim system, adding complexity and potential duplicates. | Examine ILTL API docs in Task 2. |
-| A5 | Match reporting will not exceed 10,000 submissions/day globally in the first 12 months post-launch. | Guides database sizing, write throughput, and queue design. | 10x growth would require auto-scaling, sharding, and potentially database migration. | Monitor Task 6: if sustained >1K/day within 3 months, pre-scale. |
-| A6 | The ML model for player skill prediction (surrogate ranking) can be trained on synthetic data and validated on 10% of real ILTL data without privacy violations. | We need a ranking engine that works even for players with few official matches. | Model may be inaccurate, requiring more complex data augmentation or reliance on community votes. | Task 8 accuracy test: if RMSE >0.3 on validation set, redesign feature. |
-| A7 | Legal clearance for storing and displaying player names, scores, and ratings is obtained from ILTL and all partner communities. | Data ownership and GDPR compliance are prerequisites. | Complete app redesign, potential for geographic restrictions. | Legal review in Task 0; if not cleared, pivot to opt-in only. |
-| A8 | The engineering team has at least three backend engineers (Go), two frontend engineers (React/React Native), one ML engineer, and one DevOps engineer for the first six months. | Architecture assumes this capacity for parallel work streams. | Feature delivery slips; architecture may need to be simplified (e.g., fewer microservices). | Re-evaluate at each sprint; if team is smaller, reduce Task parallelism. |
-| A9 | Cloud infrastructure costs will remain within $5,000/month for the first year, assuming standard AWS/GCP reserved instances. | Informs choice of serverless vs. containers, storage tier, and caching. | Need to optimise for cost (e.g., more aggressive caching, reduced redundancy) or request budget increase. | Monthly cost review; if >$6K for 2 consecutive months, optimise. |
-| A10 | The mobile app will be accepted in both Apple App Store and Google Play Store without significant content moderation hurdles. | Distribution channel is assumed open. | Alternative distribution via PWA or sideloading reduces reach. | Submit beta builds in Task 5; if rejected, pivot to PWA. |
+| #   | Assumption                                                                                                                                                                      | Rationale                                                                                                                                                        | Impact if False                                                                                                                          | Verification Trigger                                                                           |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| A1  | ILTL provides a stable, RESTful API with 99.5% uptime for match and player data.                                                                                                | Match Point’s core ranking engine depends on ILTL as the authoritative source for competition results. Without this, we cannot compute cross-community rankings. | Requires a fallback data ingestion pipeline (web scraping, manual upload, or partner API). ILTL data may need to be cached aggressively. | Task 2 integration testing: if ILTL API returns 5xx errors >0.5% over a week, escalate.        |
+| A2  | At least 70% of player-reported matches will include an ILTL match ID or be verifiable against ILTL records.                                                                    | The “verify with official data” feature requires that most user submissions can be cross-referenced.                                                             | We must broaden verification to trust-based review or community moderators, reducing reliability of reputation scores.                   | A/B test during Task 4: if verification rate <50% after 1K submissions, pivot to hybrid model. |
+| A3  | The average padel/tennis player in target markets (Spain, Argentina, US) has a smartphone and is comfortable installing a mobile app.                                           | The primary user experience is mobile-first.                                                                                                                     | We would need a PWA fallback and SMS-based interactions, increasing engineering effort across Tasks 5-7.                                 | Market survey in Task 1; if smartphone adoption <80% in target demographic, adjust scope.      |
+| A4  | ILTL’s data model includes a unique player identifier (e.g., license number) that persists across seasons.                                                                      | Matching players across communities depends on a stable identifier.                                                                                              | We must implement a fuzzy matching or manual claim system, adding complexity and potential duplicates.                                   | Examine ILTL API docs in Task 2.                                                               |
+| A5  | Match reporting will not exceed 10,000 submissions/day globally in the first 12 months post-launch.                                                                             | Guides database sizing, write throughput, and queue design.                                                                                                      | 10x growth would require auto-scaling, sharding, and potentially database migration.                                                     | Monitor Task 6: if sustained >1K/day within 3 months, pre-scale.                               |
+| A6  | The ML model for player skill prediction (surrogate ranking) can be trained on synthetic data and validated on 10% of real ILTL data without privacy violations.                | We need a ranking engine that works even for players with few official matches.                                                                                  | Model may be inaccurate, requiring more complex data augmentation or reliance on community votes.                                        | Task 8 accuracy test: if RMSE >0.3 on validation set, redesign feature.                        |
+| A7  | Legal clearance for storing and displaying player names, scores, and ratings is obtained from ILTL and all partner communities.                                                 | Data ownership and GDPR compliance are prerequisites.                                                                                                            | Complete app redesign, potential for geographic restrictions.                                                                            | Legal review in Task 0; if not cleared, pivot to opt-in only.                                  |
+| A8  | The engineering team has at least three backend engineers (Go), two frontend engineers (React/React Native), one ML engineer, and one DevOps engineer for the first six months. | Architecture assumes this capacity for parallel work streams.                                                                                                    | Feature delivery slips; architecture may need to be simplified (e.g., fewer microservices).                                              | Re-evaluate at each sprint; if team is smaller, reduce Task parallelism.                       |
+| A9  | Cloud infrastructure costs will remain within $5,000/month for the first year, assuming standard AWS/GCP reserved instances.                                                    | Informs choice of serverless vs. containers, storage tier, and caching.                                                                                          | Need to optimise for cost (e.g., more aggressive caching, reduced redundancy) or request budget increase.                                | Monthly cost review; if >$6K for 2 consecutive months, optimise.                               |
+| A10 | The mobile app will be accepted in both Apple App Store and Google Play Store without significant content moderation hurdles.                                                   | Distribution channel is assumed open.                                                                                                                            | Alternative distribution via PWA or sideloading reduces reach.                                                                           | Submit beta builds in Task 5; if rejected, pivot to PWA.                                       |
 
 ### Component Breakdown: Assumptions by Domain
 
-| Domain | Key Assumptions | Responsible Team | Related System |
-|--------|----------------|-----------------|----------------|
-| **Data Integration** | A1, A4, A7 | Backend, Data Engineering | ILTL connector, Player identity service |
-| **User-Reported Matches** | A2, A3 | Mobile, Backend | Match submission API, verification worker |
-| **Ranking Engine** | A6, A1 | ML, Backend | Rating service, surrogate model builder |
-| **Infrastructure & Ops** | A5, A9 | DevOps | Database, autoscaling, cost monitoring |
-| **Legal & Compliance** | A7, A10 | Product Owner, Legal | Data retention policies, store guidelines |
+| Domain                    | Key Assumptions | Responsible Team          | Related System                            |
+| ------------------------- | --------------- | ------------------------- | ----------------------------------------- |
+| **Data Integration**      | A1, A4, A7      | Backend, Data Engineering | ILTL connector, Player identity service   |
+| **User-Reported Matches** | A2, A3          | Mobile, Backend           | Match submission API, verification worker |
+| **Ranking Engine**        | A6, A1          | ML, Backend               | Rating service, surrogate model builder   |
+| **Infrastructure & Ops**  | A5, A9          | DevOps                    | Database, autoscaling, cost monitoring    |
+| **Legal & Compliance**    | A7, A10         | Product Owner, Legal      | Data retention policies, store guidelines |
 
 ### Data Contracts (Assumptions Schema)
 
@@ -5690,13 +5886,13 @@ While assumptions are not directly implemented as code, we define a runtime veri
 
 ### Failure Modes
 
-| Failure Mode | Triggering Assumption | Detection | Mitigation |
-|--------------|----------------------|-----------|------------|
-| ILTL API downtime prevents ranking computation | A1 | Prometheus alert (SLI < threshold) | Queue pending updates; serve cached rankings; notify users with banner. |
-| Verification rate below target | A2 | Dashboard metric (verified / total submissions) | Switch to trust-based verification for low-risk matches; increase community moderator pool. |
-| Low mobile app adoption | A3 | Analytics: installs < 10% of survey respondents | Accelerate PWA development (Task 5.b); run SMS or WhatsApp onboarding. |
-| Legal dispute over player data | A7 | Legal “cease and desist” | Anonymize all stored data for affected region; disable profile pages. |
-| ML model underperforms | A6 | Validation RMSE > 0.3 | Use simpler Elo-based ranking for players with <10 matches; drop surrogate model. |
+| Failure Mode                                   | Triggering Assumption | Detection                                       | Mitigation                                                                                  |
+| ---------------------------------------------- | --------------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| ILTL API downtime prevents ranking computation | A1                    | Prometheus alert (SLI < threshold)              | Queue pending updates; serve cached rankings; notify users with banner.                     |
+| Verification rate below target                 | A2                    | Dashboard metric (verified / total submissions) | Switch to trust-based verification for low-risk matches; increase community moderator pool. |
+| Low mobile app adoption                        | A3                    | Analytics: installs < 10% of survey respondents | Accelerate PWA development (Task 5.b); run SMS or WhatsApp onboarding.                      |
+| Legal dispute over player data                 | A7                    | Legal “cease and desist”                        | Anonymize all stored data for affected region; disable profile pages.                       |
+| ML model underperforms                         | A6                    | Validation RMSE > 0.3                           | Use simpler Elo-based ranking for players with <10 matches; drop surrogate model.           |
 
 ### Cross-Cutting Concerns
 
@@ -5712,6 +5908,7 @@ While assumptions are not directly implemented as code, we define a runtime veri
 - **Trade-off**: Assumption A6 (surrogate ML) is high-risk. A safer default is a pure Elo-based system for all players, but that would degrade ranking quality for occasional players. We will run a parallel experiment in Task 8 to compare both.
 
 This assumption set will be reviewed every two sprints (monthly) and updated in the project wiki. Any deviation that changes architecture will trigger a mini-RFC.
+
 ### Context & Goals
 
 Every architectural plan rests on a set of explicit and implicit assumptions about the operating environment, user behaviour, and business realities. For Match Point, the assumptions documented in this section are the pillars on which the six-task execution plan, the ranking engine design, the community administration model, and the authentication architecture are built. If any of these assumptions proves false in production, it could invalidate significant design decisions, delay delivery, or cause user abandonment.
@@ -5736,13 +5933,13 @@ The following numbered architectural decisions govern how assumptions are treate
 
 ### Component Breakdown
 
-| Component | Responsibility | Technologies | Dependencies | Owner |
-|-----------|---------------|--------------|--------------|-------|
-| `internal/assumptions/registry.go` | Declares all assumption IDs, categories, impact levels, validation phases, and success criteria as typed constants | Go, `embed` for YAML schema | None (zero-dependency package) | Platform Team |
-| `test/integration/assumptions/` | Integration tests that validate each assumption's success criterion against real infrastructure | Go `testing` package, `testcontainers-go` for Postgres/Redis | PostgreSQL, Redis, Firebase Cloud Messaging (sandbox) | QA Engineer |
-| `internal/monitoring/assumptions.go` | Exposes Prometheus gauge metrics for each assumption: `mp_assumption_validation_total{assumption_id, result}` | Go, `prometheus/client_golang` | Prometheus operator | Platform Team |
-| `deploy/validation-gates/` | Kubernetes CronJob that periodically runs assumption validation (e.g., cache hit ratio check, ILTL health check) | Kubernetes CronJob, Go binary | Kubernetes, Prometheus | DevOps |
-| `docs/assumptions/playbooks/` | Incident response playbooks for each high-impact assumption failure | Markdown, PagerDuty API | PagerDuty | SRE Team |
+| Component                            | Responsibility                                                                                                     | Technologies                                                 | Dependencies                                          | Owner         |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------- | ------------- |
+| `internal/assumptions/registry.go`   | Declares all assumption IDs, categories, impact levels, validation phases, and success criteria as typed constants | Go, `embed` for YAML schema                                  | None (zero-dependency package)                        | Platform Team |
+| `test/integration/assumptions/`      | Integration tests that validate each assumption's success criterion against real infrastructure                    | Go `testing` package, `testcontainers-go` for Postgres/Redis | PostgreSQL, Redis, Firebase Cloud Messaging (sandbox) | QA Engineer   |
+| `internal/monitoring/assumptions.go` | Exposes Prometheus gauge metrics for each assumption: `mp_assumption_validation_total{assumption_id, result}`      | Go, `prometheus/client_golang`                               | Prometheus operator                                   | Platform Team |
+| `deploy/validation-gates/`           | Kubernetes CronJob that periodically runs assumption validation (e.g., cache hit ratio check, ILTL health check)   | Kubernetes CronJob, Go binary                                | Kubernetes, Prometheus                                | DevOps        |
+| `docs/assumptions/playbooks/`        | Incident response playbooks for each high-impact assumption failure                                                | Markdown, PagerDuty API                                      | PagerDuty                                             | SRE Team      |
 
 ### Data Contracts
 
@@ -6084,28 +6281,28 @@ type Registry struct {
 
 Each assumption failure has a distinct symptom, detection mechanism, and automated mitigation path. The engineering team must instrument these detection points before the assumption is relied upon in production.
 
-| Assumption ID | Category | Failure Symptom | Detection | Automated Mitigation | Manual Escalation |
-|---|---|---|---|---|---|
-| A-001 (auth) | technical | Token validation errors spike; users logged out mid-session | Prometheus alert: `mp_assumption_validation_auth_latency{result="fail"} > 0` for 5 minutes | Retry with cached public key; fall back to OAuth if JWT library crashes after 3 retries | DevOps rotates secret and restarts auth pod; incident playbook invoked |
-| A-002 (postgres write) | technical | Match submission fails; error rate > 1% of writes | Prometheus alert: `mp_assumption_validation_postgres_write_throughput{result="fail"}` for 3 consecutive checks | Queue writes to dead letter queue (Redis); reduce write batch size from 100 to 50; enable connection pooling retry | DBA scales up writer node from 2 to 4 vCPUs; increase max connections from 50 to 100 |
-| A-003 (cache hit) | technical | Leaderboard page load times > 2 seconds | Grafana: cache hit ratio drops below 80% for 10 minutes | Increase TTL for leaderboard keys from 5 minutes to 15 minutes; pre-warm cache on tournament start | DevOps adds Redis replica; evaluate Redis cluster mode with sharding |
-| A-004 (push latency) | technical | Push notifications arrive > 10 seconds after event | Prometheus alert: `mp_assumption_validation_push_latency > 5000` ms for 5 minutes | Batch notifications (max 50 per batch); downgrade priority from high to normal if Firebase throttles | Platform team contacts Firebase support; evaluate alternative push provider (OneSignal) |
-| A-005 (match frequency) | behavioural | DAU declines week-over-week | Amplitude: daily active users tracking; weekly cohort retention < 60% | In-app notification: "Play a match today to maintain your ranking!" | Product team implements push campaign; A/B test reminder frequency |
-| A-006 (result latency) | behavioural | Matches older than 48 hours have no result | Scheduled job: `match_aging` scans every 10 minutes | Send push notification to both players with deep link to result entry | Community admin follow-up via in-app message |
-| A-007 (GPS spoofing) | security | Match submitted from location 1000 km away from venue | Rule engine: travel time between match time and location < 1 hour | Flag match as suspicious (status: `flagged`); block ranking update pending admin review; reduce player's confidence score by 10 | Community admin notified via dashboard; platform security team investigates if flagged match rate > 5% per community |
-| A-008 (admin inactivity) | operational | Pending matches > 25% of all submissions for a community | Scheduler: `admin_response_time` exceeds 48 hours | Auto-promote next most active member (platform admin approval email sent); pending matches older than 72h auto-approved | Platform superadmin manually intervenes after 7 days via dashboard override |
-| A-009 (confirmation rate) | behavioural | Unconfirmed matches > 50% after 72 hours | Background job: `match_aging` scans every 10 minutes; threshold check | Auto-confirm if no dispute raised within 7 days; penalise both players' confirmation scores by 5% | Community admin override available via dashboard; player receives in-app notification |
-| A-010 (retention) | business | DAU declines after Task 3 launch; share card creation < 10% of active users | Amplitude analytics: funnel completion rate; weekly cohort retention < 20% at Day 30 | Feature flag: swap home screen from leaderboard to social feed; send in-app survey to active users | Product manager initiates pivot to social-first UX; A/B test new onboarding flow emphasising community, not ranking |
-| A-011 (share card) | behavioural | Share card creation rate < 40% after 14 days | Amplitude event tracking: `share_card_created` per user | In-app prompt after ranking update: "Share your progress with friends!"; A/B test card design | Product team adds viral mechanic: "Unlock premium card design after 5 shares" |
-| A-012 (endorsement) | trust | Endorsement count per profile averages < 1 | Dashboard metric: average endorsements per active profile | In-app nudge: "Endorse a player you've beaten this week!"; show endorser leaderboard | Community admin requests endorsements via community channel |
-| A-013 (cross-community) | behavioural | Cross-community leaderboard engagement < 20% weekly | Event tracking: `cross_community_leaderboard_view` per user per week | Feature flag: promote cross-community view to default tab; send "Your ranking across all communities" push | Product team adds community-switching UI; evaluate gamification (badge for cross-community play) |
-| A-014 (ILTL blocked) | operational | ILTL sync returns 403; ranking engine has no official data | Health check: `GET /iltl/status` returns non-200 for 3 consecutive attempts every 5 minutes | Switch to community-only rankings; display disclaimer "Official ILTL data unavailable" on leaderboard; log error with full context | Legal team contacts ILTL; product manager evaluates alternative data sources (PTMSI regional data, club self-reported ratings) |
-| A-015 (postgres latency) | technical | Write latency p99 exceeds 500 ms for 5 minutes | Prometheus: `pg_stat_activity` query time | Reduce batch size from 100 to 50; enable statement timeout (5 seconds); queue non-critical writes to Redis | DBA adds index on `matches.created_at`; partition `matches` table by month |
-| A-016 (redis hit) | technical | Cache miss rate > 30% for leaderboard | Grafana: Redis hit rate metric | Increase TTL from 5 min to 15 min; add Redis replica read endpoint | DevOps upgrades Redis instance to 2 GB memory; evaluate Redis Cluster |
-| A-017 (community onboarding) | business | Only 2 communities onboarded in first month | Customer success team tracks sign-ups | Outreach to top 20 padel clubs in Jakarta, Surabaya, Bandung | Sales team offers 3-month free trial for early adopters |
-| A-018 (dispute rate) | behavioural | Disputes > 10% of all matches | Dashboard metric: disputes / total matches | In-app mediation prompt with match evidence; auto-escalate if no resolution in 48h | Community admin reviews; platform team investigates systemic fraud |
-| A-019 (admin concurrency) | operational | Dashboard load times > 5 seconds for admin users | Prometheus: dashboard API latency p99 | Scale dashboard pods from 1 to 2 replicas; enable Redis caching for admin queries | DevOps adds horizontal pod autoscaling based on CPU > 70% |
-| A-020 (card generation) | technical | Image generation latency > 5 seconds p99 | Prometheus: `card_generation_duration_seconds` | Fall back to server-side rendering with Go template (no image); reduce card resolution from 1080p to 720p | Platform team evaluates CDN image generation (Cloudinary, imgix) |
+| Assumption ID                | Category    | Failure Symptom                                                             | Detection                                                                                                      | Automated Mitigation                                                                                                               | Manual Escalation                                                                                                              |
+| ---------------------------- | ----------- | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| A-001 (auth)                 | technical   | Token validation errors spike; users logged out mid-session                 | Prometheus alert: `mp_assumption_validation_auth_latency{result="fail"} > 0` for 5 minutes                     | Retry with cached public key; fall back to OAuth if JWT library crashes after 3 retries                                            | DevOps rotates secret and restarts auth pod; incident playbook invoked                                                         |
+| A-002 (postgres write)       | technical   | Match submission fails; error rate > 1% of writes                           | Prometheus alert: `mp_assumption_validation_postgres_write_throughput{result="fail"}` for 3 consecutive checks | Queue writes to dead letter queue (Redis); reduce write batch size from 100 to 50; enable connection pooling retry                 | DBA scales up writer node from 2 to 4 vCPUs; increase max connections from 50 to 100                                           |
+| A-003 (cache hit)            | technical   | Leaderboard page load times > 2 seconds                                     | Grafana: cache hit ratio drops below 80% for 10 minutes                                                        | Increase TTL for leaderboard keys from 5 minutes to 15 minutes; pre-warm cache on tournament start                                 | DevOps adds Redis replica; evaluate Redis cluster mode with sharding                                                           |
+| A-004 (push latency)         | technical   | Push notifications arrive > 10 seconds after event                          | Prometheus alert: `mp_assumption_validation_push_latency > 5000` ms for 5 minutes                              | Batch notifications (max 50 per batch); downgrade priority from high to normal if Firebase throttles                               | Platform team contacts Firebase support; evaluate alternative push provider (OneSignal)                                        |
+| A-005 (match frequency)      | behavioural | DAU declines week-over-week                                                 | Amplitude: daily active users tracking; weekly cohort retention < 60%                                          | In-app notification: "Play a match today to maintain your ranking!"                                                                | Product team implements push campaign; A/B test reminder frequency                                                             |
+| A-006 (result latency)       | behavioural | Matches older than 48 hours have no result                                  | Scheduled job: `match_aging` scans every 10 minutes                                                            | Send push notification to both players with deep link to result entry                                                              | Community admin follow-up via in-app message                                                                                   |
+| A-007 (GPS spoofing)         | security    | Match submitted from location 1000 km away from venue                       | Rule engine: travel time between match time and location < 1 hour                                              | Flag match as suspicious (status: `flagged`); block ranking update pending admin review; reduce player's confidence score by 10    | Community admin notified via dashboard; platform security team investigates if flagged match rate > 5% per community           |
+| A-008 (admin inactivity)     | operational | Pending matches > 25% of all submissions for a community                    | Scheduler: `admin_response_time` exceeds 48 hours                                                              | Auto-promote next most active member (platform admin approval email sent); pending matches older than 72h auto-approved            | Platform superadmin manually intervenes after 7 days via dashboard override                                                    |
+| A-009 (confirmation rate)    | behavioural | Unconfirmed matches > 50% after 72 hours                                    | Background job: `match_aging` scans every 10 minutes; threshold check                                          | Auto-confirm if no dispute raised within 7 days; penalise both players' confirmation scores by 5%                                  | Community admin override available via dashboard; player receives in-app notification                                          |
+| A-010 (retention)            | business    | DAU declines after Task 3 launch; share card creation < 10% of active users | Amplitude analytics: funnel completion rate; weekly cohort retention < 20% at Day 30                           | Feature flag: swap home screen from leaderboard to social feed; send in-app survey to active users                                 | Product manager initiates pivot to social-first UX; A/B test new onboarding flow emphasising community, not ranking            |
+| A-011 (share card)           | behavioural | Share card creation rate < 40% after 14 days                                | Amplitude event tracking: `share_card_created` per user                                                        | In-app prompt after ranking update: "Share your progress with friends!"; A/B test card design                                      | Product team adds viral mechanic: "Unlock premium card design after 5 shares"                                                  |
+| A-012 (endorsement)          | trust       | Endorsement count per profile averages < 1                                  | Dashboard metric: average endorsements per active profile                                                      | In-app nudge: "Endorse a player you've beaten this week!"; show endorser leaderboard                                               | Community admin requests endorsements via community channel                                                                    |
+| A-013 (cross-community)      | behavioural | Cross-community leaderboard engagement < 20% weekly                         | Event tracking: `cross_community_leaderboard_view` per user per week                                           | Feature flag: promote cross-community view to default tab; send "Your ranking across all communities" push                         | Product team adds community-switching UI; evaluate gamification (badge for cross-community play)                               |
+| A-014 (ILTL blocked)         | operational | ILTL sync returns 403; ranking engine has no official data                  | Health check: `GET /iltl/status` returns non-200 for 3 consecutive attempts every 5 minutes                    | Switch to community-only rankings; display disclaimer "Official ILTL data unavailable" on leaderboard; log error with full context | Legal team contacts ILTL; product manager evaluates alternative data sources (PTMSI regional data, club self-reported ratings) |
+| A-015 (postgres latency)     | technical   | Write latency p99 exceeds 500 ms for 5 minutes                              | Prometheus: `pg_stat_activity` query time                                                                      | Reduce batch size from 100 to 50; enable statement timeout (5 seconds); queue non-critical writes to Redis                         | DBA adds index on `matches.created_at`; partition `matches` table by month                                                     |
+| A-016 (redis hit)            | technical   | Cache miss rate > 30% for leaderboard                                       | Grafana: Redis hit rate metric                                                                                 | Increase TTL from 5 min to 15 min; add Redis replica read endpoint                                                                 | DevOps upgrades Redis instance to 2 GB memory; evaluate Redis Cluster                                                          |
+| A-017 (community onboarding) | business    | Only 2 communities onboarded in first month                                 | Customer success team tracks sign-ups                                                                          | Outreach to top 20 padel clubs in Jakarta, Surabaya, Bandung                                                                       | Sales team offers 3-month free trial for early adopters                                                                        |
+| A-018 (dispute rate)         | behavioural | Disputes > 10% of all matches                                               | Dashboard metric: disputes / total matches                                                                     | In-app mediation prompt with match evidence; auto-escalate if no resolution in 48h                                                 | Community admin reviews; platform team investigates systemic fraud                                                             |
+| A-019 (admin concurrency)    | operational | Dashboard load times > 5 seconds for admin users                            | Prometheus: dashboard API latency p99                                                                          | Scale dashboard pods from 1 to 2 replicas; enable Redis caching for admin queries                                                  | DevOps adds horizontal pod autoscaling based on CPU > 70%                                                                      |
+| A-020 (card generation)      | technical   | Image generation latency > 5 seconds p99                                    | Prometheus: `card_generation_duration_seconds`                                                                 | Fall back to server-side rendering with Go template (no image); reduce card resolution from 1080p to 720p                          | Platform team evaluates CDN image generation (Cloudinary, imgix)                                                               |
 
 ### Mermaid Diagram
 
@@ -6176,6 +6373,7 @@ sequenceDiagram
 Open questions represent unresolved engineering, product, and business decisions that directly affect Match Point’s architecture, implementation, and market viability. Unlike technical debt (which is known and deferred), open questions are forks in the road where choosing one path will significantly alter the system’s design, cost, user experience, or timeline. This section catalogues every unresolved item from the canonical state, applies a structured triage (impact, deadline, recommended direction), and clarifies which decisions must be made before each phase of the execution plan. The goal is to prevent decision paralysis during development and to provide product owners with clear, engineering-informed trade-offs.
 
 **Success criteria:**
+
 - Every question has an owner, a decision deadline, and at least two evaluated options with rationale.
 - No execution plan phase is blocked by an unresolved question that should have been decided earlier.
 - The team can convert any open question into an ADR (Architecture Decision Record) within one working session.
@@ -6201,34 +6399,34 @@ Open questions represent unresolved engineering, product, and business decisions
    Rationale: Ensures decisions are not forgotten.  
    Rejected alternative: Only discuss at sprint planning (too infrequent).
 
-5. **Decision: Use a phased resolution order aligned with execution plan phases.**  
-   - Phase 0: Auth, mobile choice, revenue model skeleton.  
-   - Phase 1: First community strategy, WhatsApp integration.  
-   - Phase 2: Venue GPS storage, share card cache.  
-   - Phase 3–5: Endorsement compute model, rank display thresholds.  
+5. **Decision: Use a phased resolution order aligned with execution plan phases.**
+   - Phase 0: Auth, mobile choice, revenue model skeleton.
+   - Phase 1: First community strategy, WhatsApp integration.
+   - Phase 2: Venue GPS storage, share card cache.
+   - Phase 3–5: Endorsement compute model, rank display thresholds.
    - Phase 6+: Monetisation details, premium features.
 
 ---
 
 ### Component breakdown
 
-| Question ID | Category | Question | Decision owner | Phase dependency | Resolution method |
-|-------------|----------|----------|----------------|------------------|-------------------|
-| OQ‑1 | Authentication | JWT signing algorithm (RS256 vs HS256), key rotation schedule | Lead Backend | Phase 0 | ADR‑001; spike in Sprint 1 |
-| OQ‑2 | Authentication | Refresh token rotation strategy (blocklist vs family vs version counter) | Lead Backend | Phase 0 | ADR‑002; prototype three approaches |
-| OQ‑3 | Security | Rate‑limiting per endpoint (global vs per‑player, limits) | Lead Backend | Phase 0 | Benchmark with k6; set initial limits |
-| OQ‑4 | Endorsement | Compute model (on‑read with cache vs materialised view vs event‑triggered) | Data Engineer | Phase 3–5 | Load test with 1M endorsements before Phase 5 |
-| OQ‑5 | Endorsement | Minimum endorsements for public display (2, 3, 5?) | Product Owner | Phase 3–5 | User research with 20 players |
-| OQ‑6 | Share Card | Cache invalidation (TTL only vs event‑driven) | Lead Backend / SRE | Phase 2 | PoC with Redis keyspace notifications |
-| OQ‑7 | Venue | Bounding box storage (PostGIS polygon vs point+radius) | Lead Backend | Phase 2 | Geography query benchmarks |
-| OQ‑8 | Community | First community strategy (one ILTL club vs open beta) | Product Owner | Phase 1 | Manual concierge with 3 clubs |
-| OQ‑9 | Community | Admin rogue detection (audit log vs anomaly detection) | Lead Backend | Phase 1 | Design audit log schema; defer ML |
-| OQ‑10 | Monetisation | Revenue model (freemium vs subscription vs ad‑supported) | CEO / BizDev | Phase 0 (data model) | Pricing spreadsheet; validate with 3 clubs |
-| OQ‑11 | GTM | WhatsApp group defence / integration (bot vs invite link) | Product Owner / CMO | Phase 1 | Competitive analysis + WhatsApp bot PoC |
-| OQ‑12 | GTM | Switching incentive from Reclub/ILTL (data export? integration?) | Product Owner | Phase 1 | Survey 10 users |
-| OQ‑13 | Mobile | PWA vs native app for mobile experience | CTO / Tech Lead | Phase 0 | PWA prototype on 5 Android devices; decide by Sprint 2 |
-| OQ‑14 | Mobile | GPS reliability on Android (Workmanager vs Foreground Service) | Tech Lead | Phase 2 | Test on 10 Android devices |
-| OQ‑15 | Ranking | Provisional rating for new players (initial rating = median vs 1500 ELO) | Data Engineer | Phase 4 | Simulate with 1000 synthetic player histories |
+| Question ID | Category       | Question                                                                   | Decision owner      | Phase dependency     | Resolution method                                      |
+| ----------- | -------------- | -------------------------------------------------------------------------- | ------------------- | -------------------- | ------------------------------------------------------ |
+| OQ‑1        | Authentication | JWT signing algorithm (RS256 vs HS256), key rotation schedule              | Lead Backend        | Phase 0              | ADR‑001; spike in Sprint 1                             |
+| OQ‑2        | Authentication | Refresh token rotation strategy (blocklist vs family vs version counter)   | Lead Backend        | Phase 0              | ADR‑002; prototype three approaches                    |
+| OQ‑3        | Security       | Rate‑limiting per endpoint (global vs per‑player, limits)                  | Lead Backend        | Phase 0              | Benchmark with k6; set initial limits                  |
+| OQ‑4        | Endorsement    | Compute model (on‑read with cache vs materialised view vs event‑triggered) | Data Engineer       | Phase 3–5            | Load test with 1M endorsements before Phase 5          |
+| OQ‑5        | Endorsement    | Minimum endorsements for public display (2, 3, 5?)                         | Product Owner       | Phase 3–5            | User research with 20 players                          |
+| OQ‑6        | Share Card     | Cache invalidation (TTL only vs event‑driven)                              | Lead Backend / SRE  | Phase 2              | PoC with Redis keyspace notifications                  |
+| OQ‑7        | Venue          | Bounding box storage (PostGIS polygon vs point+radius)                     | Lead Backend        | Phase 2              | Geography query benchmarks                             |
+| OQ‑8        | Community      | First community strategy (one ILTL club vs open beta)                      | Product Owner       | Phase 1              | Manual concierge with 3 clubs                          |
+| OQ‑9        | Community      | Admin rogue detection (audit log vs anomaly detection)                     | Lead Backend        | Phase 1              | Design audit log schema; defer ML                      |
+| OQ‑10       | Monetisation   | Revenue model (freemium vs subscription vs ad‑supported)                   | CEO / BizDev        | Phase 0 (data model) | Pricing spreadsheet; validate with 3 clubs             |
+| OQ‑11       | GTM            | WhatsApp group defence / integration (bot vs invite link)                  | Product Owner / CMO | Phase 1              | Competitive analysis + WhatsApp bot PoC                |
+| OQ‑12       | GTM            | Switching incentive from Reclub/ILTL (data export? integration?)           | Product Owner       | Phase 1              | Survey 10 users                                        |
+| OQ‑13       | Mobile         | PWA vs native app for mobile experience                                    | CTO / Tech Lead     | Phase 0              | PWA prototype on 5 Android devices; decide by Sprint 2 |
+| OQ‑14       | Mobile         | GPS reliability on Android (Workmanager vs Foreground Service)             | Tech Lead           | Phase 2              | Test on 10 Android devices                             |
+| OQ‑15       | Ranking        | Provisional rating for new players (initial rating = median vs 1500 ELO)   | Data Engineer       | Phase 4              | Simulate with 1000 synthetic player histories          |
 
 ---
 
@@ -6237,6 +6435,7 @@ Open questions represent unresolved engineering, product, and business decisions
 These schemas are directly affected by the open questions. Shown as recommendations; final schemas will be updated once each question is resolved.
 
 **Audit log (for OQ‑9, admin rogue detection):**
+
 ```sql
 CREATE TABLE admin_audit_log (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -6259,6 +6458,7 @@ CREATE INDEX idx_admin_audit_admin_id ON admin_audit_log(admin_id);
 ```
 
 **Community pricing tier (for OQ‑10, revenue model skeleton):**
+
 ```json
 {
   "community_id": "com_99aabbcc",
@@ -6276,6 +6476,7 @@ CREATE INDEX idx_admin_audit_admin_id ON admin_audit_log(admin_id);
 ```
 
 **Venue boundary (for OQ‑7, PostGIS polygon):**
+
 ```sql
 CREATE TABLE venues (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -6289,6 +6490,7 @@ CREATE INDEX idx_venues_location ON venues USING GIST (location);
 ```
 
 **Endorsement cache key pattern (for OQ‑4, on‑read cache):**
+
 ```
 mp:endorsement:rank:{player_id}   →   { endorser_count, avg_skill_score, endorser_list_hash, is_public }
 TTL: 300 seconds
@@ -6296,6 +6498,7 @@ TTL: 300 seconds
 ```
 
 **Refresh token family (for OQ‑2, version‑counter approach):**
+
 ```sql
 CREATE TABLE refresh_token_families (
     family_id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -6322,20 +6525,20 @@ CREATE INDEX idx_tokens_family_version ON refresh_tokens(family_id, version);
 
 ### Failure modes
 
-| Failure mode | Root cause (unresolved question) | Detection | Mitigation |
-|--------------|----------------------------------|-----------|------------|
-| JWT signing key compromised | OQ‑1 not decided; team used weak HS256 with static secret | Security scan + key rotation logs | Rotate immediately; switch to RS256 with public/private pair |
-| Refresh token replay attack sold on dark web | OQ‑2 not decided; team used blocklist with long TTL (7 days) | Monitoring: multiple refresh tokens reused for same family_id | Invalidate all tokens for that family; rotate JWT key; force re‑login |
-| User cannot submit match because GPS check fails for 30% of players | OQ‑7 boundary stored as point+radius instead of polygon | Monitor match submission failure rate per venue | Upgrade to PostGIS polygon; re‑import venue boundaries with exact court outlines |
-| Player endorsement score displayed publicly with only 1 endorser (low trust) | OQ‑5 defaulted to 0 minimum endorsers | Audit: find all players with <3 endorsers who have rank cards shown | Flag those scores as "not yet confirmed" until 3 endorsers reached; backfill flag |
-| Share card shows stale rank because cache invalidation missed a rating update | OQ‑6 only TTL (5 min) used, no event‑driven invalidation | User reports + cache hit ratio metrics show high stale reads | Add event‑driven invalidation on ranking update; apply short TTL (2 min) as immediate fallback |
-| Phase 0 authentication built with JWT + refresh tokens but no PWA skeleton exists | OQ‑13 not resolved; PWA decision made after auth implementation | PWA prototype reveals need for service worker authentication handling | Re‑architect auth to support Web Workers (postMessage); delay Phase 0 if necessary |
-| WhatsApp integration not built; first community users get frustrated | OQ‑11 no decision; engineers focused on dashboard instead | User registration rate < 5 per week in Phase 1 | Pivot to WhatsApp‑first integration; reduce scope of admin dashboard |
-| Community goes bankrupt because no revenue model after 6‑month free trial | OQ‑10 not decided; product remains free forever | Burn rate > runway at month 6 | Implement subscription tiers immediately; grandfather existing free communities with reduced features |
-| Data import from ILTL fails because no standard API exists | OQ‑12 no integration plan; team assumed open API | Import job fails with 503; logs reveal ILTL rate limiting | Build web‑scraping fallback; negotiate API access with ILTL |
-| GPS accuracy on Android devices causes 5‑meter positional drift | OQ‑14 not tested; `FusedLocationProviderClient` used without buffer | 10% of match submissions have GPS outside venue bounds (logged) | Add a 15‑meter radius buffer to venue polygon; display "nearby" flag on location |
-| Provisional rating for new players set to 1500 causes rating inflation in small communities | OQ‑15 defaulted to 1500 without simulation | Rating distribution skew > 100 points after 100 new players | Switch to community‑specific median or global median at registration |
-| Admin rogue deletes matches from database | OQ‑9 no audit log implemented | Suspicious activity detected by anomaly alert (delete rate > 5/min) | Restore from backup; revoke admin privileges; enforce audit log before any delete action |
+| Failure mode                                                                                | Root cause (unresolved question)                                    | Detection                                                             | Mitigation                                                                                            |
+| ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| JWT signing key compromised                                                                 | OQ‑1 not decided; team used weak HS256 with static secret           | Security scan + key rotation logs                                     | Rotate immediately; switch to RS256 with public/private pair                                          |
+| Refresh token replay attack sold on dark web                                                | OQ‑2 not decided; team used blocklist with long TTL (7 days)        | Monitoring: multiple refresh tokens reused for same family_id         | Invalidate all tokens for that family; rotate JWT key; force re‑login                                 |
+| User cannot submit match because GPS check fails for 30% of players                         | OQ‑7 boundary stored as point+radius instead of polygon             | Monitor match submission failure rate per venue                       | Upgrade to PostGIS polygon; re‑import venue boundaries with exact court outlines                      |
+| Player endorsement score displayed publicly with only 1 endorser (low trust)                | OQ‑5 defaulted to 0 minimum endorsers                               | Audit: find all players with <3 endorsers who have rank cards shown   | Flag those scores as "not yet confirmed" until 3 endorsers reached; backfill flag                     |
+| Share card shows stale rank because cache invalidation missed a rating update               | OQ‑6 only TTL (5 min) used, no event‑driven invalidation            | User reports + cache hit ratio metrics show high stale reads          | Add event‑driven invalidation on ranking update; apply short TTL (2 min) as immediate fallback        |
+| Phase 0 authentication built with JWT + refresh tokens but no PWA skeleton exists           | OQ‑13 not resolved; PWA decision made after auth implementation     | PWA prototype reveals need for service worker authentication handling | Re‑architect auth to support Web Workers (postMessage); delay Phase 0 if necessary                    |
+| WhatsApp integration not built; first community users get frustrated                        | OQ‑11 no decision; engineers focused on dashboard instead           | User registration rate < 5 per week in Phase 1                        | Pivot to WhatsApp‑first integration; reduce scope of admin dashboard                                  |
+| Community goes bankrupt because no revenue model after 6‑month free trial                   | OQ‑10 not decided; product remains free forever                     | Burn rate > runway at month 6                                         | Implement subscription tiers immediately; grandfather existing free communities with reduced features |
+| Data import from ILTL fails because no standard API exists                                  | OQ‑12 no integration plan; team assumed open API                    | Import job fails with 503; logs reveal ILTL rate limiting             | Build web‑scraping fallback; negotiate API access with ILTL                                           |
+| GPS accuracy on Android devices causes 5‑meter positional drift                             | OQ‑14 not tested; `FusedLocationProviderClient` used without buffer | 10% of match submissions have GPS outside venue bounds (logged)       | Add a 15‑meter radius buffer to venue polygon; display "nearby" flag on location                      |
+| Provisional rating for new players set to 1500 causes rating inflation in small communities | OQ‑15 defaulted to 1500 without simulation                          | Rating distribution skew > 100 points after 100 new players           | Switch to community‑specific median or global median at registration                                  |
+| Admin rogue deletes matches from database                                                   | OQ‑9 no audit log implemented                                       | Suspicious activity detected by anomaly alert (delete rate > 5/min)   | Restore from backup; revoke admin privileges; enforce audit log before any delete action              |
 
 ---
 
@@ -6394,6 +6597,7 @@ flowchart TD
 The Definition of Done (DoD) establishes the formal gates that every task, feature, and release must pass before being considered complete. For Match Point, where informal community play data is merged with official ILTL ranking feeds, a rigorous DoD prevents data corruption, ranking miscalculation, and performance regressions that could erode trust. The DoD is enforced via CI/CD pipelines and code review checklists, ensuring that each deliverable meets quality, security, and operational standards before merging.
 
 Success criteria for this section:
+
 - All execution plan phases have measurable completion gates defined.
 - No code merges to `main` without passing all applicable DoD checks (enforced via GitHub Actions).
 - All open questions from the canonical state are resolved or explicitly deferred with documented rationale before a phase can ship.
@@ -6513,6 +6717,7 @@ All exceptions are recorded in `docs/exceptions.md` with owner and remediation d
 ### Assumptions & Open Questions
 
 **Assumptions:**
+
 - CI/CD uses GitHub Actions; ArgoCD handles Kubernetes deployments.
 - Unit tests use `testing` standard library + `testify`.
 - Feature flags managed via LaunchDarkly; gradual rollout independent of release cadence.
@@ -6520,6 +6725,7 @@ All exceptions are recorded in `docs/exceptions.md` with owner and remediation d
 - Confidence ≥0.85 assessed by Tech Lead based on defect density, test coverage, and unresolved open questions.
 
 **Open Questions (to be resolved during Phase 0/1):**
+
 - What E2E smoke test framework? (Recommended: Playwright, because it aligns with React frontend and mobile emulation. Evaluate Cypress as alternative if team has existing expertise.)
 - Should release-level DoD include a beta period (e.g., 7 days with 10% traffic) before full rollout? (Recommended default: yes, for releases after Phase 2.)
 - How is "confidence ≥ 0.85" computed numerically? Proposed formula: `C = 1 - (open_critical_bugs / total_features) * (1 + unresolved_questions_weight)`. Must be documented in `docs/confidence.md`.
@@ -6540,19 +6746,19 @@ If a DoD gate fails an SLO threshold, the release is blocked until the performan
 
 ### Stack
 
-| Component | Library / Runtime | Version | Rationale |
-|-----------|------------------|---------|-----------|
-| Language | Go | 1.22+ | Single binary, strong typing, built‑in concurrency primitives |
-| HTTP framework | `chi` | v5 | Lightweight, compatible with `net/http`, easy middleware chaining |
-| Authentication | `golang-jwt/jwt/v5` | v5.2+ | RSA256 asymmetric key support, RS256 signing built‑in |
-| Database | PostgreSQL | 16 | JSONB for flexible profile/endorsement data, CTE for rank calculation |
-| Cache / Session | Redis | 7.2+ | TTL‑based share card cache, distributed rate limiting, refresh token blacklist |
-| Task queue | RabbitMQ | 3.13 | At‑least‑once delivery for async match validation and ranking jobs |
-| DB toolkit | `sqlx` + `goose` | sqlx 1.3+, goose 3.20+ | Minimal ORM, explicit SQL, easy migration generation |
-| Frontend | React 18 + TypeScript 5 | 18.3, 5.4 | Vite bundler, TanStack Query for data fetching |
-| Deployment | Kubernetes + Helm | k8s 1.28+ | Stateless pods, auto‑scaling on CPU and queue depth |
-| Share card rendering | `chromedp` (headless Chrome) | v0.10+ | Server‑side PNG generation from Go templates, S3 caching with signed URLs |
-| Ranking engine | Pure Go (Elk, Glicko‑2) | – | No third‑party ML dependencies; custom implementation with matrix arithmetic for Glicko‑2 |
+| Component            | Library / Runtime            | Version                | Rationale                                                                                 |
+| -------------------- | ---------------------------- | ---------------------- | ----------------------------------------------------------------------------------------- |
+| Language             | Go                           | 1.22+                  | Single binary, strong typing, built‑in concurrency primitives                             |
+| HTTP framework       | `chi`                        | v5                     | Lightweight, compatible with `net/http`, easy middleware chaining                         |
+| Authentication       | `golang-jwt/jwt/v5`          | v5.2+                  | RSA256 asymmetric key support, RS256 signing built‑in                                     |
+| Database             | PostgreSQL                   | 16                     | JSONB for flexible profile/endorsement data, CTE for rank calculation                     |
+| Cache / Session      | Redis                        | 7.2+                   | TTL‑based share card cache, distributed rate limiting, refresh token blacklist            |
+| Task queue           | RabbitMQ                     | 3.13                   | At‑least‑once delivery for async match validation and ranking jobs                        |
+| DB toolkit           | `sqlx` + `goose`             | sqlx 1.3+, goose 3.20+ | Minimal ORM, explicit SQL, easy migration generation                                      |
+| Frontend             | React 18 + TypeScript 5      | 18.3, 5.4              | Vite bundler, TanStack Query for data fetching                                            |
+| Deployment           | Kubernetes + Helm            | k8s 1.28+              | Stateless pods, auto‑scaling on CPU and queue depth                                       |
+| Share card rendering | `chromedp` (headless Chrome) | v0.10+                 | Server‑side PNG generation from Go templates, S3 caching with signed URLs                 |
+| Ranking engine       | Pure Go (Elk, Glicko‑2)      | –                      | No third‑party ML dependencies; custom implementation with matrix arithmetic for Glicko‑2 |
 
 **Agent constraint:** Do not deviate from this stack. Each tool is chosen for its machine‑readable API surface and low ceremony. Use `goose` conventions for all schema changes.
 
@@ -6572,17 +6778,17 @@ All API endpoints are prefixed with `/api/v1`. Authentication: Bearer JWT (RSA25
 
 #### Endpoint Catalogue (Minimum Viable)
 
-| Method | Path | Request | Response | Phase |
-|--------|------|---------|----------|-------|
-| `POST` | `/auth/register` | `{ username, email, password }` | `{ player, tokens: { access, refresh } }` | 1 |
-| `POST` | `/auth/login` | `{ username, password }` | `{ player, tokens }` | 1 |
-| `GET` | `/communities` | `?page=1&limit=20` | `{ data: [Community], meta }` | 1 |
-| `POST` | `/communities` | `{ name, sport, visibility }` | `{ community }` (201 Created) | 1 |
-| `POST` | `/matches` | `{ community_id, sport, match_type, participants, result_data }` | `{ match, status }` (201 Created) | 2 |
-| `GET` | `/matches/{id}` | `-` | `{ match, participants }` | 2 |
-| `GET` | `/rankings/{community_id}` | `?sport=padel&type=mabar&date=2024-01` | `{ data: [{ player, rank, rating }] }` | 3 |
-| `POST` | `/endorsements` | `{ to_player_id, community_id, skill_category, rating, note? }` | `{ endorsement }` | 5 |
-| `POST` | `/share-cards/{player_id}` | `{ community_id, sport, type }` | `{ card_url, expires_at }` | 6 |
+| Method | Path                       | Request                                                          | Response                                  | Phase |
+| ------ | -------------------------- | ---------------------------------------------------------------- | ----------------------------------------- | ----- |
+| `POST` | `/auth/register`           | `{ username, email, password }`                                  | `{ player, tokens: { access, refresh } }` | 1     |
+| `POST` | `/auth/login`              | `{ username, password }`                                         | `{ player, tokens }`                      | 1     |
+| `GET`  | `/communities`             | `?page=1&limit=20`                                               | `{ data: [Community], meta }`             | 1     |
+| `POST` | `/communities`             | `{ name, sport, visibility }`                                    | `{ community }` (201 Created)             | 1     |
+| `POST` | `/matches`                 | `{ community_id, sport, match_type, participants, result_data }` | `{ match, status }` (201 Created)         | 2     |
+| `GET`  | `/matches/{id}`            | `-`                                                              | `{ match, participants }`                 | 2     |
+| `GET`  | `/rankings/{community_id}` | `?sport=padel&type=mabar&date=2024-01`                           | `{ data: [{ player, rank, rating }] }`    | 3     |
+| `POST` | `/endorsements`            | `{ to_player_id, community_id, skill_category, rating, note? }`  | `{ endorsement }`                         | 5     |
+| `POST` | `/share-cards/{player_id}` | `{ community_id, sport, type }`                                  | `{ card_url, expires_at }`                | 6     |
 
 All POST/PUT mutations return `422 Unprocessable Entity` with `errors` array on validation failures. Every creation returns `Location` header.
 
@@ -6602,16 +6808,16 @@ All POST/PUT mutations return `422 Unprocessable Entity` with `errors` array on 
 
 The execution plan defines six sequential phases (Task 1 through Task 8 in the development roadmap). Every phase must be complete before the next begins. That phased build produces the following timeline for an AI agent:
 
-| Task | Phase Title | Deliverables | Depends On |
-|------|-------------|--------------|------------|
-| Task 1 | Foundation & Infrastructure | Go module skeleton, config, PostgreSQL migrations (players, communities, community_members), Redis client, RabbitMQ connection, Docker Compose, CI/CD | None |
-| Task 2 | Player & Community Modules | Auth (register/login/refresh/logout), player CRUD, community CRUD, join/leave, role enforcement | Task 1 |
-| Task 3 | Match Submission & Validation | `POST /matches` with result validation, async pipeline via RabbitMQ, dispute handling, admin review | Task 2 |
-| Task 4 | Dual‑Track Ranking Engine | Elo for mabar, Glicko‑2 for official, monthly immutable snapshots, leaderboard caching | Task 3 |
-| Task 5 | Tournament Integration | Bracket model, registration, seeding, bulk official ranking | Task 4 |
-| Task 6 | Player Endorsements | Endorsement CRUD, materialized skill scores (min 3 endorsers required for public display) | Task 2 |
-| Task 7 | Social Sharing Cards | PNG generation via HTML templates + chromedp, S3 caching, signed URLs | Task 4 |
-| Task 8 | Admin Dashboard & Analytics | User management, moderation, disputes, analytics (Redis time‑series + PostgreSQL CTE) | All above |
+| Task   | Phase Title                   | Deliverables                                                                                                                                          | Depends On |
+| ------ | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Task 1 | Foundation & Infrastructure   | Go module skeleton, config, PostgreSQL migrations (players, communities, community_members), Redis client, RabbitMQ connection, Docker Compose, CI/CD | None       |
+| Task 2 | Player & Community Modules    | Auth (register/login/refresh/logout), player CRUD, community CRUD, join/leave, role enforcement                                                       | Task 1     |
+| Task 3 | Match Submission & Validation | `POST /matches` with result validation, async pipeline via RabbitMQ, dispute handling, admin review                                                   | Task 2     |
+| Task 4 | Dual‑Track Ranking Engine     | Elo for mabar, Glicko‑2 for official, monthly immutable snapshots, leaderboard caching                                                                | Task 3     |
+| Task 5 | Tournament Integration        | Bracket model, registration, seeding, bulk official ranking                                                                                           | Task 4     |
+| Task 6 | Player Endorsements           | Endorsement CRUD, materialized skill scores (min 3 endorsers required for public display)                                                             | Task 2     |
+| Task 7 | Social Sharing Cards          | PNG generation via HTML templates + chromedp, S3 caching, signed URLs                                                                                 | Task 4     |
+| Task 8 | Admin Dashboard & Analytics   | User management, moderation, disputes, analytics (Redis time‑series + PostgreSQL CTE)                                                                 | All above  |
 
 **Agent rule:** Never implement a phase out of order. For example, do not write the ranking engine before match submission exists; do not build share cards before rankings.
 
@@ -6641,11 +6847,74 @@ If an AI agent encounters a request to implement any of the above, it should res
 
 When generating code, treat these as configurable defaults—do not hardcode. They are overridable via environment variables documented in `config/config.go`.
 
-| Open Question | Recommended Default | Where to Store |
-|---------------|---------------------|----------------|
-| Minimum endorsers for public skill score | 3 | `app.settings.endorsements.min_endorsers` env var; overridable in community settings JSONB |
-| Share card cache TTL | 1 hour | `SHARE_CARD_CACHE_TTL` env var (default 3600) |
-| Venue GPS storage | `lat DECIMAL(10,7), lng DECIMAL(10,7)` | Columns in `venues` table (to be added in later phase) |
-| Refresh token rotation | version counter per player | `refresh_version INT DEFAULT 1` in `players` table |
+| Open Question                            | Recommended Default                    | Where to Store                                                                             |
+| ---------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Minimum endorsers for public skill score | 3                                      | `app.settings.endorsements.min_endorsers` env var; overridable in community settings JSONB |
+| Share card cache TTL                     | 1 hour                                 | `SHARE_CARD_CACHE_TTL` env var (default 3600)                                              |
+| Venue GPS storage                        | `lat DECIMAL(10,7), lng DECIMAL(10,7)` | Columns in `venues` table (to be added in later phase)                                     |
+| Refresh token rotation                   | version counter per player             | `refresh_version INT DEFAULT 1` in `players` table                                         |
 
 This appendix is the single source of truth for AI agents implementing Match Point. Every schema, endpoint, rule, and ordering listed here must be followed exactly unless explicitly marked as “Recommended default” and overridable via environment variable. Any deviation must be documented in a new ADR (Architecture Decision Record) and referenced in this file.
+
+---
+
+## 17. Mockup Extensions — Battle of Communities, Sparring, Ratings & Feedback
+
+> **Status:** Mockup-phase (HTML/CSS/JS in `docs/mockups/`)  
+> **Branding:** Match Point native only — no third-party league co-branding in UI.
+
+### 17.1 Product tiers
+
+| Internal `eventType`    | Brand (EN / ID)                               | Scope             | Operator               |
+| ----------------------- | --------------------------------------------- | ----------------- | ---------------------- |
+| `battle_of_communities` | Battle of Communities / Pertarungan Komunitas | `inter_community` | Platform admin         |
+| `community_sparring`    | Community Sparring / Sparring Komunitas       | `inter_community` | Club or platform admin |
+
+**Community Sparring modes:** `casual` (~40% rank weight, light lineup) vs `ranked` (~70%, full rubric + squad deadlines + penalties).
+
+### 17.2 Group draw engine (BoC)
+
+- Input: registered community IDs, `groupCount`, optional seed.
+- Process: seeded Fisher–Yates shuffle → groups A…J → round-robin fixtures per group.
+- Output: immutable `draw.audit` (`seed`, `at`, `by`) stored with season.
+- Mock: `docs/mockups/battle-of-communities.js` (`MP_BoC.runDraw`).
+
+### 17.3 Squad submission & penalties
+
+- Per fixture: both communities map players to rubric slots (3 doubles + 1 singles; optional King/Queen).
+- Deadline: `scheduledAt − squadDeadlineDays` (default 3).
+- Late submission: `gameDeficit` games removed per set (default 1 of 8).
+- States: `scheduled` → `squads_locked` → `live` → `completed`.
+
+### 17.4 Inter-community rubric
+
+- Default template: `3d_1s` or `king_queen_3d_1s`.
+- `gamesPerSet`: 8 (configurable).
+- Win condition: most war points across rubbers.
+- Shared mock helpers: `MP_InterCommunity.defaultRubric`, `MP_Tournament.createInterCommunityEvent`.
+
+### 17.5 Fair rating (mock)
+
+- Glicko-2-lite per sport: `skill`, `rd`, `reliability`, provisional until ≥5 matches.
+- Display bands: WPR (padel), UTR/NTRP (tennis), DUPR (pickleball).
+- Eligibility gates on registration and BoC squad slots: `minRating`, `maxRating`, `allowPlayDown`, `requireReliability`.
+
+### 17.6 Visual identity
+
+- `docs/mockups/badges.js` — BoC, Sparring, Champion, Group, Top-10 LB styling.
+- CSS tokens: `.badge-boc`, `.badge-sparring-ranked`, `.lb-top10`, `.crest-mp-ring`.
+
+### 17.7 Transparency & feedback
+
+- Public rules: `docs/mockups/about.html`.
+- Tester feedback widget: `docs/mockups/feedback.js` — WhatsApp (`wa.me/6285694390095`) or FormSubmit email (`rufusrolla@gmail.com`) with auto-captured page context.
+
+### 17.8 Key mock files
+
+| Area     | Files                                                                                  |
+| -------- | -------------------------------------------------------------------------------------- |
+| BoC      | `battle-of-communities.js`, `flow/platform.html` steps 17–18, `flow/user.html` step 25 |
+| Sparring | `community-sparring.js`, `flow/club.html` step 11, `flow/user.html` step 26            |
+| Ratings  | `rank.js`, eligibility on `flow/user.html` event-register                              |
+| Badges   | `badges.js`, `styles.css`                                                              |
+| Mascot   | `mascot.js`, `assets/mascot/rally.svg`                                                 |

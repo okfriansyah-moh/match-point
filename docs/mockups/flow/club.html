@@ -32,6 +32,7 @@
           </button>
         </div>
         <a href="index.html" class="flow-preview-link">← Menu Flow</a>
+        <a href="../about.html" class="flow-preview-link" data-i18n="about.title">About Match Point</a>
         <div class="device-toggle device-toggle-labeled flow-preview-device">
           <button class="device-btn" data-device="mobile">📱</button>
           <button class="device-btn" data-device="tablet">📋</button>
@@ -148,6 +149,10 @@
                         >Americano · Mexicano · Bracket · RR · League · 7 formats</span
                       ></span
                     >
+                  </button>
+                  <button type="button" class="action-card" data-flow-goto="11">
+                    <span class="action-card-icon">⚔️</span>
+                    <span class="action-card-body"><strong data-i18n="sparring.createTitle">Community Sparring</strong><span data-i18n="sparring.createDesc">2+ communities · casual or ranked</span></span>
                   </button>
                   <button type="button" class="action-card" data-flow-goto="7">
                     <span class="action-card-icon">📋</span>
@@ -666,16 +671,19 @@
                   <div class="btn-stack">
                     <button type="button" class="btn btn-ball btn-block btn-lg" data-event-finalize data-flow-goto="0" data-i18n="rank.finalizeBtn">Finalisasi → Update Mabar Rank</button>
                     <button type="button" class="btn btn-secondary btn-block" data-flow-goto="0" data-i18n="club.backDash">← Dashboard</button>
-                    <button
-                      type="button"
-                      class="btn btn-outline btn-block"
-                      data-flow-finish
-                      data-i18n="club.finishHome"
-                    >
-                      Selesai — kembali ke Beranda
-                    </button>
+                    <button type="button" class="btn btn-outline btn-block" data-flow-finish data-i18n="club.finishHome">Selesai — kembali ke Beranda</button>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Step 11: Community Sparring -->
+            <div class="flow-step">
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="0" aria-label="Back">←</button><div class="app-logo" data-i18n="sparring.createTitle">Community Sparring</div></div>
+                </header>
+                <div class="app-body app-body-narrow" data-club-sparring-create></div>
               </div>
             </div>
           </div>
@@ -699,6 +707,11 @@
     <script src="../role.js"></script>
     <script src="../event-wizard.js"></script>
     <script src="../live-referee.js"></script>
+    <script src="../battle-of-communities.js"></script>
+    <script src="../community-sparring.js"></script>
+    <script src="../badges.js"></script>
+    <script src="../feedback.js"></script>
+    <script src="../mascot.js"></script>
     <script src="flow.js"></script>
     <script>
       MP_Role.setClub({ name: "Padel Jakarta Selatan", admin: true });
@@ -719,6 +732,7 @@
           { titleKey: "referee.setupTitle", hintKey: "referee.hintSetup" },
           { titleKey: "title.admin-live-session", hintKey: "referee.hintLive" },
           { titleKey: "title.admin-bracket", hintKey: "flow.hint.adminBracket" },
+          { titleKey: "sparring.createTitle", hintKey: "sparring.hintCreate" },
         ],
         finishUrl: "user.html",
         appChrome: true,
@@ -733,6 +747,9 @@
         },
         logoutUrl: "user.html",
       });
+      MP_InterCommunity.init();
+      MP_Badges.init();
+      MP_Feedback.init();
     </script>
   </body>
 </html>

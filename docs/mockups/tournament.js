@@ -139,6 +139,11 @@ window.MP_Tournament = (function () {
       sessionReady: false,
       published: true,
       demoKind: opts.demoKind || "",
+      eventType: opts.eventType || "",
+      sparringMode: opts.sparringMode || null,
+      rankWeight: opts.rankWeight != null ? opts.rankWeight : null,
+      eligibility: opts.eligibility || null,
+      scope: opts.scope || (opts.eventType === "battle_of_communities" || opts.eventType === "community_sparring" ? "inter_community" : "community"),
     };
 
     current.teams = buildTeams(current.players, isDoublesMatch(current));
@@ -666,6 +671,41 @@ window.MP_Tournament = (function () {
     return "normal_sets";
   }
 
+  function defaultInterCommunityRubric(module) {
+    if (window.MP_InterCommunity) return MP_InterCommunity.defaultRubric(module || "normal");
+    return {
+      templateId: module === "king_queen" ? "king_queen_3d_1s" : "3d_1s",
+      gamesPerSet: 8,
+      slots: [
+        { kind: "doubles", warPoints: 1 },
+        { kind: "doubles", warPoints: module === "king_queen" ? 2 : 1, role: module === "king_queen" ? "king_queen" : null },
+        { kind: "doubles", warPoints: 1 },
+        { kind: "singles", warPoints: 1 },
+      ],
+      winCondition: "most_war_points",
+      scope: "inter_community",
+    };
+  }
+
+  function createInterCommunityEvent(opts) {
+    opts = opts || {};
+    const rubric =
+      opts.rubric ||
+      (opts.eventType === "battle_of_communities" || opts.sparringMode === "ranked"
+        ? defaultInterCommunityRubric(opts.module)
+        : null);
+    return createEvent({
+      ...opts,
+      scope: "inter_community",
+      rubric,
+      penalties:
+        opts.penalties ||
+        (opts.sparringMode === "ranked" || opts.eventType === "battle_of_communities"
+          ? { gamesPerSet: 8, gameDeficit: 1, squadDeadlineDays: 3 }
+          : null),
+    });
+  }
+
   function init() {
     load();
     document.querySelectorAll("[data-tournament-live]").forEach((root) => {
@@ -716,6 +756,8 @@ window.MP_Tournament = (function () {
     renderBracket,
     renderStandings,
     defaultScoringForFormat,
+    defaultInterCommunityRubric,
+    createInterCommunityEvent,
     init,
   };
 })();

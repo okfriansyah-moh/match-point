@@ -4,15 +4,15 @@ Static HTML/CSS/JS mockups in this folder can be hosted for free. All asset path
 
 ## Entry points
 
-| Page | Path | Description |
-|------|------|-------------|
-| **Hub** | `index.html` | Landing page with links to everything |
-| **Gallery** | `prototype.html` | Screen-by-screen UI gallery |
-| **Interactive flow** | `flow/index.html` | Role picker (player, guest, club admin, platform) |
-| Player journey | `flow/user.html` | End-to-end player flow |
-| Club admin | `flow/club.html` | Community & tournament management |
-| Platform admin | `flow/platform.html` | Cross-community approval & audit |
-| Legacy admin | `flow/admin.html` | Older admin flow (if linked) |
+| Page                 | Path                 | Description                                       |
+| -------------------- | -------------------- | ------------------------------------------------- |
+| **Hub**              | `index.html`         | Landing page with links to everything             |
+| **Gallery**          | `prototype.html`     | Screen-by-screen UI gallery                       |
+| **Interactive flow** | `flow/index.html`    | Role picker (player, guest, club admin, platform) |
+| Player journey       | `flow/user.html`     | End-to-end player flow                            |
+| Club admin           | `flow/club.html`     | Community & tournament management                 |
+| Platform admin       | `flow/platform.html` | Cross-community approval & audit                  |
+| Legacy admin         | `flow/admin.html`    | Older admin flow (if linked)                      |
 
 After deploy, open the **hub** URL first and navigate from there.
 
@@ -35,12 +35,12 @@ First deploy may take 1–2 minutes. Later deploys run automatically on push to 
 
 For repo `okfriansyah-moh/match-point`:
 
-| Page | URL |
-|------|-----|
-| Hub | `https://okfriansyah-moh.github.io/match-point/` |
-| Gallery | `https://okfriansyah-moh.github.io/match-point/prototype.html` |
+| Page        | URL                                                             |
+| ----------- | --------------------------------------------------------------- |
+| Hub         | `https://okfriansyah-moh.github.io/match-point/`                |
+| Gallery     | `https://okfriansyah-moh.github.io/match-point/prototype.html`  |
 | Flow picker | `https://okfriansyah-moh.github.io/match-point/flow/index.html` |
-| Player flow | `https://okfriansyah-moh.github.io/match-point/flow/user.html` |
+| Player flow | `https://okfriansyah-moh.github.io/match-point/flow/user.html`  |
 
 General pattern: `https://<github-username>.github.io/<repo-name>/`
 
@@ -103,6 +103,40 @@ python3 -m http.server 8080 --directory docs/mockups
 ```
 
 Open [http://localhost:8080/](http://localhost:8080/).
+
+---
+
+## Feedback email (FormSubmit) — one-time setup
+
+The mockup feedback widget sends email via [FormSubmit.co](https://formsubmit.co/) to **rufusrolla@gmail.com**.
+
+| Where you open mockups           | WhatsApp | Email (FormSubmit)          |
+| -------------------------------- | -------- | --------------------------- |
+| `file://` (double-click HTML)    | ✅ Works | ❌ Use mailto fallback only |
+| `http://localhost:8080/`         | ✅ Works | ✅ Works (after activation) |
+| **GitHub Pages** (`*.github.io`) | ✅ Works | ✅ Works (after activation) |
+| Netlify / Vercel                 | ✅ Works | ✅ Works (after activation) |
+
+**You activate FormSubmit per domain** — localhost and GitHub Pages count as different sites. After deploying, submit feedback once from your **live GitHub Pages URL** and click the new **Activate Form** email (check spam). Localhost activation does not automatically cover `*.github.io`.
+
+| Where you open mockups           | WhatsApp | Email (FormSubmit)                   |
+| -------------------------------- | -------- | ------------------------------------ |
+| `file://` (double-click HTML)    | ✅ Works | ❌ Mailto fallback only              |
+| `http://localhost:8080/`         | ✅ Works | ✅ After **localhost** activation    |
+| **GitHub Pages** (`*.github.io`) | ✅ Works | ✅ After **GitHub Pages** activation |
+| Netlify / Vercel                 | ✅ Works | ✅ After activation on that host     |
+
+### Setup steps
+
+1. **Local dev** — activate from `http://localhost:8080/...` (you may have done this already).
+2. **Deploy to GitHub Pages** — push `main`, enable Actions Pages. Example:
+   `https://okfriansyah-moh.github.io/match-point/flow/user.html`
+3. **Activate on live URL** — open that URL, send feedback via **Email** once, then click **Activate Form** in the email FormSubmit sends to `rufusrolla@gmail.com`.
+4. **Done** — testers on GitHub Pages get inbox delivery; WhatsApp works everywhere with no extra setup.
+
+No code changes are needed when you deploy — the same `feedback.js` calls `https://formsubmit.co/ajax/rufusrolla@gmail.com` from any HTTPS origin.
+
+**Fallback:** on `file://` or if FormSubmit fails, the widget opens your mail app with the message pre-filled.
 
 ---
 

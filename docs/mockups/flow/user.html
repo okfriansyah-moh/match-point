@@ -49,6 +49,7 @@
           </button>
         </div>
         <a href="index.html" class="flow-preview-link">← Menu Flow</a>
+        <a href="../about.html" class="flow-preview-link" data-i18n="about.title">About Match Point</a>
         <div class="device-toggle device-toggle-labeled flow-preview-device">
           <button class="device-btn" data-device="mobile" title="Mobile">
             📱 <span class="device-label">Mobile</span>
@@ -1360,6 +1361,9 @@
                       </div>
                     </div>
                   </div>
+                  <p class="text-sm mt-1 mb-2">
+                    <a href="../about.html" class="about-inline-link" data-i18n="about.profileLink">How ratings &amp; fair play work →</a>
+                  </p>
                   <p class="text-sm font-bold" style="margin: 1rem 0 0.5rem" data-i18n="profile.communitiesTitle">Komunitas</p>
                   <div data-multi-communities class="mb-2"></div>
                   <p class="text-sm font-bold" style="margin: 1rem 0 0.5rem">
@@ -1710,7 +1714,7 @@
                       Selesai
                     </button>
                   </div>
-                  <div class="event-feed">
+                  <div class="event-feed events-list" data-events-list>
                     <article
                       class="event-card event-card-live mb-2"
                       data-event-card
@@ -2169,6 +2173,7 @@
                       <div class="cp-logo">SP</div>
                       <div class="cp-cover-info">
                         <h2 class="cp-name">Senayan Padel Club</h2>
+                        <div data-community-badges data-boc-season="1" data-boc-group="A" data-sparring="1" data-sparring-ranked="1" class="mb-1"></div>
                         <p class="cp-meta">
                           🏓 Padel · Senayan, Jakarta Selatan · 🟢 Open
                         </p>
@@ -2531,6 +2536,15 @@
                       </div>
                     </div>
                   </div>
+                  <div class="card mb-2" data-eligibility-panel>
+                    <p class="text-sm font-bold mb-1" data-i18n="rank.yourSkill">Your skill rating</p>
+                    <p class="text-sm"><span data-skill-label>UTR</span> <strong data-skill-value>4.25</strong> · <span data-skill-band>NTRP ~3.5</span> · <span data-i18n="rank.reliability">Reliability</span> <span data-skill-reliability>82%</span></p>
+                    <span class="badge badge-warning" data-provisional-badge hidden data-i18n="profile.provisional">Provisional</span>
+                  </div>
+                  <div class="alert alert-danger mb-2" data-eligibility-block hidden>
+                    <span>⛔</span>
+                    <span data-eligibility-msg data-i18n="rank.blockedBracket">Your rating exceeds this beginner bracket max (3.49). Register for Intermediate or <a href="../about.html">read how ratings work</a>.</span>
+                  </div>
                   <div class="btn-stack" id="reg-actions">
                     <button
                       type="button"
@@ -2851,6 +2865,11 @@
                   <div class="form-group"><label class="form-label">@username</label><input class="form-input" value="budisantoso" disabled /><p class="form-hint">Username global tidak bisa diubah</p></div>
                   <div class="form-group"><label class="form-label" data-i18n="profile.homeCommunity">Komunitas utama</label><select class="form-select"><option>Padel Jakarta Selatan</option><option>Kemang Tennis Society</option></select></div>
                   <button type="button" class="btn btn-primary btn-block" data-flow-goto="6">Simpan</button>
+                  <div class="card mt-2 mp-help-card">
+                    <p class="text-sm font-bold mb-1" data-i18n="about.helpSection">Help &amp; transparency</p>
+                    <p class="form-hint mb-1" data-i18n="about.linkDesc">Ratings, BoC, sparring &amp; fair play rules</p>
+                    <a href="../about.html" class="btn btn-outline btn-block" data-i18n="about.title">About Match Point →</a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2868,6 +2887,30 @@
                     <li class="lb-row"><span class="lb-rank">2</span><div class="lb-info"><div class="lb-name">Rudi Hartono</div></div><span class="lb-points">2085</span></li>
                   </ul>
                 </div>
+              </div>
+            </div>
+
+            <!-- Step 25: BoC fixture detail -->
+            <div class="flow-step" data-step="boc-detail">
+              <div class="app">
+                <header class="app-header app-header-feature">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button>
+                    <div class="app-logo app-logo-page-title" data-i18n="boc.fixtureDetail">BoC Fixture</div>
+                    <span class="badge badge-boc badge-boc-header">BoC</span>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow" data-user-boc-detail></div>
+              </div>
+            </div>
+
+            <!-- Step 26: Community Sparring detail -->
+            <div class="flow-step" data-step="sparring-detail">
+              <div class="app">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo" data-i18n="sparring.detailTitle">Community Sparring</div></div>
+                </header>
+                <div class="app-body" data-user-sparring-detail></div>
               </div>
             </div>
 
@@ -2977,6 +3020,11 @@
     <script src="../live-referee.js"></script>
     <script src="../community-data.js"></script>
     <script src="../role.js"></script>
+    <script src="../battle-of-communities.js"></script>
+    <script src="../community-sparring.js"></script>
+    <script src="../badges.js"></script>
+    <script src="../feedback.js"></script>
+    <script src="../mascot.js"></script>
     <script src="flow.js"></script>
     <script>
       const steps = [
@@ -3044,6 +3092,8 @@
         { titleKey: "title.player-other", hintKey: "flow.hint.playerOther" },
         { titleKey: "title.edit-profile", hintKey: "flow.hint.settings" },
         { titleKey: "title.leaderboard-snapshot", hintKey: "flow.hint.snapshot" },
+        { titleKey: "boc.fixtureDetail", hintKey: "boc.hintFixture" },
+        { titleKey: "sparring.detailTitle", hintKey: "sparring.hintDetail" },
       ];
 
       const isGuest = new URLSearchParams(location.search).get("guest") === "1";
@@ -3058,6 +3108,11 @@
       });
 
       if (window.MP_Referee) MP_Referee.init();
+      MP_BoC.init();
+      MP_InterCommunity.init();
+      MP_Badges.init();
+      MP_Feedback.init();
+      MP_Mascot.init();
       document.body.addEventListener("click", (e) => {
         const p = e.target.closest("[data-player-profile]");
         if (p) {

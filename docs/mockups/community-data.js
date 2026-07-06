@@ -16,6 +16,8 @@ window.MP_Communities = (function () {
       city: "Senayan, Jakarta Selatan",
       access: "open",
       filterTags: ["padel", "open", "jakarta"],
+      bocMeta: { season: 1, group: "A", participant: true },
+      sparringMeta: { mode: "ranked", communities: ["senayan", "kemang", "bsd"], badges: ["sparring_ranked"] },
     },
     kemang: {
       id: "kemang",
