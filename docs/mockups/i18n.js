@@ -1329,6 +1329,8 @@ window.MP_I18N = (function () {
       id: "Ketuk item untuk review — komunitas, acara featured, dispute.",
       en: "Tap an item to review — communities, featured events, disputes.",
     },
+    "platform.inboxNeedsReview": { id: "Perlu review", en: "Needs review" },
+    "platform.inboxResolved": { id: "Selesai", en: "Resolved" },
   };
 
   function t(key, lang) {

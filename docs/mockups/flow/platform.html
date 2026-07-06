@@ -182,62 +182,105 @@
                   </div>
                 </header>
                 <div class="app-body">
-                  <p class="text-sm text-muted mb-2" data-i18n="platform.inboxEmptyHint">
-                    Ketuk item untuk review — komunitas, acara featured, dispute.
-                  </p>
-                  <div class="platform-queue">
-                    <button type="button" class="platform-queue-item" data-flow-goto="3">
-                      <div class="platform-queue-main">
-                        <div class="platform-queue-title">🏘 <span class="club-name-dynamic">Padel Jakarta Selatan</span></div>
-                        <div class="platform-queue-meta">Komunitas baru · Budi Santoso · 2 jam lalu</div>
-                        <div class="approval-track" style="margin: 0.35rem 0 0">
-                          <span class="approval-node done" data-i18n="approval.submitted">Diajukan</span>
-                          <span class="approval-arrow">→</span>
-                          <span class="approval-node current" data-i18n="approval.pending">Menunggu Review</span>
+                  <div class="platform-inbox-summary">
+                    <span class="platform-inbox-chip platform-inbox-chip--pending">
+                      <span class="platform-inbox-chip-dot"></span>
+                      <strong>3</strong>
+                      <span data-i18n="approval.pending">Menunggu Review</span>
+                    </span>
+                    <span class="platform-inbox-chip platform-inbox-chip--approved">
+                      <strong>1</strong>
+                      <span data-i18n="approval.approved">Disetujui</span>
+                    </span>
+                    <span class="platform-inbox-chip platform-inbox-chip--rejected">
+                      <strong>1</strong>
+                      <span data-i18n="approval.rejected">Ditolak</span>
+                    </span>
+                  </div>
+
+                  <section class="platform-inbox-section">
+                    <div class="platform-inbox-section-head">
+                      <h3 data-i18n="platform.inboxNeedsReview">Needs review</h3>
+                      <span class="badge badge-pending">3</span>
+                    </div>
+                    <div class="platform-queue platform-queue--pending">
+                      <button type="button" class="platform-queue-item platform-queue-item--pending" data-flow-goto="3">
+                        <div class="platform-queue-status" aria-hidden="true">
+                          <span class="platform-queue-status-icon">⏳</span>
+                        </div>
+                        <div class="platform-queue-main">
+                          <div class="platform-queue-title">🏘 <span class="club-name-dynamic">Padel Jakarta Selatan</span></div>
+                          <div class="platform-queue-meta">Komunitas baru · Budi Santoso · 2 jam lalu</div>
+                          <div class="approval-track platform-queue-track">
+                            <span class="approval-node done" data-i18n="approval.submitted">Diajukan</span>
+                            <span class="approval-arrow">→</span>
+                            <span class="approval-node current" data-i18n="approval.pending">Menunggu Review</span>
+                          </div>
+                        </div>
+                        <div class="platform-queue-aside">
+                          <span class="btn btn-primary btn-sm" data-i18n="platform.reviewBtn">Review →</span>
+                        </div>
+                      </button>
+                      <div class="platform-queue-item platform-queue-item--pending is-static">
+                        <div class="platform-queue-status" aria-hidden="true">
+                          <span class="platform-queue-status-icon">🌍</span>
+                        </div>
+                        <div class="platform-queue-main">
+                          <div class="platform-queue-title">Indonesia Padel Masters</div>
+                          <div class="platform-queue-meta">Global Tier 1 · cross-community</div>
+                        </div>
+                        <div class="platform-queue-aside">
+                          <span class="badge badge-global">Global</span>
+                          <span class="badge badge-pending" data-i18n="approval.pending">Menunggu Review</span>
                         </div>
                       </div>
-                      <div class="platform-queue-aside">
-                        <span class="btn btn-primary btn-sm" data-i18n="platform.reviewBtn">Review →</span>
-                      </div>
-                    </button>
-                    <div class="platform-queue-item is-static">
-                      <div class="platform-queue-main">
-                        <div class="platform-queue-title">🌍 Indonesia Padel Masters</div>
-                        <div class="platform-queue-meta">Global Tier 1 · cross-community</div>
-                      </div>
-                      <div class="platform-queue-aside">
-                        <span class="badge badge-pending">Global</span>
-                        <span class="badge badge-pending" data-i18n="approval.pending">Menunggu Review</span>
-                      </div>
-                    </div>
-                    <div class="platform-queue-item is-static">
-                      <div class="platform-queue-main">
-                        <div class="platform-queue-title">⭐ Featured Event</div>
-                        <div class="platform-queue-meta">Senayan Padel Club · 5 jam lalu</div>
-                      </div>
-                      <div class="platform-queue-aside">
-                        <span class="badge badge-pending" data-i18n="approval.pending">Menunggu Review</span>
+                      <div class="platform-queue-item platform-queue-item--pending is-static">
+                        <div class="platform-queue-status" aria-hidden="true">
+                          <span class="platform-queue-status-icon">⭐</span>
+                        </div>
+                        <div class="platform-queue-main">
+                          <div class="platform-queue-title">Featured Event</div>
+                          <div class="platform-queue-meta">Senayan Padel Club · 5 jam lalu</div>
+                        </div>
+                        <div class="platform-queue-aside">
+                          <span class="badge badge-pending" data-i18n="approval.pending">Menunggu Review</span>
+                        </div>
                       </div>
                     </div>
-                    <div class="platform-queue-item is-static">
-                      <div class="platform-queue-main">
-                        <div class="platform-queue-title">🏘 Bekasi Tennis Society</div>
-                        <div class="platform-queue-meta">Disetujui oleh Tim MP · kemarin</div>
+                  </section>
+
+                  <section class="platform-inbox-section">
+                    <div class="platform-inbox-section-head">
+                      <h3 data-i18n="platform.inboxResolved">Resolved</h3>
+                      <span class="badge badge-muted">2</span>
+                    </div>
+                    <div class="platform-queue platform-queue--resolved">
+                      <div class="platform-queue-item platform-queue-item--approved is-static">
+                        <div class="platform-queue-status" aria-hidden="true">
+                          <span class="platform-queue-status-icon">✓</span>
+                        </div>
+                        <div class="platform-queue-main">
+                          <div class="platform-queue-title">🏘 Bekasi Tennis Society</div>
+                          <div class="platform-queue-meta">Disetujui oleh Tim MP · kemarin</div>
+                        </div>
+                        <div class="platform-queue-aside">
+                          <span class="badge badge-success" data-i18n="approval.approved">Disetujui</span>
+                        </div>
                       </div>
-                      <div class="platform-queue-aside">
-                        <span class="badge badge-success" data-i18n="approval.approved">Disetujui</span>
+                      <div class="platform-queue-item platform-queue-item--rejected is-static">
+                        <div class="platform-queue-status" aria-hidden="true">
+                          <span class="platform-queue-status-icon">✕</span>
+                        </div>
+                        <div class="platform-queue-main">
+                          <div class="platform-queue-title">🏘 "Klub Judi Padel"</div>
+                          <div class="platform-queue-meta">Nama tidak pantas · alasan dikirim ke pengaju</div>
+                        </div>
+                        <div class="platform-queue-aside">
+                          <span class="badge badge-danger" data-i18n="approval.rejected">Ditolak</span>
+                        </div>
                       </div>
                     </div>
-                    <div class="platform-queue-item is-static">
-                      <div class="platform-queue-main">
-                        <div class="platform-queue-title">🏘 "Klub Judi Padel"</div>
-                        <div class="platform-queue-meta">Nama tidak pantas · alasan dikirim ke pengaju</div>
-                      </div>
-                      <div class="platform-queue-aside">
-                        <span class="badge badge-danger" data-i18n="approval.rejected">Ditolak</span>
-                      </div>
-                    </div>
-                  </div>
+                  </section>
                 </div>
               </div>
             </div>
