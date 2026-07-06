@@ -409,117 +409,190 @@
 
               <!-- DASHBOARD -->
               <div class="screen" id="screen-home-dashboard">
-                <div class="app">
-                  <div class="app-header">
+                <div class="app mp-shell">
+                  <header class="app-header">
                     <div class="app-logo">
                       <span class="app-logo-dot"></span> Match Point
                     </div>
-                    <div class="app-header-actions">
-                      <button class="icon-btn">🔔</button>
-                      <div class="avatar avatar-sm">BS</div>
-                    </div>
-                  </div>
-                  <nav class="app-nav-desktop">
-                    <button class="app-nav-desktop-item active">Home</button>
-                    <button class="app-nav-desktop-item">Rank</button>
-                    <button class="app-nav-desktop-item">Match</button>
-                    <button class="app-nav-desktop-item">Komunitas</button>
-                    <button class="app-nav-desktop-item">Profil</button>
-                  </nav>
-                  <div class="app-body layout-web-split">
-                    <div class="layout-web-main">
-                      <p class="text-sm text-muted">Selamat sore,</p>
-                      <h2 class="section-title">Budi Santoso</h2>
-                      <div class="rank-dual">
-                        <div class="rank-track mabar">
-                          <div class="rank-track-label">Mabar</div>
-                          <div class="rank-track-value">#12</div>
-                          <div class="rank-track-sub">
-                            1680 pts · Padel Jakarta
-                          </div>
+                  </header>
+                  <div class="app-body">
+                    <div class="mp-dash-mascot card">
+                      <div class="mp-dash-mascot-inner">
+                        <div
+                          data-mascot
+                          data-mascot-sport="auto"
+                          data-mascot-size="sm"
+                          data-mascot-mood="idle"
+                        ></div>
+                        <div class="mp-dash-mascot-copy">
+                          <strong data-i18n="mascot.dashTitle">Ready to play?</strong>
+                          <p data-i18n="mascot.dashDesc">
+                            Your sport buddy updates when you switch padel, tennis, or pickleball.
+                          </p>
                         </div>
-                        <div class="rank-track official">
-                          <div class="rank-track-label">Global</div>
-                          <div class="rank-track-value">#47</div>
-                          <div class="rank-track-sub">1570 pts · Global</div>
-                        </div>
-                      </div>
-                      <div class="btn-group mb-2">
-                        <button class="btn btn-primary btn-sm">
-                          + Submit Match</button
-                        ><button class="btn btn-secondary btn-sm">
-                          📤 Share Card
-                        </button>
-                      </div>
-                      <h3 class="text-sm font-bold mb-1">Aktivitas Terbaru</h3>
-                      <div class="match-card">
-                        <div>
-                          <div class="match-players">
-                            Budi &amp; Rudi vs Sari &amp; Dina
-                          </div>
-                          <div class="match-score">6-4, 3-6, 10-7</div>
-                          <div class="match-meta">
-                            Padel Senayan · 2 jam lalu
-                          </div>
-                        </div>
-                        <span class="badge badge-success">Approved</span>
-                      </div>
-                      <div class="match-card">
-                        <div>
-                          <div class="match-players">Budi vs Andi</div>
-                          <div class="match-score">6-2, 6-1</div>
-                          <div class="match-meta">Menunggu review admin</div>
-                        </div>
-                        <span class="badge badge-pending">Pending</span>
                       </div>
                     </div>
-                    <aside class="layout-web-aside">
-                      <div class="card card-highlight mb-1">
-                        <h3 class="text-sm font-bold mb-1">🏆 Top Mabar</h3>
-                        <ul class="leaderboard-list">
-                          <li class="lb-row">
-                            <span class="lb-rank gold">1</span>
-                            <div class="lb-info">
-                              <div class="lb-name">Rudi H.</div>
-                            </div>
-                            <span class="lb-points">1820</span>
-                          </li>
-                          <li class="lb-row highlight">
-                            <span class="lb-rank">12</span>
-                            <div class="lb-info">
-                              <div class="lb-name">Budi#1</div>
-                            </div>
-                            <span class="lb-points">1680</span>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="card">
-                        <h3 class="text-sm font-bold mb-1">Turnamen Aktif</h3>
-                        <p class="text-sm text-muted">
-                          Padel Open Jakarta — Final minggu ini
+
+                    <div class="mp-club-banner" data-show-if-no-club hidden>
+                      <div>
+                        <strong data-i18n="club.noClubTitle">No community yet</strong>
+                        <p
+                          class="sport-dynamic"
+                          data-padel="Create your padel or tennis club — run events &amp; Americano."
+                          data-tennis="Create your padel or tennis club — run events &amp; Americano."
+                          data-pickleball="Belum ada komunitas pickleball"
+                        >
+                          Create your padel or tennis club — run events &amp; Americano.
                         </p>
-                        <button class="btn btn-outline btn-sm mt-1 w-full">
-                          Lihat Bracket
+                      </div>
+                      <div class="flex gap-1" style="flex-wrap: wrap">
+                        <button type="button" class="btn btn-primary btn-sm" data-goto="community-create" data-i18n="club.createCta">
+                          + Create Community
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm" data-goto="communities" data-i18n="club.findCta">
+                          🔍 Find Community
                         </button>
                       </div>
-                    </aside>
-                  </div>
-                  <div class="bottom-nav">
-                    <button class="bottom-nav-item active">
-                      <span>🏠</span><span>Home</span>
-                    </button>
-                    <button class="bottom-nav-item">
-                      <span>🏆</span><span>Rank</span>
-                    </button>
-                    <button class="bottom-nav-item">
-                      <span>➕</span><span>Match</span>
-                    </button>
-                    <button class="bottom-nav-item">
-                      <span>👥</span><span>Komunitas</span>
-                    </button>
-                    <button class="bottom-nav-item">
-                      <span>👤</span><span>Profil</span>
-                    </button>
+                    </div>
+
+                    <div data-show-if-club>
+                      <span class="mp-club-chip"
+                        >👥
+                        <span
+                          class="sport-dynamic"
+                          data-padel="Padel Jakarta Selatan"
+                          data-tennis="Jakarta Tennis Community"
+                          data-pickleball="Belum ada komunitas pickleball"
+                          >Padel Jakarta Selatan</span
+                        ></span
+                      >
+                      <div class="community-stats">
+                        <div class="stat-box">
+                          <div class="stat-val sport-dynamic" data-padel="142" data-tennis="98" data-pickleball="—">142</div>
+                          <div class="stat-lbl" data-i18n="home.statMembers">Members</div>
+                        </div>
+                        <div class="stat-box">
+                          <div class="stat-val sport-dynamic" data-padel="847" data-tennis="1.2K" data-pickleball="—">847</div>
+                          <div class="stat-lbl" data-i18n="home.statMatches">Matches</div>
+                        </div>
+                        <div class="stat-box">
+                          <div class="stat-val sport-dynamic" data-padel="#12" data-tennis="#8" data-pickleball="—">#12</div>
+                          <div class="stat-lbl" data-i18n="home.statYourRank">Your Mabar rank</div>
+                        </div>
+                        <div class="stat-box">
+                          <div class="stat-val sport-dynamic" data-padel="Sab" data-tennis="Min" data-pickleball="—">Sab</div>
+                          <div class="stat-lbl" data-i18n="home.statNextEvent">Next event</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <section class="mp-hero">
+                      <div class="mp-hero-row">
+                        <div class="avatar avatar-md">BS</div>
+                        <div>
+                          <h1 class="mp-hero-greeting">Hi, Budi 👋</h1>
+                          <p
+                            class="mp-hero-meta sport-dynamic"
+                            data-show-if-club
+                            data-padel="#12 Mabar · Padel Jakarta Selatan · 1680 pts"
+                            data-tennis="#8 Mabar · Jakarta Tennis Community · 1720 pts"
+                            data-pickleball="Belum ada rank — coba pickleball di acara!"
+                          >
+                            #12 Mabar · Padel Jakarta Selatan · 1680 pts
+                          </p>
+                          <p class="mp-hero-meta" data-show-if-no-club hidden data-i18n="home.heroNoClub">
+                            No community yet — join one to earn your Mabar rank
+                          </p>
+                          <div class="rank-chip-row">
+                            <span
+                              class="rank-chip mabar sport-dynamic"
+                              data-show-if-club
+                              data-padel="Mabar · Padel #12"
+                              data-tennis="Mabar · Tennis #8"
+                              data-pickleball="Mabar · Pickleball —"
+                              >Mabar · Padel #12</span
+                            >
+                            <span
+                              class="rank-chip global sport-dynamic"
+                              data-padel="Global · Padel #142"
+                              data-tennis="Global · Tennis #31"
+                              data-pickleball="Global · Pickleball —"
+                              >Global · Padel #142</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mp-sport-cards mp-sport-cards-3">
+                        <button type="button" class="mp-sport-card padel sport-btn" data-sport="padel">
+                          <span class="mp-sport-card-label">🏓 Padel</span>
+                          <div class="mp-sport-card-score">1680</div>
+                          <span class="mp-sport-card-sub" data-show-if-club>Mabar #12 · Global #142</span>
+                          <span class="mp-sport-card-sub" data-show-if-no-club hidden>Global #142</span>
+                        </button>
+                        <button type="button" class="mp-sport-card tennis sport-btn" data-sport="tennis">
+                          <span class="mp-sport-card-label">🎾 Tennis</span>
+                          <div class="mp-sport-card-score">1720</div>
+                          <span class="mp-sport-card-sub" data-show-if-club>Mabar #8 · Global #31</span>
+                          <span class="mp-sport-card-sub" data-show-if-no-club hidden>Global #31</span>
+                        </button>
+                        <button type="button" class="mp-sport-card pickleball sport-btn" data-sport="pickleball">
+                          <span class="mp-sport-card-label">🥎 Pickleball</span>
+                          <div class="mp-sport-card-score">—</div>
+                          <span class="mp-sport-card-sub" data-i18n="home.soon">Soon — try at events</span>
+                        </button>
+                      </div>
+                    </section>
+
+                    <div class="mp-play-row" data-show-if-club>
+                      <button type="button" class="mp-play-btn primary" data-goto="submit-match">
+                        <strong data-i18n="flow.cta.submitTitle">Log Match Result</strong>
+                        <span data-i18n="flow.cta.submitDesc">~30 sec · instant rank update</span>
+                      </button>
+                    </div>
+
+                    <div class="mp-home-grid">
+                      <div class="mp-home-main">
+                        <h3 class="text-sm font-bold mb-1" data-i18n="home.recent">Recent activity</h3>
+                        <div class="match-card">
+                          <div>
+                            <div class="match-players">Budi &amp; Rudi vs Sari &amp; Dina</div>
+                            <div class="match-score">6-4, 3-6, 10-7</div>
+                            <div class="match-meta sport-dynamic" data-padel="Padel Senayan · 2h ago" data-tennis="Kemang Courts · 2h ago" data-pickleball="Blok M · 2h ago">Padel Senayan · 2h ago</div>
+                          </div>
+                          <span class="badge badge-success">Approved</span>
+                        </div>
+                        <div class="match-card">
+                          <div>
+                            <div class="match-players">Budi vs Andi</div>
+                            <div class="match-score">6-2, 6-1</div>
+                            <div class="match-meta">Awaiting admin review</div>
+                          </div>
+                          <span class="badge badge-pending">Pending</span>
+                        </div>
+                      </div>
+                      <aside class="mp-home-aside">
+                        <div class="card card-highlight mb-1">
+                          <h3 class="text-sm font-bold mb-1">🏆 Top Mabar</h3>
+                          <ul class="leaderboard-list">
+                            <li class="lb-row">
+                              <span class="lb-rank gold">1</span>
+                              <div class="lb-info"><div class="lb-name">Rudi H.</div></div>
+                              <span class="lb-points">1820</span>
+                            </li>
+                            <li class="lb-row highlight">
+                              <span class="lb-rank">12</span>
+                              <div class="lb-info"><div class="lb-name">Budi#1</div></div>
+                              <span class="lb-points">1680</span>
+                            </li>
+                          </ul>
+                        </div>
+                        <div class="card">
+                          <h3 class="text-sm font-bold mb-1">Active tournament</h3>
+                          <p class="text-sm text-muted sport-dynamic" data-padel="Padel Open Jakarta — finals this week" data-tennis="Jakarta Tennis League — semis" data-pickleball="Pickle Sunday Open — registration open">Padel Open Jakarta — finals this week</p>
+                          <button type="button" class="btn btn-outline btn-sm mt-1 w-full" data-goto="tournament-bracket">View bracket</button>
+                        </div>
+                      </aside>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2010,8 +2083,14 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
     </div>
     <script src="i18n.js"></script>
     <script src="device.js"></script>
+    <script src="sport.js"></script>
+    <script src="mascot.js"></script>
+    <script src="gallery-chrome.js"></script>
     <script src="feedback.js"></script>
     <script src="app.js"></script>
-    <script>MP_Feedback.init();</script>
+    <script>
+      MP_Sport.init();
+      MP_GalleryChrome.init();
+    </script>
   </body>
 </html>

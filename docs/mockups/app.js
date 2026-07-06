@@ -58,6 +58,12 @@
     updateTitle(id);
     if (navEl) navEl.classList.remove("open");
     history.replaceState(null, "", "#" + id);
+    if (window.MP_GalleryChrome) {
+      const screen = document.getElementById("screen-" + id);
+      const app = screen && screen.querySelector(".app");
+      if (app) MP_GalleryChrome.upgradeApp(app, id);
+      if (window.MP_Mascot) MP_Mascot.initAll();
+    }
   }
 
   navLinks.forEach((link) => {
