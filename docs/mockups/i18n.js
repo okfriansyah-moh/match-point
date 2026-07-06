@@ -810,6 +810,10 @@ window.MP_I18N = (function () {
       id: "Analytics komunitas Padel Jakarta",
       en: "Padel Jakarta community analytics",
     },
+    "flow.hint.adminSettings": {
+      id: "Akun & preferensi admin platform",
+      en: "Platform admin account & preferences",
+    },
 
     "flow.cta.submitTitle": { id: "Catat Hasil Match", en: "Log Match Result" },
     "flow.cta.submitDesc": {
