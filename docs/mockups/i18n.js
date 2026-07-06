@@ -1524,6 +1524,8 @@ window.MP_I18N = (function () {
     "feedback.commentPh": { id: "Bug, UI membingungkan, ide…", en: "Bugs, confusing UI, ideas…" },
     "feedback.contactLabel": { id: "Nama / kontak (opsional)", en: "Name / contact (optional)" },
     "feedback.required": { id: "Tambahkan rating dan umpan balik.", en: "Please add a rating and feedback." },
+    "feedback.needRating": { id: "Ketuk rating bintang (1–5).", en: "Please tap a star rating (1–5)." },
+    "feedback.needComment": { id: "Isi teks umpan balik.", en: "Please add your feedback text." },
     "feedback.emailFallback": { id: "Membuka aplikasi email…", en: "Opening your email app…" },
     "feedback.emailSending": { id: "Mengirim email…", en: "Sending email…" },
     "feedback.emailActivate": {

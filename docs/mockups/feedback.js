@@ -79,21 +79,51 @@ window.MP_Feedback = (function () {
   }
 
   function toast(msg) {
-    const el = document.getElementById("flow-toast");
-    if (el) {
-      el.textContent = msg;
-      el.classList.add("show");
-      setTimeout(() => el.classList.remove("show"), 2800);
-      return;
+    let el = document.getElementById("mp-feedback-toast");
+    if (!el) {
+      el = document.createElement("div");
+      el.id = "mp-feedback-toast";
+      el.className = "mp-feedback-toast";
+      el.setAttribute("role", "status");
+      el.setAttribute("aria-live", "polite");
+      document.body.appendChild(el);
     }
-    const t = document.createElement("div");
-    t.className = "mp-feedback-toast show";
-    t.textContent = msg;
-    document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2800);
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => el.classList.remove("show"), 3200);
+
+    const flowToast = document.getElementById("flow-toast");
+    if (flowToast) {
+      flowToast.textContent = msg;
+      flowToast.classList.add("show");
+      setTimeout(() => flowToast.classList.remove("show"), 3200);
+    }
+  }
+
+  function showPanelError(msg) {
+    const panel = document.getElementById("mp-feedback-panel");
+    if (!panel) return;
+    let err = panel.querySelector("[data-feedback-error]");
+    if (!err) {
+      err = document.createElement("p");
+      err.className = "mp-feedback-error";
+      err.dataset.feedbackError = "1";
+      const stars = panel.querySelector("[data-feedback-stars]");
+      if (stars) stars.insertAdjacentElement("afterend", err);
+      else panel.querySelector(".mp-feedback-head")?.insertAdjacentElement("afterend", err);
+    }
+    err.textContent = msg;
+    err.hidden = false;
+  }
+
+  function clearPanelError() {
+    const err = document.querySelector("[data-feedback-error]");
+    if (err) err.hidden = true;
   }
 
   function sendWhatsApp(data) {
+    clearPanelError();
     const text = encodeURIComponent(buildMessage(data));
     window.open("https://wa.me/" + WA_NUMBER + "?text=" + text, "_blank", "noopener");
     toast(t("feedback.thanks", "Thanks for your feedback!"));
@@ -117,6 +147,7 @@ window.MP_Feedback = (function () {
   }
 
   function sendEmail(data) {
+    clearPanelError();
     const pageUrl =
       location.protocol === "file:"
         ? ""
@@ -168,6 +199,7 @@ window.MP_Feedback = (function () {
             ),
           );
           openMailto(data);
+          closePanel();
           return;
         }
         if (/web server/i.test(msg) || location.protocol === "file:") {
@@ -178,15 +210,18 @@ window.MP_Feedback = (function () {
             ),
           );
           openMailto(data);
+          closePanel();
           return;
         }
         toast(t("feedback.emailFallback", "Could not send automatically. Opening your mail app…"));
         openMailto(data);
+        closePanel();
       })
       .catch(() => {
         setEmailSending(false);
         toast(t("feedback.emailFallback", "Opening your email app…"));
         openMailto(data);
+        closePanel();
       });
   }
 
@@ -215,14 +250,26 @@ window.MP_Feedback = (function () {
     };
   }
 
-  function openPanel() {
-    const panel = document.getElementById("mp-feedback-panel");
-    if (panel) panel.classList.add("open");
-  }
-
   function closePanel() {
     const panel = document.getElementById("mp-feedback-panel");
+    const overlay = document.getElementById("mp-feedback-overlay");
     if (panel) panel.classList.remove("open");
+    if (overlay) overlay.classList.remove("open");
+    clearPanelError();
+  }
+
+  function openPanel() {
+    const panel = document.getElementById("mp-feedback-panel");
+    const overlay = document.getElementById("mp-feedback-overlay");
+    if (panel) panel.classList.add("open");
+    if (overlay) overlay.classList.add("open");
+  }
+
+  function togglePanel() {
+    const panel = document.getElementById("mp-feedback-panel");
+    if (!panel) return;
+    if (panel.classList.contains("open")) closePanel();
+    else openPanel();
   }
 
   function ensureUI() {
@@ -290,16 +337,22 @@ window.MP_Feedback = (function () {
       '<p class="form-hint text-center mt-1 mb-0" data-i18n="feedback.emailHint">Automatic email works on localhost or any deployed URL (GitHub Pages, Netlify, etc.) — not when opening a local file directly.</p></div>';
 
     document.body.appendChild(fab);
+
+    const overlay = document.createElement("div");
+    overlay.id = "mp-feedback-overlay";
+    overlay.className = "mp-feedback-overlay";
+    overlay.addEventListener("click", closePanel);
+    document.body.appendChild(overlay);
+
     document.body.appendChild(panel);
 
-    fab.addEventListener("click", () => {
-      panel.classList.toggle("open");
-    });
+    fab.addEventListener("click", togglePanel);
 
     panel.addEventListener("click", (e) => {
       if (e.target.closest("[data-feedback-close]")) closePanel();
       const star = e.target.closest("[data-feedback-rating]");
       if (star) {
+        clearPanelError();
         const val = parseInt(star.dataset.value, 10);
         panel.dataset.feedbackRating = String(val);
         panel.querySelectorAll("[data-feedback-rating]").forEach((s) => {
@@ -309,6 +362,15 @@ window.MP_Feedback = (function () {
       if (e.target.closest("[data-feedback-whatsapp]")) {
         const data = readForm();
         if (!data) {
+          const rating = readRating(panel);
+          const comment = (panel.querySelector("[data-feedback-comment]")?.value || "").trim();
+          if (!rating) {
+            showPanelError(t("feedback.needRating", "Please tap a star rating (1–5)."));
+          } else if (!comment) {
+            showPanelError(t("feedback.needComment", "Please add your feedback text."));
+          } else {
+            showPanelError(t("feedback.required", "Please add a rating and feedback."));
+          }
           toast(t("feedback.required", "Please add a rating and feedback."));
           return;
         }
@@ -317,6 +379,15 @@ window.MP_Feedback = (function () {
       if (e.target.closest("[data-feedback-email]")) {
         const data = readForm();
         if (!data) {
+          const rating = readRating(panel);
+          const comment = (panel.querySelector("[data-feedback-comment]")?.value || "").trim();
+          if (!rating) {
+            showPanelError(t("feedback.needRating", "Please tap a star rating (1–5)."));
+          } else if (!comment) {
+            showPanelError(t("feedback.needComment", "Please add your feedback text."));
+          } else {
+            showPanelError(t("feedback.required", "Please add a rating and feedback."));
+          }
           toast(t("feedback.required", "Please add a rating and feedback."));
           return;
         }
@@ -332,7 +403,9 @@ window.MP_Feedback = (function () {
       const old = document.getElementById("mp-feedback-fab");
       if (old) {
         old.remove();
+        document.getElementById("mp-feedback-overlay")?.remove();
         document.getElementById("mp-feedback-panel")?.remove();
+        document.getElementById("mp-feedback-toast")?.remove();
         ensureUI();
         if (window.MP_I18N) MP_I18N.apply(MP_I18N.getLang());
       }

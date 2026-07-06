@@ -2573,6 +2573,7 @@ body.mp-device-mobile .app-nav-desktop {
 .flow-toast.show {
   transform: translateX(-50%) translateY(0);
   opacity: 1;
+  z-index: 9100;
 }
 
 .action-card {
@@ -6182,6 +6183,35 @@ body.mp-device-mobile .pa-hbar-row {
 .mp-feedback-panel.open {
   transform: translateY(0);
 }
+.mp-feedback-error {
+  color: var(--danger, #c41e3a);
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+.mp-feedback-toast {
+  position: fixed;
+  bottom: 6.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: var(--court-deep, #1a3d2e);
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  z-index: 9100;
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  max-width: min(90vw, 420px);
+  text-align: center;
+  pointer-events: none;
+}
+.mp-feedback-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
 .mp-feedback-overlay {
   position: fixed;
   inset: 0;
@@ -6203,13 +6233,16 @@ body.mp-device-mobile .pa-hbar-row {
 .mp-feedback-stars button {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
+  line-height: 1;
   cursor: pointer;
-  opacity: 0.35;
-  padding: 0;
+  color: rgba(0, 0, 0, 0.2);
+  opacity: 1;
+  padding: 0.15rem;
 }
 .mp-feedback-stars button.active {
-  opacity: 1;
+  color: #d4af37;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .mp-mascot {
