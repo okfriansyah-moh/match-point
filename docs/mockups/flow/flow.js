@@ -390,6 +390,21 @@ window.MP_Flow = (function () {
         MP_EventWizard.applyUI(current);
       }
 
+      if (window.MP_PlatformApproval) {
+        MP_PlatformApproval.onStep(current);
+      }
+
+      if (current === 2 || current === 3 || current === 4 || current === 5) {
+        const inboxRoot = document.querySelector("[data-platform-inbox]");
+        const matchRoot = document.querySelector("[data-platform-matches]");
+        if (inboxRoot && window.MP_PlatformLists) MP_PlatformLists.renderInbox(inboxRoot);
+        if (matchRoot && window.MP_PlatformLists) MP_PlatformLists.renderMatches(matchRoot);
+      }
+
+      if (current === 1 && window.MP_PlatformLists?.updateDashboardStats) {
+        MP_PlatformLists.updateDashboardStats();
+      }
+
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
@@ -413,11 +428,25 @@ window.MP_Flow = (function () {
       updateUI();
     }
 
+    function mapWizardStep(idx) {
+      if (config.wizardStepMap && config.wizardStepMap[idx] != null)
+        return config.wizardStepMap[idx];
+      return idx;
+    }
+
     function go(n, opts) {
       opts = opts || {};
       closeMenus();
       const prev = current;
       if (n === 1 && prev === 0 && window.MP_EventWizard) MP_EventWizard.reset();
+      const wizardEntry = config.wizardStepMap?.[1];
+      if (
+        wizardEntry != null &&
+        n === wizardEntry &&
+        prev !== wizardEntry &&
+        window.MP_EventWizard
+      )
+        MP_EventWizard.reset();
       current = Math.max(0, Math.min(steps.length - 1, n));
       if (current !== prev && opts.toast !== false) {
         const hint = steps[current].hintKey
@@ -613,7 +642,7 @@ window.MP_Flow = (function () {
           division: "",
           structure: "",
         });
-        go(MP_EventWizard.stepAfterType(), { toast: false });
+        go(mapWizardStep(MP_EventWizard.stepAfterType()), { toast: false });
         return;
       }
 
@@ -637,7 +666,7 @@ window.MP_Flow = (function () {
           showToast(i18n.t("wizard.pickStructure"));
           return;
         }
-        if (!isNaN(next)) go(next, { toast: false });
+        if (!isNaN(next)) go(mapWizardStep(next), { toast: false });
         return;
       }
 
@@ -656,7 +685,7 @@ window.MP_Flow = (function () {
         const input = document.querySelector("[data-wizard-participants-input]");
         const n = parseInt(input?.value, 10) || MP_EventWizard.get().participants;
         MP_EventWizard.set({ participants: n });
-        go(MP_EventWizard.stepAfterParticipants(), { toast: false });
+        go(mapWizardStep(MP_EventWizard.stepAfterParticipants()), { toast: false });
         return;
       }
 
@@ -670,7 +699,7 @@ window.MP_Flow = (function () {
       const wizardBackEl = e.target.closest("[data-wizard-back]");
       if (wizardBackEl && window.MP_EventWizard) {
         e.preventDefault();
-        go(MP_EventWizard.wizardBackTarget(wizardBackEl.dataset.wizardBack), {
+        go(mapWizardStep(MP_EventWizard.wizardBackTarget(wizardBackEl.dataset.wizardBack)), {
           toast: false,
         });
         return;
@@ -969,7 +998,8 @@ window.MP_Flow = (function () {
         if (tierText.includes("Tier 1")) tier = 1;
         else if (tierText.includes("Tier 2")) tier = 2;
         else if (tierText.includes("Tier 3")) tier = 3;
-        const scope = tier ? "global" : "community";
+        const isGlobal = Boolean(form.querySelector("[data-event-tier]"));
+        const scope = isGlobal || tier ? "global" : "community";
         MP_Tournament.createEvent({
           format: fmt,
           name,
@@ -1133,6 +1163,13 @@ window.MP_Flow = (function () {
       });
       updateUI();
     });
+
+    if (config.wizardStepMap) {
+      window.__wizardStepMapRev = {};
+      Object.keys(config.wizardStepMap).forEach((k) => {
+        window.__wizardStepMapRev[config.wizardStepMap[k]] = parseInt(k, 10);
+      });
+    }
 
     if (config.appChrome) injectChrome();
 

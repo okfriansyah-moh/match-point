@@ -1352,6 +1352,59 @@ window.MP_I18N = (function () {
     "platform.priorityHigh": { id: "Tinggi", en: "High" },
     "platform.toastApproved": { id: "Match disetujui (demo)", en: "Match approved (demo)" },
     "platform.toastRejected": { id: "Match ditolak (demo)", en: "Match rejected (demo)" },
+    "platform.approvalTypeCommunity": { id: "Komunitas baru", en: "New community" },
+    "platform.approvalTypeEvent": { id: "Acara featured", en: "Featured event" },
+    "platform.approvalTypeGlobal": { id: "Turnamen global", en: "Global tournament" },
+    "platform.approvalTypeGps": { id: "Match · review GPS", en: "Match · GPS review" },
+    "platform.approvalTypeDispute": { id: "Dispute match", en: "Match dispute" },
+    "platform.approvalTypeMatch": { id: "Verifikasi match", en: "Match verification" },
+    "platform.disputeStrip": {
+      id: "Skor bertentangan — keputusan admin wajib dengan catatan audit.",
+      en: "Conflicting scores — decision required with audit note.",
+    },
+    "platform.decisionLabel": { id: "Keputusan admin", en: "Admin decision" },
+    "platform.rejectMatchData": { id: "Tolak match — data tidak valid", en: "Reject match — invalid data" },
+    "platform.matchContext": { id: "Konteks match", en: "Match context" },
+    "platform.resolveApproveBtn": { id: "✓ Terapkan keputusan", en: "✓ Apply decision" },
+    "platform.approveGeneric": { id: "✓ Setujui", en: "✓ Approve" },
+    "platform.rejectMatchBtn": { id: "✕ Tolak match", en: "✕ Reject match" },
+    "platform.noReviewItem": {
+      id: "Pilih item dari antrian untuk direview.",
+      en: "Select an item from the queue to review.",
+    },
+    "platform.approvedGeneric": { id: "Pengajuan disetujui ✓", en: "Request approved ✓" },
+    "platform.approvedGenericDesc": {
+      id: "Keputusan tercatat di audit log.",
+      en: "Decision recorded in audit log.",
+    },
+    "platform.rejectedTitle": { id: "Pengajuan ditolak", en: "Request rejected" },
+    "platform.rejectedDesc": {
+      id: "Alasan dikirim ke pengaju · tercatat di audit.",
+      en: "Reason sent to submitter · logged to audit.",
+    },
+    "platform.disputeResolvedDesc": {
+      id: "Keputusan diterapkan · rank diperbarui · audit tercatat.",
+      en: "Decision applied · ranks updated · audit logged.",
+    },
+    "platform.backMatchesBtn": {
+      id: "← Kembali ke antrian Match",
+      en: "← Back to Matches queue",
+    },
+    "platform.globalBadge": { id: "Global", en: "Global" },
+    "platform.globalTierLabel": { id: "Tier (Global Points)", en: "Tier (Global Points)" },
+    "platform.globalSeedingHint": {
+      id: "Seeding dari Global rank · K-factor 64 · hasil → Global rank",
+      en: "Seeding from Global rank · K-factor 64 · results → Global rank",
+    },
+    "platform.globalCrossCommunityHint": {
+      id: "Lintas komunitas — peserta dari semua klub terdaftar · rank Global.",
+      en: "Cross-community — entrants from all registered clubs · Global rank.",
+    },
+    "platform.globalRegSub": {
+      id: "Peserta lintas komunitas — Senayan, Kemang, BSD, Bandung…",
+      en: "Cross-community entrants — Senayan, Kemang, BSD, Bandung…",
+    },
+    "platform.globalLiveStartBtn": { id: "Mulai Global Live →", en: "Start Global Live →" },
   };
 
   function t(key, lang) {

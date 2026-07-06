@@ -189,7 +189,14 @@ window.MP_EventWizard = (function () {
     return [struct || typeLabel(state), div, sportName].filter(Boolean).join(" · ");
   }
 
+  function resolveFlowIdx(flowIdx) {
+    if (window.__wizardStepMapRev && window.__wizardStepMapRev[flowIdx] != null)
+      return window.__wizardStepMapRev[flowIdx];
+    return flowIdx;
+  }
+
   function getWizardPhase(flowIdx, state) {
+    flowIdx = resolveFlowIdx(flowIdx);
     state = state || load();
     if (!flowIdx || flowIdx > 6) return 0;
     if (isSocial(state.eventType)) {
@@ -472,7 +479,7 @@ window.MP_EventWizard = (function () {
       if (el.value !== state.rosterSearch) el.value = state.rosterSearch;
     });
 
-    if (flowIdx === 5) {
+    if (resolveFlowIdx(flowIdx) === 5) {
       document.querySelectorAll("[data-wizard-roster-results]").forEach((el) => {
         renderRosterResults(el, state);
       });

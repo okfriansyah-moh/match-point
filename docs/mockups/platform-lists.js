@@ -20,17 +20,25 @@ window.MP_PlatformLists = (function () {
     {
       id: "in-1",
       status: "pending",
+      queue: "inbox",
+      approvalType: "community",
       type: "community",
       icon: "🏘",
       title: "Padel Jakarta Selatan",
       meta: "Komunitas baru · Budi Santoso · 2 jam lalu",
       track: true,
-      reviewGoto: 3,
       tags: [],
+      detail: {
+        sport: "🏓 Padel · Jakarta Selatan · Senayan · 🟢 Open Community",
+        submitter: "Pengaju: Budi Santoso · @budisantoso · Trust 0.94",
+        defaultNote: "Nama & venue valid, tidak duplikat dengan komunitas existing.",
+      },
     },
     {
       id: "in-2",
       status: "pending",
+      queue: "inbox",
+      approvalType: "global",
       type: "global",
       icon: "🌍",
       title: "Indonesia Padel Masters",
@@ -40,6 +48,8 @@ window.MP_PlatformLists = (function () {
     {
       id: "in-3",
       status: "pending",
+      queue: "inbox",
+      approvalType: "event",
       type: "event",
       icon: "⭐",
       title: "Featured Event",
@@ -49,6 +59,8 @@ window.MP_PlatformLists = (function () {
     {
       id: "in-4",
       status: "approved",
+      queue: "inbox",
+      approvalType: "community",
       type: "community",
       icon: "🏘",
       title: "Bekasi Tennis Society",
@@ -58,6 +70,8 @@ window.MP_PlatformLists = (function () {
     {
       id: "in-5",
       status: "rejected",
+      queue: "inbox",
+      approvalType: "community",
       type: "community",
       icon: "🏘",
       title: '"Klub Judi Padel"',
@@ -69,19 +83,32 @@ window.MP_PlatformLists = (function () {
   const MATCH_SEED = [
     {
       id: "m-1",
+      status: "pending",
+      queue: "match",
+      approvalType: "match_gps",
       kind: "gps",
+      icon: "📍",
       title: "Budi vs Andi · 6-2, 6-1",
       meta: "GPS fail 2.3km · Padel Jakarta · 1 jam lalu",
       priority: "normal",
-      disputeGoto: null,
+      detail: { context: "GPS fail 2.3km · submitted from Senayan courts" },
     },
     {
       id: "m-2",
+      status: "pending",
+      queue: "match",
+      approvalType: "match_dispute",
       kind: "dispute",
+      icon: "⚖",
       title: "Sari vs Dina · skor tidak cocok",
       meta: "Dispute #D-4421 · prioritas tinggi",
       priority: "high",
-      disputeGoto: 6,
+      detail: {
+        scoreA: "Sari: 6-4, 6-2",
+        scoreB: "Dina: 4-6, 6-3, 10-8",
+        optionA: "Approve score Sari (6-4, 6-2)",
+        optionB: "Approve score Dina (4-6, 6-3, 10-8)",
+      },
     },
   ];
 
@@ -126,6 +153,8 @@ window.MP_PlatformLists = (function () {
       items.push({
         id: "in-" + id++,
         status,
+        queue: "inbox",
+        approvalType: type === "global" ? "global" : type === "event" ? "event" : "community",
         type,
         icon,
         title,
@@ -160,7 +189,16 @@ window.MP_PlatformLists = (function () {
       const [a, b] = players[i % players.length];
       items.push({
         id: "m-" + id++,
+        status: "pending",
+        queue: "match",
+        approvalType:
+          kind === "dispute"
+            ? "match_dispute"
+            : kind === "gps"
+              ? "match_gps"
+              : "match_review",
         kind,
+        icon: kind === "dispute" ? "⚖" : kind === "gps" ? "📍" : "🎾",
         title: a + " vs " + b + " · 6-" + (i % 4) + ", 6-" + (i % 3),
         meta:
           (kind === "gps"
@@ -171,7 +209,6 @@ window.MP_PlatformLists = (function () {
           " · " +
           hoursAgo(i + 1),
         priority: kind === "dispute" && i % 2 === 0 ? "high" : "normal",
-        disputeGoto: kind === "dispute" ? 6 : null,
       });
     }
     return items;
@@ -179,6 +216,58 @@ window.MP_PlatformLists = (function () {
 
   let inboxData = buildInboxData();
   let matchData = buildMatchData();
+  let allData = () => [...inboxData, ...matchData];
+
+  function getById(id) {
+    return allData().find((x) => x.id === id) || null;
+  }
+
+  function markResolved(id, status) {
+    const lists = [inboxData, matchData];
+    for (const list of lists) {
+      const item = list.find((x) => x.id === id);
+      if (item) {
+        item.status = status;
+        break;
+      }
+    }
+    updateDashboardStats();
+  }
+
+  function getPendingCounts() {
+    return {
+      inbox: inboxData.filter((x) => x.status === "pending").length,
+      match: matchData.filter((x) => x.status === "pending").length,
+    };
+  }
+
+  function updateDashboardStats() {
+    const c = getPendingCounts();
+    document
+      .querySelectorAll("[data-platform-stat-inbox-pending]")
+      .forEach((el) => {
+        el.textContent = String(c.inbox);
+      });
+    document
+      .querySelectorAll("[data-platform-stat-match-pending]")
+      .forEach((el) => {
+        el.textContent = String(c.match);
+      });
+    document
+      .querySelectorAll("[data-platform-stat-match-pending-inline]")
+      .forEach((el) => {
+        el.textContent = String(c.match);
+      });
+    const cardDesc = document.querySelector("[data-platform-inbox-card-desc]");
+    if (cardDesc) {
+      const lang = i18n()?.getLang() || "en";
+      const tpl =
+        lang === "id"
+          ? "{n} pengajuan — komunitas baru, acara featured"
+          : "{n} requests — new communities, featured events";
+      cardDesc.textContent = tpl.replace("{n}", String(c.inbox));
+    }
+  }
 
   const inboxState = { filter: "pending", query: "", page: 1, showResolved: false };
   const matchState = { filter: "all", query: "", page: 1 };
@@ -203,6 +292,7 @@ window.MP_PlatformLists = (function () {
   function filterInbox(items) {
     const q = inboxState.query.trim().toLowerCase();
     return items.filter((it) => {
+      if (it.queue === "match") return false;
       if (inboxState.filter !== "all" && it.status !== inboxState.filter)
         return false;
       if (!q) return true;
@@ -215,6 +305,8 @@ window.MP_PlatformLists = (function () {
   function filterMatches(items) {
     const q = matchState.query.trim().toLowerCase();
     return items.filter((it) => {
+      if (it.queue !== "match") return false;
+      if (it.status !== "pending") return false;
       if (matchState.filter !== "all" && it.kind !== matchState.filter)
         return false;
       if (!q) return true;
@@ -302,48 +394,74 @@ window.MP_PlatformLists = (function () {
     );
   }
 
-  function inboxItemHTML(it) {
+  function itemStatusClass(it) {
+    if (it.status === "approved") return "platform-queue-item--approved";
+    if (it.status === "rejected") return "platform-queue-item--rejected";
+    if (it.approvalType === "match_dispute") return "platform-queue-item--dispute";
+    if (it.approvalType === "match_gps") return "platform-queue-item--gps";
+    if (it.approvalType === "match_review") return "platform-queue-item--review";
+    return "platform-queue-item--pending";
+  }
+
+  function inboxItemHTML(it, returnStep) {
     const status = it.status;
     const pending = status === "pending";
+    const statusClass = itemStatusClass(it);
     const tag = pending ? "button" : "div";
     const attrs =
-      pending && it.reviewGoto
-        ? ' type="button" class="platform-queue-item platform-queue-item--compact platform-queue-item--pending" data-flow-goto="' +
-          it.reviewGoto +
+      pending
+        ? ' type="button" class="platform-queue-item platform-queue-item--compact ' +
+          statusClass +
+          '" data-platform-review-id="' +
+          it.id +
+          '" data-platform-return-step="' +
+          returnStep +
           '"'
-        : ' class="platform-queue-item platform-queue-item--compact platform-queue-item--' +
-          status +
+        : ' class="platform-queue-item platform-queue-item--compact ' +
+          statusClass +
           " is-static\"";
     const statusIcon =
-      status === "pending" ? "⏳" : status === "approved" ? "✓" : "✕";
-  const aside =
-      pending && it.reviewGoto
-        ? '<span class="btn btn-primary btn-sm">' +
-          t("platform.reviewBtn", "Review →") +
-          "</span>"
-        : '<span class="badge badge-' +
-          (status === "approved"
-            ? "success"
+      it.icon ||
+      (status === "pending"
+        ? "⏳"
+        : status === "approved"
+          ? "✓"
+          : "✕");
+    const aside = pending
+      ? '<span class="btn btn-primary btn-sm">' +
+        t("platform.reviewBtn", "Review →") +
+        "</span>"
+      : '<span class="badge badge-' +
+        (status === "approved"
+          ? "success"
+          : status === "rejected"
+            ? "danger"
+            : "pending") +
+        '">' +
+        t(
+          status === "approved"
+            ? "approval.approved"
             : status === "rejected"
-              ? "danger"
-              : "pending") +
-          '">' +
-          t(
-            status === "approved"
-              ? "approval.approved"
-              : status === "rejected"
-                ? "approval.rejected"
-                : "approval.pending",
-            status,
-          ) +
-          "</span>";
+              ? "approval.rejected"
+              : "approval.pending",
+          status,
+        ) +
+        "</span>";
     const tags = (it.tags || [])
       .map((tg) =>
-        tg === "global"
-          ? '<span class="badge badge-global">Global</span>'
-          : "",
+        tg === "global" ? '<span class="badge badge-global">Global</span>' : "",
       )
       .join("");
+    const kindBadge =
+      pending && it.queue === "match"
+        ? '<span class="badge badge-warning">' +
+          (it.kind === "dispute"
+            ? "Dispute"
+            : it.kind === "gps"
+              ? "GPS"
+              : "Review") +
+          "</span>"
+        : "";
     const track =
       pending && it.track
         ? '<div class="approval-track platform-queue-track">' +
@@ -355,17 +473,24 @@ window.MP_PlatformLists = (function () {
           t("approval.pending", "Pending Review") +
           "</span></div>"
         : "";
+    const priority =
+      it.priority === "high"
+        ? ' <span class="badge badge-danger" style="font-size:0.58rem;vertical-align:middle">' +
+          t("platform.priorityHigh", "High") +
+          "</span>"
+        : "";
     return (
       "<" +
       tag +
       attrs +
       ">" +
       '<div class="platform-queue-status"><span class="platform-queue-status-icon">' +
-      (it.icon || statusIcon) +
+      statusIcon +
       "</span></div>" +
       '<div class="platform-queue-main">' +
       '<div class="platform-queue-title">' +
       esc(it.title) +
+      priority +
       "</div>" +
       '<div class="platform-queue-meta">' +
       esc(it.meta) +
@@ -374,67 +499,11 @@ window.MP_PlatformLists = (function () {
       "</div>" +
       '<div class="platform-queue-aside">' +
       tags +
+      kindBadge +
       aside +
       "</div></" +
       tag +
       ">"
-    );
-  }
-
-  function matchItemHTML(it) {
-    const kindClass =
-      it.kind === "dispute"
-        ? "platform-queue-item--dispute"
-        : it.kind === "gps"
-          ? "platform-queue-item--gps"
-          : "platform-queue-item--review";
-    const badge =
-      it.kind === "dispute"
-        ? "Dispute"
-        : it.kind === "gps"
-          ? "GPS"
-          : "Review";
-    const badgeClass =
-      it.kind === "dispute" ? "badge-warning" : "badge-pending";
-    const actions =
-      it.kind === "dispute"
-        ? '<button type="button" class="btn btn-outline btn-xs" data-flow-goto="6">' +
-          t("platform.resolveShort", "Resolve") +
-          "</button>"
-        : '<button type="button" class="btn btn-primary btn-xs platform-match-approve">' +
-          t("platform.approveShort", "Approve") +
-          '</button><button type="button" class="btn btn-outline btn-xs platform-match-reject">' +
-          t("platform.rejectShort", "Reject") +
-          "</button>";
-    return (
-      '<div class="platform-queue-item platform-queue-item--compact ' +
-      kindClass +
-      ' is-static">' +
-      '<div class="platform-queue-status"><span class="platform-queue-status-icon">' +
-      (it.kind === "dispute" ? "⚖" : it.kind === "gps" ? "📍" : "🎾") +
-      "</span></div>" +
-      '<div class="platform-queue-main">' +
-      '<div class="platform-queue-title">' +
-      esc(it.title) +
-      (it.priority === "high"
-        ? ' <span class="badge badge-danger" style="font-size:0.58rem;vertical-align:middle">' +
-          t("platform.priorityHigh", "High") +
-          "</span>"
-        : "") +
-      "</div>" +
-      '<div class="platform-queue-meta">' +
-      esc(it.meta) +
-      "</div>" +
-      "</div>" +
-      '<div class="platform-queue-aside platform-match-aside">' +
-      '<span class="badge ' +
-      badgeClass +
-      '">' +
-      badge +
-      "</span>" +
-      '<div class="platform-match-actions">' +
-      actions +
-      "</div></div></div>"
     );
   }
 
@@ -554,7 +623,7 @@ window.MP_PlatformLists = (function () {
           "</span></div>";
         body +=
           '<div class="platform-queue platform-queue--pending platform-queue--scroll">' +
-          pendingItems.map(inboxItemHTML).join("") +
+          pendingItems.map((it) => inboxItemHTML(it, 2)).join("") +
           "</div></section>";
       }
       if (resolvedOnPage.length && inboxState.filter === "all") {
@@ -567,7 +636,7 @@ window.MP_PlatformLists = (function () {
           "</span></div>";
         body +=
           '<div class="platform-queue platform-queue--resolved platform-queue--scroll">' +
-          resolvedOnPage.map(inboxItemHTML).join("") +
+          resolvedOnPage.map((it) => inboxItemHTML(it, 2)).join("") +
           "</div></section>";
       }
     } else {
@@ -579,7 +648,7 @@ window.MP_PlatformLists = (function () {
         '<div class="platform-queue ' +
         queueClass +
         ' platform-queue--scroll">' +
-        pg.items.map(inboxItemHTML).join("") +
+        pg.items.map((it) => inboxItemHTML(it, 2)).join("") +
         "</div>";
     }
 
@@ -654,7 +723,7 @@ window.MP_PlatformLists = (function () {
     } else {
       body +=
         '<div class="platform-queue platform-queue--matches platform-queue--scroll">' +
-        pg.items.map(matchItemHTML).join("") +
+        pg.items.map((it) => inboxItemHTML(it, 5)).join("") +
         "</div>";
     }
 
@@ -717,18 +786,6 @@ window.MP_PlatformLists = (function () {
         inboxState.page = 1;
         renderInbox(root);
       }
-      if (e.target.closest(".platform-match-approve, .platform-match-reject")) {
-        e.preventDefault();
-        e.stopPropagation();
-        const toast = document.getElementById("flow-toast");
-        if (toast) {
-          toast.textContent = e.target.closest(".platform-match-approve")
-            ? t("platform.toastApproved", "Match approved (demo)")
-            : t("platform.toastRejected", "Match rejected (demo)");
-          toast.classList.add("show");
-          setTimeout(() => toast.classList.remove("show"), 2200);
-        }
-      }
     });
     root.addEventListener("input", (e) => {
       if (e.target.matches("[data-inbox-search]")) {
@@ -755,11 +812,12 @@ window.MP_PlatformLists = (function () {
       bind(matchRoot, "match");
       renderMatches(matchRoot);
     }
+    updateDashboardStats();
     window.addEventListener("mp:lang", () => {
       if (inboxRoot) renderInbox(inboxRoot);
       if (matchRoot) renderMatches(matchRoot);
     });
   }
 
-  return { init, renderInbox, renderMatches };
+  return { init, renderInbox, renderMatches, getById, markResolved, updateDashboardStats };
 })();
