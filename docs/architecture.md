@@ -351,8 +351,8 @@ Type (social vs competitive)
 | Padel        | 🏓   | Pipo   | Blue `#277da1`   |
 | Tennis       | 🎾   | Tenni  | Green `#2d6a4f`  |
 | Pickleball   | 🥎   | Dink   | Red `#c1443c`    |
-| Badminton    | 🏸   | Smash  | Amber `#d97706`  |
-| Table tennis | 🏓   | Spin   | Orange `#ea580c` |
+| Badminton    | 🏸   | Birdi  | Amber `#d97706`  |
+| Table tennis | 🏓   | Pongi  | Orange `#ea580c` |
 
 ### 10.2 Sport switching
 

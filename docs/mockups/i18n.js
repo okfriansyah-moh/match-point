@@ -1654,10 +1654,16 @@ window.MP_I18N = (function () {
       id: "Grup kotak · promosi/degradasi · RR dalam box",
       en: "Box groups · promotion/relegation · RR within each box",
     },
-    "mascot.smash.name": { id: "Smash", en: "Smash" },
-    "mascot.smash.tagline": { id: "Teman badminton-mu", en: "Your badminton buddy" },
-    "mascot.spin.name": { id: "Spin", en: "Spin" },
-    "mascot.spin.tagline": { id: "Teman ping pong-mu", en: "Your table tennis buddy" },
+    "mascot.birdi.name": { id: "Birdi", en: "Birdi" },
+    "mascot.birdi.tagline": {
+      id: "Si gemoy lapangan badminton!",
+      en: "Your gemoy badminton court buddy!",
+    },
+    "mascot.pongi.name": { id: "Pongi", en: "Pongi" },
+    "mascot.pongi.tagline": {
+      id: "Partner ping pong paling gemoy!",
+      en: "Your gemoy ping pong partner!",
+    },
     "rank.provisional": { id: "Provisional", en: "Provisional" },
     "rank.journeyTier": { id: "Tingkat perjalanan", en: "Journey tier" },
     "rank.calibrationScope": { id: "Kalibrasi", en: "Calibration" },
@@ -1931,8 +1937,8 @@ window.MP_I18N = (function () {
     },
     "mascot.dink.name": { id: "Dink", en: "Dink" },
     "mascot.dink.tagline": {
-      id: "Partner dink paling menggemaskan!",
-      en: "Your adorable dink partner!",
+      id: "Partner dink pickleball paling menggemaskan!",
+      en: "Your adorable dink pickleball partner!",
     },
     "mascot.rally.name": { id: "Rally", en: "Rally" },
     "mascot.rally.tagline": {

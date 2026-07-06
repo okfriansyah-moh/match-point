@@ -10,7 +10,7 @@ window.MP_Docs = {
       title: "WPR player analytics + 5 sports + Box League",
       items: [
         "Confidence score, MP Rating history chart, match stats dashboard (player-analytics.js)",
-        "Badminton (Smash) + table tennis (Spin) mascots and sport themes",
+        "Badminton (Birdi) + table tennis (Pongi) mascots and sport themes",
         "Box League format with promotion/relegation boxes",
         "Player Performance screen; Performance tab on My Matches",
       ],
