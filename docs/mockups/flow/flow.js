@@ -1113,10 +1113,12 @@ window.MP_Flow = (function () {
       if (loginEl) {
         e.preventDefault();
         login();
-        // data-login-goto: where to land after auth (e.g. OTP verify → home)
+        // data-login-goto: explicit landing step (e.g. OTP verify → home)
         const next = parseInt(loginEl.dataset.loginGoto, 10);
-        if (!isNaN(next)) go(next, { toast: false });
-        else if (current === 0) go(1);
+        const landing = !isNaN(next)
+          ? next
+          : (NAV_STEP.home ?? NAV_STEP.dashboard ?? 1);
+        go(landing, { toast: false });
         return;
       }
 
@@ -1129,7 +1131,7 @@ window.MP_Flow = (function () {
 
     document.getElementById("modal-login")?.addEventListener("click", () => {
       login();
-      go(NAV_STEP.home !== undefined ? NAV_STEP.home : 0, { toast: false });
+      go(NAV_STEP.home ?? NAV_STEP.dashboard ?? 1, { toast: false });
     });
 
     document.querySelectorAll("[data-modal-close]").forEach((el) => {
