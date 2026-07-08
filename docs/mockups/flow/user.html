@@ -591,11 +591,10 @@
                           >
                             Klub yang bisa kamu gabung di sekitarmu
                           </p>
-                          <div
-                            class="community-row"
+                          <button
+                            type="button"
+                            class="community-row community-row-action"
                             data-flow-goto="15"
-                            role="button"
-                            style="cursor: pointer"
                           >
                             <div class="community-row-body">
                               <strong>Senayan Padel Club</strong>
@@ -604,12 +603,11 @@
                               </div>
                             </div>
                             <span class="distance-chip">1.2 km</span>
-                          </div>
-                          <div
-                            class="community-row"
+                          </button>
+                          <button
+                            type="button"
+                            class="community-row community-row-action"
                             data-flow-goto="15"
-                            role="button"
-                            style="cursor: pointer"
                           >
                             <div class="community-row-body">
                               <strong>Kemang Tennis Society</strong>
@@ -618,12 +616,11 @@
                               </div>
                             </div>
                             <span class="distance-chip">2.8 km</span>
-                          </div>
-                          <div
-                            class="community-row"
+                          </button>
+                          <button
+                            type="button"
+                            class="community-row community-row-action"
                             data-flow-goto="15"
-                            role="button"
-                            style="cursor: pointer"
                           >
                             <div class="community-row-body">
                               <strong>Pickle Blok M</strong>
@@ -632,7 +629,7 @@
                               </div>
                             </div>
                             <span class="distance-chip">3.5 km</span>
-                          </div>
+                          </button>
                         </section>
                         <section class="mp-duo-col" data-show-if-no-club>
                           <div class="mp-section-head">
@@ -1060,7 +1057,12 @@
                         Urutkan poin Mabar · MP Rating untuk konteks skill
                       </p>
                       <ul class="leaderboard-list">
-                        <li class="lb-row" data-player-profile="Rudi Hartono" style="cursor:pointer">
+                        <li
+                          class="lb-row lb-row-action"
+                          data-player-profile="Rudi Hartono"
+                          role="button"
+                          tabindex="0"
+                        >
                           <span class="lb-rank gold">1</span>
                           <div class="avatar avatar-sm">RH</div>
                           <div class="lb-info">
@@ -1401,7 +1403,11 @@
                   >
                     Komunitas
                   </p>
-                  <div class="community-row" data-flow-goto="15" role="button">
+                  <button
+                    type="button"
+                    class="community-row community-row-action"
+                    data-flow-goto="15"
+                  >
                     <div class="avatar avatar-sm">PJ</div>
                     <div class="community-row-body">
                       <strong>Padel Jakarta Selatan</strong>
@@ -1410,8 +1416,12 @@
                       </div>
                     </div>
                     <span class="badge badge-mabar">Mabar #12</span>
-                  </div>
-                  <div class="community-row" data-flow-goto="15" role="button">
+                  </button>
+                  <button
+                    type="button"
+                    class="community-row community-row-action"
+                    data-flow-goto="15"
+                  >
                     <div class="avatar avatar-sm">JT</div>
                     <div class="community-row-body">
                       <strong>Jakarta Tennis Community</strong>
@@ -1420,7 +1430,7 @@
                       </div>
                     </div>
                     <span class="badge badge-mabar">Mabar #8</span>
-                  </div>
+                  </button>
                 </div>
               </div>
             </div>
@@ -1562,12 +1572,11 @@
                       Cari Komunitas
                     </button>
                   </div>
-                  <div
-                    class="card card-highlight mb-1"
+                  <button
+                    type="button"
+                    class="card card-highlight card-action mb-1"
                     data-show-if-club
                     data-flow-goto="15"
-                    role="button"
-                    style="cursor: pointer"
                   >
                     <strong class="club-name-dynamic"
                       >Padel Jakarta Selatan</strong
@@ -1579,7 +1588,7 @@
                     <span class="badge badge-success" data-show-if-club-admin
                       >Admin</span
                     >
-                  </div>
+                  </button>
                   <div class="card mb-1" data-show-if-no-club>
                     <p class="text-sm text-muted" data-i18n="communities.none">
                       Kamu belum gabung komunitas — pilih yang terdekat di bawah
@@ -2054,7 +2063,7 @@
                     👥 Komunitas terdekat
                   </h3>
                   <div class="community-list">
-                  <div class="community-row" data-community-row data-community-view="senayan" data-flow-goto="15" data-community-name="Senayan Padel Club" data-filter-tags="padel,open,jakarta" data-distance="1.2">
+                  <div class="community-row" data-community-row data-community-view="senayan" data-flow-goto="15" data-community-name="Senayan Padel Club" data-filter-tags="padel,open,jakarta" data-distance="1.2" role="button" tabindex="0">
                     <div class="avatar avatar-sm">SP</div>
                     <div class="community-row-body">
                       <strong>Senayan Padel Club</strong>
@@ -2073,7 +2082,7 @@
                       Lihat
                     </button>
                   </div>
-                  <div class="community-row" data-community-row data-community-name="Kemang Tennis Society" data-filter-tags="tennis,open,jakarta" data-distance="2.8">
+                  <div class="community-row" data-community-row data-community-name="Kemang Tennis Society" data-filter-tags="tennis,open,jakarta" data-distance="2.8" role="button" tabindex="0">
                     <div class="avatar avatar-sm">KT</div>
                     <div class="community-row-body">
                       <strong>Kemang Tennis Society</strong>
@@ -2092,7 +2101,7 @@
                       Lihat
                     </button>
                   </div>
-                  <div class="community-row" data-community-row data-community-name="Pickle Blok M" data-filter-tags="pickleball,open,jakarta" data-distance="3.5">
+                  <div class="community-row" data-community-row data-community-name="Pickle Blok M" data-filter-tags="pickleball,open,jakarta" data-distance="3.5" role="button" tabindex="0">
                     <div class="avatar avatar-sm">PB</div>
                     <div class="community-row-body">
                       <strong>Pickle Blok M</strong>
@@ -2111,7 +2120,7 @@
                       Lihat
                     </button>
                   </div>
-                  <div class="community-row" data-community-row data-community-name="BSD Padel House" data-filter-tags="padel,jakarta" data-distance="18">
+                  <div class="community-row" data-community-row data-community-name="BSD Padel House" data-filter-tags="padel,jakarta" data-distance="18" role="button" tabindex="0">
                     <div class="avatar avatar-sm">BP</div>
                     <div class="community-row-body">
                       <strong>BSD Padel House</strong>

@@ -661,6 +661,27 @@ h4 {
   width: 100%;
 }
 
+.community-row-action,
+.card-action,
+.lb-row-action,
+[data-player-profile] {
+  cursor: pointer;
+}
+
+button.community-row-action,
+button.card-action {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+button.card-action {
+  display: block;
+}
+
 .btn-group {
   display: flex;
   gap: 0.5rem;
@@ -970,6 +991,20 @@ h4 {
   background: var(--card);
   color: var(--accent);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.btn:focus-visible,
+.tab:focus-visible,
+.nav-link:focus-visible,
+.community-row-action:focus-visible,
+.card-action:focus-visible,
+.lb-row-action:focus-visible,
+[data-player-profile]:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--ball);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(212, 225, 87, 0.18);
 }
 
 .match-card {

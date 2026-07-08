@@ -44,18 +44,23 @@ Gallery screens use `id="screen-{name}"` in `prototype.html`. Interactive uses `
 | `home-dashboard`       | 1                         | **Dual-maintained** — same hero, sport cards, Top 5 |
 | `home-dashboard-guest` | 1 + guest banner          | Derived by `build-gallery-screens.js`               |
 | `leaderboard`          | `data-step="leaderboard"` | **Dual-maintained** — Mabar/Global tabs             |
-| `events-feed`          | 9                         |                                                     |
-| `event-americano`      | 10                        |                                                     |
-| `event-mexicano`       | 11                        |                                                     |
-| `find-community`       | 13                        |                                                     |
-| `event-register`       | 15                        | Eligibility + bracket display                       |
-| `verify-otp`           | 17                        |                                                     |
+| `communities`          | 9                         | Community directory / membership state              |
+| `events-feed`          | 10                        |                                                     |
+| `event-americano`      | 11                        |                                                     |
+| `event-mexicano`       | 12                        |                                                     |
+| `find-community`       | 14                        |                                                     |
+| `community-detail`     | 15 (`data-step="community-page"`) | Public spotlight + join state                |
+| `event-register`       | 16                        | Eligibility + bracket display                       |
+| `auth-register`        | 17 (`data-step="register"`) | Sign-up twin in interactive journey               |
 | `format-round-robin`   | 18                        |                                                     |
 | `format-league`        | 19                        |                                                     |
 | `global-tournament`    | 20                        |                                                     |
 | `player-other`         | 21                        |                                                     |
+| `edit-profile`         | 22 (`data-step="settings"`) | Account/settings twin                            |
+| `leaderboard-snapshot` | 23 (`data-step="rank-snapshot"`) | Snapshot drill-down                           |
 | `boc-fixture-detail`   | 24                        |                                                     |
 | `sparring-detail`      | 25                        |                                                     |
+| `verify-otp`           | 26                        | Moved later after register step                     |
 
 ### Club admin (`flow/club.html`)
 

@@ -124,24 +124,24 @@ window.MP_GalleryNotesData = (function () {
     "home-dashboard": {
       journey: "player",
       purpose: L(
-        "Dashboard — MP Rating, poin Mabar/Global, event aktif.",
-        "Dashboard — MP Rating, Mabar/Global pts, active events.",
+        "Dashboard pemain — rank lokal/global, switch olahraga, dan komunitas terdekat.",
+        "Player dashboard — local/global rank, sport switching, and nearby community discovery.",
       ),
       components: [
-        c(1, ".rank-dual, .rank-chip", { id: "Dual rank", en: "Dual rank" }, { id: "Mabar + Global pts dari 0.", en: "Mabar + Global pts from 0." }, { id: "Lapisan 2.", en: "Layer 2." }),
-        c(2, "[data-mp-rating], .mp-mascot-strip", { id: "MP Rating strip", en: "MP Rating / mascot" }, { id: "Skill + sport switch.", en: "Skill + sport switch." }, { id: "Lapisan 1.", en: "Layer 1." }),
+        c(1, ".rank-chip-row, .rank-chip.global", { id: "Chip rank", en: "Rank chips" }, { id: "Mabar lokal + pintu ke leaderboard Global.", en: "Local Mabar + doorway to Global leaderboard." }, { id: "Menjaga konteks dua ladder.", en: "Keeps the two-ladder model legible." }),
+        c(2, ".mp-dash-mascot, .mp-sport-cards", { id: "Sport switch", en: "Sport switcher" }, { id: "Maskot + kartu olahraga dengan poin dan MP Rating.", en: "Mascot + sport cards with points and MP Rating." }, { id: "Orientasi cepat lintas olahraga.", en: "Fast orientation across sports." }),
       ],
       mechanics: SHARED.rankMovement,
     },
     "home-dashboard-guest": {
       journey: "guest",
       purpose: L(
-        "Dashboard tamu — rank read-only, CTA login.",
-        "Guest dashboard — read-only rank, login CTA.",
+        "Dashboard tamu — preview read-only dengan jalur masuk ke komunitas dan login.",
+        "Guest dashboard — read-only preview with clear paths into communities and login.",
       ),
       components: [
-        c(1, "#guest-banner, .guest-banner", { id: "Banner tamu", en: "Guest banner" }, { id: "Browse mode.", en: "Browse mode." }, { id: "Atas konten.", en: "Above content." }),
-        c(2, "[data-requires-auth]", { id: "CTA terkunci", en: "Locked CTA" }, { id: "Modal login.", en: "Login modal." }, { id: "Conversion.", en: "Conversion." }),
+        c(1, ".guest-banner, .mp-club-banner[data-guest-only]", { id: "Mode tamu", en: "Guest mode banner" }, { id: "Preview state + browse framing.", en: "Preview state + browse framing." }, { id: "Membedakan tamu dari member tanpa mengaburkan konten.", en: "Separates guest from member state without hiding the product." }),
+        c(2, "[data-guest-login], [data-login-goto=\"1\"]", { id: "CTA login", en: "Login CTA" }, { id: "Masuk untuk fitur penuh; cari komunitas tetap terbuka.", en: "Sign in for full access; community discovery stays open." }, { id: "Konversi tetap jelas tanpa memblokir eksplorasi.", en: "Keeps conversion obvious without blocking exploration." }),
       ],
       mechanics: SHARED.rankMovement,
     },
@@ -160,41 +160,41 @@ window.MP_GalleryNotesData = (function () {
     "leaderboard": {
       journey: "player",
       purpose: L(
-        "Leaderboard Mabar — sort by pts; tooltip MP Rating.",
-        "Mabar leaderboard — sort by pts; MP Rating tooltip.",
+        "Leaderboard Mabar/Global dengan tab, konteks klub, dan jalur ke snapshot.",
+        "Mabar/Global leaderboard with tabs, club context, and a path to snapshots.",
       ),
       components: [
-        c(1, ".lb-table, table", { id: "Tabel rank", en: "Rank table" }, { id: "Sort by Mabar pts.", en: "Sort by Mabar pts." }, { id: "Lapisan 2.", en: "Layer 2." }),
-        c(2, ".lb-header, .section-title", { id: "Header", en: "Header" }, { id: "Klub scope.", en: "Club scope." }, { id: "Context.", en: "Context." }),
+        c(1, "[data-tabs], .leaderboard-list", { id: "Tab ladder", en: "Ladder tabs" }, { id: "Switch Mabar vs Global dengan daftar rank yang sama pola.", en: "Switches Mabar vs Global with the same ladder pattern." }, { id: "Menyatukan model rank lokal dan lintas klub.", en: "Unifies local and cross-club ranking." }),
+        c(2, ".info-strip, .btn-stack", { id: "Konteks & CTA", en: "Context and CTAs" }, { id: "Scope komunitas + aksi submit match / snapshot.", en: "Community scope + submit match / snapshot actions." }, { id: "Tidak berhenti di ranking baca-saja.", en: "Prevents the screen from becoming read-only dead-end." }),
       ],
       mechanics: SHARED.rankMovement,
     },
     "event-register": {
       journey: "player",
       purpose: L(
-        "Pendaftaran acara dengan panel eligibility — gate MP Rating & anti-sandbagging.",
-        "Event registration with eligibility panel — MP Rating gate & anti-sandbagging.",
+        "Pendaftaran acara dengan cek eligibility, kapasitas, dan CTA daftar/waitlist.",
+        "Event registration with eligibility checks, capacity, and register/waitlist actions.",
       ),
       components: [
         c(
           1,
-          "[data-eligibility-panel]",
-          { id: "Panel eligibility", en: "Eligibility panel" },
+          "[data-eligibility-panel], [data-skill-value]",
+          { id: "Panel skill", en: "Skill panel" },
           {
-            id: "MP Rating + badge Klub/Lintas klub; checkEligibility min/max.",
-            en: "MP Rating + Klub/Lintas klub badge; checkEligibility min/max.",
+            id: "Skill rating, band, reliability, dan state provisional.",
+            en: "Skill rating, band, reliability, and provisional state.",
           },
-          { id: "Di atas tombol daftar.", en: "Above register button." },
+          { id: "Gate inti sebelum pemain commit daftar.", en: "Core gate before the player commits to register." },
         ),
         c(
           2,
-          "[data-bracket-class-display]",
-          { id: "Kelas bracket", en: "Bracket class badge" },
+          ".reg-capacity, #reg-actions",
+          { id: "Kapasitas & aksi", en: "Capacity and actions" },
           {
-            id: "Beginner · MP Rating 2.5 – 4.0 — label + rentang terpercaya.",
-            en: "Beginner · MP Rating 2.5 – 4.0 — class + trusted range.",
+            id: "Slot terisi + CTA daftar atau waitlist.",
+            en: "Filled slots + register or waitlist CTA.",
           },
-          { id: "Pada kartu acara.", en: "On event card." },
+          { id: "Membantu keputusan sebelum checkout sosial.", en: "Supports the decision before the social commitment." },
         ),
       ],
       mechanics: SHARED.rankMovement,

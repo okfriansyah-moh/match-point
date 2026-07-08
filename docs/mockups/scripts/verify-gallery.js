@@ -9,6 +9,12 @@ const fs = require("fs");
 const path = require("path");
 
 const MOCKUPS = path.join(__dirname, "..");
+const PROTOTYPE_HTML = fs.readFileSync(path.join(MOCKUPS, "prototype.html"), "utf8");
+const EXTRACTED_HTML = fs.readFileSync(
+  path.join(MOCKUPS, "gallery-screens-extracted.html"),
+  "utf8",
+);
+const USER_FLOW_HTML = fs.readFileSync(path.join(MOCKUPS, "flow/user.html"), "utf8");
 
 function extractScreenIds(appJs) {
   const m = appJs.match(/const screenIds = \[([\s\S]*?)\];/);
@@ -51,8 +57,87 @@ function loadNotesData() {
   return g.window.MP_GalleryNotesData?.screens || {};
 }
 
+function extractFlowSteps(html) {
+  const steps = {};
+  const re = /<div class="flow-step[^"]*"[^>]*>/g;
+  let match;
+  const starts = [];
+
+  while ((match = re.exec(html)) !== null) {
+    starts.push({ index: match.index, openTag: match[0] });
+  }
+
+  for (let i = 0; i < starts.length; i++) {
+    const start = starts[i];
+    const stepIdMatch = start.openTag.match(/data-step="([^"]+)"/);
+    if (!stepIdMatch) continue;
+    const slice = html.slice(start.index);
+    let depth = 0;
+    let end = 0;
+    let pos = 0;
+
+    while (pos < slice.length) {
+      const nextOpen = slice.slice(pos).search(/<div[\s>]/);
+      const nextClose = slice.slice(pos).search(/<\/div>/);
+      if (nextClose === -1) break;
+      if (nextOpen !== -1 && nextOpen < nextClose) {
+        depth++;
+        pos += nextOpen + 4;
+      } else {
+        depth--;
+        pos += nextClose + 6;
+        if (depth === 0) {
+          end = pos;
+          break;
+        }
+      }
+    }
+
+    steps[stepIdMatch[1]] = slice.slice(0, end);
+  }
+
+  return steps;
+}
+
+function extractScreen(html, screenId) {
+  const marker = `id="screen-${screenId}"`;
+  const start = html.indexOf(marker);
+  if (start < 0) return "";
+  const divStart = html.lastIndexOf('<div class="screen"', start);
+  const slice = html.slice(divStart);
+  let depth = 0;
+  let end = 0;
+  let pos = 0;
+
+  while (pos < slice.length) {
+    const nextOpen = slice.slice(pos).search(/<div[\s>]/);
+    const nextClose = slice.slice(pos).search(/<\/div>/);
+    if (nextClose === -1) break;
+    if (nextOpen !== -1 && nextOpen < nextClose) {
+      depth++;
+      pos += nextOpen + 4;
+    } else {
+      depth--;
+      pos += nextClose + 6;
+      if (depth === 0) {
+        end = pos;
+        break;
+      }
+    }
+  }
+
+  return slice.slice(0, end);
+}
+
+function selectorNeedle(selector) {
+  if (selector.startsWith("#")) return `id="${selector.slice(1)}"`;
+  if (selector.startsWith("[")) return selector.slice(1, -1);
+  if (selector.startsWith(".")) return selector.slice(1);
+  return selector;
+}
+
 const appJs = fs.readFileSync(path.join(MOCKUPS, "app.js"), "utf8");
-const proto = fs.readFileSync(path.join(MOCKUPS, "prototype.html"), "utf8");
+const proto = PROTOTYPE_HTML;
 const screenIds = extractScreenIds(appJs);
 let notes;
 try {
@@ -84,12 +169,110 @@ const hydrateJs = fs.readFileSync(path.join(MOCKUPS, "gallery-hydrate.js"), "utf
 const hydrateScreens = [...hydrateJs.matchAll(/"([a-z0-9-]+)":\s*\(\)/g)].map((m) => m[1]);
 
 const nestedScreens = findNestedScreens(proto);
+const userSteps = extractFlowSteps(USER_FLOW_HTML);
+const syncIssues = [];
+
+const syncChecks = [
+  {
+    screenId: "events-feed",
+    sourceStep: "events",
+    targetHtml: EXTRACTED_HTML,
+    selectors: ["[data-events-feed]", '[data-event-filter="live"]', "[data-events-list]"],
+  },
+  {
+    screenId: "event-register",
+    sourceStep: "event-register",
+    targetHtml: EXTRACTED_HTML,
+    selectors: [
+      "[data-eligibility-panel]",
+      "[data-skill-value]",
+      "[data-skill-reliability]",
+      "#reg-actions",
+    ],
+  },
+  {
+    screenId: "home-dashboard-guest",
+    sourceStep: "dashboard",
+    targetHtml: EXTRACTED_HTML,
+    selectors: [
+      "[data-guest-login]",
+      "[data-guest-only]",
+      "[data-show-if-club-pending]",
+      '[data-flow-goto="14"]',
+    ],
+    targetOnlySelectors: [".guest-banner", "[data-login]", '[data-login-goto="1"]'],
+  },
+  {
+    screenId: "home-dashboard-guest",
+    sourceStep: "dashboard",
+    targetHtml: PROTOTYPE_HTML,
+    selectors: [
+      "[data-guest-login]",
+      "[data-guest-only]",
+      "[data-show-if-club-pending]",
+      '[data-flow-goto="14"]',
+    ],
+    targetOnlySelectors: [".guest-banner", "[data-login]", '[data-login-goto="1"]'],
+  },
+  {
+    screenId: "home-dashboard",
+    sourceStep: "dashboard",
+    targetHtml: PROTOTYPE_HTML,
+    selectors: [
+      "[data-guest-login]",
+      "[data-show-if-club-pending]",
+      '[data-flow-goto="2"]',
+      '[data-flow-goto="14"]',
+      '[data-flow-goto="3"]',
+    ],
+  },
+  {
+    screenId: "leaderboard",
+    sourceStep: "leaderboard",
+    targetHtml: PROTOTYPE_HTML,
+    selectors: [
+      "[data-tabs]",
+      '[data-tab="global"]',
+      '[data-tab-pane="global"]',
+      "[data-player-profile]",
+      '[data-flow-goto="24"]',
+    ],
+  },
+];
+
+syncChecks.forEach((check) => {
+  const source = userSteps[check.sourceStep];
+  const target = extractScreen(check.targetHtml, check.screenId);
+  if (!source) {
+    syncIssues.push(`${check.screenId}: missing flow step "${check.sourceStep}"`);
+    return;
+  }
+  if (!target) {
+    syncIssues.push(`${check.screenId}: missing target screen`);
+    return;
+  }
+  check.selectors.forEach((selector) => {
+    const needle = selectorNeedle(selector);
+    if (!source.includes(needle)) {
+      syncIssues.push(`${check.screenId}: flow step missing ${selector}`);
+    } else if (!target.includes(needle)) {
+      syncIssues.push(`${check.screenId}: target missing ${selector}`);
+    }
+  });
+  (check.targetOnlySelectors || []).forEach((selector) => {
+    const needle = selectorNeedle(selector);
+    if (!target.includes(needle)) {
+      syncIssues.push(`${check.screenId}: target missing ${selector}`);
+    }
+  });
+});
 
 console.log("Gallery verification");
 console.log("==================");
 console.log(`Screens in app.js: ${screenIds.length}`);
 console.log(`Design notes defined: ${Object.keys(notes).length}`);
 console.log(`Hydration handlers: ${hydrateScreens.length}`);
+console.log(`Sync checks: ${syncChecks.length}`);
 
 if (missingDom.length) {
   console.log("\nMissing DOM (#screen-*):", missingDom.join(", "));
@@ -115,13 +298,18 @@ if (nestedScreens.length) {
   console.log("\nNested screens (hidden when parent inactive):");
   nestedScreens.forEach((n) => console.log(`  ${n.child} inside ${n.parent}`));
 }
+if (syncIssues.length) {
+  console.log("\nSync issues:");
+  syncIssues.forEach((issue) => console.log(`  ${issue}`));
+}
 
 const ok =
   !missingDom.length &&
   !missingNotes.length &&
   !weakNotes.length &&
   !genericPurpose.length &&
-  !nestedScreens.length;
+  !nestedScreens.length &&
+  !syncIssues.length;
 
 console.log(ok ? "\n✓ All checks passed" : "\n✗ Issues found");
 process.exit(ok ? 0 : 1);

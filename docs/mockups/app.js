@@ -84,12 +84,64 @@
     "admin-adjustment",
     "errors",
   ];
+  const FLOW_STEP_TO_SCREEN = {
+    0: "auth-login",
+    1: "home-dashboard",
+    2: "community-create",
+    3: "leaderboard",
+    4: "submit-match",
+    5: "match-approved",
+    6: "profile",
+    7: "endorsement",
+    8: "share-card",
+    9: "communities",
+    10: "events-feed",
+    11: "event-americano",
+    12: "event-mexicano",
+    13: "tournament-bracket",
+    14: "find-community",
+    15: "community-detail",
+    16: "event-register",
+    17: "auth-register",
+    18: "format-round-robin",
+    19: "format-league",
+    20: "global-tournament",
+    21: "player-other",
+    22: "edit-profile",
+    23: "leaderboard-snapshot",
+    24: "boc-fixture-detail",
+    25: "sparring-detail",
+    26: "verify-otp",
+  };
 
   function updateTitle(screenId) {
     if (!titleEl) return;
     const key = i18n.screenTitleKey(screenId);
     const text = i18n.t(key);
     titleEl.textContent = text === key ? screenId : text;
+  }
+
+  function syncTabGroups(root) {
+    root.querySelectorAll("[data-tabs]").forEach((group) => {
+      const active = group.querySelector("[data-tab].active") || group.querySelector("[data-tab]");
+      if (!active) return;
+      const key = active.dataset.tab;
+      group.querySelectorAll("[data-tab]").forEach((tab) => {
+        tab.classList.toggle("active", tab === active);
+      });
+      group.querySelectorAll("[data-tab-pane]").forEach((pane) => {
+        pane.hidden = pane.dataset.tabPane !== key;
+      });
+    });
+  }
+
+  function resolveFlowTarget(flowStep) {
+    const step = parseInt(flowStep, 10);
+    return Number.isNaN(step) ? null : FLOW_STEP_TO_SCREEN[step] || null;
+  }
+
+  function isActivationKey(event) {
+    return event.key === "Enter" || event.key === " ";
   }
 
   function showScreen(id) {
@@ -103,8 +155,9 @@
     updateTitle(id);
     if (navEl) navEl.classList.remove("open");
     history.replaceState(null, "", "#" + id);
+    const screen = document.getElementById("screen-" + id);
+    if (screen) syncTabGroups(screen);
     if (window.MP_GalleryChrome) {
-      const screen = document.getElementById("screen-" + id);
       const app = screen && screen.querySelector(".app");
       if (app) MP_GalleryChrome.upgradeApp(app, id);
       if (window.MP_Mascot) MP_Mascot.initAll();
@@ -118,11 +171,70 @@
     link.addEventListener("click", () => showScreen(link.dataset.screen));
   });
 
-  document.querySelectorAll("[data-goto]").forEach((el) => {
-    el.addEventListener("click", (e) => {
+  document.addEventListener("click", (e) => {
+    const gotoEl = e.target.closest("[data-goto]");
+    if (gotoEl) {
       e.preventDefault();
-      showScreen(el.dataset.goto);
-    });
+      showScreen(gotoEl.dataset.goto);
+      return;
+    }
+
+    const flowGotoEl = e.target.closest("[data-flow-goto]");
+    if (flowGotoEl) {
+      const target = resolveFlowTarget(flowGotoEl.dataset.flowGoto);
+      if (target) {
+        e.preventDefault();
+        showScreen(target);
+        return;
+      }
+    }
+
+    const loginEl = e.target.closest("[data-login], [data-guest-login]");
+    if (loginEl) {
+      e.preventDefault();
+      showScreen(resolveFlowTarget(loginEl.dataset.loginGoto) || "home-dashboard");
+      return;
+    }
+
+    const tabEl = e.target.closest("[data-tab]");
+    if (tabEl) {
+      const group = tabEl.closest("[data-tabs]");
+      if (!group) return;
+      e.preventDefault();
+      group.querySelectorAll("[data-tab]").forEach((tab) => {
+        tab.classList.toggle("active", tab === tabEl);
+      });
+      group.querySelectorAll("[data-tab-pane]").forEach((pane) => {
+        pane.hidden = pane.dataset.tabPane !== tabEl.dataset.tab;
+      });
+      return;
+    }
+
+    const playerEl = e.target.closest("[data-player-profile]");
+    if (playerEl) {
+      e.preventDefault();
+      try {
+        sessionStorage.setItem(
+          "mp-view-player",
+          playerEl.dataset.playerProfile || "Rudi Hartono",
+        );
+      } catch (_) {
+        /* no-op */
+      }
+      showScreen("player-other");
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (!isActivationKey(e)) return;
+    const trigger = e.target.closest(
+      "[data-goto], [data-flow-goto], [data-login], [data-guest-login], [data-tab], [data-player-profile], [role=\"button\"]",
+    );
+    if (!trigger) return;
+    if (/^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(trigger.tagName)) return;
+    if (trigger.hasAttribute("contenteditable")) return;
+    e.preventDefault();
+    trigger.click();
   });
 
   if (navToggle) {

@@ -1129,6 +1129,18 @@ window.MP_Flow = (function () {
       }
     });
 
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const trigger = e.target.closest(
+        "[data-flow-goto], [data-flow-back], [data-player-profile], [data-tab], [role=\"button\"]",
+      );
+      if (!trigger) return;
+      if (/^(BUTTON|A|INPUT|SELECT|TEXTAREA)$/.test(trigger.tagName)) return;
+      if (trigger.hasAttribute("contenteditable")) return;
+      e.preventDefault();
+      trigger.click();
+    });
+
     document.getElementById("modal-login")?.addEventListener("click", () => {
       login();
       go(NAV_STEP.home ?? NAV_STEP.dashboard ?? 1, { toast: false });
