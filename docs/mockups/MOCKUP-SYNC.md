@@ -1,6 +1,16 @@
 # Match Point mockup sync — Gallery ↔ Interactive
 
-This doc is the source of truth for keeping **gallery** and **interactive flow** mockups aligned. Cursor rule: `.cursor/rules/match-point-mockup-sync.mdc`.
+This doc is the source of truth for keeping **gallery** and **interactive flow** mockups aligned.
+
+### Agent rules (keep in sync)
+
+| Tool | Location |
+| ---- | -------- |
+| **Canonical** | `docs/mockups/MOCKUP-SYNC-RULE.md` |
+| Cursor | `.cursor/rules/match-point-mockup-sync.mdc` |
+| GitHub Copilot | `.github/copilot-instructions.md` + `.github/instructions/match-point-mockup-sync.instructions.md` |
+| Codex | `AGENTS.md`, `docs/mockups/AGENTS.md`, `.codex/skills/match-point-mockup-sync/SKILL.md` |
+| Claude Code | `CLAUDE.md`, `.claude/rules/match-point-mockup-sync.md` |
 
 ## Surfaces
 

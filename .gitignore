@@ -183,6 +183,7 @@ blob-report/
 
 # Claude / Anthropic
 .claude/
+!.claude/rules/
 .claude-cache/
 *.claude.md.bak
 
