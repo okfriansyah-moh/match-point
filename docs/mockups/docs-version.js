@@ -1,9 +1,18 @@
 /* Match Point product docs — version & changelog (update when shipping mockup changes) */
 window.MP_Docs = {
-  version: "3.4.1",
+  version: "3.4.2",
   label: "Mockup docs",
   updated: "2026-07-09",
   changelog: [
+    {
+      version: "3.4.2",
+      date: "2026-07-09",
+      title: "Docs mobile overflow fix",
+      items: [
+        "About + Global readiness tables scroll inside cards on mobile — no horizontal page leak",
+        "Hub index CTAs stack full-width on small screens; feedback FAB repositioned on docs pages",
+      ],
+    },
     {
       version: "3.4.1",
       date: "2026-07-09",
