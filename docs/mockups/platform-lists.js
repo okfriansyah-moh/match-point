@@ -27,6 +27,9 @@ window.MP_PlatformLists = (function () {
       title: "Padel Jakarta Selatan",
       meta: "Komunitas baru · Budi Santoso · 2 jam lalu",
       track: true,
+      risk: "Low",
+      sla: "18h left",
+      confidence: "0.94",
       tags: [],
       detail: {
         sport: "🏓 Padel · Jakarta Selatan · Senayan · 🟢 Open Community",
@@ -43,6 +46,9 @@ window.MP_PlatformLists = (function () {
       icon: "🌍",
       title: "Indonesia Padel Masters",
       meta: "Global Tier 1 · cross-community",
+      risk: "High",
+      sla: "4h left",
+      confidence: "0.71",
       tags: ["global"],
     },
     {
@@ -54,6 +60,9 @@ window.MP_PlatformLists = (function () {
       icon: "⭐",
       title: "Featured Event",
       meta: "Senayan Padel Club · 5 jam lalu",
+      risk: "Medium",
+      sla: "9h left",
+      confidence: "0.82",
       tags: [],
     },
     {
@@ -65,6 +74,9 @@ window.MP_PlatformLists = (function () {
       icon: "🏘",
       title: "Bekasi Tennis Society",
       meta: "Disetujui oleh Tim MP · kemarin",
+      risk: "Low",
+      sla: "Closed",
+      confidence: "0.93",
       tags: [],
     },
     {
@@ -76,6 +88,9 @@ window.MP_PlatformLists = (function () {
       icon: "🏘",
       title: '"Klub Judi Padel"',
       meta: "Nama tidak pantas · alasan dikirim ke pengaju",
+      risk: "High",
+      sla: "Closed",
+      confidence: "0.98",
       tags: [],
     },
   ];
@@ -91,6 +106,9 @@ window.MP_PlatformLists = (function () {
       title: "Budi vs Andi · 6-2, 6-1",
       meta: "GPS fail 2.3km · Padel Jakarta · 1 jam lalu",
       priority: "normal",
+      risk: "Medium",
+      sla: "6h left",
+      confidence: "0.78",
       detail: { context: "GPS fail 2.3km · submitted from Senayan courts" },
     },
     {
@@ -103,6 +121,9 @@ window.MP_PlatformLists = (function () {
       title: "Sari vs Dina · skor tidak cocok",
       meta: "Dispute #D-4421 · prioritas tinggi",
       priority: "high",
+      risk: "High",
+      sla: "52m left",
+      confidence: "0.61",
       detail: {
         scoreA: "Sari: 6-4, 6-2",
         scoreB: "Dina: 4-6, 6-3, 10-8",
@@ -164,6 +185,18 @@ window.MP_PlatformLists = (function () {
           (i + 7) +
           " · " +
           hoursAgo(i + 3),
+        risk:
+          type === "global" ? "High" : i % 3 === 0 ? "Medium" : "Low",
+        sla:
+          status === "pending"
+            ? (Math.max(1, 18 - (i % 12)) + "h left")
+            : "Closed",
+        confidence:
+          status === "rejected"
+            ? "0.96"
+            : type === "global"
+              ? "0.74"
+              : "0.8" + (i % 10),
         tags: type === "global" ? ["global"] : [],
       });
     }
@@ -209,6 +242,18 @@ window.MP_PlatformLists = (function () {
           " · " +
           hoursAgo(i + 1),
         priority: kind === "dispute" && i % 2 === 0 ? "high" : "normal",
+        risk:
+          kind === "dispute" ? "High" : kind === "gps" ? "Medium" : "Low",
+        sla:
+          kind === "dispute"
+            ? (30 + (i % 8) * 15) + "m left"
+            : Math.max(1, 12 - (i % 7)) + "h left",
+        confidence:
+          kind === "dispute"
+            ? "0.6" + (i % 3)
+            : kind === "gps"
+              ? "0.7" + (i % 2)
+              : "0.8" + (i % 2),
       });
     }
     return items;
@@ -403,6 +448,24 @@ window.MP_PlatformLists = (function () {
     return "platform-queue-item--pending";
   }
 
+  function triageMetaHTML(it) {
+    const pairs = [
+      ["platform.riskLabel", "Risk", it.risk || "Low"],
+      ["platform.slaLabel", "SLA", it.sla || "12h left"],
+      ["platform.confidenceLabel", "Confidence", it.confidence || "0.80"],
+    ];
+    return (
+      '<div class="platform-triage-meta">' +
+      pairs
+        .map(
+          ([key, fallback, value]) =>
+            '<span class="triage-pill">' + t(key, fallback) + ": " + esc(value) + "</span>",
+        )
+        .join("") +
+      "</div>"
+    );
+  }
+
   function inboxItemHTML(it, returnStep) {
     const status = it.status;
     const pending = status === "pending";
@@ -495,6 +558,7 @@ window.MP_PlatformLists = (function () {
       '<div class="platform-queue-meta">' +
       esc(it.meta) +
       "</div>" +
+      triageMetaHTML(it) +
       track +
       "</div>" +
       '<div class="platform-queue-aside">' +

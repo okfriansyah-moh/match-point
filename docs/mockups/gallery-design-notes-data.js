@@ -124,24 +124,24 @@ window.MP_GalleryNotesData = (function () {
     "home-dashboard": {
       journey: "player",
       purpose: L(
-        "Dashboard pemain — rank lokal/global, switch olahraga, dan komunitas terdekat.",
-        "Player dashboard — local/global rank, sport switching, and nearby community discovery.",
+        "Dashboard pemain dengan satu intent utama per state dan penjelasan rank yang lebih tenang.",
+        "Player dashboard with one dominant intent per state and a calmer ranking explanation.",
       ),
       components: [
-        c(1, ".rank-chip-row, .rank-chip.global", { id: "Chip rank", en: "Rank chips" }, { id: "Mabar lokal + pintu ke leaderboard Global.", en: "Local Mabar + doorway to Global leaderboard." }, { id: "Menjaga konteks dua ladder.", en: "Keeps the two-ladder model legible." }),
-        c(2, ".mp-dash-mascot, .mp-sport-cards", { id: "Sport switch", en: "Sport switcher" }, { id: "Maskot + kartu olahraga dengan poin dan MP Rating.", en: "Mascot + sport cards with points and MP Rating." }, { id: "Orientasi cepat lintas olahraga.", en: "Fast orientation across sports." }),
+        c(1, ".rank-story-card", { id: "Cerita rank", en: "Rank story" }, { id: "Satu pola penjelasan MP Rating, Mabar, Global, dan confidence.", en: "One explanatory pattern for MP Rating, Mabar, Global, and confidence." }, { id: "Mengurangi beban kognitif di viewport pertama.", en: "Reduces cognitive load in the first viewport." }),
+        c(2, ".mp-club-banner, .mp-play-row", { id: "CTA stateful", en: "Stateful CTA" }, { id: "Guest diarahkan eksplor komunitas, no-club diarahkan join/create, member diarahkan submit match.", en: "Guest is steered to community exploration, no-club to join/create, member to submit match." }, { id: "Satu intent dominan per state.", en: "One dominant intent per state." }),
       ],
       mechanics: SHARED.rankMovement,
     },
     "home-dashboard-guest": {
       journey: "guest",
       purpose: L(
-        "Dashboard tamu — preview read-only dengan jalur masuk ke komunitas dan login.",
-        "Guest dashboard — read-only preview with clear paths into communities and login.",
+        "Dashboard tamu yang mengutamakan eksplor komunitas sebelum friksi login.",
+        "Guest dashboard that prioritizes community exploration before login friction.",
       ),
       components: [
         c(1, ".guest-banner, .mp-club-banner[data-guest-only]", { id: "Mode tamu", en: "Guest mode banner" }, { id: "Preview state + browse framing.", en: "Preview state + browse framing." }, { id: "Membedakan tamu dari member tanpa mengaburkan konten.", en: "Separates guest from member state without hiding the product." }),
-        c(2, "[data-guest-login], [data-login-goto=\"1\"]", { id: "CTA login", en: "Login CTA" }, { id: "Masuk untuk fitur penuh; cari komunitas tetap terbuka.", en: "Sign in for full access; community discovery stays open." }, { id: "Konversi tetap jelas tanpa memblokir eksplorasi.", en: "Keeps conversion obvious without blocking exploration." }),
+        c(2, ".rank-story-card, [data-flow-goto=\"14\"]", { id: "Explore first", en: "Explore-first CTA" }, { id: "Cari komunitas jadi CTA utama; login turun jadi langkah kedua.", en: "Find communities becomes the primary CTA; login becomes the secondary step." }, { id: "Meningkatkan rasa aman untuk mencoba dulu.", en: "Makes first-time exploration feel safer." }),
       ],
       mechanics: SHARED.rankMovement,
     },
@@ -160,39 +160,39 @@ window.MP_GalleryNotesData = (function () {
     "leaderboard": {
       journey: "player",
       purpose: L(
-        "Leaderboard Mabar/Global dengan tab, konteks klub, dan jalur ke snapshot.",
-        "Mabar/Global leaderboard with tabs, club context, and a path to snapshots.",
+        "Leaderboard yang menjelaskan fairness ranking sebelum meminta pemain menafsirkan angka sendiri.",
+        "Leaderboard that explains ranking fairness before asking players to interpret the numbers themselves.",
       ),
       components: [
         c(1, "[data-tabs], .leaderboard-list", { id: "Tab ladder", en: "Ladder tabs" }, { id: "Switch Mabar vs Global dengan daftar rank yang sama pola.", en: "Switches Mabar vs Global with the same ladder pattern." }, { id: "Menyatukan model rank lokal dan lintas klub.", en: "Unifies local and cross-club ranking." }),
-        c(2, ".info-strip, .btn-stack", { id: "Konteks & CTA", en: "Context and CTAs" }, { id: "Scope komunitas + aksi submit match / snapshot.", en: "Community scope + submit match / snapshot actions." }, { id: "Tidak berhenti di ranking baca-saja.", en: "Prevents the screen from becoming read-only dead-end." }),
+        c(2, ".rank-story-card, .btn-stack", { id: "Trust context", en: "Trust context" }, { id: "Penjelasan reusable soal MP Rating, posisi lokal, sinyal global, dan confidence.", en: "Reusable explanation of MP Rating, local standing, global signal, and confidence." }, { id: "Membuat fairness lebih legible.", en: "Makes fairness more legible." }),
       ],
       mechanics: SHARED.rankMovement,
     },
     "event-register": {
       journey: "player",
       purpose: L(
-        "Pendaftaran acara dengan cek eligibility, kapasitas, dan CTA daftar/waitlist.",
-        "Event registration with eligibility checks, capacity, and register/waitlist actions.",
+        "Pendaftaran acara yang menampilkan verdict eligibility dulu, baru angka pendukungnya.",
+        "Event registration that shows the eligibility verdict first, then the supporting numbers.",
       ),
       components: [
         c(
           1,
-          "[data-eligibility-panel], [data-skill-value]",
-          { id: "Panel skill", en: "Skill panel" },
+          "[data-eligibility-verdict], [data-eligibility-panel]",
+          { id: "Verdict eligibility", en: "Eligibility verdict" },
           {
-            id: "Skill rating, band, reliability, dan state provisional.",
-            en: "Skill rating, band, reliability, and provisional state.",
+            id: "Status eligible / provisional / blocked muncul sebelum detail MP Rating.",
+            en: "Eligible / provisional / blocked status appears before MP Rating details.",
           },
-          { id: "Gate inti sebelum pemain commit daftar.", en: "Core gate before the player commits to register." },
+          { id: "Pemain tidak perlu reverse-engineer alasan blokir.", en: "Players do not need to reverse-engineer the block reason." },
         ),
         c(
           2,
-          ".reg-capacity, #reg-actions",
-          { id: "Kapasitas & aksi", en: "Capacity and actions" },
+          "[data-bracket-class-display], .reg-capacity, #reg-actions",
+          { id: "Bracket & aksi", en: "Bracket and actions" },
           {
-            id: "Slot terisi + CTA daftar atau waitlist.",
-            en: "Filled slots + register or waitlist CTA.",
+            id: "Kelas bracket, kapasitas, lalu CTA daftar atau waitlist.",
+            en: "Bracket class, capacity, then register or waitlist CTA.",
           },
           { id: "Membantu keputusan sebelum checkout sosial.", en: "Supports the decision before the social commitment." },
         ),
@@ -202,16 +202,16 @@ window.MP_GalleryNotesData = (function () {
     "profile": {
       journey: "player",
       purpose: L(
-        "Profil: MP Rating, poin MP, tingkat perjalanan, endorsement.",
-        "Profile: MP Rating, MP pts, journey tier, endorsement.",
+        "Profil yang menjelaskan progress rank sebagai readiness, bukan kekurangan.",
+        "Profile that frames ranking progress as readiness, not deficiency.",
       ),
       components: [
         c(
           1,
-          "[data-mp-rating]",
-          { id: "MP Rating", en: "MP Rating" },
-          { id: "Angka skill terpercaya + ✓ jika stable.", en: "Trusted skill number + ✓ when stable." },
-          { id: "Lapisan 1 ranking.", en: "Ranking layer 1." },
+          ".rank-story-card, [data-mp-rating]",
+          { id: "Progress rank", en: "Ranking progress" },
+          { id: "MP Rating + cerita state ready/provisional/unrated.", en: "MP Rating plus a ready/provisional/unrated state story." },
+          { id: "Menenangkan anxiety saat early journey.", en: "Calms anxiety in the early journey." },
         ),
         c(
           2,

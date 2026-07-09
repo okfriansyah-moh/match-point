@@ -683,6 +683,8 @@ window.MP_Rank = (function () {
     const disp = getMpRatingDisplay(sport);
     const journey = disp.journey;
     const lang = (window.MP_I18N && MP_I18N.getLang()) || "id";
+    const t = (key, fallback) =>
+      window.MP_I18N ? MP_I18N.t(key, lang) : fallback || key;
     const journeyLabel = lang === "en" ? journey.en : journey.id;
     const scopeLabel =
       disp.calibrationScope === "cross_community"
@@ -759,6 +761,27 @@ window.MP_Rank = (function () {
     document.querySelectorAll("[data-unrated-badge]").forEach((el) => {
       el.hidden = disp.state !== "unrated";
     });
+    const storyStateKey =
+      disp.state === "unrated"
+        ? "rank.storyUnratedState"
+        : disp.state === "provisional"
+          ? "rank.storyProvisionalState"
+          : "rank.storyReady";
+    const storyBodyKey =
+      disp.state === "unrated"
+        ? "rank.storyUnratedBody"
+        : disp.state === "provisional"
+          ? "rank.storyProvisionalBody"
+          : "rank.storyReadyBody";
+    document.querySelectorAll("[data-rank-story-state]").forEach((el) => {
+      el.textContent = t(storyStateKey);
+    });
+    document.querySelectorAll("[data-rank-story-body]").forEach((el) => {
+      el.textContent = t(storyBodyKey);
+    });
+    document.querySelectorAll("[data-rank-story-badge]").forEach((el) => {
+      el.textContent = scopeLabel;
+    });
 
     applyAllSportsDOM();
   }
@@ -799,8 +822,11 @@ window.MP_Rank = (function () {
     const bracketClass =
       ev?.bracketClass || ev?.eligibility?.bracketClass || "beginner";
     const bracketDisp = getBracketDisplay(sport, bracketClass);
+    const disp = getMpRatingDisplay(sport);
+    const lang = (window.MP_I18N && MP_I18N.getLang()) || "en";
+    const t = (key, fallback) =>
+      window.MP_I18N ? MP_I18N.t(key, lang) : fallback || key;
     if (bracketEl) {
-      const lang = (window.MP_I18N && MP_I18N.getLang()) || "en";
       const cls = lang === "id" ? bracketDisp.classId_label : bracketDisp.classEn;
       bracketEl.textContent = cls + " · MP Rating " + bracketDisp.mpRatingRange;
     }
@@ -810,6 +836,38 @@ window.MP_Rank = (function () {
       demoEvent.eligibility = eligibilityFromBracket(sport, bracketClass);
     }
     const check = checkEligibility(demoEvent);
+    const verdict = panel.querySelector("[data-eligibility-verdict]");
+    if (verdict) {
+      const verdictTitle = verdict.querySelector("[data-eligibility-verdict-title]");
+      const verdictBody = verdict.querySelector("[data-eligibility-verdict-body]");
+      const verdictBadge = verdict.querySelector("[data-eligibility-verdict-badge]");
+      let state = "is-ok";
+      let titleKey = "rank.verdictEligibleTitle";
+      let bodyText = t("rank.verdictEligibleBody");
+      let badge = "✓";
+      if (!check.ok && disp.state === "unrated") {
+        state = "is-warn";
+        titleKey = "rank.verdictUnratedTitle";
+        bodyText = t("rank.verdictUnratedBody");
+        badge = "↗";
+      } else if (check.ok && disp.state === "provisional") {
+        state = "is-warn";
+        titleKey = "rank.verdictProvisionalTitle";
+        bodyText = t("rank.verdictProvisionalBody");
+        badge = "~";
+      } else if (!check.ok) {
+        state = "is-blocked";
+        titleKey = "rank.verdictBlockedTitle";
+        bodyText =
+          check.messageKey && window.MP_I18N ? MP_I18N.t(check.messageKey, lang) : check.message;
+        badge = "!";
+      }
+      verdict.classList.remove("is-ok", "is-warn", "is-blocked");
+      verdict.classList.add(state);
+      if (verdictTitle) verdictTitle.textContent = t(titleKey);
+      if (verdictBody) verdictBody.textContent = bodyText;
+      if (verdictBadge) verdictBadge.textContent = badge;
+    }
     if (block) {
       block.hidden = check.ok;
       const msg = block.querySelector("[data-eligibility-msg]");

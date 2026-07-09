@@ -34,12 +34,12 @@ window.MP_GalleryNotesScreens = (function () {
     },
     "find-community": {
       journey: "player",
-      purpose: L("Pencarian & join komunitas — prerequisite untuk Mabar rank.", "Search and join communities — prerequisite for Mabar rank."),
+      purpose: L("Pencarian komunitas yang menekankan fit sebelum angka popularitas.", "Community discovery that emphasizes fit before popularity metrics."),
       components: [
         c(1, ".community-search", L("Cari komunitas", "Search input"), L("Filter nama/kota real-time.", "Filter name/city in real time."), L("Discoverability atas daftar.", "Top-of-list discoverability.")),
         c(2, ".filter-chips", L("Filter chips", "Sport filters"), L("Kelima olahraga + open + kota.", "All five sports + open + city."), L("Segmentasi tanpa form berat.", "Segmentation without heavy forms.")),
-        c(3, ".community-row", L("Baris komunitas", "Community row"), L("Avatar, meta, jarak km.", "Avatar, meta, km distance."), L("Scan vertikal — proximity first.", "Vertical scan — proximity first.")),
-        c(4, ".distance-chip", L("Chip jarak", "Distance chip"), L("KM dari lokasi pemain.", "KM from player location."), L("Sort terdekat dulu.", "Nearest-first sort.")),
+        c(3, ".fit-card, .community-row-fit", L("Sinyal fit", "Fit signals"), L("Keterbukaan, ritme acara, dan level mix tampil sebelum join.", "Openness, event rhythm, and level mix appear before join."), L("Membantu pemain menjawab 'apakah aku cocok di sini?'.", "Helps players answer 'will I belong here?'.")),
+        c(4, ".distance-chip", L("Chip jarak", "Distance chip"), L("KM dari lokasi pemain.", "KM from player location."), L("Proximity tetap jadi prioritas scan.", "Proximity still leads the scan.")),
       ],
     },
     "events-feed": {
@@ -191,9 +191,9 @@ window.MP_GalleryNotesScreens = (function () {
     },
     "community-detail": {
       journey: "player",
-      purpose: L("Detail komunitas — member count, events, join state.", "Community detail — members, events, join state."),
+      purpose: L("Detail komunitas yang menjelaskan value join dan sense of belonging.", "Community detail that explains the value of joining and the sense of belonging."),
       components: [
-        c(1, ".tabs", L("Tab navigasi", "Tabs"), L("Leaderboard / Match / Turnamen.", "Leaderboard / Match / Tournaments."), L("Satu komunitas multi-view.", "One community multi-view.")),
+        c(1, ".fit-card", L("Kartu fit", "Fit card"), L("Cocok untuk siapa, ritme main, dan outcome setelah join.", "Who it's best for, play cadence, and post-join outcome."), L("Membawa keputusan join dari utilitarian ke emosional.", "Moves the join decision from utilitarian to emotional.")),
         c(2, ".lb-row.highlight", L("Baris kamu", "Your row highlight"), L("Posisi #12 highlighted.", "Position #12 highlighted."), L("Self-location di ladder.", "Self-location on ladder.")),
         c(3, ".badge-success", L("Open badge", "Open community"), L("Data dibagi ke global.", "Data shared to global."), L("Trust open data.", "Trust open data.")),
         c(4, ".leaderboard-list", L("Leaderboard", "Mabar ladder"), L("Top pemain komunitas.", "Top community players."), L("Social proof klub.", "Club social proof.")),
@@ -407,11 +407,11 @@ window.MP_GalleryNotesScreens = (function () {
     },
     "club-admin-dashboard": {
       journey: "club",
-      purpose: L("Dashboard admin klub — events, registrations, moderasi.", "Club admin dashboard — events, registrations, moderation."),
+      purpose: L("Dashboard admin klub yang memisahkan operator mode dari member-facing community view.", "Club admin dashboard that separates operator mode from the member-facing community view."),
       components: [
         c(1, ".cp-cover", L("Cover komunitas", "Community cover"), L("Sama seperti member view.", "Same as member view."), L("Admin = member + panel.", "Admin = member + panel.")),
-        c(2, ".action-card.primary", L("Buat acara", "Create event"), L("7 format wizard entry.", "7 format wizard entry."), L("Primary admin CTA.", "Primary admin CTA.")),
-        c(3, ".stat-grid", L("KPI klub", "Club KPIs"), L("Member · pending · match.", "Members · pending · matches."), L("Ops snapshot.", "Ops snapshot.")),
+        c(2, ".operator-panel, .operator-kpi-grid", L("Panel operator", "Operator panel"), L("KPI triase + CTA operasional harian.", "Triage KPIs + daily operational CTAs."), L("Memberi scanning mode yang lebih cepat untuk admin.", "Gives admins a faster scanning mode.")),
+        c(3, ".operator-divider", L("Pemisah mode", "Mode divider"), L("Menandai transisi dari operasi ke tampilan member.", "Marks the transition from operations to the member view."), L("Mengurangi campur aduk peran.", "Reduces role mixing.")),
         c(4, ".leaderboard-list", L("Ladder embed", "Embedded LB"), L("Mabar top 3 + kamu #12.", "Mabar top 3 + you #12."), L("Member experience continuity.", "Member experience continuity.")),
       ],
     },
@@ -528,11 +528,11 @@ window.MP_GalleryNotesScreens = (function () {
     },
     "platform-approval-inbox": {
       journey: "platform",
-      purpose: L("Inbox approval generik — komunitas & event pending.", "Generic approval inbox — pending communities and events."),
+      purpose: L("Inbox approval generik dengan triage metadata yang lebih mudah dipindai.", "Generic approval inbox with more scannable triage metadata."),
       components: [
         c(1, "[data-platform-inbox]", L("Inbox mount", "Inbox list"), L("Hydrated approval queue.", "Hydrated approval queue."), L("MP_PlatformLists.", "MP_PlatformLists.")),
         c(2, "[data-platform-inbox-badge]", L("Badge pending", "Pending count"), L("Header urgency chip.", "Header urgency chip."), L("SLA visibility.", "SLA visibility.")),
-        c(3, ".app-header", L("Header", "Header"), L("Back + title + badge.", "Back + title + badge."), L("Platform chrome.", "Platform chrome.")),
+        c(3, ".platform-triage-meta, .triage-pill", L("Triage pills", "Triage pills"), L("Risk, SLA, dan confidence di setiap item.", "Risk, SLA, and confidence on every item."), L("Memprioritaskan keputusan yang perlu aksi duluan.", "Prioritizes the decisions that need action first.")),
         c(4, ".app-body", L("Body", "Body"), L("Queue renders here.", "Queue renders here."), L("Tap → detail flow.", "Tap → detail flow.")),
       ],
     },
@@ -628,22 +628,22 @@ window.MP_GalleryNotesScreens = (function () {
     },
     "platform-global-reg": {
       journey: "platform",
-      purpose: L("Registrasi global — peserta lintas klub setelah publish.", "Global registration — cross-club entrants after publish."),
+      purpose: L("Registrasi global dengan konteks operator sebelum live handoff.", "Global registration with operator context before the live handoff."),
       components: [
         c(1, "[data-admin-reg-list]", L("Peserta", "Entrant list"), L("Cross-club registration list.", "Cross-club registration list."), L("Hydrated entrants.", "Hydrated entrants.")),
         c(2, "[data-admin-reg-badge]", L("Kapasitas", "Capacity badge"), L("48/64 header.", "48/64 header."), L("Fill urgency.", "Fill urgency.")),
-        c(3, ".section-sub", L("Subcopy", "Subtitle"), L("Senayan, Kemang, BSD….", "Senayan, Kemang, BSD…."), L("Geographic diversity.", "Geographic diversity.")),
+        c(3, ".info-strip", L("Operator note", "Operator note"), L("Reminds admins to check borderline players and waitlist before seeding.", "Mengingatkan admin mengecek pemain borderline dan waitlist sebelum seeding."), L("Operational scannability.", "Operational scannability.")),
         c(4, ".btn-primary", L("Mulai live", "Start live"), L("→ global live bracket.", "→ global live bracket."), L("Ops handoff.", "Ops handoff.")),
       ],
     },
     "platform-global-live": {
       journey: "platform",
-      purpose: L("Global live — bracket + finalisasi rank global.", "Global live — bracket and global rank finalization."),
+      purpose: L("Global live yang menekankan operator focus saat bracket berjalan.", "Global live that emphasizes operator focus while the bracket is running."),
       components: [
         c(1, "[data-tournament-bracket]", L("Bracket live", "Live bracket"), L("Elimination tree hydrated.", "Hydrated elimination tree."), L("MP_Tournament bracket.", "MP_Tournament bracket.")),
         c(2, ".badge-global", L("Tier badge", "Tier 2 label"), L("Points multiplier context.", "Points multiplier context."), L("Global prestige.", "Global prestige.")),
-        c(3, "[data-event-finalize]", L("Finalisasi", "Finalize global"), L("Commit Global rank · K=64.", "Commit Global rank · K=64."), L("Rank end state.", "Rank end state.")),
-        c(4, ".app-header", L("Header", "Header"), L("Global Live title.", "Global Live title."), L("Ops context.", "Ops context.")),
+        c(3, ".info-strip", L("Operator focus", "Operator focus"), L("Bracket locked, court readiness, then finalize.", "Bracket locked, court readiness, then finalize."), L("Keeps admins on the next operational action.", "Keeps admins on the next operational action.")),
+        c(4, "[data-event-finalize]", L("Finalisasi", "Finalize global"), L("Commit Global rank · K=64.", "Commit Global rank · K=64."), L("Rank end state.", "Rank end state.")),
       ],
       mechanics: SHARED.rankMovement,
     },

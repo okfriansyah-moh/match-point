@@ -145,6 +145,11 @@ window.MP_PlatformApproval = (function () {
       "<strong>" +
       esc(item.title) +
       "</strong>" +
+      '<div class="platform-triage-meta">' +
+      '<span class="triage-pill">' + t("platform.riskLabel", "Risk") + ": " + esc(item.risk || "Low") + "</span>" +
+      '<span class="triage-pill">' + t("platform.slaLabel", "SLA") + ": " + esc(item.sla || "12h left") + "</span>" +
+      '<span class="triage-pill">' + t("platform.confidenceLabel", "Confidence") + ": " + esc(item.confidence || "0.80") + "</span>" +
+      "</div>" +
       detailBody(item) +
       '<div class="approval-track">' +
       '<span class="approval-node done">' +

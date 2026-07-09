@@ -1059,6 +1059,42 @@ window.MP_I18N = (function () {
       id: "Ranking global per olahraga — sekunder, Mabar utama.",
       en: "Global rank per sport — secondary; Mabar comes first.",
     },
+    "rank.storyTitle": {
+      id: "Cara kerja rank Match Point",
+      en: "How Match Point rank works",
+    },
+    "rank.storyGuestBody": {
+      id: "Gabung komunitas untuk mulai kumpulkan poin Mabar. Main lintas komunitas bikin sinyal Global-mu makin kuat.",
+      en: "Join a community to start earning Mabar points. Cross-community play makes your Global signal stronger.",
+    },
+    "rank.storyReady": {
+      id: "Siap main lintas komunitas",
+      en: "Cross-club ready",
+    },
+    "rank.storyReadyBody": {
+      id: "MP Rating-mu sudah cukup stabil untuk bantu bracket dan pairing. Mabar menunjukkan posisi lokalmu; Global menunjukkan bagaimana kamu bergerak lintas komunitas.",
+      en: "Your MP Rating is stable enough to guide brackets and pairings. Mabar shows your local standing; Global shows how you travel across communities.",
+    },
+    "rank.storyProvisionalState": {
+      id: "Masih menguat",
+      en: "Still settling in",
+    },
+    "rank.storyProvisionalBody": {
+      id: "MP Rating-mu sudah dipakai untuk match yang lebih adil, tapi akan lebih dipercaya setelah beberapa hasil terverifikasi lagi.",
+      en: "Your MP Rating already helps create fairer matches, but it becomes more trusted after a few more verified results.",
+    },
+    "rank.storyUnratedState": {
+      id: "Siap mulai",
+      en: "Ready to start",
+    },
+    "rank.storyUnratedBody": {
+      id: "Main 1 match terverifikasi untuk membuka MP Rating pertamamu. Sampai saat itu, acara Open dan eksplor komunitas tetap terbuka.",
+      en: "Play 1 verified match to unlock your first MP Rating. Until then, Open events and community discovery stay available.",
+    },
+    "rank.storySkill": { id: "Skill", en: "Skill" },
+    "rank.storyMabar": { id: "Posisi lokal", en: "Local standing" },
+    "rank.storyGlobal": { id: "Sinyal lintas klub", en: "Cross-club signal" },
+    "rank.storyScope": { id: "Kalibrasi", en: "Calibration" },
 
     "profile.communities": { id: "Komunitas", en: "Communities" },
 
@@ -1090,6 +1126,19 @@ window.MP_I18N = (function () {
       id: "Tidak ketemu? Ajukan komunitas baru →",
       en: "Can't find it? Request a new community →",
     },
+    "find.fitTitle": {
+      id: "Pilih komunitas yang cocok, bukan cuma yang besar",
+      en: "Choose the community that fits, not just the biggest one",
+    },
+    "find.fitSub": {
+      id: "Cari sinyal keterbukaan, ritme acara, dan level permainan yang terasa cocok buatmu.",
+      en: "Look for openness, event rhythm, and a play level that feels right for you.",
+    },
+    "find.fitOpenLevels": { id: "Terbuka untuk level campur", en: "Open to mixed levels" },
+    "find.fitWeekly": { id: "Acara rutin mingguan", en: "Weekly event rhythm" },
+    "find.fitCompetitive": { id: "Ada ladder kompetitif", en: "Competitive ladder available" },
+    "find.fitInviteOnly": { id: "Masuk via undangan", en: "Invite-led access" },
+    "find.fitSocial": { id: "Cocok buat main santai", en: "Good for social play" },
 
     "communities.mine": { id: "Komunitasku", en: "My communities" },
     "communities.none": {
@@ -1150,6 +1199,13 @@ window.MP_I18N = (function () {
       id: "✓ Kamu member — akses penuh terbuka",
       en: "✓ You're a member — full access unlocked",
     },
+    "community.fitTitle": {
+      id: "Apakah komunitas ini cocok buatmu?",
+      en: "Will this community fit you?",
+    },
+    "community.fitBestFor": { id: "Cocok untuk", en: "Best for" },
+    "community.fitCadence": { id: "Ritme main", en: "Play cadence" },
+    "community.fitOutcome": { id: "Setelah gabung", en: "What happens next" },
     "community.lockedTitle": {
       id: "Feed khusus member",
       en: "Members-only feed",
@@ -1193,6 +1249,34 @@ window.MP_I18N = (function () {
     "events.pastBadge": { id: "Selesai", en: "Past" },
     "events.hostedBy": { id: "Diselenggarakan", en: "Hosted by" },
     "reg.capacityLabel": { id: "Slot terisi", en: "Slots filled" },
+    "rank.verdictEligibleTitle": {
+      id: "Kamu memenuhi syarat",
+      en: "You're eligible",
+    },
+    "rank.verdictEligibleBody": {
+      id: "Bracket ini cocok dengan MP Rating-mu sekarang. Lanjut daftar, lalu admin akan susun pairing dari rating yang ada.",
+      en: "This bracket fits your current MP Rating. Go ahead and register, then the admin can seed fairer pairings from your rating.",
+    },
+    "rank.verdictProvisionalTitle": {
+      id: "Boleh daftar, rating masih menguat",
+      en: "You can register, your rating is still settling",
+    },
+    "rank.verdictProvisionalBody": {
+      id: "Kamu sudah bisa ikut. Beberapa hasil terverifikasi lagi akan bikin confidence dan seeding-mu makin kuat.",
+      en: "You can still join. A few more verified results will make your confidence and seeding stronger.",
+    },
+    "rank.verdictUnratedTitle": {
+      id: "Butuh 1 match terverifikasi dulu",
+      en: "You need 1 verified match first",
+    },
+    "rank.verdictUnratedBody": {
+      id: "Kamu belum punya MP Rating untuk bracket ini. Coba acara Open atau catat match pertama untuk membuka rating awalmu.",
+      en: "You don't have an MP Rating for this bracket yet. Try an Open event or log your first match to unlock your starting rating.",
+    },
+    "rank.verdictBlockedTitle": {
+      id: "Bracket ini belum cocok",
+      en: "This bracket isn't the right fit yet",
+    },
     "reg.registerBtn": {
       id: "Daftar Sekarang — Gratis",
       en: "Register Now — Free",
@@ -1259,6 +1343,20 @@ window.MP_I18N = (function () {
       id: "👑 Kamu admin komunitas ini",
       en: "👑 You're this community's admin",
     },
+    "club.operatorTitle": { id: "Mode operator", en: "Operator mode" },
+    "club.operatorSub": {
+      id: "Fokus ke keputusan operasional hari ini: slot, review, dan sesi live.",
+      en: "Focus on today's operational decisions: slots, reviews, and live sessions.",
+    },
+    "club.memberViewTitle": { id: "Tampilan member", en: "Member view" },
+    "club.memberViewSub": {
+      id: "Inilah yang dilihat member untuk ikut, update, dan merasa terhubung.",
+      en: "This is what members see to join, stay updated, and feel connected.",
+    },
+    "club.opsPending": { id: "Perlu review", en: "Needs review" },
+    "club.opsWaitlist": { id: "Waitlist aktif", en: "Waitlist active" },
+    "club.opsNextLive": { id: "Sesi live berikutnya", en: "Next live session" },
+    "club.opsAction": { id: "Aksi utama", en: "Primary action" },
     "club.manageTitle": {
       id: "⚙️ Kelola Komunitas",
       en: "⚙️ Manage Community",
@@ -1440,6 +1538,14 @@ window.MP_I18N = (function () {
     "platform.globalLiveTitle": { id: "Global Live", en: "Global Live" },
     "platform.overviewTitle": { id: "Ringkasan platform", en: "Platform overview" },
     "platform.quickActions": { id: "Aksi cepat", en: "Quick actions" },
+    "platform.triageTitle": { id: "Triage sekarang", en: "Triage now" },
+    "platform.triageSub": {
+      id: "Lihat dulu item paling berisiko dan yang paling dekat ke SLA.",
+      en: "Start with the highest-risk items and the ones closest to SLA.",
+    },
+    "platform.riskLabel": { id: "Risiko", en: "Risk" },
+    "platform.slaLabel": { id: "SLA", en: "SLA" },
+    "platform.confidenceLabel": { id: "Keyakinan", en: "Confidence" },
     "platform.navInbox": { id: "Inbox", en: "Inbox" },
     "platform.navMatches": { id: "Match", en: "Matches" },
     "platform.navAnalytics": { id: "Analitik", en: "Analytics" },

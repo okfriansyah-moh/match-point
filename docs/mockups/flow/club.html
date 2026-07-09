@@ -103,74 +103,74 @@
                     </div>
                   </div>
 
-                  <!-- The ONLY difference vs a member: the manage panel -->
-                  <div class="mp-section-head">
-                    <h2 data-i18n="club.manageTitle">⚙️ Kelola Komunitas</h2>
-                    <span class="badge badge-members" data-i18n="club.adminBadge"
-                      >👑 Admin</span
+                  <div class="operator-panel mb-2">
+                    <div class="operator-panel-head">
+                      <div>
+                        <div class="rank-story-kicker" data-i18n="club.operatorTitle">Mode operator</div>
+                        <strong data-i18n="club.manageTitle">⚙️ Kelola Komunitas</strong>
+                        <p class="text-sm text-muted mt-1" data-i18n="club.operatorSub">
+                          Fokus ke keputusan operasional hari ini: slot, review, dan sesi live.
+                        </p>
+                      </div>
+                      <span class="badge badge-members" data-i18n="club.adminBadge">👑 Admin</span>
+                    </div>
+                    <div class="operator-kpi-grid">
+                      <div class="operator-kpi">
+                        <strong>3</strong>
+                        <span data-i18n="club.opsPending">Perlu review</span>
+                      </div>
+                      <div class="operator-kpi">
+                        <strong>2</strong>
+                        <span data-i18n="club.opsWaitlist">Waitlist aktif</span>
+                      </div>
+                      <div class="operator-kpi">
+                        <strong>09:00</strong>
+                        <span data-i18n="club.opsNextLive">Sesi live berikutnya</span>
+                      </div>
+                      <div class="operator-kpi">
+                        <strong data-i18n="club.opsAction">Aksi utama</strong>
+                        <span data-i18n="flow.adminCreateEvent">Buat Acara / Turnamen</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      class="action-card primary"
+                      data-flow-goto="1"
                     >
+                      <span class="action-card-icon is-tag">Ops</span>
+                      <span class="action-card-body"
+                        ><strong data-i18n="flow.adminCreateEvent"
+                          >Buat Acara / Turnamen</strong
+                        ><span data-i18n="flow.adminCreateEventDesc"
+                          >Americano · Mexicano · Bracket · RR · League · 7 formats</span
+                        ></span
+                      >
+                    </button>
+                    <button type="button" class="action-card" data-flow-goto="7">
+                      <span class="action-card-icon is-tag">Queue</span>
+                      <span class="action-card-body"
+                        ><strong data-i18n="club.regTitle"
+                          >Pendaftaran Peserta</strong
+                        ><span>Minggu Mexicano · 12/16 · waitlist 2</span></span
+                      >
+                    </button>
+                    <button type="button" class="action-card" data-flow-goto="9">
+                      <span class="action-card-icon is-tag">Live</span>
+                      <span class="action-card-body"
+                        ><strong>Live Session · Americano</strong
+                        ><span>Round 3/7 · 16 pemain · skor manual</span></span
+                      >
+                    </button>
+                    <button type="button" class="action-card" data-flow-goto="11">
+                      <span class="action-card-icon is-tag">Cross</span>
+                      <span class="action-card-body"><strong data-i18n="sparring.createTitle">Community Sparring</strong><span data-i18n="sparring.createDesc">2+ communities · casual or ranked</span></span>
+                    </button>
                   </div>
-                  <div class="stat-grid mb-2">
-                    <div class="stat-box">
-                      <div class="stat-val">142</div>
-                      <div class="stat-lbl" data-i18n="home.statMembers">
-                        Member
-                      </div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val">3</div>
-                      <div class="stat-lbl" data-i18n="approval.pending">
-                        Menunggu Review
-                      </div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val">847</div>
-                      <div class="stat-lbl" data-i18n="home.statMatches">
-                        Match
-                      </div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val">2</div>
-                      <div class="stat-lbl" data-i18n="community.statEvents">
-                        Acara aktif
-                      </div>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    class="action-card primary"
-                    data-flow-goto="1"
-                  >
-                    <span class="action-card-icon">🎯</span>
-                    <span class="action-card-body"
-                      ><strong data-i18n="flow.adminCreateEvent"
-                        >Buat Acara / Turnamen</strong
-                      ><span data-i18n="flow.adminCreateEventDesc"
-                        >Americano · Mexicano · Bracket · RR · League · 7 formats</span
-                      ></span
-                    >
-                  </button>
-                  <button type="button" class="action-card" data-flow-goto="11">
-                    <span class="action-card-icon">⚔️</span>
-                    <span class="action-card-body"><strong data-i18n="sparring.createTitle">Community Sparring</strong><span data-i18n="sparring.createDesc">2+ communities · casual or ranked</span></span>
-                  </button>
-                  <button type="button" class="action-card" data-flow-goto="7">
-                    <span class="action-card-icon">📋</span>
-                    <span class="action-card-body"
-                      ><strong data-i18n="club.regTitle"
-                        >Pendaftaran Peserta</strong
-                      ><span>Minggu Mexicano · 12/16 · waitlist 2</span></span
-                    >
-                  </button>
-                  <button type="button" class="action-card" data-flow-goto="9">
-                    <span class="action-card-icon">🔄</span>
-                    <span class="action-card-body"
-                      ><strong>Live Session · Americano</strong
-                      ><span>Round 3/7 · 16 pemain · skor manual</span></span
-                    >
-                  </button>
 
-                  <!-- Everything below is the normal member view -->
+                  <div class="operator-divider" data-i18n="club.memberViewTitle">Tampilan member</div>
+                  <p class="text-sm text-muted mb-1" data-i18n="club.memberViewSub">
+                    Inilah yang dilihat member untuk ikut, update, dan merasa terhubung.
+                  </p>
                   <div class="mp-section-head mt-2">
                     <h2 data-i18n="community.feedTitle">📣 Feed Komunitas</h2>
                     <span

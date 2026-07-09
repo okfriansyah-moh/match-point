@@ -134,15 +134,50 @@
                       <div class="stat-lbl">Pending match</div>
                     </div>
                   </div>
+                  <div class="triage-card mb-2">
+                    <strong data-i18n="platform.triageTitle">Triage sekarang</strong>
+                    <p class="text-sm text-muted mt-1" data-i18n="platform.triageSub">
+                      Lihat dulu item paling berisiko dan yang paling dekat ke SLA.
+                    </p>
+                    <div class="triage-grid">
+                      <div class="triage-item">
+                        <strong>Dispute #D-4421</strong>
+                        <p>Skor bentrok dari dua pemain inti. Butuh keputusan audit.</p>
+                        <div class="triage-meta">
+                          <span class="triage-pill" data-i18n="platform.riskLabel">Risiko</span>
+                          <span class="triage-pill">High</span>
+                          <span class="triage-pill">52m SLA</span>
+                        </div>
+                      </div>
+                      <div class="triage-item">
+                        <strong>Indonesia Padel Masters</strong>
+                        <p>Global Tier 1 dengan dokumen host belum lengkap.</p>
+                        <div class="triage-meta">
+                          <span class="triage-pill" data-i18n="platform.riskLabel">Risiko</span>
+                          <span class="triage-pill">High</span>
+                          <span class="triage-pill">0.71 conf</span>
+                        </div>
+                      </div>
+                      <div class="triage-item">
+                        <strong>Padel Jakarta Selatan</strong>
+                        <p>Community request low risk, ready untuk fast-track review.</p>
+                        <div class="triage-meta">
+                          <span class="triage-pill" data-i18n="platform.riskLabel">Risiko</span>
+                          <span class="triage-pill">Low</span>
+                          <span class="triage-pill">0.94 conf</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <div class="mp-section-head">
                     <h2 data-i18n="platform.quickActions">Quick actions</h2>
                   </div>
                   <button type="button" class="action-card primary" data-flow-goto="7">
-                    <span class="action-card-icon">🌍</span>
+                    <span class="action-card-icon is-tag">Global</span>
                     <span class="action-card-body"><strong data-i18n="platform.globalTournamentTitle">Create Global Tournament</strong><span data-i18n="platform.globalTournamentDesc">Tier 1–3 · cross-community · Global rank</span></span>
                   </button>
                   <button type="button" class="action-card primary" data-flow-goto="17">
-                    <span class="action-card-icon">⚔️</span>
+                    <span class="action-card-icon is-tag">BoC</span>
                     <span class="action-card-body"><strong data-i18n="boc.title">Battle of Communities</strong><span data-i18n="boc.dashboardDesc">Season · group draw · squad deadlines</span></span>
                   </button>
                   <button
@@ -150,7 +185,7 @@
                     class="action-card"
                     data-flow-goto="2"
                   >
-                    <span class="action-card-icon">📥</span>
+                    <span class="action-card-icon is-tag">Inbox</span>
                     <span class="action-card-body"
                       ><strong data-i18n="platform.inboxTitle"
                         >Approval Inbox</strong
@@ -160,14 +195,14 @@
                     >
                   </button>
                   <button type="button" class="action-card" data-flow-goto="5">
-                    <span class="action-card-icon">⏳</span>
+                    <span class="action-card-icon is-tag">Match</span>
                     <span class="action-card-body"
                       ><strong>Review <span data-platform-stat-match-pending-inline>—</span> Pending Matches</strong
                       ><span>Lintas komunitas · GPS fail · dispute</span></span
                     >
                   </button>
                   <button type="button" class="action-card" data-flow-goto="6">
-                    <span class="action-card-icon">📊</span>
+                    <span class="action-card-icon is-tag">Data</span>
                     <span class="action-card-body"
                       ><strong data-i18n="platform.navAnalytics">Analytics</strong
                       ><span>523 komunitas · health metrics</span></span
@@ -479,6 +514,10 @@
                   </div>
                 </header>
                 <div class="app-body">
+                  <div class="info-strip">
+                    <strong data-i18n="platform.triageTitle">Triage sekarang</strong>
+                    · peserta borderline dan waitlist sebaiknya dicek sebelum publish final seeding.
+                  </div>
                   <p class="section-sub" data-i18n="platform.globalRegSub">Cross-community entrants — Senayan, Kemang, BSD, Bandung…</p>
                   <div data-admin-reg-list></div>
                   <button type="button" class="btn btn-primary btn-block btn-lg" data-flow-goto="14" data-i18n="platform.globalLiveStartBtn">Mulai Global Live →</button>
@@ -496,6 +535,9 @@
                   </div>
                 </header>
                 <div class="app-body" data-tournament-live>
+                  <div class="info-strip">
+                    <strong>Operator focus</strong> · final bracket, court readiness, dan finalize rank setelah hasil terakhir terkunci.
+                  </div>
                   <div class="bracket" data-tournament-bracket></div>
                   <button type="button" class="btn btn-ball btn-block btn-lg" data-event-finalize data-flow-goto="1" data-i18n="rank.finalizeGlobalBtn">Finalisasi → Update Global Rank</button>
                 </div>

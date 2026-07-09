@@ -16,6 +16,11 @@ window.MP_Communities = (function () {
       city: "Senayan, Jakarta Selatan",
       access: "open",
       filterTags: ["padel", "open", "jakarta"],
+      fitTagline: "Pemain campuran yang mau sparring rutin dan cepat kenal member aktif.",
+      fitLevel: "Level campur · newcomer friendly",
+      fitCadence: "Americano + open play tiap minggu",
+      fitOutcome: "Biasanya langsung masuk event sosial dan ladder lokal.",
+      fitChips: ["Mixed levels", "Weekly events", "Competitive ladder"],
       bocMeta: { season: 1, group: "A", participant: true },
       sparringMeta: { mode: "ranked", communities: ["senayan", "kemang", "bsd"], badges: ["sparring_ranked"] },
     },
@@ -32,6 +37,11 @@ window.MP_Communities = (function () {
       city: "Kemang, Jakarta Selatan",
       access: "open",
       filterTags: ["tennis", "open", "jakarta"],
+      fitTagline: "Tennis sosial dengan ritme main konsisten dan member kota selatan.",
+      fitLevel: "Beginner sampai intermediate",
+      fitCadence: "Social hit tiap akhir pekan",
+      fitOutcome: "Cocok buat cari partner tetap dan naik confidence pelan-pelan.",
+      fitChips: ["Social play", "Weekly events", "Open access"],
     },
     blokm: {
       id: "blokm",
@@ -46,6 +56,11 @@ window.MP_Communities = (function () {
       city: "Blok M, Jakarta Selatan",
       access: "open",
       filterTags: ["pickleball", "open", "jakarta"],
+      fitTagline: "Komunitas santai untuk coba pickleball tanpa tekanan rank besar.",
+      fitLevel: "Open for first-timers",
+      fitCadence: "Sesi santai mingguan",
+      fitOutcome: "Bagus untuk match pertama dan bangun rating awal.",
+      fitChips: ["Social play", "Mixed levels", "Weekly events"],
     },
     bsd: {
       id: "bsd",
@@ -60,8 +75,40 @@ window.MP_Communities = (function () {
       city: "BSD, Tangerang",
       access: "invite",
       filterTags: ["padel", "jakarta"],
+      fitTagline: "Padel yang lebih kompetitif dengan akses lewat jaringan member.",
+      fitLevel: "Intermediate sampai advanced",
+      fitCadence: "League + challenge sessions",
+      fitOutcome: "Pas untuk pemain yang cari sparring serius dan level naik.",
+      fitChips: ["Invite-led access", "Competitive ladder", "Advanced mix"],
     },
   };
+
+  function getByName(name) {
+    const n = String(name || "").trim().toLowerCase();
+    return (
+      Object.values(COMMUNITIES).find((c) => c.name.toLowerCase() === n) ||
+      COMMUNITIES.senayan
+    );
+  }
+
+  function renderFitChips(c) {
+    const chipMap = {
+      "Mixed levels": "find.fitOpenLevels",
+      "Weekly events": "find.fitWeekly",
+      "Competitive ladder": "find.fitCompetitive",
+      "Invite-led access": "find.fitInviteOnly",
+      "Social play": "find.fitSocial",
+      "Advanced mix": "find.fitCompetitive",
+      "Open access": "find.filterOpen",
+    };
+    return (c.fitChips || [])
+      .map((label) => {
+        const key = chipMap[label];
+        const text = window.MP_I18N && key ? MP_I18N.t(key) : label;
+        return '<span class="fit-chip">' + text + "</span>";
+      })
+      .join("");
+  }
 
   function setView(id) {
     try {
@@ -105,6 +152,22 @@ window.MP_Communities = (function () {
     if (meta)
       meta.textContent = `${c.sportIcon} ${c.sport.charAt(0).toUpperCase() + c.sport.slice(1)} · ${c.city} · ${accessLabel}`;
 
+    root.querySelectorAll("[data-community-fit-tagline]").forEach((el) => {
+      el.textContent = c.fitTagline || "";
+    });
+    root.querySelectorAll("[data-community-fit-level]").forEach((el) => {
+      el.textContent = c.fitLevel || "";
+    });
+    root.querySelectorAll("[data-community-fit-cadence]").forEach((el) => {
+      el.textContent = c.fitCadence || "";
+    });
+    root.querySelectorAll("[data-community-fit-outcome]").forEach((el) => {
+      el.textContent = c.fitOutcome || "";
+    });
+    root.querySelectorAll("[data-community-fit-row]").forEach((el) => {
+      el.innerHTML = renderFitChips(c);
+    });
+
     root.querySelectorAll("[data-club-join]").forEach((btn) => {
       btn.dataset.clubJoin = c.name;
     });
@@ -128,6 +191,14 @@ window.MP_Communities = (function () {
     if (!container) return;
     const rows = container.querySelectorAll("[data-community-row]");
     const chips = container.querySelectorAll(".filter-chip[data-filter]");
+
+    rows.forEach((row) => {
+      const c = row.dataset.communityView
+        ? get(row.dataset.communityView)
+        : getByName(row.dataset.communityName);
+      const fitRow = row.querySelector("[data-community-fit-row]");
+      if (fitRow) fitRow.innerHTML = renderFitChips(c);
+    });
 
     function applyFilters() {
       const active = container.querySelector(".filter-chip.active");

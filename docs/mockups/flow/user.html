@@ -285,18 +285,18 @@
                       <button
                         type="button"
                         class="btn btn-primary btn-sm"
-                        data-guest-login
-                        data-i18n="flow.guestLoginCta"
-                      >
-                        Masuk untuk fitur penuh
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-outline btn-sm"
                         data-flow-goto="14"
                         data-i18n="club.findCta"
                       >
                         🔍 Cari Komunitas
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm"
+                        data-guest-login
+                        data-i18n="flow.guestLoginCta"
+                      >
+                        Masuk untuk fitur penuh
                       </button>
                     </div>
                   </div>
@@ -315,19 +315,19 @@
                       <button
                         type="button"
                         class="btn btn-primary btn-sm"
+                        data-flow-goto="14"
+                        data-i18n="club.findCta"
+                      >
+                        🔍 Cari Komunitas
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-outline btn-sm"
                         data-requires-auth
                         data-flow-goto="2"
                         data-i18n="club.createCta"
                       >
                         + Buat Komunitas
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-outline btn-sm"
-                        data-flow-goto="14"
-                        data-i18n="club.findCta"
-                      >
-                        🔍 Cari Komunitas
                       </button>
                     </div>
                   </div>
@@ -547,6 +547,41 @@
                     </div>
                   </section>
 
+                  <div class="rank-story-card mb-2">
+                    <div class="rank-story-head">
+                      <div>
+                        <div class="rank-story-kicker" data-i18n="rank.storyTitle">
+                          Cara kerja rank Match Point
+                        </div>
+                        <strong data-rank-story-state>Siap main lintas komunitas</strong>
+                      </div>
+                      <span class="badge badge-muted" data-rank-story-badge>
+                        Lintas klub ✓
+                      </span>
+                    </div>
+                    <p class="rank-story-body" data-rank-story-body>
+                      MP Rating-mu sudah cukup stabil untuk bantu bracket dan pairing. Mabar menunjukkan posisi lokalmu; Global menunjukkan bagaimana kamu bergerak lintas komunitas.
+                    </p>
+                    <div class="rank-story-grid">
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storySkill">Skill</strong>
+                        <span data-mp-rating>7.80 ✓</span>
+                      </div>
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyMabar">Posisi lokal</strong>
+                        <span data-rank-mabar-pts>1680</span>
+                      </div>
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyGlobal">Sinyal lintas klub</strong>
+                        <span data-rank-global-pts>1570</span>
+                      </div>
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyScope">Kalibrasi</strong>
+                        <span data-mp-confidence>98%</span>
+                      </div>
+                    </div>
+                  </div>
+
                   <!-- Quick action: submit only — Rank & Acara live in the nav,
                        and get real data previews in the grid below -->
                   <div class="mp-play-row">
@@ -591,6 +626,10 @@
                           >
                             Klub yang bisa kamu gabung di sekitarmu
                           </p>
+                          <div class="fit-chip-row mb-1">
+                            <span class="fit-chip" data-i18n="find.fitOpenLevels">Terbuka untuk level campur</span>
+                            <span class="fit-chip" data-i18n="find.fitWeekly">Acara rutin mingguan</span>
+                          </div>
                           <button
                             type="button"
                             class="community-row community-row-action"
@@ -600,6 +639,10 @@
                               <strong>Senayan Padel Club</strong>
                               <div class="community-row-meta">
                                 🏓 88 member · 🟢 Open
+                              </div>
+                              <div class="community-row-fit">
+                                <span class="fit-chip" data-i18n="find.fitOpenLevels">Terbuka untuk level campur</span>
+                                <span class="fit-chip" data-i18n="find.fitWeekly">Acara rutin mingguan</span>
                               </div>
                             </div>
                             <span class="distance-chip">1.2 km</span>
@@ -614,6 +657,10 @@
                               <div class="community-row-meta">
                                 🎾 64 member · 🟢 Open
                               </div>
+                              <div class="community-row-fit">
+                                <span class="fit-chip" data-i18n="find.fitSocial">Cocok buat main santai</span>
+                                <span class="fit-chip" data-i18n="find.fitWeekly">Acara rutin mingguan</span>
+                              </div>
                             </div>
                             <span class="distance-chip">2.8 km</span>
                           </button>
@@ -626,6 +673,10 @@
                               <strong>Pickle Blok M</strong>
                               <div class="community-row-meta">
                                 🥎 31 member · 🟢 Open
+                              </div>
+                              <div class="community-row-fit">
+                                <span class="fit-chip" data-i18n="find.fitSocial">Cocok buat main santai</span>
+                                <span class="fit-chip" data-i18n="find.fitOpenLevels">Terbuka untuk level campur</span>
                               </div>
                             </div>
                             <span class="distance-chip">3.5 km</span>
@@ -1029,6 +1080,40 @@
                     >
                     · <span data-i18n="lb.realtimeNote">Track Mabar
                     diperbarui real-time setelah match disetujui.</span>
+                  </div>
+                  <div class="rank-story-card mb-2">
+                    <div class="rank-story-head">
+                      <div>
+                        <div class="rank-story-kicker" data-i18n="rank.storyTitle">
+                          Cara kerja rank Match Point
+                        </div>
+                        <strong data-rank-story-state>Siap main lintas komunitas</strong>
+                      </div>
+                      <span class="badge badge-muted" data-rank-story-badge>
+                        Lintas klub ✓
+                      </span>
+                    </div>
+                    <p class="rank-story-body" data-rank-story-body>
+                      MP Rating-mu sudah cukup stabil untuk bantu bracket dan pairing. Mabar menunjukkan posisi lokalmu; Global menunjukkan bagaimana kamu bergerak lintas komunitas.
+                    </p>
+                    <div class="rank-story-grid">
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storySkill">Skill</strong>
+                        <span data-mp-rating>7.80 ✓</span>
+                      </div>
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyMabar">Posisi lokal</strong>
+                        <span data-rank-mabar>12</span>
+                      </div>
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyGlobal">Sinyal lintas klub</strong>
+                        <span data-rank-global>142</span>
+                      </div>
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyScope">Kalibrasi</strong>
+                        <span data-mp-confidence>98%</span>
+                      </div>
+                    </div>
                   </div>
                   <div data-tabs>
                     <div class="tabs">
@@ -2059,6 +2144,17 @@
                       📍 Jakarta
                     </button>
                   </div>
+                  <div class="fit-card mb-2">
+                    <strong data-i18n="find.fitTitle">Pilih komunitas yang cocok, bukan cuma yang besar</strong>
+                    <p class="text-sm text-muted mt-1" data-i18n="find.fitSub">
+                      Cari sinyal keterbukaan, ritme acara, dan level permainan yang terasa cocok buatmu.
+                    </p>
+                    <div class="fit-chip-row">
+                      <span class="fit-chip" data-i18n="find.fitOpenLevels">Terbuka untuk level campur</span>
+                      <span class="fit-chip" data-i18n="find.fitWeekly">Acara rutin mingguan</span>
+                      <span class="fit-chip" data-i18n="find.fitCompetitive">Ada ladder kompetitif</span>
+                    </div>
+                  </div>
                   <h3 class="text-sm font-bold section-label" data-i18n="find.nearYou">
                     👥 Komunitas terdekat
                   </h3>
@@ -2070,6 +2166,7 @@
                       <div class="community-row-meta">
                         🏓 Padel · 88 member · 🟢 Open · Senayan
                       </div>
+                      <div class="community-row-fit" data-community-fit-row></div>
                     </div>
                     <span class="distance-chip">1.2 km</span>
                     <button
@@ -2089,6 +2186,7 @@
                       <div class="community-row-meta">
                         🎾 Tennis · 64 member · 🟢 Open · Kemang
                       </div>
+                      <div class="community-row-fit" data-community-fit-row></div>
                     </div>
                     <span class="distance-chip">2.8 km</span>
                     <button
@@ -2108,6 +2206,7 @@
                       <div class="community-row-meta">
                         🥎 Pickleball · 31 member · 🟢 Open · Blok M
                       </div>
+                      <div class="community-row-fit" data-community-fit-row></div>
                     </div>
                     <span class="distance-chip">3.5 km</span>
                     <button
@@ -2127,6 +2226,7 @@
                       <div class="community-row-meta">
                         🏓 Padel · 120 member · 🔒 Invite only · BSD
                       </div>
+                      <div class="community-row-fit" data-community-fit-row></div>
                     </div>
                     <span class="distance-chip">18 km</span>
                     <button
@@ -2231,6 +2331,28 @@
                       <div class="stat-val">1.2</div>
                       <div class="stat-lbl">km</div>
                     </div>
+                  </div>
+
+                  <div class="fit-card mb-2">
+                    <strong data-i18n="community.fitTitle">Apakah komunitas ini cocok buatmu?</strong>
+                    <p class="text-sm text-muted mt-1" data-community-fit-tagline>
+                      Pemain campuran yang mau sparring rutin dan cepat kenal member aktif.
+                    </p>
+                    <div class="fit-card-grid">
+                      <div class="fit-card-item">
+                        <strong data-i18n="community.fitBestFor">Cocok untuk</strong>
+                        <span data-community-fit-level>Level campur · newcomer friendly</span>
+                      </div>
+                      <div class="fit-card-item">
+                        <strong data-i18n="community.fitCadence">Ritme main</strong>
+                        <span data-community-fit-cadence>Americano + open play tiap minggu</span>
+                      </div>
+                      <div class="fit-card-item">
+                        <strong data-i18n="community.fitOutcome">Setelah gabung</strong>
+                        <span data-community-fit-outcome>Biasanya langsung masuk event sosial dan ladder lokal.</span>
+                      </div>
+                    </div>
+                    <div class="fit-chip-row" data-community-fit-row></div>
                   </div>
 
                   <div class="league-card" data-show-if-club-admin>
@@ -2522,6 +2644,9 @@
                       <span class="club-name-dynamic">Padel Jakarta Selatan</span>
                       · Minggu 09:00 · 4 lapangan
                     </p>
+                    <p class="text-sm">
+                      <span class="badge badge-info" data-bracket-class-display>Beginner · MP Rating 2.5 – 4.0</span>
+                    </p>
                     <p class="text-sm text-muted" data-i18n="flow.mexicanoDesc">
                       Round 2+ by leaderboard · 1+4 vs 2+3 · makin seimbang
                     </p>
@@ -2539,9 +2664,42 @@
                     </div>
                   </div>
                   <div class="card mb-2" data-eligibility-panel>
-                    <p class="text-sm font-bold mb-1" data-i18n="rank.yourSkill">Your skill rating</p>
-                    <p class="text-sm"><span data-skill-label>UTR</span> <strong data-skill-value>4.25</strong> · <span data-skill-band>NTRP ~3.5</span> · <span data-i18n="rank.reliability">Reliability</span> <span data-skill-reliability>82%</span></p>
-                    <span class="badge badge-warning" data-provisional-badge hidden data-i18n="profile.provisional">Provisional</span>
+                    <div class="eligibility-verdict is-ok" data-eligibility-verdict>
+                      <span class="eligibility-verdict-badge" data-eligibility-verdict-badge>✓</span>
+                      <div class="eligibility-verdict-copy">
+                        <strong data-eligibility-verdict-title data-i18n="rank.verdictEligibleTitle">Kamu memenuhi syarat</strong>
+                        <p data-eligibility-verdict-body data-i18n="rank.verdictEligibleBody">
+                          Bracket ini cocok dengan MP Rating-mu sekarang. Lanjut daftar, lalu admin akan susun pairing dari rating yang ada.
+                        </p>
+                      </div>
+                    </div>
+                    <p class="text-sm font-bold mb-1" data-i18n="rank.yourSkill">Your MP Rating</p>
+                    <p class="text-sm">
+                      <span data-i18n="rank.mpRating">MP Rating</span>
+                      <strong data-mp-rating>4.25 ✓</strong>
+                      · <span class="text-muted" data-mp-rating-ref>≈ WPR 4.3</span>
+                      · <span data-i18n="rank.confidence">Confidence</span>
+                      <strong data-mp-confidence>98%</strong>
+                      <span hidden data-skill-value>4.25</span>
+                    </p>
+                    <p class="text-sm text-muted">
+                      <span data-i18n="rank.calibrationScope">Calibration</span>:
+                      <span data-mp-rating-scope>Lintas klub ✓</span>
+                      · <span data-i18n="rank.reliability">Reliability</span>
+                      <span data-skill-reliability>82%</span>
+                    </p>
+                    <div class="rank-story-grid">
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyMabar">Posisi lokal</strong>
+                        <span data-rank-mabar-pts>1680</span>
+                      </div>
+                      <div class="rank-story-item">
+                        <strong data-i18n="rank.storyGlobal">Sinyal lintas klub</strong>
+                        <span data-rank-global-pts>1570</span>
+                      </div>
+                    </div>
+                    <span class="badge badge-warning" data-provisional-badge hidden data-i18n="rank.provisional">Provisional</span>
+                    <span class="badge badge-muted" data-unrated-badge hidden data-i18n="rank.unrated">Unrated</span>
                   </div>
                   <div class="alert alert-danger mb-2" data-eligibility-block hidden>
                     <span>⛔</span>
