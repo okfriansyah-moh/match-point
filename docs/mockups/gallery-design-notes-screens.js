@@ -349,9 +349,9 @@ window.MP_GalleryNotesScreens = (function () {
       journey: "player",
       purpose: L("Share card rank — viral loop sosial.", "Rank share card — social viral loop."),
       components: [
-        c(1, ".share-card-preview", L("Preview kartu", "Share preview"), L("600×600 dark card.", "600×600 dark card."), L("OG/IG ready visual.", "OG/IG ready visual.")),
-        c(2, ".share-card-ranks", L("Dual rank", "Rank on card"), L("Mabar #12 + Global #142.", "Mabar #12 + Global #142."), L("Viral dual ledger.", "Viral dual ledger.")),
-        c(3, ".share-skills", L("Skill badges", "Skill pills"), L("Top 3 endorsed skills.", "Top 3 endorsed skills."), L("Social proof on share.", "Social proof on share.")),
+        c(1, "[data-share-card], .share-card-preview", L("Preview kartu", "Share preview"), L("600×600 kartu gradien olahraga + pride highlights.", "600×600 sport-gradient card + pride highlights."), L("OG/IG ready visual.", "OG/IG ready visual.")),
+        c(2, ".share-card-ranks, .share-card-rating", L("Dual rank", "Rank on card"), L("Mabar #12 + Global #142 + MP Rating hero.", "Mabar #12 + Global #142 + MP Rating hero."), L("Viral dual ledger.", "Viral dual ledger.")),
+        c(3, ".share-pride-row, .share-card-qr-wrap", L("Pencapaian + QR", "Pride + QR"), L("Top 3 trofi + QR scan untuk tambah teman.", "Top 3 trophies + QR scan to add friend."), L("Social proof on share.", "Social proof on share.")),
         c(4, ".btn-group", L("Share channels", "Share buttons"), L("WA / IG / copy link.", "WA / IG / copy link."), L("Low-friction distribution.", "Low-friction distribution.")),
       ],
     },
@@ -407,12 +407,12 @@ window.MP_GalleryNotesScreens = (function () {
     },
     "club-admin-dashboard": {
       journey: "club",
-      purpose: L("Dashboard admin klub yang memisahkan operator mode dari member-facing community view.", "Club admin dashboard that separates operator mode from the member-facing community view."),
+      purpose: L("Community HQ — grid modul bento (Acara, Pendaftaran, Live, Anggota, Feed, Sparring + teaser Booking/Keuangan) di dalam tampilan komunitas yang sama dengan member.", "Community HQ — a bento module grid (Events, Registrations, Live, Members, Feed, Sparring + Booking/Finance teasers) inside the same community view members see."),
       components: [
-        c(1, ".cp-cover", L("Cover komunitas", "Community cover"), L("Sama seperti member view.", "Same as member view."), L("Admin = member + panel.", "Admin = member + panel.")),
-        c(2, ".operator-panel, .operator-kpi-grid", L("Panel operator", "Operator panel"), L("KPI triase + CTA operasional harian.", "Triage KPIs + daily operational CTAs."), L("Memberi scanning mode yang lebih cepat untuk admin.", "Gives admins a faster scanning mode.")),
-        c(3, ".operator-divider", L("Pemisah mode", "Mode divider"), L("Menandai transisi dari operasi ke tampilan member.", "Marks the transition from operations to the member view."), L("Mengurangi campur aduk peran.", "Reduces role mixing.")),
-        c(4, ".leaderboard-list", L("Ladder embed", "Embedded LB"), L("Mabar top 3 + kamu #12.", "Mabar top 3 + you #12."), L("Member experience continuity.", "Member experience continuity.")),
+        c(1, ".cp-cover", L("Cover komunitas", "Community cover"), L("Sama seperti member view.", "Same as member view."), L("Admin = member + panel, bukan dunia terpisah.", "Admin = member + panel, not a detached world.")),
+        c(2, "[data-hq-kpis]", L("KPI strip", "KPI strip"), L("Anggota · aktif minggu ini · acara berikutnya · pending — angka mono.", "Members · active this week · next event · pending — mono figures."), L("Kesehatan komunitas terbaca dalam satu baris.", "Community health reads in one row.")),
+        c(3, "[data-hq-grid], .mp-hq-module", L("Grid modul HQ", "HQ module grid"), L("Tile Events/Regs/Live masuk wizard lama; Booking & Finance bertanda 'Segera'.", "Events/Regs/Live tiles enter the existing wizards; Booking & Finance marked 'Coming soon'."), L("Menjawab 'bagaimana menjalankan & menumbuhkan komunitas' melampaui ops acara.", "Answers 'how do I run and grow my community' beyond event ops.")),
+        c(4, ".operator-divider", L("Pemisah mode", "Mode divider"), L("Transisi dari HQ ke tampilan member.", "Transition from HQ to the member view."), L("Mengurangi campur aduk peran.", "Reduces role mixing.")),
       ],
     },
     "club-wizard-1": {

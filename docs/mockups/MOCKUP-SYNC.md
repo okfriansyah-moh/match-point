@@ -52,15 +52,21 @@ Gallery screens use `id="screen-{name}"` in `prototype.html`. Interactive uses `
 | `community-detail`     | 15 (`data-step="community-page"`) | Public spotlight + join state                |
 | `event-register`       | 16                        | Eligibility + bracket display                       |
 | `auth-register`        | 17 (`data-step="register"`) | Sign-up twin in interactive journey               |
-| `format-round-robin`   | 18                        |                                                     |
-| `format-league`        | 19                        |                                                     |
-| `global-tournament`    | 20                        |                                                     |
-| `player-other`         | 21                        |                                                     |
-| `edit-profile`         | 22 (`data-step="settings"`) | Account/settings twin                            |
-| `leaderboard-snapshot` | 23 (`data-step="rank-snapshot"`) | Snapshot drill-down                           |
-| `boc-fixture-detail`   | 24                        |                                                     |
-| `sparring-detail`      | 25                        |                                                     |
-| `verify-otp`           | 26                        | Moved later after register step                     |
+| `verify-otp`           | 18                        | DOM order realigned with steps config (2026-07-09)  |
+| `format-round-robin`   | 19                        |                                                     |
+| `format-league`        | 20                        |                                                     |
+| `global-tournament`    | 21                        |                                                     |
+| `player-other`         | 22                        |                                                     |
+| `edit-profile`         | 23 (`data-step="settings"`) | Account/settings twin                            |
+| `leaderboard-snapshot` | 24 (`data-step="rank-snapshot"`) | Snapshot drill-down                           |
+| `boc-fixture-detail`   | 25                        |                                                     |
+| `sparring-detail`      | 26                        |                                                     |
+| `social-feed`          | 27                        | **Derived** — shared renderer `social-feed.js`      |
+| `social-feed-guest`    | 27 + guest transform      | Derived by `build-gallery-screens.js` (`deriveGuestSocial`) |
+| `messages-inbox`       | 28                        | Derived                                             |
+| `player-passport`      | 29                        | Derived — `passport.js` + `achievements.js`         |
+| `court-booking`        | 30                        | Derived — `booking-mock.js`                         |
+| `booking-confirm`      | 31                        | Derived                                             |
 
 ### Club admin (`flow/club.html`)
 
@@ -89,10 +95,28 @@ Gallery screens use `id="screen-{name}"` in `prototype.html`. Interactive uses `
 | `platform-settings`              | 16        |
 | `platform-boc-wizard`            | 17        |
 | `platform-boc-fixtures`          | 18        |
+| `platform-overview`              | 1         |
+| `platform-community-pipeline`    | 19 (`data-step="community-pipeline"`) |
+| `platform-moderation-inbox`      | 20 (`data-step="moderation-inbox"`)   |
+| `platform-graph-health`          | 21 (`data-step="graph-health"`)       |
 
 ### Gallery-only (no flow twin)
 
-`auth-login`, `auth-register`, `profile`, `profile-provisional`, `profile-endorse-empty`, `edit-profile`, `communities`, `community-create`, `community-detail`, `community-members`, `admin-transfer`, `leaderboard-official`, `leaderboard-snapshot`, `submit-match`, `match-*`, `my-matches`, `player-performance`, `tournament`, `tournament-create`, `tournament-bracket`, `endorsement`, `share-card`, `admin`, `admin-*`, `errors`
+`auth-login`, `auth-register`, `profile`, `profile-provisional`, `profile-endorse-empty`, `edit-profile`, `communities`, `community-create`, `community-detail`, `community-members`, `admin-transfer`, `leaderboard-official`, `leaderboard-snapshot`, `submit-match`, `match-*`, `my-matches`, `player-performance`, `tournament`, `tournament-create`, `tournament-bracket`, `endorsement`, `share-card`, `admin`, `admin-*`, `errors`, `social-stories`, `social-post-detail`, `social-compose`, `messages-thread`, `friends-list`, `player-highlights`, `passport-teaser-guest`
+
+### Four-journey OS modules (shared renderers — change once)
+
+| File | Consumers |
+| --- | --- |
+| `social-feed.js` | social-feed (member/guest), dashboard highlight strips, community-detail feed, platform moderation queue seed |
+| `social-graph.js` | friends-list, passport, messages |
+| `home-pulse.js` / `guest-pulse.js` | member/guest dashboard halves |
+| `passport.js` + `achievements.js` | player-passport, passport-teaser-guest, guest home teaser |
+| `community-hq.js` | club.html step 0 + derived `club-admin-dashboard` |
+| `booking-mock.js` | court-booking, booking-confirm |
+| `platform-ecosystem.js` | platform overview + pipeline/moderation/graph-health |
+
+Gallery hydration for all of these goes through `hydrateOSModules(guest)` in `gallery-hydrate.js`.
 
 When these change, check whether interactive flows should link to them or mirror copy — but no automatic HTML twin exists.
 
@@ -120,7 +144,7 @@ When editing **any** file under `docs/mockups/`:
 
 ```bash
 node docs/mockups/scripts/build-gallery-screens.js   # flow HTML → gallery-screens-extracted.html
-node docs/mockups/scripts/verify-gallery.js          # 73 screens + design notes
+node docs/mockups/scripts/verify-gallery.js          # 91 screens + design notes + sync checks
 ```
 
 `gallery-screens-extracted.html` is a build artifact from flow steps. Primary gallery content lives inline in `prototype.html` — **do not assume** running the build updates `prototype.html`; sync twins manually.

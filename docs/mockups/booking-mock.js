@@ -1,0 +1,84 @@
+/* Match Point — court booking teaser (mockup, no payments) */
+window.MP_Booking = (function () {
+  const t = (k) => (window.MP_I18N ? MP_I18N.t(k) : k);
+  const STORAGE_KEY = "mp-booking";
+
+  const COURTS = ["Court 1", "Court 2", "Court 3"];
+  const TIMES = ["07:00", "08:00", "09:00", "16:00", "17:00", "18:00", "19:00", "20:00"];
+  const TAKEN = { "Court 1": ["08:00", "18:00"], "Court 2": ["07:00", "19:00"], "Court 3": ["17:00"] };
+
+  function getSelection() {
+    try {
+      return JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "null");
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function setSelection(sel) {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(sel));
+    } catch (_) {
+      /* no-op */
+    }
+  }
+
+  function renderSlots(root) {
+    if (!root) return;
+    const sel = getSelection();
+    root.innerHTML = COURTS.map(
+      (court) =>
+        '<div style="margin-bottom:1rem">' +
+        '<strong style="font-size:0.82rem;display:block;margin-bottom:0.4rem">' +
+        court +
+        "</strong>" +
+        '<div class="mp-slot-grid">' +
+        TIMES.map((time) => {
+          const taken = (TAKEN[court] || []).includes(time);
+          const selected = sel && sel.court === court && sel.time === time;
+          return (
+            '<button type="button" class="mp-slot' +
+            (taken ? " is-taken" : "") +
+            (selected ? " is-selected" : "") +
+            '"' +
+            (taken ? " disabled" : ' data-slot-court="' + court + '" data-slot-time="' + time + '"') +
+            ">" +
+            time +
+            "</button>"
+          );
+        }).join("") +
+        "</div></div>",
+    ).join("");
+  }
+
+  function renderSummary(root) {
+    if (!root) return;
+    const sel = getSelection() || { court: "Court 2", time: "18:00" };
+    root.innerHTML =
+      '<div class="mp-pulse-card" style="cursor:default">' +
+      '<div class="mp-pulse-main">' +
+      "<strong>" + sel.court + " · Senayan Padel Club</strong>" +
+      "<small>" + t("booking.date") + ": Sabtu / Saturday · " + t("booking.time") + ": " + sel.time + "</small>" +
+      "</div>" +
+      '<span class="mp-pulse-meta">Rp 250k</span>' +
+      "</div>";
+  }
+
+  function applyDOM() {
+    document.querySelectorAll("[data-booking-slots]").forEach(renderSlots);
+    document.querySelectorAll("[data-booking-summary]").forEach(renderSummary);
+  }
+
+  function init() {
+    applyDOM();
+    document.body.addEventListener("click", (e) => {
+      const slot = e.target.closest("[data-slot-court]");
+      if (!slot) return;
+      setSelection({ court: slot.dataset.slotCourt, time: slot.dataset.slotTime });
+      applyDOM();
+    });
+    window.addEventListener("mp:lang", applyDOM);
+  }
+
+  return { getSelection, renderSlots, renderSummary, applyDOM, init };
+})();

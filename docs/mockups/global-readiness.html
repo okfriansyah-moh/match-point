@@ -11,18 +11,20 @@
       <aside class="docs-sidebar" aria-label="Documentation navigation">
         <a href="index.html" class="docs-sidebar-brand">← Match Point</a>
         <p class="docs-sidebar-meta">
-          <span class="docs-version-pill" id="docs-version-pill">v3.3.1</span>
-          <span class="docs-updated" id="docs-updated">Updated 2026-07-06</span>
+          <span class="docs-version-pill" id="docs-version-pill">v3.4.1</span>
+          <span class="docs-updated" id="docs-updated">Updated 2026-07-09</span>
         </p>
         <nav class="docs-toc">
           <p class="docs-toc-label" data-i18n="global.toc">On this page</p>
           <a href="#summary" data-i18n="global.secSummary">Executive summary</a>
           <a href="#problem" data-i18n="global.secProblem">Problem &amp; market fit</a>
           <a href="#positioning" data-i18n="global.secPositioning">Positioning &amp; vision</a>
+          <a href="#social-sport" data-i18n="global.secSocialSport">Social sport OS</a>
           <a href="#competitive" data-i18n="global.secCompetitive">Competitive landscape</a>
           <a href="#advantage" data-i18n="global.secAdvantage">Our advantage</a>
           <a href="#global-ready" data-i18n="global.secGlobalReady">Global-ready design</a>
           <a href="#mockup-today" data-i18n="global.secMockupToday">Mockup inventory</a>
+          <a href="#interactive-flows" data-i18n="global.secInteractiveFlows">Interactive flows</a>
           <a href="#ranking-model">Ranking &amp; MP Rating</a>
           <a href="#wpr-parity">WPR parity &amp; gaps</a>
           <a href="#indonesia-wedge" data-i18n="global.secWedge">Indonesia-first wedge</a>
@@ -49,15 +51,18 @@
           <div data-mascot data-mascot-sport="padel" data-mascot-size="sm" data-mascot-mood="idle"></div>
           <h1 data-i18n="global.title">Global readiness &amp; go-to-market</h1>
           <p class="docs-lead" data-i18n="global.lead">
-            Strategy reference for scaling Match Point beyond Indonesia — market fit, competition, mockup maturity, monetization, and infrastructure after the prototype phase.
+            Strategy reference for scaling Match Point beyond Indonesia — social sport OS positioning, four interactive journeys, market fit, mockup maturity, monetization, and infrastructure after the prototype phase.
           </p>
         </header>
 
         <section id="summary" class="docs-section card">
           <h2 data-i18n="global.secSummary">Executive summary</h2>
           <p>
-            <strong>Match Point can serve the world</strong> as a product category: portable player reputation and rankings across informal racket-sport communities — padel, tennis, pickleball, badminton, and table tennis in the mockup today.
-            The mockup phase validates UX and rules; architecture is region-agnostic. What is Indonesia-specific today is <em>launch data, integrations, and copy</em> — not the core model.
+            <strong>Match Point can serve the world</strong> as <strong>the operating system for racket sports communities</strong> —
+            the place where players and communities build their <em>entire sporting life</em>: identity, competition, community ops, and social connection on one connected graph.
+            Five sports in the mockup today (padel, tennis, pickleball, badminton, table tennis).
+            Phase 0 validates UX across <strong>four interactive journeys</strong> (67 flow steps + 91 gallery screens); architecture is region-agnostic.
+            Indonesia-specific today: <em>launch data, integrations, and copy</em> — not the core model.
           </p>
           <table class="pa-table docs-table">
             <thead>
@@ -65,8 +70,12 @@
             </thead>
             <tbody>
               <tr>
+                <td>What category are we?</td>
+                <td><strong>Social sport OS</strong> — not a booking app, not a rating app, not a generic social network. Reputation + community + competition + social graph.</td>
+              </tr>
+              <tr>
                 <td>Is the problem global?</td>
-                <td>Yes — most play is outside federations; reputation is fragmented across clubs and apps.</td>
+                <td>Yes — recreational play is invisible to federations; reputation fragments across clubs, booking apps, and chat groups.</td>
               </tr>
               <tr>
                 <td>Are our sports global?</td>
@@ -78,15 +87,15 @@
               </tr>
               <tr>
                 <td>Do we replace UTR / DUPR / WPR?</td>
-                <td>No — we complement them with <strong>community portability</strong>, endorsements, BoC, and club operations.</td>
+                <td>No — we complement them with <strong>community portability</strong>, endorsements, BoC, social identity, and club operations.</td>
               </tr>
               <tr>
                 <td>Launch strategy</td>
                 <td><strong>Indonesia-first density</strong>, global product design, regional adapters per market.</td>
               </tr>
               <tr>
-                <td>One-stop ambition</td>
-                <td>Reputation + community ops + cross-club competition first; booking and full social feed are phase-2+.</td>
+                <td>What’s mocked in Phase 0?</td>
+                <td>Full four-journey OS — Discovery Pulse, Daily Hook + Passport, social feed/DMs/friends, Community HQ, Ecosystem Console, booking teasers. Backend Phase 1+.</td>
               </tr>
             </tbody>
           </table>
@@ -94,13 +103,18 @@
 
         <section id="problem" class="docs-section card">
           <h2 data-i18n="global.secProblem">Problem &amp; market fit</h2>
-          <h3>The gap federations and booking apps do not fill</h3>
+          <h3>The gap nobody owns today</h3>
           <ul class="docs-list">
-            <li><strong>Official systems</strong> (federations, ILTL-style leagues) capture sanctioned competition only — recreational and club play is invisible.</li>
-            <li><strong>Booking apps</strong> (Playtomic, court resellers) optimize court utilization, not long-term player reputation across clubs.</li>
-            <li><strong>Rating platforms</strong> (UTR, DUPR, WPR) measure skill but not community history, endorsements, or inter-club rivalry narratives.</li>
-            <li><strong>Social groups</strong> (WhatsApp, Instagram) drive discovery but leave no structured, portable record.</li>
+            <li><strong>Official systems</strong> (federations, ILTL-style leagues) — sanctioned competition only; recreational club play is invisible.</li>
+            <li><strong>Booking apps</strong> (Playtomic, KUYY) — court utilization, not portable reputation or cross-club rivalry.</li>
+            <li><strong>Rating platforms</strong> (UTR, DUPR, WPR) — skill numbers without community history, endorsements, or social graph.</li>
+            <li><strong>Social groups</strong> (WhatsApp, Instagram) — discovery and trust, but no structured rank, brackets, or audit trail.</li>
+            <li><strong>Generic fitness social</strong> (Strava) — sharing habit without sport-format logic or fair-play gates.</li>
           </ul>
+          <p>
+            Match Point sits at the intersection: <strong>structured sport identity + community operations + social stickiness</strong>.
+            Players get a reason to open daily (pulse, feed, friends); clubs get ops tooling; the platform gets a measurable graph.
+          </p>
           <h3>Who feels the pain (global ICP)</h3>
           <table class="pa-table docs-table">
             <thead>
@@ -136,25 +150,86 @@
 
         <section id="positioning" class="docs-section card">
           <h2 data-i18n="global.secPositioning">Positioning &amp; vision</h2>
-          <h3>What we are</h3>
+          <h3>Tagline hierarchy</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Layer</th><th>Copy (as shipped in login hook)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Primary</strong></td><td><em>The operating system for racket sports communities</em></td></tr>
+              <tr><td><strong>Player hook</strong></td><td><em>Where your racket sports life lives.</em></td></tr>
+              <tr><td><strong>Secondary</strong></td><td><em>One portable identity across padel, tennis, pickleball, badminton &amp; table tennis.</em></td></tr>
+              <tr><td><strong>Platform hook</strong></td><td><em>Operate the racket sports ecosystem — trust, growth, and fair play.</em></td></tr>
+            </tbody>
+          </table>
+          <h3>Four journeys, one graph</h3>
           <p>
-            The <strong>cross-community reputation layer</strong> for padel, tennis, pickleball, badminton, and table tennis — community-first operations with a portable Global rank, MP Rating brackets, fair-play gates, and flagship inter-community products (Battle of Communities, Community Sparring).
+            The product is organized as four purpose-built homes that reinforce one network graph:
+            <strong>Guest</strong> → Discovery Pulse (<em>"why should I join?"</em>) ·
+            <strong>Player</strong> → Daily Hook + Player Passport (<em>"why open every day?"</em>) ·
+            <strong>Community Admin</strong> → Community HQ (<em>"how do I run and grow?"</em>) ·
+            <strong>Platform Admin</strong> → Ecosystem Console (<em>"is the graph healthy?"</em>).
+            Competitors ship <em>modules</em> (competition, booking, rating); we ship the <strong>connected graph</strong>.
           </p>
-          <h3>What we are building toward (north star)</h3>
-          <p>A <strong>one-stop home for your racket-sport social identity</strong> — not replacing every app on day one, but becoming the profile and rank players share everywhere:</p>
+          <h3>North star — social sport identity</h3>
+          <p>Not replacing every app on day one — becoming the profile, rank, and community home players share everywhere:</p>
           <ul class="docs-list">
-            <li><strong>Identity</strong> — verified profile, per-sport MP Rating + confidence score, ≈ WPR/UTR/DUPR hints, endorsements, share card</li>
-            <li><strong>Community</strong> — discover clubs, join events, Mabar ladder, admin tools</li>
-            <li><strong>Competition</strong> — club events, global tournaments, BoC seasons, sparring</li>
-            <li><strong>Trust</strong> — match submission, disputes, eligibility, anti-sandbagging</li>
-            <li><strong>Social (phased)</strong> — activity feed, highlights, rivalries, achievements — lightweight at first, not a generic social network</li>
+            <li><strong>Identity</strong> — Player Passport: 5-sport MP Rating, confidence %, achievements, share card + QR, endorsements</li>
+            <li><strong>Community</strong> — discover, join, Mabar ladder, Community HQ for admins</li>
+            <li><strong>Competition</strong> — club events, global tournaments, BoC seasons, sparring (ILTL-class module)</li>
+            <li><strong>Social</strong> — feed, stories, messages, friends — <strong>mocked in Phase 0</strong>; real-time/push in Phase 5</li>
+            <li><strong>Trust</strong> — verified matches, disputes, bracket eligibility, social moderation queue</li>
+            <li><strong>Discovery + booking</strong> — court booking teaser (KUYY-class module in Phase 4)</li>
           </ul>
           <h3>What we are not (v1 production)</h3>
           <ul class="docs-list">
-            <li>Primary court-booking marketplace (integrate with Playtomic / local POS instead)</li>
-            <li>Replacement for UTR/DUPR/WPR official ratings (align display; link or import where APIs allow)</li>
-            <li>TikTok-style content platform (share cards and match moments, not infinite scroll video)</li>
+            <li>Primary court-booking marketplace — integrate Playtomic / KUYY / local POS</li>
+            <li>Replacement for UTR/DUPR/WPR official ratings — align display; optional API sync</li>
+            <li>TikTok-style infinite video — sport moments, share cards, and highlights only</li>
+            <li>Generic lifestyle social network — every social feature must tie back to play, rank, or community</li>
           </ul>
+        </section>
+
+        <section id="social-sport" class="docs-section card">
+          <h2 data-i18n="global.secSocialSport">Social sport OS — how the graph works</h2>
+          <p>
+            “Social sport” means sport-native social — not generic feeds bolted onto a ladder app.
+            Content, identity, and competition reinforce each other so the product earns daily opens <em>and</em> cross-community trust.
+          </p>
+          <h3>Network loops (measured on platform console)</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Loop</th><th>Guest</th><th>Player</th><th>Community</th><th>Platform</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>community → players</td><td>Discovery Pulse</td><td>Join + Mabar rank</td><td>HQ growth tools</td><td>Onboarding pipeline</td></tr>
+              <tr><td>players → content</td><td>Read-only preview</td><td>Posts, stories, highlights</td><td>Community feed broadcast</td><td>Moderation inbox</td></tr>
+              <tr><td>content → discovery</td><td>Social teaser on home</td><td>Feed + friends rail</td><td>Public community page</td><td>Graph health KPIs</td></tr>
+              <tr><td>matches → ratings</td><td>—</td><td>Submit match (~30s)</td><td>Live session → rank</td><td>Dispute triage</td></tr>
+              <tr><td>conversion → identity</td><td>Passport teaser → signup</td><td>Passport + share card</td><td>Member import</td><td>—</td></tr>
+            </tbody>
+          </table>
+          <h3>Guest conversion (as built in flow)</h3>
+          <ol class="docs-list">
+            <li><strong>Alive platform</strong> — live strip (523 communities · 2.4k playing today), trending clubs, open events</li>
+            <li><strong>Browse</strong> — community pages, event feed, social preview (public posts; member posts blurred), public leaderboard</li>
+            <li><strong>Soft gate</strong> — RSVP, like/comment, personal rank → inline auth modal (<em>Perlu akun</em>), never a hard wall</li>
+            <li><strong>Claim identity</strong> — register → Player Passport → join community → Daily Hook unlocks</li>
+          </ol>
+          <h3>Social layer — mocked vs production</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Capability</th><th>Phase 0 mockup</th><th>Production gap</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Activity feed + stories</td><td>✅ <code>social-feed.js</code> — 8 posts, guest mode</td><td>Real-time feed, media storage</td></tr>
+              <tr><td>Messages / DMs</td><td>✅ Inbox UI, 4 demo threads</td><td>WebSocket, push notifications</td></tr>
+              <tr><td>Friends / follows</td><td>✅ <code>social-graph.js</code></td><td>Graph DB, privacy controls</td></tr>
+              <tr><td>Achievements</td><td>✅ 6 trophies on passport</td><td>Rule engine on match events</td></tr>
+              <tr><td>Platform moderation</td><td>✅ Flagged post queue</td><td>ML assist, SLA tooling</td></tr>
+              <tr><td>Viral share</td><td>✅ 600×600 card + QR</td><td>CDN, Open Graph meta</td></tr>
+            </tbody>
+          </table>
         </section>
 
         <section id="competitive" class="docs-section card">
@@ -194,6 +269,12 @@
                 <td>Integrate — match import, not head-on booking war</td>
               </tr>
               <tr>
+                <td><strong>KUYY</strong> (Indonesia)</td>
+                <td>Court discovery &amp; booking, local padel/tennis density</td>
+                <td>No portable rank, endorsements, or cross-community BoC graph</td>
+                <td>Module — Discovery + Booking; integrate, don’t replace reputation core</td>
+              </tr>
+              <tr>
                 <td><strong>ILTL</strong> (Indonesia)</td>
                 <td>Official competition data ID</td>
                 <td>Recreational/club play uncovered</td>
@@ -222,6 +303,18 @@
               <tr><th>Advantage</th><th>Why it matters globally</th></tr>
             </thead>
             <tbody>
+              <tr>
+                <td><strong>Connected graph moat</strong></td>
+                <td>Four journeys on one network — guest conversion → player identity → community ops → platform health; competitors ship modules, we ship the graph.</td>
+              </tr>
+              <tr>
+                <td><strong>Social sport stickiness</strong></td>
+                <td>Daily Hook + feed + friends + passport share card create habit beyond event days — rare in rating-only or booking-only incumbents.</td>
+              </tr>
+              <tr>
+                <td><strong>Guest conversion without walls</strong></td>
+                <td>Browse-first CTA (<em>Lihat isi dulu</em>) + soft gates — lowers signup friction vs competitors that hide value.</td>
+              </tr>
               <tr>
                 <td><strong>Dual-track rank</strong> (Mabar + Global)</td>
                 <td>Clubs keep local culture; players still earn portable cross-community standing — works in any city.</td>
@@ -262,6 +355,11 @@
               <tr><th>Area</th><th>Status</th><th>Notes</th></tr>
             </thead>
             <tbody>
+              <tr><td>Four-journey OS</td><td>✅ Mock</td><td>Guest Discovery Pulse · Player Daily Hook + Passport · Community HQ · Ecosystem Operator Console — gallery nav mirrors journeys</td></tr>
+              <tr><td>Player Passport</td><td>✅ Mock</td><td>5-sport identity rollup, achievements, share card + QR — <code>passport.js</code></td></tr>
+              <tr><td>Social layer</td><td>✅ Mock</td><td>Feed, stories, messages, friends, highlights; guest preview mode — <code>social-feed.js</code></td></tr>
+              <tr><td>Community HQ</td><td>✅ Mock</td><td>Bento module grid beyond event ops — <code>community-hq.js</code></td></tr>
+              <tr><td>Platform ecosystem console</td><td>✅ Mock</td><td>Graph health KPIs, community pipeline, social moderation — <code>platform-ecosystem.js</code></td></tr>
               <tr><td>Multi-sport model</td><td>✅ Ready</td><td>Five sports — padel · tennis · pickleball · badminton · table tennis — sport switcher + 3+2 home grid</td></tr>
               <tr><td>Three-layer rank</td><td>✅ Mock</td><td>MP Rating (Glicko) · Mabar/Global pts · ≈ WPR/UTR/DUPR hints — one engine in <code>rank.js</code></td></tr>
               <tr><td>Bracket classes</td><td>✅ Mock</td><td>Open / Beginner / Intermediate / Advanced / Elite — MP Rating min/max per sport; tournament wizard picker</td></tr>
@@ -281,7 +379,36 @@
 
         <section id="mockup-today" class="docs-section card">
           <h2 data-i18n="global.secMockupToday">What we have in mockups today</h2>
-          <p>Interactive HTML/CSS/JS prototype — <strong>74 gallery screens</strong> + three role-based flows. Validates UX, ranking rules, and stakeholder narrative. <strong>Not production backend.</strong></p>
+          <p>Interactive HTML/CSS/JS prototype — <strong>91 gallery screens</strong> (static review) + <strong>67 interactive flow steps</strong> (clickable journeys). Validates UX, social sport graph, ranking rules, and conversion ladder. <strong>Not production backend.</strong></p>
+
+          <h3>Four journey groups (gallery)</h3>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Journey</th><th>Key screens</th><th>Shared modules</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Guest</strong></td>
+                <td>auth-login, home-dashboard-guest, social-feed-guest, passport-teaser-guest, find-community, leaderboard-official</td>
+                <td><code>guest-pulse.js</code></td>
+              </tr>
+              <tr>
+                <td><strong>Player</strong></td>
+                <td>home-dashboard (daily hook), player-passport, profile, social-feed, messages-inbox, friends-list, court-booking, leaderboard, communities</td>
+                <td><code>home-pulse.js</code>, <code>passport.js</code>, <code>social-feed.js</code>, <code>achievements.js</code></td>
+              </tr>
+              <tr>
+                <td><strong>Community admin</strong></td>
+                <td>club-admin-dashboard (Community HQ), event wizards, registrations, live referee, sparring create</td>
+                <td><code>community-hq.js</code>, <code>event-wizard.js</code></td>
+              </tr>
+              <tr>
+                <td><strong>Platform admin</strong></td>
+                <td>platform-overview, platform-community-pipeline, platform-moderation-inbox, platform-graph-health, triage inbox, BoC wizard</td>
+                <td><code>platform-ecosystem.js</code></td>
+              </tr>
+            </tbody>
+          </table>
 
           <h3>Five sports (one identity)</h3>
           <table class="pa-table docs-table">
@@ -300,22 +427,25 @@
 
           <h3>Player journey</h3>
           <ul class="docs-list">
-            <li>Login, guest preview, phone OTP (mock), profile &amp; edit</li>
+            <li>Guest Discovery Pulse + conversion ladder (browse-first, soft gates)</li>
+            <li>Login, phone OTP (mock), profile &amp; edit, <strong>Player Passport</strong> with achievements + share card QR</li>
+            <li>Daily Hook Home — personalized pulse cards (<code>home-pulse.js</code>)</li>
+            <li>Bottom nav: Home · Play · Social · Rank · Communities</li>
+            <li>Social — feed, stories, messages, friends, highlights; guest read-only preview</li>
             <li>Community discovery, join, multi-community membership</li>
-            <li>Home dashboard — 3+2 sport grid with MP Rating, confidence %, Mabar/Global pts</li>
             <li>Mabar + Global leaderboard with MP Rating meta; monthly snapshot</li>
             <li>Event feed, registration, <strong>eligibility panel</strong> (MP Rating min/max, bracket class, Lintas klub ✓)</li>
+            <li>Court booking + booking confirm teasers (<code>booking-mock.js</code>)</li>
             <li>Submit match, pending/approved/disputed flows</li>
             <li>Endorsements (min 3 rule), share card (social-ready dimensions)</li>
-            <li><strong>Player Performance</strong> screen — confidence card, MP Rating history chart, match stats</li>
-            <li><strong>My Matches → Performance tab</strong> — same WPR-style analytics inline</li>
+            <li><strong>Player Performance</strong> — confidence card, MP Rating history chart, match stats</li>
             <li>Battle of Communities detail — standings, squads, live rubric</li>
             <li>Community Sparring — multi-community standings, casual vs ranked</li>
           </ul>
 
-          <h3>Club admin</h3>
+          <h3>Community admin</h3>
           <ul class="docs-list">
-            <li>Community dashboard, member management</li>
+            <li><strong>Community HQ</strong> — bento module grid (events, members, feed, sparring, booking/finance placeholders)</li>
             <li>Event wizard — formats, <strong>bracket class picker</strong>, live referee / manual scoring</li>
             <li><strong>Box League</strong> — box groups, round robin within box, promotion/relegation</li>
             <li>Sparring create (invite 2+ communities)</li>
@@ -323,6 +453,9 @@
 
           <h3>Platform admin</h3>
           <ul class="docs-list">
+            <li><strong>Ecosystem Operator Console</strong> — graph health KPIs, sport mix, triage elevation</li>
+            <li>Community onboarding pipeline — pending / approved / rejected stages</li>
+            <li>Social moderation inbox — flagged posts queue</li>
             <li>Approval inbox (communities, featured events)</li>
             <li>Global tournament wizard with bracket classes, analytics dashboard</li>
             <li>BoC season wizard — group draw, fixtures, audit log</li>
@@ -339,6 +472,49 @@
             <li>Badges &amp; crests; per-sport gemoy mascots (Pipo, Tenni, Dink, Birdi, Pongi)</li>
             <li>ID/EN i18n, device preview (phone · tablet · web)</li>
             <li>Product docs (About), global readiness (this page), feedback widget (WhatsApp + FormSubmit email)</li>
+          </ul>
+        </section>
+
+        <section id="interactive-flows" class="docs-section card">
+          <h2 data-i18n="global.secInteractiveFlows">Interactive flows (clickable)</h2>
+          <p>Entry: <code>flow/index.html</code>. These are the authoritative clickable demos — gallery screens mirror the same markup.</p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Flow file</th><th>Steps</th><th>Nav</th><th>Key journey moments</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>user.html</code> (player)</td>
+                <td>33</td>
+                <td>Home · Play · Social · Rank · Communities</td>
+                <td>Login hook → Daily Hook pulse → events/live → profile/passport → social/messages/friends → booking teaser</td>
+              </tr>
+              <tr>
+                <td><code>user.html?guest=1</code></td>
+                <td>subset</td>
+                <td>Explore · Play · Social · Rank</td>
+                <td>Discovery Pulse → trending/events/social preview → passport teaser → soft-gate signup</td>
+              </tr>
+              <tr>
+                <td><code>club.html</code></td>
+                <td>12</td>
+                <td>Player nav + HQ operator mode</td>
+                <td>Community HQ KPIs/grid → event wizard → live referee → sparring create</td>
+              </tr>
+              <tr>
+                <td><code>platform.html</code></td>
+                <td>22</td>
+                <td>Dashboard · Inbox · Pipeline · Moderation · Analytics</td>
+                <td>Graph KPIs → triage SLA → community pipeline → moderation → BoC/global wizards</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>Positioning copy in flows</h3>
+          <ul class="docs-list">
+            <li>Player login: <em>"Where your racket sports life lives."</em></li>
+            <li>Guest banner: <em>"Mode tamu — lihat saja. Masuk untuk submit match &amp; event."</em></li>
+            <li>Platform login: <em>"Operate the racket sports ecosystem — trust, growth, and fair play."</em></li>
+            <li>Submit match CTA: <em>"Catat Hasil Match · ~30 detik · rank update instan"</em></li>
           </ul>
         </section>
 
@@ -456,6 +632,7 @@
             <tbody>
               <tr><td>Dense padel/tennis/badminton club culture (Jakarta, Bali, Surabaya)</td><td>Madrid, Dubai, Austin, Guangzhou metro wedges</td></tr>
               <tr><td>WhatsApp-native organizing</td><td>Share cards + deep links; add email/SMS in US/EU</td></tr>
+              <tr><td>KUYY as booking/discovery density</td><td>Playtomic EU — integrate as Phase 4 module, not head-on war</td></tr>
               <tr><td>ILTL as official data hook</td><td>Playtomic EU, UTR US, local federation APIs</td></tr>
               <tr><td>“Mabar” community identity</td><td>Localize label (“Club rank”, “Local ladder”) per locale</td></tr>
               <tr><td>Phone OTP familiarity</td><td>Per-country SMS providers + email OAuth fallback</td></tr>
@@ -518,16 +695,16 @@
                 <td>i18n keys + locale glossary</td>
               </tr>
               <tr>
-                <td>No court booking</td>
-                <td>Not true “one-stop” yet</td>
+                <td>No court booking payments</td>
+                <td>Booking UI mocked; no checkout</td>
                 <td>P2</td>
-                <td>Partner integrations vs build</td>
+                <td>Phase 4 — partner or build; teaser exists in flow steps 30–31</td>
               </tr>
               <tr>
-                <td>No activity feed / DMs</td>
-                <td>Limited “social network” stickiness</td>
-                <td>P2</td>
-                <td>Phase 2 — match moments, follows</td>
+                <td>Social backend (real-time feed, push, DMs)</td>
+                <td>Full UI mocked in Phase 0</td>
+                <td>P1</td>
+                <td>Phase 5 — WebSocket + notification service</td>
               </tr>
               <tr>
                 <td>Single-language depth (ID/EN only)</td>
@@ -584,6 +761,7 @@
               <tr><th>Integration</th><th>Region</th><th>Purpose</th><th>Phase</th></tr>
             </thead>
             <tbody>
+              <tr><td>KUYY / local booking APIs</td><td>Indonesia</td><td>Court inventory + booking handoff</td><td>Phase 4</td></tr>
               <tr><td>ILTL API / batch</td><td>Indonesia</td><td>Official match seed, credibility</td><td>v1.0 ID</td></tr>
               <tr><td>WPR API</td><td>Global padel</td><td>Read-only skill display sync (optional)</td><td>v1.5</td></tr>
               <tr><td>Playtomic</td><td>EU, LATAM, growing</td><td>Match + player import</td><td>v1.5</td></tr>
@@ -683,6 +861,8 @@
               <tr><td>Club admin value demo</td><td>✅ Full wizard, Box League, bracket picker, live session</td><td>—</td></tr>
               <tr><td>Player analytics (WPR-style)</td><td>✅ Confidence, chart, stats UI</td><td>Real match ledger + API</td></tr>
               <tr><td>Platform analytics UI</td><td>✅ Dashboard mock</td><td>Real metrics pipeline</td></tr>
+              <tr><td>Social layer UI (feed, DMs, friends)</td><td>✅ Full mock in flows</td><td>Real-time backend + moderation at scale</td></tr>
+              <tr><td>Guest conversion demo</td><td>✅ Browse-first + soft gates</td><td>Analytics on conversion funnel</td></tr>
               <tr><td>Paid event registration</td><td>🔴 Not built</td><td>Checkout, receipts, refunds</td></tr>
               <tr><td>Subscription billing</td><td>🔴 Not built</td><td>Stripe Billing + webhooks</td></tr>
               <tr><td>Usage metering</td><td>🔴 Not built</td><td>Members, events, storage per plan</td></tr>
@@ -742,7 +922,7 @@
               <tr>
                 <td><strong>Phase 0</strong> — Mockup complete</td>
                 <td>Stakeholder alignment</td>
-                <td>74 screens, 5 sports, MP Rating + WPR-style analytics mock, Box League, global readiness (this page), pilot club LOIs</td>
+                <td>91 screens, four-journey OS, 5 sports, Player Passport, full social mock, Community HQ, ecosystem console, MP Rating + WPR-style analytics, Box League, global readiness (this page), pilot club LOIs</td>
               </tr>
               <tr>
                 <td><strong>Phase 1</strong> — MVP ID</td>
@@ -760,17 +940,30 @@
                 <td>Global tournaments, BoC season 1, sparring ranked mode</td>
               </tr>
               <tr>
-                <td><strong>Phase 4</strong> — Expand</td>
+                <td><strong>Phase 4</strong> — Booking</td>
+                <td>KUYY-class discovery + court module</td>
+                <td>Productionize court-booking mock; inventory, payments integration</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 5</strong> — Social production</td>
+                <td>Feed, follows, push backend</td>
+                <td>Mockups done in Phase 0 — ship real-time feed, notifications</td>
+              </tr>
+              <tr>
+                <td><strong>Phase 6</strong> — Expand</td>
                 <td>2nd region (SG/AE/ES)</td>
                 <td>Locale pack, regional integration, compliance</td>
               </tr>
               <tr>
-                <td><strong>Phase 5</strong> — Social layer</td>
-                <td>Stickiness &amp; virality</td>
-                <td>Activity feed, follows, enhanced share cards, push</td>
+                <td><strong>Phase 7</strong> — Marketplaces &amp; AI</td>
+                <td>Coach, court, equipment; smart matchmaking</td>
+                <td>HQ placeholder tiles → screens; brand boundary review (racket sports first)</td>
               </tr>
             </tbody>
           </table>
+          <p class="text-sm text-muted">
+            Reconciled with the four-journey OS plan — see <code>docs/STRATEGY.md</code>. Phase 0 now includes the guest Discovery Pulse, player Daily Hook + Passport, Community HQ, Ecosystem Operator Console, and the full social mockup.
+          </p>
         </section>
 
         <section id="metrics" class="docs-section card">
@@ -780,12 +973,14 @@
               <tr><th>Metric</th><th>Pilot target</th><th>Global scale signal</th></tr>
             </thead>
             <tbody>
+              <tr><td>DAU / posts / content volume</td><td>4,216 DAU (demo)</td><td>Social loop health per region</td></tr>
+              <tr><td>Guest → signup conversion</td><td>Track in pilot</td><td>15%+ from browse-first funnel</td></tr>
+              <tr><td>Share card exports / month</td><td>200</td><td>Organic acquisition + social virality</td></tr>
               <tr><td>Active communities (weekly event)</td><td>10</td><td>100+ per region</td></tr>
               <tr><td>Verified matches / month</td><td>500</td><td>50k+</td></tr>
               <tr><td>Profile claim rate (imported players)</td><td>20%</td><td>40%+</td></tr>
               <tr><td>Paying clubs</td><td>5</td><td>15% of active communities</td></tr>
               <tr><td>Cross-community fixtures (BoC/Sparring)</td><td>1 season</td><td>4+ seasons/year multi-region</td></tr>
-              <tr><td>Share card exports / month</td><td>200</td><td>Organic acquisition channel</td></tr>
               <tr><td>NPS (club admins)</td><td>40+</td><td>50+ at scale</td></tr>
             </tbody>
           </table>
@@ -799,8 +994,16 @@
             </thead>
             <tbody>
               <tr>
-                <td>Incumbents (UTR/DUPR) add community features</td>
-                <td>Move faster on BoC, endorsements, multi-sport identity; partner don’t fight</td>
+                <td>Social features feel generic (not sport-native)</td>
+                <td>Tie every post type to match/community context; achievements on passport; no infinite video</td>
+              </tr>
+              <tr>
+                <td>Graph spam / moderation load</td>
+                <td>Platform moderation queue + community admin feed tools; SLA on triage card</td>
+              </tr>
+              <tr>
+                <td>Incumbents (UTR/DUPR/KUYY) add community features</td>
+                <td>Move faster on connected graph — BoC, passport, social identity; partner on booking/ratings</td>
               </tr>
               <tr>
                 <td>Low club willingness to pay</td>
@@ -825,7 +1028,7 @@
         <footer class="docs-footer">
           <p>
             <span data-i18n="about.maintained">Maintained product docs</span>
-            · <span id="docs-footer-version">Mockup v3.3.1</span>
+            · <span id="docs-footer-version">Mockup v3.4.1</span>
             · <a href="about.html" data-i18n="global.linkAbout">Product docs</a>
           </p>
         </footer>

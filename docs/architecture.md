@@ -30,7 +30,7 @@
 
 ## 1. Executive Summary
 
-Match Point is a **cross-community player reputation and ranking platform** for **padel, tennis, pickleball, badminton, and table tennis**. Most play happens outside official federations — recreational leagues, open play, and club events leave no portable record. Match Point fixes that with verified identity, match results, and rankings that travel with the player.
+Match Point is **the operating system for racket sports communities** — **padel, tennis, pickleball, badminton, and table tennis**. Most play happens outside official federations — recreational leagues, open play, and club events leave no portable record. Match Point fixes that with verified identity, match results, and rankings that travel with the player, and organizes the product around **four journeys** (Guest, Player, Community Admin, Platform Admin — §3.3), each with a purpose-built home that reinforces the network graph. See [STRATEGY.md](STRATEGY.md) for the positioning digest.
 
 **Current state:** The product is fully expressed as **interactive HTML mockups** in `docs/mockups/` — player, club admin, and platform admin journeys, dual-track ranking, event engine, Battle of Communities (BoC), Community Sparring, visual identity, and product docs. **No production API or database exists yet.**
 
@@ -123,11 +123,84 @@ flowchart LR
   profile --> share[Share_Card]
 ```
 
-### 3.3 Explicit non-goals (v1)
+### 3.3 Four-journey model
 
-- Primary court-booking marketplace (integrate Playtomic etc. instead)
+Every actor gets a purpose-built home that reinforces the network graph:
+
+| Journey | Actor | Core question | Primary home (mockup) |
+| --- | --- | --- | --- |
+| **Guest** | Unauthenticated browser | "Why should I join?" | Discovery Pulse — `home-dashboard-guest` |
+| **Player** | Authenticated member | "Why open this every day?" | Daily Hook Home — `home-dashboard` |
+| **Community** | Club / organizer admin | "How do I run and grow my community?" | Community HQ — `club-admin-dashboard` |
+| **Platform** | Match Point superadmin | "Is the ecosystem healthy and trustworthy?" | Ecosystem Operator Console — `platform-overview` |
+
+```mermaid
+flowchart TB
+  subgraph guestLane [GuestJourney]
+    Discover[PublicDiscovery]
+    Preview[SocialPreview]
+    Teaser[PassportTeaser]
+  end
+  subgraph playerEco [PlayerEcosystem]
+    Passport[PlayerPassport]
+    DailyHook[DailyHookHome]
+    Feed[ActivityFeed]
+  end
+  subgraph communityEco [CommunityEcosystem]
+    HQ[CommunityHQ]
+    Members[Members]
+    Events[Events]
+  end
+  subgraph platformEco [PlatformEcosystem]
+    Console[EcosystemConsole]
+    Triage[ApprovalTriage]
+    GraphHealth[GraphHealthKPIs]
+  end
+  subgraph shared [SharedPlatform]
+    Booking[Booking]
+    Messaging[Messaging]
+    RankEngine[RankEngine]
+  end
+  guestLane -->|signup| playerEco
+  playerEco --> shared
+  communityEco --> shared
+  platformEco --> shared
+  shared --> Graph[NetworkGraph_Moat]
+```
+
+### 3.4 Network effect loops
+
+Every feature must strengthen at least one loop (acceptance matrix in [STRATEGY.md](STRATEGY.md)):
+
+1. **community → players** — communities recruit; discovery converts guests
+2. **players → content** — matches, posts, stories, highlights
+3. **content → discovery** — public previews pull new guests in
+4. **matches → ratings** — verified results feed MP Rating + Mabar/Global
+5. **conversion → identity** — guests claim a Player Passport and join communities
+
+### 3.5 Personas
+
+| Persona | Journey | Primary dashboard |
+| --- | --- | --- |
+| Guest (browser) | Guest | Discovery Pulse |
+| Player | Player | Daily Hook Home + Player Passport |
+| Community Member | Player | Community page + feed |
+| Community Admin | Community | Community HQ |
+| Coach | Community (Phase 6) | HQ marketplace tile (placeholder) |
+| Court Owner | Community (Phase 4/6) | HQ booking tile (teaser) |
+| Tournament Organizer | Community/Platform | Event wizard · Global tournaments |
+| Sponsor | Platform (Phase 6) | Featured placements (not mocked) |
+| Platform Admin | Platform | Ecosystem Operator Console |
+
+### 3.6 Guest conversion funnel
+
+Discover (public pulse) → Preview value (communities, events, read-only feed, public leaderboard) → Sign up (soft gate, never a modal wall or forced tour) → Claim profile (Player Passport) → Join community (member daily hook unlocks).
+
+### 3.7 Explicit non-goals (v1)
+
+- Primary court-booking marketplace (integrate Playtomic etc. instead; teaser screens only until Phase 4)
 - Replacement for official UTR/DUPR/WPR ratings (align display; link/import where APIs allow)
-- TikTok-style content platform (share cards and match moments, not infinite video feed)
+- TikTok-style content platform (feed of match moments and results, not infinite video)
 
 ---
 
@@ -739,6 +812,14 @@ Context captured: URL, flow step, device, lang, theme, user agent. **Not stored*
 | Product docs + changelog   | `about.html`, `docs-version.js`              |
 | Global readiness strategy  | `global-readiness.html`                      |
 | Gallery chrome alignment   | `gallery-chrome.js`                          |
+| Social layer (feed, stories, comments, DMs, friends) | `social-feed.js`, `social-graph.js` |
+| Player Passport + achievements | `passport.js`, `achievements.js`         |
+| Daily hook + guest discovery pulse | `home-pulse.js`, `guest-pulse.js`    |
+| Community HQ module grid   | `community-hq.js`                            |
+| Booking teaser             | `booking-mock.js`                            |
+| Ecosystem console (KPIs, pipeline, moderation) | `platform-ecosystem.js`  |
+
+**Social graph entities (mockup-validated):** `Post` (author, community, sport, type, visibility, flagged), `Story` (author, public), `Comment`, `Friend` edge (played-together count), `Follow` suggestion, `ModerationReport` (reason, count) — see `social-feed.js` / `social-graph.js` seeds; production schema derives from these shapes.
 
 ### 17.2 Production v1 (not built)
 

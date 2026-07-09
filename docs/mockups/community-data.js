@@ -7,6 +7,7 @@ window.MP_Communities = (function () {
       id: "senayan",
       name: "Senayan Padel Club",
       sport: "padel",
+      type: "club",
       sportIcon: "🏓",
       logo: "SP",
       members: 88,
@@ -28,6 +29,7 @@ window.MP_Communities = (function () {
       id: "kemang",
       name: "Kemang Tennis Society",
       sport: "tennis",
+      type: "club",
       sportIcon: "🎾",
       logo: "KT",
       members: 64,
@@ -47,6 +49,7 @@ window.MP_Communities = (function () {
       id: "blokm",
       name: "Pickle Blok M",
       sport: "pickleball",
+      type: "academy",
       sportIcon: "🥎",
       logo: "PB",
       members: 31,
@@ -66,6 +69,7 @@ window.MP_Communities = (function () {
       id: "bsd",
       name: "BSD Padel House",
       sport: "padel",
+      type: "venue",
       sportIcon: "🏓",
       logo: "BP",
       members: 120,
@@ -82,6 +86,20 @@ window.MP_Communities = (function () {
       fitChips: ["Invite-led access", "Competitive ladder", "Advanced mix"],
     },
   };
+
+  // Community type taxonomy (four-journey OS): club · academy · venue · league
+  const TYPE_LABELS = {
+    club: { id: "Klub", en: "Club" },
+    academy: { id: "Akademi", en: "Academy" },
+    venue: { id: "Venue", en: "Venue" },
+    league: { id: "Liga", en: "League" },
+  };
+
+  function typeLabel(c) {
+    const entry = TYPE_LABELS[c.type] || TYPE_LABELS.club;
+    const lang = window.MP_I18N ? MP_I18N.getLang() : "en";
+    return entry[lang] || entry.en;
+  }
 
   function getByName(name) {
     const n = String(name || "").trim().toLowerCase();
@@ -135,22 +153,20 @@ window.MP_Communities = (function () {
     const c = get(getViewId());
     const accessLabel = c.access === "open" ? "🟢 Open" : "🔒 Invite only";
 
-    root.querySelectorAll(".cp-name, .app-header-left .app-logo").forEach((el) => {
-      if (el.classList.contains("cp-name") || el.closest(".app-header-left"))
-        el.textContent = c.name;
+    root.querySelectorAll(".cp-name").forEach((el) => {
+      el.textContent = c.name;
     });
-    const headerLogo = root.querySelector(".app-header-left .app-logo");
-    if (headerLogo) headerLogo.textContent = c.name;
-
-    const badge = root.querySelector(".app-header .badge");
-    if (badge) badge.textContent = c.sportIcon + " " + c.sport.charAt(0).toUpperCase() + c.sport.slice(1);
 
     const logo = root.querySelector(".cp-logo");
     if (logo) logo.textContent = c.logo;
 
     const meta = root.querySelector(".cp-meta");
     if (meta)
-      meta.textContent = `${c.sportIcon} ${c.sport.charAt(0).toUpperCase() + c.sport.slice(1)} · ${c.city} · ${accessLabel}`;
+      meta.textContent = `${c.sportIcon} ${c.sport.charAt(0).toUpperCase() + c.sport.slice(1)} · ${typeLabel(c)} · ${c.city} · ${accessLabel}`;
+
+    root.querySelectorAll("[data-community-type-badge]").forEach((el) => {
+      el.textContent = typeLabel(c);
+    });
 
     root.querySelectorAll("[data-community-fit-tagline]").forEach((el) => {
       el.textContent = c.fitTagline || "";
@@ -271,5 +287,5 @@ window.MP_Communities = (function () {
     document.querySelectorAll("[data-events-feed]").forEach(initEventFeed);
   }
 
-  return { COMMUNITIES, get, setView, getViewId, applyCommunityPage, initFilters, initEventFeed, init };
+  return { COMMUNITIES, get, setView, getViewId, typeLabel, applyCommunityPage, initFilters, initEventFeed, init };
 })();

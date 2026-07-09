@@ -230,7 +230,38 @@ window.MP_GalleryHydrate = (function () {
       const chart = $screen("player-other", "[data-analytics-chart]");
       if (chart && window.MP_PlayerAnalytics) MP_PlayerAnalytics.renderRatingChart(chart);
     },
+    "home-dashboard": () => hydrateOSModules(false),
+    "home-dashboard-guest": () => hydrateOSModules(true),
+    "social-feed": () => hydrateOSModules(false),
+    "social-feed-guest": () => hydrateOSModules(true),
+    "social-stories": () => hydrateOSModules(false),
+    "social-post-detail": () => hydrateOSModules(false),
+    "friends-list": () => hydrateOSModules(false),
+    "player-passport": () => hydrateOSModules(false),
+    "passport-teaser-guest": () => hydrateOSModules(true),
+    "court-booking": () => hydrateOSModules(false),
+    "booking-confirm": () => hydrateOSModules(false),
+    "community-detail": () => hydrateOSModules(false),
+    "club-admin-dashboard": () => hydrateOSModules(false),
+    "platform-overview": () => hydrateOSModules(false),
+    "platform-community-pipeline": () => hydrateOSModules(false),
+    "platform-moderation-inbox": () => hydrateOSModules(false),
+    "platform-graph-health": () => hydrateOSModules(false),
   };
+
+  // Four-journey OS modules render into data-* hooks; a guest flag picks the
+  // feed mode for hooks declared data-feed-mode="auto".
+  function hydrateOSModules(guest) {
+    if (window.MP_SocialFeed) MP_SocialFeed.applyDOM({ guest });
+    if (window.MP_SocialGraph) MP_SocialGraph.applyDOM();
+    if (window.MP_Achievements) MP_Achievements.applyDOM();
+    if (window.MP_HomePulse) MP_HomePulse.applyDOM({ guest });
+    if (window.MP_GuestPulse) MP_GuestPulse.applyDOM({});
+    if (window.MP_Passport) MP_Passport.applyDOM({ guest });
+    if (window.MP_CommunityHQ) MP_CommunityHQ.applyDOM();
+    if (window.MP_Booking) MP_Booking.applyDOM();
+    if (window.MP_Ecosystem) MP_Ecosystem.applyDOM();
+  }
 
   function init() {
     if (inited) return;

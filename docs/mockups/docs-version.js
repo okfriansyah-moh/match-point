@@ -1,9 +1,20 @@
 /* Match Point product docs — version & changelog (update when shipping mockup changes) */
 window.MP_Docs = {
-  version: "3.3.1",
+  version: "3.4.1",
   label: "Mockup docs",
-  updated: "2026-07-06",
+  updated: "2026-07-09",
   changelog: [
+    {
+      version: "3.4.1",
+      date: "2026-07-09",
+      title: "Docs synced to interactive flows — social sport OS",
+      items: [
+        "About + Global readiness re-scanned against flow/user.html, club.html, platform.html",
+        "Social sport framing — identity + community + competition + social graph as one OS",
+        "Interactive flow inventory (33 player + 12 community + 22 platform steps) documented",
+        "Removed outdated gaps (social/DM mocked); fixed nav IA (no FAB; profile in avatar menu)",
+      ],
+    },
     {
       version: "3.3.1",
       date: "2026-07-06",

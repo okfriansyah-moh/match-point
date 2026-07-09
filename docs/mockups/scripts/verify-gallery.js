@@ -15,6 +15,11 @@ const EXTRACTED_HTML = fs.readFileSync(
   "utf8",
 );
 const USER_FLOW_HTML = fs.readFileSync(path.join(MOCKUPS, "flow/user.html"), "utf8");
+const CLUB_FLOW_HTML = fs.readFileSync(path.join(MOCKUPS, "flow/club.html"), "utf8");
+const PLATFORM_FLOW_HTML = fs.readFileSync(
+  path.join(MOCKUPS, "flow/platform.html"),
+  "utf8",
+);
 
 function extractScreenIds(appJs) {
   const m = appJs.match(/const screenIds = \[([\s\S]*?)\];/);
@@ -22,10 +27,26 @@ function extractScreenIds(appJs) {
   return [...m[1].matchAll(/"([^"]+)"/g)].map((x) => x[1]);
 }
 
+function findOrphanScreens(proto) {
+  const frameStart = proto.indexOf('id="proto-frame"');
+  const designPanel = proto.indexOf('id="proto-design-panel"');
+  if (frameStart < 0 || designPanel < 0) return [];
+  const chunk = proto.slice(frameStart, designPanel);
+  const inFrame = new Set(
+    [...chunk.matchAll(/id="(screen-[^"]+)"/g)].map((m) => m[1]),
+  );
+  const orphans = [];
+  for (const id of screenIds) {
+    if (!inFrame.has("screen-" + id)) orphans.push(id);
+  }
+  return orphans;
+}
+
 function findNestedScreens(proto) {
   const start = proto.indexOf('id="proto-frame"');
   if (start < 0) return [];
-  const chunk = proto.slice(start, proto.indexOf("<!-- /proto-frame -->"));
+  const designPanel = proto.indexOf('id="proto-design-panel"');
+  const chunk = proto.slice(start, designPanel > start ? designPanel : undefined);
   const re = /<div class="screen[^"]*" id="(screen-[^"]+)">|<div[^>]*>|<\/div>/g;
   let depth = 0;
   const stack = [];
@@ -69,8 +90,6 @@ function extractFlowSteps(html) {
 
   for (let i = 0; i < starts.length; i++) {
     const start = starts[i];
-    const stepIdMatch = start.openTag.match(/data-step="([^"]+)"/);
-    if (!stepIdMatch) continue;
     const slice = html.slice(start.index);
     let depth = 0;
     let end = 0;
@@ -93,7 +112,10 @@ function extractFlowSteps(html) {
       }
     }
 
-    steps[stepIdMatch[1]] = slice.slice(0, end);
+    const block = slice.slice(0, end);
+    const stepIdMatch = start.openTag.match(/data-step="([^"]+)"/);
+    if (stepIdMatch) steps[stepIdMatch[1]] = block;
+    steps["#" + i] = block; // index alias for steps without data-step
   }
 
   return steps;
@@ -169,6 +191,7 @@ const hydrateJs = fs.readFileSync(path.join(MOCKUPS, "gallery-hydrate.js"), "utf
 const hydrateScreens = [...hydrateJs.matchAll(/"([a-z0-9-]+)":\s*\(\)/g)].map((m) => m[1]);
 
 const nestedScreens = findNestedScreens(proto);
+const orphanScreens = findOrphanScreens(proto);
 const userSteps = extractFlowSteps(USER_FLOW_HTML);
 const syncIssues = [];
 
@@ -238,10 +261,36 @@ const syncChecks = [
       '[data-flow-goto="24"]',
     ],
   },
+  {
+    screenId: "social-feed",
+    sourceStep: "social-feed",
+    targetHtml: PROTOTYPE_HTML,
+    selectors: ["[data-social-feed]", "[data-social-stories]", "data-feed-composer"],
+  },
+  {
+    screenId: "player-passport",
+    sourceStep: "player-passport",
+    targetHtml: PROTOTYPE_HTML,
+    selectors: ["[data-passport]", "[data-achievements]", "[data-friends-list]"],
+  },
+  {
+    screenId: "club-admin-dashboard",
+    sourceSteps: extractFlowSteps(CLUB_FLOW_HTML),
+    sourceStep: "#0",
+    targetHtml: PROTOTYPE_HTML,
+    selectors: ["[data-hq-kpis]", "[data-hq-grid]"],
+  },
+  {
+    screenId: "platform-overview",
+    sourceSteps: extractFlowSteps(PLATFORM_FLOW_HTML),
+    sourceStep: "#1",
+    targetHtml: PROTOTYPE_HTML,
+    selectors: ["[data-eco-kpis]", "[data-eco-loops]", "[data-eco-pipeline-counts]"],
+  },
 ];
 
 syncChecks.forEach((check) => {
-  const source = userSteps[check.sourceStep];
+  const source = (check.sourceSteps || userSteps)[check.sourceStep];
   const target = extractScreen(check.targetHtml, check.screenId);
   if (!source) {
     syncIssues.push(`${check.screenId}: missing flow step "${check.sourceStep}"`);
@@ -294,6 +343,9 @@ for (const s of scripts) {
   }
 }
 
+if (orphanScreens.length) {
+  console.log("\nScreens outside #proto-frame:", orphanScreens.join(", "));
+}
 if (nestedScreens.length) {
   console.log("\nNested screens (hidden when parent inactive):");
   nestedScreens.forEach((n) => console.log(`  ${n.child} inside ${n.parent}`));
@@ -308,6 +360,7 @@ const ok =
   !missingNotes.length &&
   !weakNotes.length &&
   !genericPurpose.length &&
+  !orphanScreens.length &&
   !nestedScreens.length &&
   !syncIssues.length;
 

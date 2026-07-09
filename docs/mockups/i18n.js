@@ -95,7 +95,7 @@ window.MP_I18N = (function () {
     "nav.eventsFeed": { id: "Feed Acara", en: "Events Feed" },
     "nav.group.sharedEdge": { id: "Shared / Edge", en: "Shared / Edge" },
     "nav.group.platformAdmin": { id: "Admin Platform", en: "Platform Admin" },
-    "nav.group.clubAdmin": { id: "Admin Klub", en: "Club Admin" },
+    "nav.group.clubAdmin": { id: "Admin Komunitas", en: "Community Admin" },
     "nav.group.guestPreview": { id: "Pratinjau Tamu", en: "Guest Preview" },
     "nav.group.playerJourney": { id: "Perjalanan Pemain", en: "Player Journey" },
 
@@ -163,6 +163,11 @@ window.MP_I18N = (function () {
     "nav.play": { id: "Main", en: "Play" },
     "nav.events": { id: "Acara", en: "Events" },
     "nav.profile": { id: "Profil", en: "Profile" },
+    "nav.social": { id: "Sosial", en: "Social" },
+    "nav.communitiesTab": { id: "Komunitas", en: "Communities" },
+    "nav.explore": { id: "Jelajah", en: "Explore" },
+    "nav.socialPreview": { id: "Sosial", en: "Social" },
+    "nav.rankPreview": { id: "Rank", en: "Rank" },
     "club.noClubTitle": { id: "Belum punya komunitas", en: "No community yet" },
     "club.noClubDesc": {
       id: "Buat klub padel/tennis-mu — jadi admin, kelola turnamen.",
@@ -280,12 +285,12 @@ window.MP_I18N = (function () {
     "title.platform-boc-fixtures": { id: "Fixture BoC", en: "BoC Fixtures" },
 
     "login.hook": {
-      id: "Rank-mu di klub ini… valid di klub lain?",
-      en: "Your rank here… does it travel to other clubs?",
+      id: "Tempat hidup olahraga raketmu.",
+      en: "Where your racket sports life lives.",
     },
     "login.subhook": {
-      id: "Satu reputasi portabel lintas semua komunitas — padel, tennis, pickleball, badminton & tenis meja.",
-      en: "One portable reputation across every community — padel, tennis, pickleball, badminton & table tennis.",
+      id: "Operating system untuk komunitas olahraga raket — satu identitas portabel lintas padel, tennis, pickleball, badminton & tenis meja.",
+      en: "The operating system for racket sports communities — one portable identity across padel, tennis, pickleball, badminton & table tennis.",
     },
     "login.stat1": { id: "pemain aktif", en: "active players" },
     "login.stat2": { id: "komunitas", en: "communities" },
@@ -423,8 +428,8 @@ window.MP_I18N = (function () {
     "flow.pickRole": { id: "Pilih perjalanan", en: "Choose your journey" },
     "flow.userTitle": { id: "Perjalanan Pemain", en: "Player Journey" },
     "flow.userDesc": {
-      id: "Login → cari/gabung komunitas → rank Mabar → daftar acara → match",
-      en: "Log in → find/join community → Mabar rank → register events → play",
+      id: "Daily hook home → Player Passport → sosial → acara → match → rank",
+      en: "Daily hook home → Player Passport → social → events → play → rank",
     },
     "flow.adminTitle": { id: "Perjalanan Admin", en: "Admin Journey" },
     "flow.adminDesc": {
@@ -442,18 +447,18 @@ window.MP_I18N = (function () {
       id: "Komunitas dulu, satu aksi per layar — lima olahraga raket.",
       en: "Community-first, one action per screen — five racket sports.",
     },
-    "flow.clubAdminTitle": { id: "Admin Klub", en: "Club Admin" },
+    "flow.clubAdminTitle": { id: "Admin Komunitas", en: "Community Admin" },
     "flow.clubAdminDesc": {
-      id: "Kelola komunitas · registrasi peserta · turnamen manual",
-      en: "Run your community · registrations · manual tournaments",
+      id: "Community HQ · acara & registrasi · live session · sparring",
+      en: "Community HQ · events & registrations · live sessions · sparring",
     },
     "flow.platformTitle": {
       id: "Admin Match Point",
       en: "Match Point Platform Admin",
     },
     "flow.platformDesc": {
-      id: "Approval inbox · dispute · audit lintas komunitas",
-      en: "Approval inbox · disputes · cross-community audit",
+      id: "Ecosystem console · pipeline komunitas · moderasi sosial · approval",
+      en: "Ecosystem console · community pipeline · social moderation · approvals",
     },
     "flow.platformLoginHook": {
       id: "Tim Match Point — dispute lintas komunitas & audit platform.",
@@ -972,8 +977,8 @@ window.MP_I18N = (function () {
       en: "Cross-community player reputation",
     },
     "hub.desc": {
-      id: "Mockup HTML + alur interaktif untuk Match Point — komunitas dulu, rank Mabar + Global per olahraga, turnamen manual, approval platform.",
-      en: "HTML mockups + interactive flows for Match Point — community-first, Mabar + Global ranks per sport, manual tournaments, platform approvals.",
+      id: "Mockup HTML + alur interaktif untuk Match Point — empat perjalanan (Tamu · Pemain · Admin Komunitas · Admin Platform), Player Passport 5 olahraga, rank Mabar + Global, lapisan sosial penuh.",
+      en: "HTML mockups + interactive flows for Match Point — four journeys (Guest · Player · Community Admin · Platform Admin), the 5-sport Player Passport, Mabar + Global ranks, and a full social layer.",
     },
     "hub.openProto": { id: "Buka Mockup Gallery", en: "Open Mockup Gallery" },
     "hub.openFlow": { id: "Buka Alur Interaktif", en: "Open Interactive Flow" },
@@ -1846,11 +1851,14 @@ window.MP_I18N = (function () {
 
     "about.title": { id: "Tentang Match Point", en: "About Match Point" },
     "about.lead": {
-      id: "Dokumentasi produk untuk pemain, admin klub, dan operator platform — tujuan, fitur, aturan, dan catatan rilis.",
-      en: "Product documentation for players, club admins, and platform operators — goals, features, rules, and release notes.",
+      id: "Dokumentasi produk untuk sistem operasi empat perjalanan — Guest, Player, Admin Komunitas, dan Admin Platform — mencakup seluruh kehidupan olahraga raketmu, aturan, dan catatan rilis.",
+      en: "Product documentation for the four-journey operating system — Guest, Player, Community Admin, and Platform Admin — covering your entire racket sports life, rules, and release notes.",
     },
     "about.toc": { id: "Di halaman ini", en: "On this page" },
     "about.secVision": { id: "Visi & tujuan", en: "Vision & goals" },
+    "about.secJourneys": { id: "Empat perjalanan", en: "Four journeys" },
+    "about.secDailyLife": { id: "Kehidupan olahraga raketmu", en: "Your racket sports life" },
+    "about.secFlows": { id: "Alur interaktif", en: "Interactive flows" },
     "about.secRoles": { id: "Siapa yang memakai Match Point", en: "Who uses Match Point" },
     "about.secCommunities": { id: "Komunitas", en: "Communities" },
     "about.secRankings": { id: "Ranking", en: "Rankings" },
@@ -2059,17 +2067,19 @@ window.MP_I18N = (function () {
       en: "Global readiness & go-to-market",
     },
     "global.lead": {
-      id: "Referensi strategi untuk scale Match Point melampaui Indonesia — market fit, kompetisi, kematangan mockup, monetisasi, dan infrastruktur setelah fase prototipe.",
-      en: "Strategy reference for scaling Match Point beyond Indonesia — market fit, competition, mockup maturity, monetization, and infrastructure after the prototype phase.",
+      id: "Referensi strategi untuk scale Match Point melampaui Indonesia — posisi social sport OS, empat perjalanan interaktif, market fit, kematangan mockup, monetisasi, dan infrastruktur setelah fase prototipe.",
+      en: "Strategy reference for scaling Match Point beyond Indonesia — social sport OS positioning, four interactive journeys, market fit, mockup maturity, monetization, and infrastructure after the prototype phase.",
     },
     "global.toc": { id: "Di halaman ini", en: "On this page" },
     "global.secSummary": { id: "Ringkasan eksekutif", en: "Executive summary" },
     "global.secProblem": { id: "Masalah & market fit", en: "Problem & market fit" },
     "global.secPositioning": { id: "Posisi & visi", en: "Positioning & vision" },
+    "global.secSocialSport": { id: "Social sport OS", en: "Social sport OS" },
     "global.secCompetitive": { id: "Lanskap kompetitif", en: "Competitive landscape" },
     "global.secAdvantage": { id: "Keunggulan kami", en: "Our advantage" },
     "global.secGlobalReady": { id: "Desain siap global", en: "Global-ready design" },
     "global.secMockupToday": { id: "Inventaris mockup", en: "Mockup inventory" },
+    "global.secInteractiveFlows": { id: "Alur interaktif", en: "Interactive flows" },
     "global.secWedge": { id: "Wedge Indonesia dulu", en: "Indonesia-first wedge" },
     "global.secGaps": { id: "Kesenjangan & perbaikan", en: "Gaps & improvements" },
     "global.secExpansion": { id: "Ekspansi regional", en: "Regional expansion" },
@@ -2099,6 +2109,332 @@ window.MP_I18N = (function () {
       id: "Teman olahragamu berubah saat kamu ganti olahraga — Pipo, Tenni, Dink, Birdi, atau Pongi.",
       en: "Your sport buddy updates when you switch sports — Pipo, Tenni, Dink, Birdi, or Pongi.",
     },
+
+    /* ── Four-journey OS: screen titles ── */
+    "title.social-feed": { id: "Sosial", en: "Social" },
+    "title.social-feed-guest": { id: "Sosial (Tamu)", en: "Social (Guest)" },
+    "title.social-stories": { id: "Stories", en: "Stories" },
+    "title.social-post-detail": { id: "Detail Post", en: "Post Detail" },
+    "title.social-compose": { id: "Buat Post", en: "Create Post" },
+    "title.messages-inbox": { id: "Pesan", en: "Messages" },
+    "title.messages-thread": { id: "Percakapan", en: "Conversation" },
+    "title.friends-list": { id: "Teman", en: "Friends" },
+    "title.player-highlights": { id: "Highlight", en: "Highlights" },
+    "title.player-passport": { id: "Player Passport", en: "Player Passport" },
+    "title.passport-teaser-guest": {
+      id: "Passport (Preview)",
+      en: "Passport (Preview)",
+    },
+    "title.court-booking": { id: "Booking Lapangan", en: "Court Booking" },
+    "title.booking-confirm": {
+      id: "Booking Terkonfirmasi",
+      en: "Booking Confirmed",
+    },
+    "title.platform-overview": {
+      id: "Kesehatan Ekosistem",
+      en: "Ecosystem Overview",
+    },
+    "title.platform-community-pipeline": {
+      id: "Pipeline Komunitas",
+      en: "Community Pipeline",
+    },
+    "title.platform-moderation-inbox": {
+      id: "Moderasi Sosial",
+      en: "Social Moderation",
+    },
+    "title.platform-graph-health": {
+      id: "Kesehatan Graph",
+      en: "Graph Health",
+    },
+
+    /* ── Flow hints for new steps ── */
+    "flow.hint.socialFeed": {
+      id: "Feed sosial lintas komunitas — post, stories, hasil match.",
+      en: "Cross-community social feed — posts, stories, match results.",
+    },
+    "flow.hint.messages": {
+      id: "Kotak masuk pesan langsung antar pemain.",
+      en: "Direct message inbox between players.",
+    },
+    "flow.hint.friends": {
+      id: "Teman kamu + saran follow dari main bareng & komunitas sama.",
+      en: "Your friends + follow suggestions from shared play & communities.",
+    },
+    "flow.hint.passport": {
+      id: "Identitas 5 olahraga dalam satu passport.",
+      en: "Your 5-sport identity in one passport.",
+    },
+    "flow.hint.booking": {
+      id: "Teaser booking lapangan — pilih slot (mockup).",
+      en: "Court booking teaser — pick a slot (mockup).",
+    },
+    "flow.hint.bookingConfirm": {
+      id: "Konfirmasi booking demo.",
+      en: "Demo booking confirmation.",
+    },
+    "flow.hint.pipeline": {
+      id: "Funnel onboarding komunitas dengan filter tahap.",
+      en: "Community onboarding funnel with stage filters.",
+    },
+    "flow.hint.moderation": {
+      id: "Antrean laporan konten sosial.",
+      en: "Social content reports queue.",
+    },
+    "flow.hint.graphHealth": {
+      id: "Drill-down metrik network loop.",
+      en: "Network loop metrics drill-down.",
+    },
+
+    /* ── Social layer ── */
+    "social.like": { id: "Suka", en: "Like" },
+    "social.comment": { id: "Komentar", en: "Comment" },
+    "social.share": { id: "Bagikan", en: "Share" },
+    "social.stories": { id: "Stories", en: "Stories" },
+    "social.yourStory": { id: "Story kamu", en: "Your story" },
+    "social.composerHint": {
+      id: "Bagikan hasil match atau momen main…",
+      en: "Share a match result or moment…",
+    },
+    "social.membersOnly": { id: "Khusus member", en: "Members only" },
+    "social.membersOnlyDesc": {
+      id: "Post ini hanya untuk member komunitas.",
+      en: "This post is for community members only.",
+    },
+    "social.joinToSee": {
+      id: "Gabung untuk lihat lebih banyak",
+      en: "Join to see more",
+    },
+    "social.signInToInteract": {
+      id: "Masuk untuk suka & komentar",
+      en: "Sign in to like & comment",
+    },
+    "social.guestPreview": { id: "Pratinjau tamu", en: "Guest preview" },
+    "social.publish": { id: "Terbitkan", en: "Publish" },
+    "social.attachPhoto": { id: "Foto", en: "Photo" },
+    "social.attachResult": { id: "Hasil Match", en: "Match result" },
+    "social.attachPoll": { id: "Polling", en: "Poll" },
+    "social.commentPlaceholder": {
+      id: "Tulis komentar…",
+      en: "Write a comment…",
+    },
+    "social.suggested": { id: "Disarankan", en: "Suggested" },
+    "social.follow": { id: "Ikuti", en: "Follow" },
+    "social.following": { id: "Mengikuti", en: "Following" },
+    "social.mutual": { id: "teman bersama", en: "mutual friends" },
+    "social.highlights": { id: "Highlight match", en: "Match highlights" },
+    "social.seeAll": { id: "Lihat semua", en: "See all" },
+    "social.seeAllFriends": { id: "Lihat semua teman", en: "See all friends" },
+    "social.commentsCount": { id: "komentar", en: "comments" },
+    "social.oneComment": { id: "komentar", en: "comment" },
+    "social.flaggedBadge": { id: "Dilaporkan", en: "Reported" },
+
+    /* ── Player daily hook (pulse) ── */
+    "pulse.today": { id: "Hari ini", en: "Today" },
+    "pulse.nextEvent": { id: "Acara berikutnya", en: "Next event" },
+    "pulse.ratingDelta": { id: "Perubahan rating", en: "Rating change" },
+    "pulse.sinceLastVisit": {
+      id: "sejak kunjungan terakhir",
+      en: "since your last visit",
+    },
+    "pulse.streak": { id: "Streak main", en: "Play streak" },
+    "pulse.weeks": { id: "minggu berturut-turut", en: "weeks in a row" },
+    "pulse.friendActivity": { id: "Aktivitas teman", en: "Friend activity" },
+    "pulse.communityUpdate": { id: "Kabar komunitas", en: "Community update" },
+    "pulse.viewAll": { id: "Lihat semua", en: "View all" },
+    "pulse.bookCourt": { id: "Booking lapangan", en: "Book a court" },
+    "pulse.logMatch": { id: "Catat match", en: "Log match" },
+    "pulse.createEvent": { id: "Buat acara", en: "Create event" },
+    "pulse.tomorrow": { id: "Besok", en: "Tomorrow" },
+    "pulse.keepStreak": {
+      id: "Main minggu ini untuk jaga streak-mu.",
+      en: "Play this week to keep your streak alive.",
+    },
+
+    /* ── Guest discovery pulse ── */
+    "guest.playingToday": { id: "main hari ini", en: "playing today" },
+    "guest.communities": { id: "komunitas", en: "communities" },
+    "guest.members": { id: "member", en: "members" },
+    "guest.matchesWeek": {
+      id: "match minggu ini",
+      en: "matches this week",
+    },
+    "guest.trendingTitle": {
+      id: "Komunitas trending di dekatmu",
+      en: "Trending communities near you",
+    },
+    "guest.openEventsTitle": {
+      id: "Acara terbuka akhir pekan ini",
+      en: "Open events this weekend",
+    },
+    "guest.highlightsTitle": {
+      id: "Sorotan komunitas",
+      en: "Community highlights",
+    },
+    "guest.passportTitle": {
+      id: "Identitas 5 olahraga milikmu",
+      en: "Your 5-sport identity",
+    },
+    "guest.passportDesc": {
+      id: "Satu passport untuk padel, tennis, pickleball, badminton & ping pong.",
+      en: "One passport for padel, tennis, pickleball, badminton & table tennis.",
+    },
+    "guest.passportCta": { id: "Klaim passport-mu", en: "Claim your passport" },
+    "guest.howTitle": { id: "Cara kerjanya", en: "How it works" },
+    "guest.how1": { id: "Gabung komunitas", en: "Join a community" },
+    "guest.how2": { id: "Main & catat match", en: "Play & log matches" },
+    "guest.how3": { id: "Bangun identitasmu", en: "Build your identity" },
+    "guest.findCommunity": { id: "Cari Komunitas", en: "Find community" },
+    "guest.signupFree": { id: "Daftar gratis", en: "Sign up free" },
+    "guest.rsvpGate": {
+      id: "Masuk untuk daftar acara",
+      en: "Sign in to RSVP",
+    },
+
+    /* ── Player Passport ── */
+    "passport.mpRating": { id: "MP Rating", en: "MP Rating" },
+    "passport.trust": { id: "Kepercayaan", en: "Trust" },
+    "passport.mabar": { id: "Mabar", en: "Mabar" },
+    "passport.global": { id: "Global", en: "Global" },
+    "passport.matches": { id: "match", en: "matches" },
+    "passport.noRecord": { id: "Belum ada record", en: "No record yet" },
+    "passport.startRecord": {
+      id: "Mulai bangun record-mu",
+      en: "Start building your record",
+    },
+    "passport.achievements": { id: "Pencapaian", en: "Achievements" },
+    "passport.friends": { id: "Teman", en: "Friends" },
+    "passport.communities": { id: "Komunitas", en: "Communities" },
+    "passport.share": { id: "Bagikan passport", en: "Share passport" },
+    "passport.prideTitle": { id: "Galeri kebanggaan", en: "Hall of fame" },
+    "passport.prideSubtitle": {
+      id: "Pencapaian terverifikasi dari match, komunitas, dan streak kamu.",
+      en: "Verified milestones from your matches, communities, and streaks.",
+    },
+    "passport.earned": { id: "Diraih", en: "Earned" },
+    "passport.locked": { id: "Terkunci", en: "Locked" },
+    "passport.primarySport": { id: "Olahraga utama", en: "Primary sport" },
+    "passport.streakWeeks": { id: "minggu streak", en: "week streak" },
+    "passport.trophiesEarned": { id: "trofi", en: "trophies" },
+    "passport.qrTitle": { id: "Tambah teman lewat scan", en: "Add friends by scan" },
+    "passport.qrHint": {
+      id: "Pindai QR passport untuk follow & pesan langsung.",
+      en: "Scan this passport QR to follow and message instantly.",
+    },
+    "share.brand": { id: "Match Point", en: "Match Point" },
+    "share.prideLabel": { id: "Pencapaian unggulan", en: "Pride highlights" },
+    "share.qrHint": {
+      id: "QR passport · scan untuk tambah teman",
+      en: "Passport QR · scan to add as friend",
+    },
+
+    /* ── Community HQ ── */
+    "hq.title": { id: "Community HQ", en: "Community HQ" },
+    "hq.kpiMembers": { id: "Anggota", en: "Members" },
+    "hq.kpiActive": { id: "Aktif minggu ini", en: "Active this week" },
+    "hq.kpiNextEvent": { id: "Acara berikutnya", en: "Next event" },
+    "hq.kpiPending": { id: "Permintaan pending", en: "Pending requests" },
+    "hq.modEvents": { id: "Acara & Turnamen", en: "Events & Tournaments" },
+    "hq.modMembers": { id: "Anggota", en: "Members" },
+    "hq.modFeed": { id: "Feed Komunitas", en: "Community Feed" },
+    "hq.modSparring": { id: "Sparring", en: "Sparring" },
+    "hq.modBooking": { id: "Booking Lapangan", en: "Court Booking" },
+    "hq.modFinance": { id: "Keuangan", en: "Finance" },
+    "hq.modMarketplace": { id: "Marketplace", en: "Marketplace" },
+    "hq.comingSoon": { id: "Segera", en: "Coming soon" },
+    "hq.modRegs": { id: "Pendaftaran", en: "Registrations" },
+    "hq.modLive": { id: "Sesi Live", en: "Live Session" },
+    "hq.slots": { id: "slot terisi", en: "slots filled" },
+    "hq.liveRound": { id: "ronde berjalan", en: "round in play" },
+    "hq.upcoming": { id: "mendatang", en: "upcoming" },
+    "hq.newThisMonth": { id: "baru bulan ini", en: "new this month" },
+    "hq.postsWeek": { id: "post minggu ini", en: "posts this week" },
+    "hq.openRequests": { id: "tantangan terbuka", en: "open challenges" },
+
+    /* ── Platform ecosystem console ── */
+    "ecosystem.healthTitle": {
+      id: "Kesehatan ekosistem — 24 jam terakhir",
+      en: "Ecosystem health — last 24h",
+    },
+    "ecosystem.kpiPlayers": { id: "Pemain", en: "Players" },
+    "ecosystem.kpiCommunities": { id: "Komunitas", en: "Communities" },
+    "ecosystem.kpiMatches": { id: "Match", en: "Matches" },
+    "ecosystem.kpiPosts": { id: "Post", en: "Posts" },
+    "ecosystem.kpiDau": { id: "DAU", en: "DAU" },
+    "ecosystem.kpiDispute": { id: "Dispute", en: "Dispute rate" },
+    "ecosystem.loopsTitle": { id: "Network loops", en: "Network loops" },
+    "ecosystem.pipelineTitle": {
+      id: "Pipeline komunitas",
+      en: "Community pipeline",
+    },
+    "ecosystem.pipePending": { id: "Menunggu", en: "Pending" },
+    "ecosystem.pipeApproved": { id: "Disetujui", en: "Approved" },
+    "ecosystem.pipeRejected": { id: "Ditolak", en: "Rejected" },
+    "ecosystem.moderationTitle": {
+      id: "Moderasi sosial",
+      en: "Social moderation",
+    },
+    "ecosystem.flaggedPosts": { id: "post ditandai", en: "flagged posts" },
+    "ecosystem.review": { id: "Tinjau", en: "Review" },
+    "ecosystem.approve": { id: "Setujui", en: "Approve" },
+    "ecosystem.removePost": { id: "Hapus", en: "Remove" },
+    "ecosystem.quickActions": { id: "Aksi cepat", en: "Quick actions" },
+    "ecosystem.sportMix": {
+      id: "Aktivitas per olahraga",
+      en: "Sport activity mix",
+    },
+    "ecosystem.graphTitle": { id: "Kesehatan graph", en: "Graph health" },
+    "ecosystem.triageTitle": { id: "Triage prioritas", en: "Priority triage" },
+    "ecosystem.stage": { id: "Tahap", en: "Stage" },
+    "ecosystem.all": { id: "Semua", en: "All" },
+    "ecosystem.reviewInbox": { id: "Tinjau inbox", en: "Review inbox" },
+    "platform.navPipeline": { id: "Pipeline", en: "Pipeline" },
+    "platform.navModeration": { id: "Moderasi", en: "Moderation" },
+    "ecosystem.loginHook": {
+      id: "Operasikan ekosistem olahraga raket — kepercayaan, pertumbuhan, dan fair play.",
+      en: "Operate the racket sports ecosystem — trust, growth, and fair play.",
+    },
+
+    /* ── Booking teaser ── */
+    "booking.subtitle": {
+      id: "Pilih lapangan & jam — teaser (mockup, tanpa pembayaran).",
+      en: "Pick a court & time — teaser (mockup, no payments).",
+    },
+    "booking.court": { id: "Lapangan", en: "Court" },
+    "booking.continue": { id: "Lanjut", en: "Continue" },
+    "booking.confirmedTitle": {
+      id: "Booking terkonfirmasi (demo)",
+      en: "Booking confirmed (demo)",
+    },
+    "booking.confirmedDesc": {
+      id: "Pembayaran & inventori lapangan hadir di fase berikutnya.",
+      en: "Payments & court inventory arrive in a later phase.",
+    },
+    "booking.date": { id: "Tanggal", en: "Date" },
+    "booking.time": { id: "Jam", en: "Time" },
+    "booking.price": { id: "Perkiraan harga", en: "Est. price" },
+    "booking.backHome": { id: "Kembali ke Beranda", en: "Back to Home" },
+    "booking.invite": { id: "Ajak teman", en: "Invite friends" },
+
+    /* ── Messages ── */
+    "messages.new": { id: "Baru", en: "New" },
+    "messages.typeMessage": { id: "Tulis pesan…", en: "Type a message…" },
+    "messages.send": { id: "Kirim", en: "Send" },
+    "messages.online": { id: "Online", en: "Online" },
+
+    /* ── Gallery nav groups (four journeys) ── */
+    "nav.group.guestJourney": { id: "Perjalanan Tamu", en: "Guest Journey" },
+    "nav.group.communityAdmin": {
+      id: "Admin Komunitas",
+      en: "Community Admin",
+    },
+    "nav.sub.auth": { id: "Akun", en: "Auth" },
+    "nav.sub.home": { id: "Beranda", en: "Home" },
+    "nav.sub.identity": { id: "Identitas", en: "Identity" },
+    "nav.sub.social": { id: "Sosial", en: "Social" },
+    "nav.sub.play": { id: "Main", en: "Play" },
+    "nav.sub.rank": { id: "Rank", en: "Rank" },
+    "nav.sub.communities": { id: "Komunitas", en: "Communities" },
+    "nav.sub.events": { id: "Acara & Format", en: "Events & Formats" },
   };
 
   function t(key, lang) {

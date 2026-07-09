@@ -1,7 +1,7 @@
 /* Match Point gallery — align static prototype chrome with interactive flows */
 window.MP_GalleryChrome = (function () {
   const MASCOT_BTN =
-    '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="sm" data-i18n-title="sport.switch" title="Switch sport"></button>';
+    '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="header" data-i18n-title="sport.switch" title="Switch sport"></button>';
 
   const HEADER_ACTIONS =
     '<div class="notif-wrap">' +

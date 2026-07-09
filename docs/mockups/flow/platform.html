@@ -67,9 +67,9 @@
                   <div class="app-logo">
                     <span class="app-logo-dot"></span> Admin Portal
                   </div>
-                  <h1 class="login-hook" data-i18n="flow.platformLoginHook">
-                    Tim Match Point — dispute lintas komunitas &amp; audit
-                    platform.
+                  <h1 class="login-hook" data-i18n="ecosystem.loginHook">
+                    Operate the racket sports ecosystem — trust, growth, and
+                    fair play.
                   </h1>
                   <p class="login-subhook" data-i18n="flow.platformLoginSub">
                     Superadmin platform · bukan admin klub komunitas.
@@ -111,28 +111,56 @@
                   </div>
                 </header>
                 <div class="app-body">
+                  <!-- Ecosystem Operator Console: graph KPIs + network loops
+                       (design-system/match-point/pages/platform-overview.md) -->
                   <div class="mp-section-head">
-                    <h2 data-i18n="platform.overviewTitle">Platform overview</h2>
+                    <h2 data-i18n="ecosystem.healthTitle">
+                      Ecosystem health — last 24h
+                    </h2>
                   </div>
-                  <div class="stat-grid mb-2">
-                    <div class="stat-box">
-                      <div class="stat-val">10,842</div>
-                      <div class="stat-lbl">Players</div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val">523</div>
-                      <div class="stat-lbl">Communities</div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val" data-platform-stat-inbox-pending>—</div>
-                      <div class="stat-lbl" data-i18n="approval.pending">
-                        Menunggu Review
+                  <div data-eco-kpis></div>
+                  <div class="mp-section-head">
+                    <h2 data-i18n="ecosystem.loopsTitle">Network loops</h2>
+                  </div>
+                  <div class="card mb-2" style="padding: 0.5rem 1rem" data-eco-loops></div>
+                  <div class="mp-duo mb-2">
+                    <section class="mp-duo-col">
+                      <div class="mp-section-head">
+                        <h2 data-i18n="ecosystem.pipelineTitle">
+                          Community pipeline
+                        </h2>
+                        <button
+                          type="button"
+                          class="linkish"
+                          data-flow-goto="19"
+                          data-i18n="pulse.viewAll"
+                        >
+                          View all
+                        </button>
                       </div>
-                    </div>
-                    <div class="stat-box">
-                      <div class="stat-val" data-platform-stat-match-pending>—</div>
-                      <div class="stat-lbl">Pending match</div>
-                    </div>
+                      <div data-eco-pipeline-counts></div>
+                    </section>
+                    <section class="mp-duo-col">
+                      <div class="mp-section-head">
+                        <h2 data-i18n="ecosystem.moderationTitle">
+                          Social moderation
+                        </h2>
+                        <button
+                          type="button"
+                          class="linkish"
+                          data-flow-goto="20"
+                          data-i18n="ecosystem.review"
+                        >
+                          Review
+                        </button>
+                      </div>
+                      <div class="mp-platform-kpi">
+                        <b data-eco-moderation-count>—</b>
+                        <small data-i18n="ecosystem.flaggedPosts"
+                          >flagged posts</small
+                        >
+                      </div>
+                    </section>
                   </div>
                   <div class="triage-card mb-2">
                     <strong data-i18n="platform.triageTitle">Triage sekarang</strong>
@@ -643,6 +671,145 @@
                 <div class="app-body" data-platform-boc-fixtures></div>
               </div>
             </div>
+
+            <!-- Step 19: Community onboarding pipeline -->
+            <div class="flow-step" data-step="community-pipeline">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-goto="1"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div
+                      class="app-logo"
+                      data-i18n="title.platform-community-pipeline"
+                    >
+                      Community Pipeline
+                    </div>
+                  </div>
+                </header>
+                <div class="app-body">
+                  <div data-eco-pipeline-counts></div>
+                  <div class="filter-chips mb-1" data-pipeline-filters>
+                    <button
+                      type="button"
+                      class="filter-chip active"
+                      data-pipeline-filter="all"
+                      data-i18n="ecosystem.all"
+                    >
+                      All
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      data-pipeline-filter="pending"
+                      data-i18n="ecosystem.pipePending"
+                    >
+                      Pending
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      data-pipeline-filter="approved"
+                      data-i18n="ecosystem.pipeApproved"
+                    >
+                      Approved
+                    </button>
+                    <button
+                      type="button"
+                      class="filter-chip"
+                      data-pipeline-filter="rejected"
+                      data-i18n="ecosystem.pipeRejected"
+                    >
+                      Rejected
+                    </button>
+                  </div>
+                  <div class="card" style="padding: 0.25rem 1rem" data-eco-pipeline-list></div>
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-block mt-2"
+                    data-flow-goto="2"
+                    data-i18n="ecosystem.reviewInbox"
+                  >
+                    Review inbox
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 20: Social moderation inbox -->
+            <div class="flow-step" data-step="moderation-inbox">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-goto="1"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div
+                      class="app-logo"
+                      data-i18n="title.platform-moderation-inbox"
+                    >
+                      Social Moderation
+                    </div>
+                  </div>
+                </header>
+                <div class="app-body">
+                  <div class="info-strip mb-2">
+                    <b data-eco-moderation-count>—</b>&nbsp;
+                    <span data-i18n="ecosystem.flaggedPosts">flagged posts</span>
+                  </div>
+                  <div data-eco-moderation-list></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 21: Graph health drill-down -->
+            <div class="flow-step" data-step="graph-health">
+              <div class="app mp-shell admin-theme">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-goto="1"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="title.platform-graph-health">
+                      Graph Health
+                    </div>
+                  </div>
+                </header>
+                <div class="app-body">
+                  <div data-eco-kpis></div>
+                  <div class="mp-section-head">
+                    <h2 data-i18n="ecosystem.loopsTitle">Network loops</h2>
+                  </div>
+                  <div class="card" style="padding: 0.5rem 1rem" data-eco-loops></div>
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="ecosystem.sportMix">Sport activity mix</h2>
+                  </div>
+                  <div class="card" style="padding: 0.5rem 1rem">
+                    <div class="mp-loop-row"><span>🏓 Padel</span><b style="margin-left:auto;font-family:var(--mono)">44%</b></div>
+                    <div class="mp-loop-row"><span>🎾 Tennis</span><b style="margin-left:auto;font-family:var(--mono)">27%</b></div>
+                    <div class="mp-loop-row"><span>🥎 Pickleball</span><b style="margin-left:auto;font-family:var(--mono)">15%</b></div>
+                    <div class="mp-loop-row"><span>🏸 Badminton</span><b style="margin-left:auto;font-family:var(--mono)">9%</b></div>
+                    <div class="mp-loop-row"><span>🏓 Table Tennis</span><b style="margin-left:auto;font-family:var(--mono)">5%</b></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <!-- /device-stage -->
@@ -666,6 +833,9 @@
     <script src="../platform-lists.js"></script>
     <script src="../platform-approval-flow.js"></script>
     <script src="../platform-analytics.js"></script>
+    <script src="../community-data.js"></script>
+    <script src="../social-feed.js"></script>
+    <script src="../platform-ecosystem.js"></script>
     <script src="../event-wizard.js"></script>
     <script src="../battle-of-communities.js"></script>
     <script src="../community-sparring.js"></script>
@@ -697,6 +867,20 @@
           { titleKey: "platform.accountTitle", hintKey: "flow.hint.adminSettings" },
           { titleKey: "boc.title", hintKey: "boc.hintWizard" },
           { titleKey: "boc.fixturesTitle", hintKey: "boc.hintFixtures" },
+          {
+            titleKey: "title.platform-community-pipeline",
+            hintKey: "flow.hint.pipeline",
+            nav: "pipeline",
+          },
+          {
+            titleKey: "title.platform-moderation-inbox",
+            hintKey: "flow.hint.moderation",
+            nav: "moderation",
+          },
+          {
+            titleKey: "title.platform-graph-health",
+            hintKey: "flow.hint.graphHealth",
+          },
         ],
         wizardStepMap: { 1: 7, 2: 8, 3: 9, 4: 10, 5: 11, 6: 12 },
         resetRoleOnLogin: false,
@@ -712,10 +896,11 @@
           title: "Platform Admin",
         },
         navItems: [
-          { key: "home", i18n: "nav.dashboard", icon: "📊" },
-          { key: "inbox", i18n: "platform.navInbox", icon: "📥" },
-          { key: "matches", i18n: "platform.navMatches", icon: "⏳" },
-          { key: "analytics", i18n: "platform.navAnalytics", icon: "📈" },
+          { key: "home", i18n: "nav.dashboard", icon: MP_NAV_ICONS.dashboard },
+          { key: "inbox", i18n: "platform.navInbox", icon: MP_NAV_ICONS.inbox },
+          { key: "pipeline", i18n: "platform.navPipeline", icon: MP_NAV_ICONS.pipeline },
+          { key: "moderation", i18n: "platform.navModeration", icon: MP_NAV_ICONS.shield },
+          { key: "analytics", i18n: "platform.navAnalytics", icon: MP_NAV_ICONS.chart },
         ],
         navRedirect: {
           profile: "platform.html?step=15",
@@ -724,6 +909,8 @@
       MP_PlatformLists.init();
       MP_PlatformApproval.init();
       MP_PlatformAnalytics.init();
+      MP_SocialFeed.init();
+      MP_Ecosystem.init();
       MP_BoC.init();
       MP_InterCommunity.init();
       MP_Badges.init();

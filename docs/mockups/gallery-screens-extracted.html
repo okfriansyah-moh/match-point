@@ -1,10 +1,12 @@
               <div class="screen" id="screen-communities">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app">
-                                  <div class="app-header">
-                                    <div class="app-logo">👥 <span data-i18n="nav.group.community">Komunitas</span></div>
-                                  </div>
+                  <div class="app mp-shell">
+                                  <header class="app-header">
+                                    <div class="app-logo">
+                                      <span class="app-logo-dot"></span> Match Point
+                                    </div>
+                                  </header>
                                   <div class="app-body">
                                     <div class="mp-section-head">
                                       <h2 data-i18n="communities.mine">Komunitasku</h2>
@@ -106,10 +108,12 @@
               <div class="screen" id="screen-events-feed">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app" data-events-feed>
-                                  <div class="app-header">
-                                    <div class="app-logo">🎯 <span data-i18n="nav.events">Acara</span></div>
-                                  </div>
+                  <div class="app mp-shell" data-events-feed>
+                                  <header class="app-header">
+                                    <div class="app-logo">
+                                      <span class="app-logo-dot"></span> Match Point
+                                    </div>
+                                  </header>
                                   <div class="app-body">
                                     <p class="section-sub" data-i18n="flow.eventsIntro">
                                       Acara live &amp; registrasi terbuka di dekatmu dan di
@@ -408,10 +412,10 @@
               <div class="screen" id="screen-find-community">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app">
-                                  <div class="app-header">
-                                    <div class="app-header-left"><button type="button" class="header-back" data-flow-back="smart" aria-label="Back">←</button><div class="app-logo"><span data-i18n="find.title">Cari Komunitas</span></div></div>
-                                  </div>
+                  <div class="app mp-shell">
+                                  <header class="app-header">
+                                    <div class="app-logo"><span data-i18n="find.title">Cari Komunitas</span></div>
+                                  </header>
                                   <div class="app-body" data-find-community>
                                     <p class="section-sub" data-i18n="find.sub">
                                       Terdekat dulu — berdasar lokasimu di Jakarta Selatan.
@@ -570,11 +574,12 @@
               <div class="screen" id="screen-community-detail">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app" data-community-page>
-                                  <div class="app-header">
-                                    <div class="app-header-left"><button type="button" class="header-back" data-flow-back="14" aria-label="Back">←</button><div class="app-logo">Senayan Padel Club</div></div>
-                                    <span class="badge badge-info">🏓 Padel</span>
-                                  </div>
+                  <div class="app mp-shell" data-community-page>
+                                  <header class="app-header">
+                                    <div class="app-logo">
+                                      <span class="app-logo-dot"></span> Match Point
+                                    </div>
+                                  </header>
                                   <div class="app-body">
                                     <!-- Cover / identity -->
                                     <div class="cp-cover">
@@ -1288,7 +1293,8 @@
                                       <div class="rank-track mabar"><div class="rank-track-label">Mabar</div><div class="rank-track-value">1820</div><div class="rank-track-sub">#1 · Senayan Padel Club</div></div>
                                       <div class="rank-track global"><div class="rank-track-label">Global</div><div class="rank-track-value">2085</div><div class="rank-track-sub">#2 padel</div></div>
                                     </div>
-                                    <button type="button" class="btn btn-outline btn-block mt-2" data-flow-goto="7">Endorse player →</button>
+                                    <button type="button" class="btn btn-primary btn-block mt-2" data-toggle-active data-follow-btn data-i18n="social.follow">Follow</button>
+                                    <button type="button" class="btn btn-outline btn-block mt-1" data-flow-goto="7">Endorse player →</button>
                                   </div>
                                 </div>
                 </div>
@@ -1318,6 +1324,286 @@
                                     <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button><div class="app-logo" data-i18n="sparring.detailTitle">Community Sparring</div></div>
                                   </header>
                                   <div class="app-body" data-user-sparring-detail></div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-social-feed">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell">
+                                  <header class="app-header">
+                                    <div class="app-logo">
+                                      <span class="app-logo-dot"></span> Match Point
+                                    </div>
+                                  </header>
+                                  <div class="app-body">
+                                    <div class="mp-feed-col">
+                                      <div data-social-stories data-stories-mode="auto"></div>
+                                      <hr class="mp-section-hr" style="margin: 0.5rem 0 1rem" />
+                                      <div
+                                        data-social-feed
+                                        data-feed-mode="auto"
+                                        data-feed-composer
+                                      ></div>
+                                    </div>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-messages-inbox">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                                  <div class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="27"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div class="app-logo" data-i18n="title.messages-inbox">
+                                        Messages
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="app-body" data-auth-only>
+                                    <button type="button" class="mp-msg-row">
+                                      <span class="avatar avatar-photo">👩🏻</span>
+                                      <span class="mp-msg-row-main"
+                                        ><strong>Sari Wijaya</strong
+                                        ><small>Rematch minggu depan ya? 🏓</small></span
+                                      >
+                                      <span class="mp-msg-time">2m</span>
+                                      <span class="mp-msg-unread">2</span>
+                                    </button>
+                                    <button type="button" class="mp-msg-row">
+                                      <span class="avatar avatar-photo">🧔🏽</span>
+                                      <span class="mp-msg-row-main"
+                                        ><strong>Andi Pratama</strong
+                                        ><small>Court booked for Thursday 19:00</small></span
+                                      >
+                                      <span class="mp-msg-time">1h</span>
+                                    </button>
+                                    <button type="button" class="mp-msg-row">
+                                      <span class="avatar avatar-photo">🏓</span>
+                                      <span class="mp-msg-row-main"
+                                        ><strong>Senayan Padel Club</strong
+                                        ><small data-i18n="social.joinToSee"
+                                          >Join to see more</small
+                                        ></span
+                                      >
+                                      <span class="mp-msg-time">3h</span>
+                                    </button>
+                                    <button type="button" class="mp-msg-row">
+                                      <span class="avatar avatar-photo">👩🏽</span>
+                                      <span class="mp-msg-row-main"
+                                        ><strong>Maya Putri</strong
+                                        ><small>GG today! Same time next week 🥎</small></span
+                                      >
+                                      <span class="mp-msg-time">1d</span>
+                                    </button>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-player-passport">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell">
+                                  <header class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="6"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div class="app-logo" data-i18n="title.player-passport">
+                                        Player Passport
+                                      </div>
+                                    </div>
+                                  </header>
+                                  <div class="app-body mp-passport-body">
+                                    <div data-passport></div>
+                                    <div data-achievements data-pride></div>
+                                    <div class="mp-section-head mt-2">
+                                      <h2 data-i18n="passport.friends">Friends</h2>
+                                      <button
+                                        type="button"
+                                        class="linkish"
+                                        data-flow-goto="32"
+                                        data-i18n="social.seeAllFriends"
+                                      >
+                                        See all friends
+                                      </button>
+                                    </div>
+                                    <div data-friends-list></div>
+                                    <div class="mp-section-head mt-2">
+                                      <h2 data-i18n="social.suggested">Suggested</h2>
+                                    </div>
+                                    <div data-friends-suggested></div>
+                                    <button
+                                      type="button"
+                                      class="btn btn-outline btn-block mt-2"
+                                      data-flow-goto="8"
+                                      data-return-step="29"
+                                      data-i18n="passport.share"
+                                    >
+                                      Share passport
+                                    </button>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-court-booking">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                                  <div class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="1"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div class="app-logo" data-i18n="title.court-booking">
+                                        Court Booking
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="app-body">
+                                    <p class="section-sub" data-i18n="booking.subtitle">
+                                      Pick a court &amp; time — teaser (mockup, no payments).
+                                    </p>
+                                    <div class="info-strip mb-2">
+                                      <strong>Senayan Padel Club</strong> ·
+                                      <span data-i18n="booking.date">Date</span>: Sabtu / Saturday
+                                    </div>
+                                    <div data-booking-slots></div>
+                                    <button
+                                      type="button"
+                                      class="btn btn-primary btn-block btn-lg mt-2"
+                                      data-requires-auth
+                                      data-flow-goto="31"
+                                      data-i18n="booking.continue"
+                                    >
+                                      Continue
+                                    </button>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-booking-confirm">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                                  <div class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="30"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div class="app-logo" data-i18n="title.booking-confirm">
+                                        Booking Confirmed
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="app-body app-body-narrow text-center">
+                                    <div style="font-size: 3rem; margin-top: 1rem">✅</div>
+                                    <h2 class="section-title" data-i18n="booking.confirmedTitle">
+                                      Booking confirmed (demo)
+                                    </h2>
+                                    <p class="section-sub" data-i18n="booking.confirmedDesc">
+                                      Payments &amp; court inventory arrive in a later phase.
+                                    </p>
+                                    <div data-booking-summary class="text-left"></div>
+                                    <div class="btn-stack mt-2">
+                                      <button
+                                        type="button"
+                                        class="btn btn-primary btn-block"
+                                        data-flow-goto="27"
+                                        data-i18n="booking.invite"
+                                      >
+                                        Invite friends
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="btn btn-outline btn-block"
+                                        data-flow-goto="1"
+                                        data-i18n="booking.backHome"
+                                      >
+                                        Back to Home
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-friends-list">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                                  <div class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="29"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div class="app-logo" data-i18n="title.friends-list">Friends</div>
+                                    </div>
+                                  </div>
+                                  <div class="app-body">
+                                    <div data-friends-list></div>
+                                    <div class="mp-section-head mt-2">
+                                      <h2 data-i18n="social.suggested">Suggested</h2>
+                                    </div>
+                                    <div data-friends-suggested></div>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-social-feed-guest">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell">
+                                  <header class="app-header">
+                                    <div class="app-logo">
+                                      <span class="app-logo-dot"></span> Match Point
+                                    </div>
+                                  </header>
+                                  <div class="app-body"><div class="guest-banner" style="display:flex;padding:0.5rem 1rem;background:rgba(224,159,62,0.15);margin-bottom:0.75rem;border-radius:8px;font-size:0.85rem">👀 Guest preview — sign in to like &amp; comment</div>
+                                    <div class="mp-feed-col">
+                                      <div data-social-stories data-stories-mode="guest"></div>
+                                      <hr class="mp-section-hr" style="margin: 0.5rem 0 1rem" />
+                                      <div
+                                        data-social-feed
+                                        data-feed-mode="guest"
+                                      ></div>
+                                    </div>
+                                  </div>
                                 </div>
                 </div>
               </div>
@@ -1378,6 +1664,8 @@
                                         </button>
                                       </div>
                                     </div>
+                                    <!-- Guest discovery pulse: live platform strip -->
+                                    <div data-guest-only data-guest-live-strip></div>
                                     <!-- Home state: no community -->
                                     <div class="mp-club-banner" data-show-if-no-club data-auth-only hidden>
                                       <div>
@@ -1625,40 +1913,29 @@
                                       </div>
                                     </section>
                   
-                                    <div class="rank-story-card mb-2">
-                                      <div class="rank-story-head">
-                                        <div>
-                                          <div class="rank-story-kicker" data-i18n="rank.storyTitle">
-                                            Cara kerja rank Match Point
-                                          </div>
-                                          <strong data-rank-story-state>Siap main lintas komunitas</strong>
-                                        </div>
-                                        <span class="badge badge-muted" data-rank-story-badge>
-                                          Lintas klub ✓
-                                        </span>
+                                    <!-- Daily hook: personalized pulse (rank story moved to Rank tab) -->
+                                    <section data-auth-only hidden class="mb-2">
+                                      <div class="mp-section-head">
+                                        <h2 data-i18n="pulse.today">Today</h2>
                                       </div>
-                                      <p class="rank-story-body" data-rank-story-body>
-                                        MP Rating-mu sudah cukup stabil untuk bantu bracket dan pairing. Mabar menunjukkan posisi lokalmu; Global menunjukkan bagaimana kamu bergerak lintas komunitas.
-                                      </p>
-                                      <div class="rank-story-grid">
-                                        <div class="rank-story-item">
-                                          <strong data-i18n="rank.storySkill">Skill</strong>
-                                          <span data-mp-rating>7.80 ✓</span>
-                                        </div>
-                                        <div class="rank-story-item">
-                                          <strong data-i18n="rank.storyMabar">Posisi lokal</strong>
-                                          <span data-rank-mabar-pts>1680</span>
-                                        </div>
-                                        <div class="rank-story-item">
-                                          <strong data-i18n="rank.storyGlobal">Sinyal lintas klub</strong>
-                                          <span data-rank-global-pts>1570</span>
-                                        </div>
-                                        <div class="rank-story-item">
-                                          <strong data-i18n="rank.storyScope">Kalibrasi</strong>
-                                          <span data-mp-confidence>98%</span>
-                                        </div>
+                                      <div data-home-pulse></div>
+                                    </section>
+                  
+                                    <!-- Social highlights strip (shared renderer, 2 posts) -->
+                                    <section data-auth-only hidden class="mb-2">
+                                      <div class="mp-section-head">
+                                        <h2 data-i18n="guest.highlightsTitle">Community highlights</h2>
+                                        <button
+                                          type="button"
+                                          class="linkish"
+                                          data-flow-goto="27"
+                                          data-i18n="social.seeAll"
+                                        >
+                                          See all
+                                        </button>
                                       </div>
-                                    </div>
+                                      <div class="mp-home-highlights" data-social-feed data-feed-mode="member" data-feed-limit="2"></div>
+                                    </section>
                   
                                     <!-- Quick action: submit only — Rank & Acara live in the nav,
                                          and get real data previews in the grid below -->
@@ -1677,6 +1954,18 @@
                                           >~30 detik · rank update instan</span
                                         >
                                       </button>
+                                      <button
+                                        type="button"
+                                        class="mp-play-btn"
+                                        data-auth-only hidden
+                                        data-requires-auth
+                                        data-flow-goto="30"
+                                      >
+                                        <strong data-i18n="pulse.bookCourt">Book a court</strong>
+                                        <span data-i18n="booking.subtitle"
+                                          >Pick a court &amp; time — teaser</span
+                                        >
+                                      </button>
                                     </div>
                   
                                     <div class="mp-home-grid">
@@ -1684,7 +1973,7 @@
                                         <!-- Community-first: communities take the lead slot,
                                              events sit beside them -->
                                         <div class="mp-duo">
-                                          <section class="mp-duo-col" data-show-if-no-club>
+                                          <section class="mp-duo-col" data-show-if-no-club data-auth-only hidden>
                                             <div class="mp-section-head">
                                               <h2 data-i18n="find.nearYou">
                                                 👥 Komunitas terdekat
@@ -2021,6 +2310,57 @@
                                         </div>
                                       </aside>
                                     </div>
+                  
+                                    <!-- Guest discovery pulse: trending, open events, social
+                                         preview, passport teaser, how-it-works, conversion CTAs
+                                         (design-system/match-point/pages/guest-home.md) -->
+                                    <div data-guest-only>
+                                      <hr class="mp-section-hr" />
+                                      <div class="mp-section-head">
+                                        <h2 data-i18n="guest.trendingTitle">Trending communities near you</h2>
+                                      </div>
+                                      <div data-guest-trending></div>
+                  
+                                      <div class="mp-section-head" style="margin-top: 1rem">
+                                        <h2 data-i18n="guest.openEventsTitle">Open events this weekend</h2>
+                                      </div>
+                                      <div class="mp-pulse-stack" data-guest-open-events></div>
+                  
+                                      <hr class="mp-section-hr" />
+                                      <div class="mp-section-head">
+                                        <h2 data-i18n="guest.highlightsTitle">Community highlights</h2>
+                                      </div>
+                                      <div class="mp-home-highlights" data-social-stories data-stories-mode="guest"></div>
+                                      <div class="mp-home-highlights" data-social-feed data-feed-mode="guest" data-feed-limit="3"></div>
+                  
+                                      <hr class="mp-section-hr" />
+                                      <div data-passport="teaser"></div>
+                  
+                                      <hr class="mp-section-hr" />
+                                      <div class="mp-section-head">
+                                        <h2 data-i18n="guest.howTitle">How it works</h2>
+                                      </div>
+                                      <div data-guest-how></div>
+                  
+                                      <div class="flex gap-1 mt-2" style="flex-wrap: wrap; justify-content: center">
+                                        <button
+                                          type="button"
+                                          class="btn btn-outline"
+                                          data-flow-goto="14"
+                                          data-i18n="guest.findCommunity"
+                                        >
+                                          Find community
+                                        </button>
+                                        <button
+                                          type="button"
+                                          class="btn btn-primary"
+                                          data-flow-goto="17"
+                                          data-i18n="guest.signupFree"
+                                        >
+                                          Sign up free
+                                        </button>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                 </div>
@@ -2087,57 +2427,10 @@
                                         </div>
                                         <span class="badge badge-members" data-i18n="club.adminBadge">👑 Admin</span>
                                       </div>
-                                      <div class="operator-kpi-grid">
-                                        <div class="operator-kpi">
-                                          <strong>3</strong>
-                                          <span data-i18n="club.opsPending">Perlu review</span>
-                                        </div>
-                                        <div class="operator-kpi">
-                                          <strong>2</strong>
-                                          <span data-i18n="club.opsWaitlist">Waitlist aktif</span>
-                                        </div>
-                                        <div class="operator-kpi">
-                                          <strong>09:00</strong>
-                                          <span data-i18n="club.opsNextLive">Sesi live berikutnya</span>
-                                        </div>
-                                        <div class="operator-kpi">
-                                          <strong data-i18n="club.opsAction">Aksi utama</strong>
-                                          <span data-i18n="flow.adminCreateEvent">Buat Acara / Turnamen</span>
-                                        </div>
-                                      </div>
-                                      <button
-                                        type="button"
-                                        class="action-card primary"
-                                        data-flow-goto="1"
-                                      >
-                                        <span class="action-card-icon is-tag">Ops</span>
-                                        <span class="action-card-body"
-                                          ><strong data-i18n="flow.adminCreateEvent"
-                                            >Buat Acara / Turnamen</strong
-                                          ><span data-i18n="flow.adminCreateEventDesc"
-                                            >Americano · Mexicano · Bracket · RR · League · 7 formats</span
-                                          ></span
-                                        >
-                                      </button>
-                                      <button type="button" class="action-card" data-flow-goto="7">
-                                        <span class="action-card-icon is-tag">Queue</span>
-                                        <span class="action-card-body"
-                                          ><strong data-i18n="club.regTitle"
-                                            >Pendaftaran Peserta</strong
-                                          ><span>Minggu Mexicano · 12/16 · waitlist 2</span></span
-                                        >
-                                      </button>
-                                      <button type="button" class="action-card" data-flow-goto="9">
-                                        <span class="action-card-icon is-tag">Live</span>
-                                        <span class="action-card-body"
-                                          ><strong>Live Session · Americano</strong
-                                          ><span>Round 3/7 · 16 pemain · skor manual</span></span
-                                        >
-                                      </button>
-                                      <button type="button" class="action-card" data-flow-goto="11">
-                                        <span class="action-card-icon is-tag">Cross</span>
-                                        <span class="action-card-body"><strong data-i18n="sparring.createTitle">Community Sparring</strong><span data-i18n="sparring.createDesc">2+ communities · casual or ranked</span></span>
-                                      </button>
+                                      <!-- Community HQ: KPI strip + bento module grid
+                                           (design-system/match-point/pages/community-hq.md) -->
+                                      <div data-hq-kpis></div>
+                                      <div data-hq-grid></div>
                                     </div>
                   
                                     <div class="operator-divider" data-i18n="club.memberViewTitle">Tampilan member</div>
@@ -2659,9 +2952,9 @@
                                     <div class="app-logo">
                                       <span class="app-logo-dot"></span> Admin Portal
                                     </div>
-                                    <h1 class="login-hook" data-i18n="flow.platformLoginHook">
-                                      Tim Match Point — dispute lintas komunitas &amp; audit
-                                      platform.
+                                    <h1 class="login-hook" data-i18n="ecosystem.loginHook">
+                                      Operate the racket sports ecosystem — trust, growth, and
+                                      fair play.
                                     </h1>
                                     <p class="login-subhook" data-i18n="flow.platformLoginSub">
                                       Superadmin platform · bukan admin klub komunitas.
@@ -3144,6 +3437,292 @@
                                     </div>
                                   </header>
                                   <div class="app-body" data-platform-boc-fixtures></div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-platform-overview">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell admin-theme">
+                                  <header class="app-header">
+                                    <div class="app-logo">
+                                      <span class="app-logo-dot"></span> Match Point
+                                      <span class="badge badge-platform" data-i18n="platform.accountRole">Superadmin platform</span>
+                                    </div>
+                                  </header>
+                                  <div class="app-body">
+                                    <!-- Ecosystem Operator Console: graph KPIs + network loops
+                                         (design-system/match-point/pages/platform-overview.md) -->
+                                    <div class="mp-section-head">
+                                      <h2 data-i18n="ecosystem.healthTitle">
+                                        Ecosystem health — last 24h
+                                      </h2>
+                                    </div>
+                                    <div data-eco-kpis></div>
+                                    <div class="mp-section-head">
+                                      <h2 data-i18n="ecosystem.loopsTitle">Network loops</h2>
+                                    </div>
+                                    <div class="card mb-2" style="padding: 0.5rem 1rem" data-eco-loops></div>
+                                    <div class="mp-duo mb-2">
+                                      <section class="mp-duo-col">
+                                        <div class="mp-section-head">
+                                          <h2 data-i18n="ecosystem.pipelineTitle">
+                                            Community pipeline
+                                          </h2>
+                                          <button
+                                            type="button"
+                                            class="linkish"
+                                            data-flow-goto="19"
+                                            data-i18n="pulse.viewAll"
+                                          >
+                                            View all
+                                          </button>
+                                        </div>
+                                        <div data-eco-pipeline-counts></div>
+                                      </section>
+                                      <section class="mp-duo-col">
+                                        <div class="mp-section-head">
+                                          <h2 data-i18n="ecosystem.moderationTitle">
+                                            Social moderation
+                                          </h2>
+                                          <button
+                                            type="button"
+                                            class="linkish"
+                                            data-flow-goto="20"
+                                            data-i18n="ecosystem.review"
+                                          >
+                                            Review
+                                          </button>
+                                        </div>
+                                        <div class="mp-platform-kpi">
+                                          <b data-eco-moderation-count>—</b>
+                                          <small data-i18n="ecosystem.flaggedPosts"
+                                            >flagged posts</small
+                                          >
+                                        </div>
+                                      </section>
+                                    </div>
+                                    <div class="triage-card mb-2">
+                                      <strong data-i18n="platform.triageTitle">Triage sekarang</strong>
+                                      <p class="text-sm text-muted mt-1" data-i18n="platform.triageSub">
+                                        Lihat dulu item paling berisiko dan yang paling dekat ke SLA.
+                                      </p>
+                                      <div class="triage-grid">
+                                        <div class="triage-item">
+                                          <strong>Dispute #D-4421</strong>
+                                          <p>Skor bentrok dari dua pemain inti. Butuh keputusan audit.</p>
+                                          <div class="triage-meta">
+                                            <span class="triage-pill" data-i18n="platform.riskLabel">Risiko</span>
+                                            <span class="triage-pill">High</span>
+                                            <span class="triage-pill">52m SLA</span>
+                                          </div>
+                                        </div>
+                                        <div class="triage-item">
+                                          <strong>Indonesia Padel Masters</strong>
+                                          <p>Global Tier 1 dengan dokumen host belum lengkap.</p>
+                                          <div class="triage-meta">
+                                            <span class="triage-pill" data-i18n="platform.riskLabel">Risiko</span>
+                                            <span class="triage-pill">High</span>
+                                            <span class="triage-pill">0.71 conf</span>
+                                          </div>
+                                        </div>
+                                        <div class="triage-item">
+                                          <strong>Padel Jakarta Selatan</strong>
+                                          <p>Community request low risk, ready untuk fast-track review.</p>
+                                          <div class="triage-meta">
+                                            <span class="triage-pill" data-i18n="platform.riskLabel">Risiko</span>
+                                            <span class="triage-pill">Low</span>
+                                            <span class="triage-pill">0.94 conf</span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="mp-section-head">
+                                      <h2 data-i18n="platform.quickActions">Quick actions</h2>
+                                    </div>
+                                    <button type="button" class="action-card primary" data-flow-goto="7">
+                                      <span class="action-card-icon is-tag">Global</span>
+                                      <span class="action-card-body"><strong data-i18n="platform.globalTournamentTitle">Create Global Tournament</strong><span data-i18n="platform.globalTournamentDesc">Tier 1–3 · cross-community · Global rank</span></span>
+                                    </button>
+                                    <button type="button" class="action-card primary" data-flow-goto="17">
+                                      <span class="action-card-icon is-tag">BoC</span>
+                                      <span class="action-card-body"><strong data-i18n="boc.title">Battle of Communities</strong><span data-i18n="boc.dashboardDesc">Season · group draw · squad deadlines</span></span>
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="action-card"
+                                      data-flow-goto="2"
+                                    >
+                                      <span class="action-card-icon is-tag">Inbox</span>
+                                      <span class="action-card-body"
+                                        ><strong data-i18n="platform.inboxTitle"
+                                          >Approval Inbox</strong
+                                        ><span data-platform-inbox-card-desc data-i18n="platform.inboxCardDesc"
+                                          >5 pengajuan — komunitas baru, acara featured</span
+                                        ></span
+                                      >
+                                    </button>
+                                    <button type="button" class="action-card" data-flow-goto="5">
+                                      <span class="action-card-icon is-tag">Match</span>
+                                      <span class="action-card-body"
+                                        ><strong>Review <span data-platform-stat-match-pending-inline>—</span> Pending Matches</strong
+                                        ><span>Lintas komunitas · GPS fail · dispute</span></span
+                                      >
+                                    </button>
+                                    <button type="button" class="action-card" data-flow-goto="6">
+                                      <span class="action-card-icon is-tag">Data</span>
+                                      <span class="action-card-body"
+                                        ><strong data-i18n="platform.navAnalytics">Analytics</strong
+                                        ><span>523 komunitas · health metrics</span></span
+                                      >
+                                    </button>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-platform-community-pipeline">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell admin-theme">
+                                  <header class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="1"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div
+                                        class="app-logo"
+                                        data-i18n="title.platform-community-pipeline"
+                                      >
+                                        Community Pipeline
+                                      </div>
+                                    </div>
+                                  </header>
+                                  <div class="app-body">
+                                    <div data-eco-pipeline-counts></div>
+                                    <div class="filter-chips mb-1" data-pipeline-filters>
+                                      <button
+                                        type="button"
+                                        class="filter-chip active"
+                                        data-pipeline-filter="all"
+                                        data-i18n="ecosystem.all"
+                                      >
+                                        All
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="filter-chip"
+                                        data-pipeline-filter="pending"
+                                        data-i18n="ecosystem.pipePending"
+                                      >
+                                        Pending
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="filter-chip"
+                                        data-pipeline-filter="approved"
+                                        data-i18n="ecosystem.pipeApproved"
+                                      >
+                                        Approved
+                                      </button>
+                                      <button
+                                        type="button"
+                                        class="filter-chip"
+                                        data-pipeline-filter="rejected"
+                                        data-i18n="ecosystem.pipeRejected"
+                                      >
+                                        Rejected
+                                      </button>
+                                    </div>
+                                    <div class="card" style="padding: 0.25rem 1rem" data-eco-pipeline-list></div>
+                                    <button
+                                      type="button"
+                                      class="btn btn-outline btn-block mt-2"
+                                      data-flow-goto="2"
+                                      data-i18n="ecosystem.reviewInbox"
+                                    >
+                                      Review inbox
+                                    </button>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-platform-moderation-inbox">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell admin-theme">
+                                  <header class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="1"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div
+                                        class="app-logo"
+                                        data-i18n="title.platform-moderation-inbox"
+                                      >
+                                        Social Moderation
+                                      </div>
+                                    </div>
+                                  </header>
+                                  <div class="app-body">
+                                    <div class="info-strip mb-2">
+                                      <b data-eco-moderation-count>—</b>&nbsp;
+                                      <span data-i18n="ecosystem.flaggedPosts">flagged posts</span>
+                                    </div>
+                                    <div data-eco-moderation-list></div>
+                                  </div>
+                                </div>
+                </div>
+              </div>
+
+              <div class="screen" id="screen-platform-graph-health">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell admin-theme">
+                                  <header class="app-header">
+                                    <div class="app-header-left">
+                                      <button
+                                        type="button"
+                                        class="header-back"
+                                        data-flow-goto="1"
+                                        aria-label="Back"
+                                      >
+                                        ←
+                                      </button>
+                                      <div class="app-logo" data-i18n="title.platform-graph-health">
+                                        Graph Health
+                                      </div>
+                                    </div>
+                                  </header>
+                                  <div class="app-body">
+                                    <div data-eco-kpis></div>
+                                    <div class="mp-section-head">
+                                      <h2 data-i18n="ecosystem.loopsTitle">Network loops</h2>
+                                    </div>
+                                    <div class="card" style="padding: 0.5rem 1rem" data-eco-loops></div>
+                                    <div class="mp-section-head mt-2">
+                                      <h2 data-i18n="ecosystem.sportMix">Sport activity mix</h2>
+                                    </div>
+                                    <div class="card" style="padding: 0.5rem 1rem">
+                                      <div class="mp-loop-row"><span>🏓 Padel</span><b style="margin-left:auto;font-family:var(--mono)">44%</b></div>
+                                      <div class="mp-loop-row"><span>🎾 Tennis</span><b style="margin-left:auto;font-family:var(--mono)">27%</b></div>
+                                      <div class="mp-loop-row"><span>🥎 Pickleball</span><b style="margin-left:auto;font-family:var(--mono)">15%</b></div>
+                                      <div class="mp-loop-row"><span>🏸 Badminton</span><b style="margin-left:auto;font-family:var(--mono)">9%</b></div>
+                                      <div class="mp-loop-row"><span>🏓 Table Tennis</span><b style="margin-left:auto;font-family:var(--mono)">5%</b></div>
+                                    </div>
+                                  </div>
                                 </div>
                 </div>
               </div>

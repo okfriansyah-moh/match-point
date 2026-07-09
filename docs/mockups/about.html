@@ -11,12 +11,15 @@
       <aside class="docs-sidebar" aria-label="Documentation navigation">
         <a href="index.html" class="docs-sidebar-brand">← Match Point</a>
         <p class="docs-sidebar-meta">
-          <span class="docs-version-pill" id="docs-version-pill">v3.1.0</span>
-          <span class="docs-updated" id="docs-updated">Updated 2026-07-06</span>
+          <span class="docs-version-pill" id="docs-version-pill">v3.4.1</span>
+          <span class="docs-updated" id="docs-updated">Updated 2026-07-09</span>
         </p>
         <nav class="docs-toc">
           <p class="docs-toc-label" data-i18n="about.toc">On this page</p>
           <a href="#vision" data-i18n="about.secVision">Vision &amp; goals</a>
+          <a href="#journeys" data-i18n="about.secJourneys">Four journeys</a>
+          <a href="#daily-life" data-i18n="about.secDailyLife">Your racket sports life</a>
+          <a href="#flows" data-i18n="about.secFlows">Interactive flows</a>
           <a href="#roles" data-i18n="about.secRoles">Who uses Match Point</a>
           <a href="#communities" data-i18n="about.secCommunities">Communities</a>
           <a href="#rankings" data-i18n="about.secRankings">Rankings</a>
@@ -44,16 +47,23 @@
           <div data-mascot-trio data-mascot-size="md" data-mascot-mood="idle"></div>
           <h1 data-i18n="about.title">About Match Point</h1>
           <p class="docs-lead" data-i18n="about.lead">
-            Product documentation for players, club admins, and platform operators — goals, features, rules, and release notes.
+            Product documentation for the four-journey operating system — Guest, Player, Community Admin, and Platform Admin — covering your entire racket sports life, rules, and release notes.
           </p>
         </header>
 
         <section id="vision" class="docs-section card">
           <h2 data-i18n="about.secVision">Vision &amp; goals</h2>
           <p>
-            Match Point is a <strong>cross-community reputation and ranking platform</strong> for padel, tennis, pickleball, badminton, and table tennis.
+            Match Point is <strong>the operating system for racket sports communities</strong> — padel, tennis, pickleball, badminton, and table tennis.
             Most play happens outside official federations — recreational leagues, open play, and club events leave no portable record.
-            We fix that with verified identity, match results, and rankings that travel with the player.
+            We fix that with verified identity, match results, and rankings that travel with the player: your <strong>Player Passport</strong>, one 5-sport identity across every community.
+          </p>
+          <p>
+            The product is built as <strong>four journeys</strong>, each with a purpose-built home:
+            <strong>Guest</strong> (Discovery Pulse — <em>"why should I join?"</em>),
+            <strong>Player</strong> (Daily Hook Home — <em>"why open this every day?"</em>),
+            <strong>Community Admin</strong> (Community HQ — <em>"how do I run and grow my community?"</em>), and
+            <strong>Platform Admin</strong> (Ecosystem Console — <em>"is the ecosystem healthy and fair?"</em>).
           </p>
           <table class="pa-table docs-table">
             <thead>
@@ -70,7 +80,7 @@
               </tr>
               <tr>
                 <td><strong>Community-first</strong></td>
-                <td>Clubs run day-to-day play; the platform handles cross-community seasons and global tiers.</td>
+                <td>Clubs run day-to-day play via Community HQ; the platform handles cross-community seasons, graph health, and global tiers.</td>
               </tr>
               <tr>
                 <td><strong>Fair play</strong></td>
@@ -78,6 +88,135 @@
               </tr>
             </tbody>
           </table>
+        </section>
+
+        <section id="journeys" class="docs-section card">
+          <h2 data-i18n="about.secJourneys">Four journeys</h2>
+          <p>
+            Match Point is organized as <strong>four purpose-built homes</strong> on one connected graph.
+            Every feature must answer the core question for its journey — or it does not ship.
+          </p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Journey</th><th>Actor</th><th>Core question</th><th>Primary home</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Guest</strong></td>
+                <td>Unauthenticated browser</td>
+                <td><em>Why should I join Match Point?</em></td>
+                <td>Discovery Pulse — trending communities, open events, read-only social, passport teaser</td>
+              </tr>
+              <tr>
+                <td><strong>Player</strong></td>
+                <td>Authenticated member</td>
+                <td><em>Why would I open this every day?</em></td>
+                <td>Daily Hook Home — personalized pulse, play, social, rank, communities</td>
+              </tr>
+              <tr>
+                <td><strong>Community</strong></td>
+                <td>Club / organizer admin</td>
+                <td><em>How do I run and grow my community?</em></td>
+                <td>Community HQ — module grid for events, members, feed, sparring, booking teasers</td>
+              </tr>
+              <tr>
+                <td><strong>Platform</strong></td>
+                <td>Match Point superadmin</td>
+                <td><em>Is the ecosystem healthy and trustworthy?</em></td>
+                <td>Ecosystem Operator Console — graph KPIs, triage, community pipeline, social moderation</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="form-hint">
+            Competitor categories map to <em>modules</em> of this OS — competition apps (e.g. ILTL) ≈ Competition module;
+            discovery/booking apps (e.g. KUYY) ≈ Discovery + Booking module.
+            The moat is the <strong>connected graph</strong>, not any single module.
+          </p>
+        </section>
+
+        <section id="daily-life" class="docs-section card">
+          <h2 data-i18n="about.secDailyLife">Your racket sports life</h2>
+          <p>
+            <strong>Where players and communities build their entire sporting life</strong> — one 5-sport identity,
+            portable rank, social connection, and community operations under a single shell.
+          </p>
+          <h3>Player Passport</h3>
+          <p>
+            Unified identity rollup across padel, tennis, pickleball, badminton, and table tennis —
+            MP Rating per sport, achievements trophy case, communities, friends, and a share card with QR for add-friend.
+            Entry lives on Profile; guests see a blurred passport teaser on the conversion ladder.
+          </p>
+          <h3>Daily Hook Home</h3>
+          <p>
+            Authenticated home answers <em>why open today</em> with personalized pulse cards —
+            upcoming play, rating delta, social highlights, booking teaser, and community activity.
+            Guest home runs a parallel <strong>Discovery Pulse</strong> with public stats and soft gates (no hard login wall).
+          </p>
+          <h3>Social layer</h3>
+          <ul class="docs-list">
+            <li><strong>Feed &amp; stories</strong> — composer, story rings, 8-post demo feed; guests see public posts + blurred member-only stubs</li>
+            <li><strong>Messages</strong> — inbox with demo threads (member-only; hidden for guests)</li>
+            <li><strong>Friends</strong> — followers, suggested players, follow toggles; passport QR for add-friend</li>
+            <li><strong>Achievements</strong> — 6 trophies on passport pride strip and share card</li>
+            <li><strong>Soft gates</strong> — like, comment, RSVP, and compose prompt inline login; no full-screen login wall while browsing</li>
+          </ul>
+          <h3>Navigation &amp; play</h3>
+          <p>
+            Signed-in bottom nav: <strong>Home · Play · Social · Rank · Communities</strong>.
+            Guest bottom nav (4 tabs): <strong>Explore · Play · Social · Rank</strong> — same shell, reduced scope.
+            Profile, messages, settings, and About live in the <strong>avatar dropdown</strong> (not bottom nav).
+            Quick actions on home: <strong>Catat Hasil Match</strong> (~30s) and <strong>Book a court</strong> teaser — no floating action button in the current flow.
+            Court booking and wallet are mock teasers — production payments in Phase 2.
+          </p>
+          <h3>Guest conversion ladder</h3>
+          <ol class="docs-list">
+            <li>See an alive platform — Discovery Pulse (523 communities, trending clubs, open events)</li>
+            <li>Browse — community pages, events, read-only social, public leaderboards</li>
+            <li>Hit a soft gate — RSVP, like/comment, personal rank → inline auth modal</li>
+            <li>Claim identity — register → Player Passport → join community → Daily Hook unlocks</li>
+          </ol>
+        </section>
+
+        <section id="flows" class="docs-section card">
+          <h2 data-i18n="about.secFlows">Interactive flows</h2>
+          <p>
+            Stakeholder demos use clickable journeys in <code>flow/</code> — gallery screens are static previews of the same markup.
+            Entry: <a href="flow/index.html">flow/index.html</a>.
+          </p>
+          <table class="pa-table docs-table">
+            <thead>
+              <tr><th>Flow</th><th>Steps</th><th>Entry</th><th>Primary screens</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Player</strong></td>
+                <td>33</td>
+                <td><code>flow/user.html</code></td>
+                <td>Login → Daily Hook → events/live formats → profile/passport → social/messages/friends → booking</td>
+              </tr>
+              <tr>
+                <td><strong>Guest</strong></td>
+                <td>subset</td>
+                <td><code>flow/user.html?guest=1</code></td>
+                <td>Discovery Pulse → explore/play/social preview/rank → find community → soft-gate CTAs</td>
+              </tr>
+              <tr>
+                <td><strong>Community admin</strong></td>
+                <td>12</td>
+                <td><code>flow/club.html</code></td>
+                <td>Community HQ → event wizard → registrations → live referee → sparring create</td>
+              </tr>
+              <tr>
+                <td><strong>Platform admin</strong></td>
+                <td>22</td>
+                <td><code>flow/platform.html</code></td>
+                <td>Ecosystem overview → triage → pipeline → moderation → global tournament / BoC wizards</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="form-hint">
+            Community admin reuses the player bottom nav with cross-page redirects; platform admin has its own 5-tab nav (Dashboard · Inbox · Pipeline · Moderation · Analytics).
+          </p>
         </section>
 
         <section id="roles" class="docs-section card">
@@ -88,19 +227,24 @@
             </thead>
             <tbody>
               <tr>
-                <td><strong>Player</strong></td>
-                <td>Join communities, earn Mabar + Global rank, register for events, submit matches</td>
-                <td>Player journey</td>
+                <td><strong>Guest</strong></td>
+                <td>Browse Discovery Pulse — trending communities, open events, social preview, passport teaser, public leaderboards — then claim a Player Passport</td>
+                <td><code>user.html?guest=1</code> · nav: Explore · Play · Social · Rank</td>
               </tr>
               <tr>
-                <td><strong>Club admin</strong></td>
-                <td>Create community events, manage registrations, run live sessions, host sparring</td>
-                <td>Club admin</td>
+                <td><strong>Player</strong></td>
+                <td>Daily Hook home, Player Passport, social feed/messages/friends, join communities, Mabar + Global rank, events, submit matches, court booking teaser</td>
+                <td><code>user.html</code> · nav: Home · Play · Social · Rank · Communities</td>
+              </tr>
+              <tr>
+                <td><strong>Community admin</strong></td>
+                <td>Community HQ operator mode — events, registrations, live sessions, members, feed, sparring; booking &amp; finance tiles coming soon</td>
+                <td><code>club.html</code> (shares player nav shell)</td>
               </tr>
               <tr>
                 <td><strong>Platform admin</strong></td>
-                <td>Approve communities &amp; featured events, run BoC seasons, global tournaments, analytics</td>
-                <td>Platform admin</td>
+                <td>Ecosystem console — graph KPIs, triage SLA, community pipeline, social moderation, approvals, BoC, global tournaments</td>
+                <td><code>platform.html</code> · nav: Dashboard · Inbox · Pipeline · Moderation · Analytics</td>
               </tr>
             </tbody>
           </table>
@@ -114,9 +258,10 @@
           </p>
           <ul class="docs-list">
             <li>Discovery feed — find clubs by sport, distance, and access type</li>
-            <li>Community page — public spotlight, member feed, join CTA</li>
+            <li>Community page — cover card, member feed, join CTA (Match Point header chrome)</li>
             <li>Platform approval for new communities and featured listings</li>
-            <li>Admin dashboard — members, pending reviews, matches, active events</li>
+            <li><strong>Community HQ</strong> — KPI strip (members, active week, next event, pending requests) + bento grid: Events, Registrations, Live Session, Members, Feed, Sparring; Booking &amp; Finance placeholders</li>
+            <li>Community types taxonomy — club, league, academy, social group (extensible in <code>community-data.js</code>)</li>
           </ul>
         </section>
 
@@ -360,10 +505,17 @@
 
         <section id="platform" class="docs-section card">
           <h2 data-i18n="about.secPlatform">Platform operations</h2>
+          <p>
+            Platform admin operates the <strong>Ecosystem Operator Console</strong> — graph health first, triage second, growth modules alongside competition tooling.
+          </p>
           <ul class="docs-list">
-            <li><strong>Approval inbox</strong> — communities, featured events, disputes (review → approve/reject)</li>
+            <li><strong>Ecosystem overview</strong> — graph KPIs (10,842 players · 523 communities · 1,180 matches · 3,402 posts · 4,216 DAU · 0.6% dispute rate), network loops, sport mix</li>
+            <li><strong>Triage card</strong> — top 3 SLA items elevated on overview (disputes, incomplete docs, fast-track approvals)</li>
+            <li><strong>Triage inbox</strong> — communities, featured events, disputes (SLA-sorted review → approve/reject)</li>
+            <li><strong>Community pipeline</strong> — onboarding funnel: pending, approved, rejected, growth stages</li>
+            <li><strong>Social moderation</strong> — reported posts, spam, community feed flags</li>
             <li><strong>Matches queue</strong> — pending submissions across clubs</li>
-            <li><strong>Analytics</strong> — growth, rank distribution, activity feed</li>
+            <li><strong>Analytics</strong> — lifecycle, rank distribution, activity feed</li>
             <li><strong>Battle of Communities wizard</strong> — season config, draw, fixture calendar</li>
             <li><strong>Feedback widget</strong> — mockup testers send notes via WhatsApp or email (not stored on demo site)</li>
           </ul>
@@ -380,7 +532,7 @@
         <footer class="docs-footer">
           <p>
             <span data-i18n="about.maintained">Maintained product docs</span>
-            · <span id="docs-footer-version">Mockup v3.1.0</span>
+            · <span id="docs-footer-version">Mockup v3.4.1</span>
           </p>
         </footer>
       </main>

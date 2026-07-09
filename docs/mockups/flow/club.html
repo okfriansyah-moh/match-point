@@ -114,57 +114,10 @@
                       </div>
                       <span class="badge badge-members" data-i18n="club.adminBadge">👑 Admin</span>
                     </div>
-                    <div class="operator-kpi-grid">
-                      <div class="operator-kpi">
-                        <strong>3</strong>
-                        <span data-i18n="club.opsPending">Perlu review</span>
-                      </div>
-                      <div class="operator-kpi">
-                        <strong>2</strong>
-                        <span data-i18n="club.opsWaitlist">Waitlist aktif</span>
-                      </div>
-                      <div class="operator-kpi">
-                        <strong>09:00</strong>
-                        <span data-i18n="club.opsNextLive">Sesi live berikutnya</span>
-                      </div>
-                      <div class="operator-kpi">
-                        <strong data-i18n="club.opsAction">Aksi utama</strong>
-                        <span data-i18n="flow.adminCreateEvent">Buat Acara / Turnamen</span>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      class="action-card primary"
-                      data-flow-goto="1"
-                    >
-                      <span class="action-card-icon is-tag">Ops</span>
-                      <span class="action-card-body"
-                        ><strong data-i18n="flow.adminCreateEvent"
-                          >Buat Acara / Turnamen</strong
-                        ><span data-i18n="flow.adminCreateEventDesc"
-                          >Americano · Mexicano · Bracket · RR · League · 7 formats</span
-                        ></span
-                      >
-                    </button>
-                    <button type="button" class="action-card" data-flow-goto="7">
-                      <span class="action-card-icon is-tag">Queue</span>
-                      <span class="action-card-body"
-                        ><strong data-i18n="club.regTitle"
-                          >Pendaftaran Peserta</strong
-                        ><span>Minggu Mexicano · 12/16 · waitlist 2</span></span
-                      >
-                    </button>
-                    <button type="button" class="action-card" data-flow-goto="9">
-                      <span class="action-card-icon is-tag">Live</span>
-                      <span class="action-card-body"
-                        ><strong>Live Session · Americano</strong
-                        ><span>Round 3/7 · 16 pemain · skor manual</span></span
-                      >
-                    </button>
-                    <button type="button" class="action-card" data-flow-goto="11">
-                      <span class="action-card-icon is-tag">Cross</span>
-                      <span class="action-card-body"><strong data-i18n="sparring.createTitle">Community Sparring</strong><span data-i18n="sparring.createDesc">2+ communities · casual or ranked</span></span>
-                    </button>
+                    <!-- Community HQ: KPI strip + bento module grid
+                         (design-system/match-point/pages/community-hq.md) -->
+                    <div data-hq-kpis></div>
+                    <div data-hq-grid></div>
                   </div>
 
                   <div class="operator-divider" data-i18n="club.memberViewTitle">Tampilan member</div>
@@ -709,6 +662,8 @@
     <script src="../live-referee.js"></script>
     <script src="../battle-of-communities.js"></script>
     <script src="../community-sparring.js"></script>
+    <script src="../social-feed.js"></script>
+    <script src="../community-hq.js"></script>
     <script src="../badges.js"></script>
     <script src="../feedback.js"></script>
     <script src="../mascot.js"></script>
@@ -741,6 +696,8 @@
           home: "user.html?step=1",
           rank: "user.html?step=3",
           match: "user.html?step=4",
+          play: "user.html?step=10",
+          social: "user.html?step=27",
           events: "user.html?step=10",
           community: "user.html?step=9",
           profile: "user.html?step=6",
@@ -748,6 +705,8 @@
         logoutUrl: "user.html",
       });
       MP_InterCommunity.init();
+      MP_SocialFeed.init();
+      MP_CommunityHQ.init();
       MP_Badges.init();
       MP_Feedback.init();
     </script>

@@ -91,6 +91,19 @@ function deriveGuestDashboard(inner) {
     .replace(/\bhidden hidden\b/g, "hidden");
 }
 
+function deriveGuestSocial(inner) {
+  return inner
+    .replace(
+      '<div class="app-body">',
+      '<div class="app-body"><div class="guest-banner" style="display:flex;padding:0.5rem 1rem;background:rgba(224,159,62,0.15);margin-bottom:0.75rem;border-radius:8px;font-size:0.85rem">👀 Guest preview — sign in to like &amp; comment</div>',
+    )
+    .replace(/\bdata-feed-mode="auto"/g, 'data-feed-mode="guest"')
+    .replace(/\bdata-stories-mode="auto"/g, 'data-stories-mode="guest"')
+    .replace(/\s*data-feed-composer\b/g, "")
+    .replace(/\bdata-auth-only\b(?! hidden)/g, "data-auth-only hidden")
+    .replace(/\bhidden hidden\b/g, "hidden");
+}
+
 function addMappedScreens(lines, steps, config) {
   const byId = mapStepsById(steps);
   config.forEach(({ screenId, stepId, fallbackIndex }) => {
@@ -115,14 +128,25 @@ addMappedScreens(lines, playerSteps, [
   { screenId: "event-register", stepId: "event-register" },
   { screenId: "edit-profile", stepId: "settings" },
   { screenId: "leaderboard-snapshot", stepId: "rank-snapshot" },
-  { screenId: "verify-otp", stepId: "verify-otp", fallbackIndex: 26 },
+  { screenId: "verify-otp", stepId: "verify-otp", fallbackIndex: 18 },
   { screenId: "format-round-robin", stepId: "round-robin" },
   { screenId: "format-league", stepId: "league" },
   { screenId: "global-tournament", stepId: "global-tournament" },
   { screenId: "player-other", stepId: "player-other" },
   { screenId: "boc-fixture-detail", stepId: "boc-detail" },
   { screenId: "sparring-detail", stepId: "sparring-detail" },
+  { screenId: "social-feed", stepId: "social-feed" },
+  { screenId: "messages-inbox", stepId: "messages-inbox" },
+  { screenId: "player-passport", stepId: "player-passport" },
+  { screenId: "court-booking", stepId: "court-booking" },
+  { screenId: "booking-confirm", stepId: "booking-confirm" },
+  { screenId: "friends-list", stepId: "friends-list" },
 ]);
+
+const socialStep = mapStepsById(playerSteps)["social-feed"];
+if (socialStep?.inner) {
+  lines.push(wrapScreen("social-feed-guest", deriveGuestSocial(socialStep.inner)));
+}
 
 const dashboardStep = mapStepsById(playerSteps).dashboard || playerSteps[1];
 if (dashboardStep?.inner) {
@@ -163,6 +187,10 @@ addMappedScreens(lines, extractAllFlowSteps(platformHtml), [
   { screenId: "platform-settings", fallbackIndex: 16 },
   { screenId: "platform-boc-wizard", fallbackIndex: 17 },
   { screenId: "platform-boc-fixtures", fallbackIndex: 18 },
+  { screenId: "platform-overview", fallbackIndex: 1 },
+  { screenId: "platform-community-pipeline", stepId: "community-pipeline", fallbackIndex: 19 },
+  { screenId: "platform-moderation-inbox", stepId: "moderation-inbox", fallbackIndex: 20 },
+  { screenId: "platform-graph-health", stepId: "graph-health", fallbackIndex: 21 },
 ]);
 
 const out = lines.join("\n\n") + "\n";

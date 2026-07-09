@@ -93,10 +93,10 @@
                     <span class="app-logo-dot"></span> Match Point
                   </div>
                   <h1 class="login-hook" data-i18n="login.hook">
-                    Rank-mu di klub ini… valid di klub lain?
+                    Where your racket sports life lives.
                   </h1>
                   <p class="login-subhook" data-i18n="login.subhook">
-                    Satu reputasi portabel lintas semua komunitas — padel, tennis, pickleball, badminton &amp; tenis meja.
+                    The operating system for racket sports communities — one portable identity across padel, tennis, pickleball, badminton &amp; table tennis.
                   </p>
                   <div class="login-sport-chips">
                     <span class="login-sport-chip">🏓 Padel</span>
@@ -300,6 +300,8 @@
                       </button>
                     </div>
                   </div>
+                  <!-- Guest discovery pulse: live platform strip -->
+                  <div data-guest-only hidden data-guest-live-strip></div>
                   <!-- Home state: no community -->
                   <div class="mp-club-banner" data-show-if-no-club data-auth-only>
                     <div>
@@ -547,40 +549,29 @@
                     </div>
                   </section>
 
-                  <div class="rank-story-card mb-2">
-                    <div class="rank-story-head">
-                      <div>
-                        <div class="rank-story-kicker" data-i18n="rank.storyTitle">
-                          Cara kerja rank Match Point
-                        </div>
-                        <strong data-rank-story-state>Siap main lintas komunitas</strong>
-                      </div>
-                      <span class="badge badge-muted" data-rank-story-badge>
-                        Lintas klub ✓
-                      </span>
+                  <!-- Daily hook: personalized pulse (rank story moved to Rank tab) -->
+                  <section data-auth-only class="mb-2">
+                    <div class="mp-section-head">
+                      <h2 data-i18n="pulse.today">Today</h2>
                     </div>
-                    <p class="rank-story-body" data-rank-story-body>
-                      MP Rating-mu sudah cukup stabil untuk bantu bracket dan pairing. Mabar menunjukkan posisi lokalmu; Global menunjukkan bagaimana kamu bergerak lintas komunitas.
-                    </p>
-                    <div class="rank-story-grid">
-                      <div class="rank-story-item">
-                        <strong data-i18n="rank.storySkill">Skill</strong>
-                        <span data-mp-rating>7.80 ✓</span>
-                      </div>
-                      <div class="rank-story-item">
-                        <strong data-i18n="rank.storyMabar">Posisi lokal</strong>
-                        <span data-rank-mabar-pts>1680</span>
-                      </div>
-                      <div class="rank-story-item">
-                        <strong data-i18n="rank.storyGlobal">Sinyal lintas klub</strong>
-                        <span data-rank-global-pts>1570</span>
-                      </div>
-                      <div class="rank-story-item">
-                        <strong data-i18n="rank.storyScope">Kalibrasi</strong>
-                        <span data-mp-confidence>98%</span>
-                      </div>
+                    <div data-home-pulse></div>
+                  </section>
+
+                  <!-- Social highlights strip (shared renderer, 2 posts) -->
+                  <section data-auth-only class="mb-2">
+                    <div class="mp-section-head">
+                      <h2 data-i18n="guest.highlightsTitle">Community highlights</h2>
+                      <button
+                        type="button"
+                        class="linkish"
+                        data-flow-goto="27"
+                        data-i18n="social.seeAll"
+                      >
+                        See all
+                      </button>
                     </div>
-                  </div>
+                    <div class="mp-home-highlights" data-social-feed data-feed-mode="member" data-feed-limit="2"></div>
+                  </section>
 
                   <!-- Quick action: submit only — Rank & Acara live in the nav,
                        and get real data previews in the grid below -->
@@ -599,6 +590,18 @@
                         >~30 detik · rank update instan</span
                       >
                     </button>
+                    <button
+                      type="button"
+                      class="mp-play-btn"
+                      data-auth-only
+                      data-requires-auth
+                      data-flow-goto="30"
+                    >
+                      <strong data-i18n="pulse.bookCourt">Book a court</strong>
+                      <span data-i18n="booking.subtitle"
+                        >Pick a court &amp; time — teaser</span
+                      >
+                    </button>
                   </div>
 
                   <div class="mp-home-grid">
@@ -606,7 +609,7 @@
                       <!-- Community-first: communities take the lead slot,
                            events sit beside them -->
                       <div class="mp-duo">
-                        <section class="mp-duo-col" data-show-if-no-club>
+                        <section class="mp-duo-col" data-show-if-no-club data-auth-only>
                           <div class="mp-section-head">
                             <h2 data-i18n="find.nearYou">
                               👥 Komunitas terdekat
@@ -943,6 +946,57 @@
                       </div>
                     </aside>
                   </div>
+
+                  <!-- Guest discovery pulse: trending, open events, social
+                       preview, passport teaser, how-it-works, conversion CTAs
+                       (design-system/match-point/pages/guest-home.md) -->
+                  <div data-guest-only hidden>
+                    <hr class="mp-section-hr" />
+                    <div class="mp-section-head">
+                      <h2 data-i18n="guest.trendingTitle">Trending communities near you</h2>
+                    </div>
+                    <div data-guest-trending></div>
+
+                    <div class="mp-section-head" style="margin-top: 1rem">
+                      <h2 data-i18n="guest.openEventsTitle">Open events this weekend</h2>
+                    </div>
+                    <div class="mp-pulse-stack" data-guest-open-events></div>
+
+                    <hr class="mp-section-hr" />
+                    <div class="mp-section-head">
+                      <h2 data-i18n="guest.highlightsTitle">Community highlights</h2>
+                    </div>
+                    <div class="mp-home-highlights" data-social-stories data-stories-mode="guest"></div>
+                    <div class="mp-home-highlights" data-social-feed data-feed-mode="guest" data-feed-limit="3"></div>
+
+                    <hr class="mp-section-hr" />
+                    <div data-passport="teaser"></div>
+
+                    <hr class="mp-section-hr" />
+                    <div class="mp-section-head">
+                      <h2 data-i18n="guest.howTitle">How it works</h2>
+                    </div>
+                    <div data-guest-how></div>
+
+                    <div class="flex gap-1 mt-2" style="flex-wrap: wrap; justify-content: center">
+                      <button
+                        type="button"
+                        class="btn btn-outline"
+                        data-flow-goto="14"
+                        data-i18n="guest.findCommunity"
+                      >
+                        Find community
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-flow-goto="17"
+                        data-i18n="guest.signupFree"
+                      >
+                        Sign up free
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -951,18 +1005,8 @@
             <div class="flow-step" data-step="create-club">
               <div class="app mp-shell">
                 <header class="app-header">
-                  <div class="app-header-left">
-                    <button
-                      type="button"
-                      class="header-back"
-                      data-flow-back="1"
-                      aria-label="Back"
-                    >
-                      ←
-                    </button>
-                    <div class="app-logo" data-i18n="title.create-club">
-                      Buat Komunitas
-                    </div>
+                  <div class="app-logo" data-i18n="title.create-club">
+                    Buat Komunitas
                   </div>
                 </header>
                 <div class="app-body app-body-narrow">
@@ -1065,10 +1109,12 @@
 
             <!-- Step 3: Leaderboard -->
             <div class="flow-step" data-step="leaderboard">
-              <div class="app">
-                <div class="app-header">
-                  <div class="app-logo">🏆 <span data-i18n="nav.rank">Rank</span></div>
-                </div>
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                  </div>
+                </header>
                 <div class="app-body">
                   <div class="info-strip">
                     <strong
@@ -1367,10 +1413,13 @@
 
             <!-- Step 5: Profile -->
             <div class="flow-step" data-step="profile">
-              <div class="app">
-                <div class="app-header">
-                  <div class="app-logo">👤 <span data-i18n="nav.profile">Profil</span></div>
-                </div>
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span>
+                    <span data-i18n="nav.profile">Profil</span>
+                  </div>
+                </header>
                 <div class="app-body">
                   <div class="flex items-center gap-1 mb-2">
                     <div class="avatar avatar-lg">BS</div>
@@ -1430,6 +1479,22 @@
                       </div>
                     </div>
                   </div>
+                  <button
+                    type="button"
+                    class="mp-pulse-card mp-pulse-card--passport mb-2"
+                    data-flow-goto="29"
+                    style="width: 100%"
+                  >
+                    <span class="mp-pulse-icon" aria-hidden="true">🪪</span>
+                    <span class="mp-pulse-main"
+                      ><strong data-i18n="title.player-passport"
+                        >Player Passport</strong
+                      ><small data-i18n="flow.hint.passport"
+                        >Your 5-sport identity in one passport.</small
+                      ></span
+                    >
+                    <span class="mp-pulse-meta">→</span>
+                  </button>
                   <div data-analytics-panel class="mb-2">
                     <div class="card mb-2"><div data-analytics-confidence></div></div>
                     <div class="card mb-2" data-analytics-chart data-chart-range="1y"></div>
@@ -1471,7 +1536,7 @@
                       ></span
                     >
                   </button>
-                  <button type="button" class="action-card" data-flow-goto="8">
+                  <button type="button" class="action-card" data-flow-goto="8" data-return-step="6">
                     <span class="action-card-icon">📤</span>
                     <span class="action-card-body"
                       ><strong data-i18n="flow.cta.shareTitle"
@@ -1593,29 +1658,16 @@
 
             <!-- Step 7: Share Card -->
             <div class="flow-step" data-step="share">
-              <div class="app">
-                <div class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="1" aria-label="Back">←</button><div class="app-logo">Share Card</div></div>
-                </div>
-                <div class="app-body">
-                  <p class="section-sub">
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="return" aria-label="Back">←</button><div class="app-logo" data-i18n="title.share-card">Share Card</div></div>
+                </header>
+                <div class="app-body share-card-body">
+                  <p class="section-sub text-center">
                     Kartu ranking 600×600 · cache 1 jam · invalidate saat rank
                     berubah
                   </p>
-                  <div class="share-card-preview">
-                    <div class="share-card-avatar">BS</div>
-                    <div class="share-card-name">Budi Santoso</div>
-                    <div class="share-card-ranks">
-                      <div class="share-card-rank-item">
-                        <div class="share-card-rank-val">1680</div>
-                        <div class="share-card-rank-lbl">Mabar #12</div>
-                      </div>
-                      <div class="share-card-rank-item">
-                        <div class="share-card-rank-val">1570</div>
-                        <div class="share-card-rank-lbl">Global #142</div>
-                      </div>
-                    </div>
-                  </div>
+                  <div data-share-card></div>
                   <div class="btn-stack">
                     <button
                       type="button"
@@ -1641,10 +1693,12 @@
 
             <!-- Step 8: Communities -->
             <div class="flow-step" data-step="communities">
-              <div class="app">
-                <div class="app-header">
-                  <div class="app-logo">👥 <span data-i18n="nav.group.community">Komunitas</span></div>
-                </div>
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                  </div>
+                </header>
                 <div class="app-body">
                   <div class="mp-section-head">
                     <h2 data-i18n="communities.mine">Komunitasku</h2>
@@ -1744,10 +1798,12 @@
 
             <!-- Step 9: Events discovery feed -->
             <div class="flow-step" data-step="events">
-              <div class="app" data-events-feed>
-                <div class="app-header">
-                  <div class="app-logo">🎯 <span data-i18n="nav.events">Acara</span></div>
-                </div>
+              <div class="app mp-shell" data-events-feed>
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                  </div>
+                </header>
                 <div class="app-body">
                   <p class="section-sub" data-i18n="flow.eventsIntro">
                     Acara live &amp; registrasi terbuka di dekatmu dan di
@@ -2103,10 +2159,10 @@
             </div>
             <!-- Step 14: Find Community (search + nearest + filters) -->
             <div class="flow-step" data-step="find-community">
-              <div class="app">
-                <div class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="smart" aria-label="Back">←</button><div class="app-logo"><span data-i18n="find.title">Cari Komunitas</span></div></div>
-                </div>
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-logo"><span data-i18n="find.title">Cari Komunitas</span></div>
+                </header>
                 <div class="app-body" data-find-community>
                   <p class="section-sub" data-i18n="find.sub">
                     Terdekat dulu — berdasar lokasimu di Jakarta Selatan.
@@ -2263,11 +2319,12 @@
 
             <!-- Step 15: Community Page (public spotlight + members-only feed) -->
             <div class="flow-step" data-step="community-page">
-              <div class="app" data-community-page>
-                <div class="app-header">
-                  <div class="app-header-left"><button type="button" class="header-back" data-flow-back="14" aria-label="Back">←</button><div class="app-logo">Senayan Padel Club</div></div>
-                  <span class="badge badge-info">🏓 Padel</span>
-                </div>
+              <div class="app mp-shell" data-community-page>
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                  </div>
+                </header>
                 <div class="app-body">
                   <!-- Cover / identity -->
                   <div class="cp-cover">
@@ -2924,6 +2981,66 @@
               </div>
             </div>
 
+            <!-- Step 18: Verify phone (SMS OTP) -->
+            <div class="flow-step" data-step="verify-otp">
+              <div class="app" data-no-chrome>
+                <div class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-back="17"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="otp.title">
+                      Verifikasi No. HP
+                    </div>
+                  </div>
+                </div>
+                <div class="app-body app-body-narrow text-center">
+                  <div style="font-size: 3rem; margin-top: 1rem">📲</div>
+                  <h2 class="section-title" data-i18n="otp.title">
+                    Verifikasi No. HP
+                  </h2>
+                  <p class="section-sub" data-i18n="otp.desc">
+                    Kode 6 digit dikirim via SMS ke +62 812-••••-7890.
+                  </p>
+                  <div class="otp-inputs">
+                    <input class="otp-box" maxlength="1" value="4" />
+                    <input class="otp-box" maxlength="1" value="8" />
+                    <input class="otp-box" maxlength="1" value="2" />
+                    <input class="otp-box" maxlength="1" value="9" />
+                    <input class="otp-box" maxlength="1" value="1" />
+                    <input class="otp-box" maxlength="1" value="3" />
+                  </div>
+                  <button type="button" class="linkish mb-2" data-i18n="otp.resend">
+                    Kirim ulang kode (0:24)
+                  </button>
+                  <div class="btn-stack">
+                    <button
+                      type="button"
+                      class="btn btn-primary btn-block btn-lg"
+                      data-login
+                      data-login-goto="1"
+                      data-i18n="otp.verifyBtn"
+                    >
+                      Verifikasi &amp; Buat Akun
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline btn-block"
+                      data-flow-back="17"
+                      data-i18n="otp.editPhone"
+                    >
+                      Ubah nomor
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Step 19: Round Robin (referee) -->
             <div class="flow-step" data-step="round-robin">
               <div class="app referee-live-shell" data-referee-immersive>
@@ -3023,7 +3140,8 @@
                     <div class="rank-track mabar"><div class="rank-track-label">Mabar</div><div class="rank-track-value">1820</div><div class="rank-track-sub">#1 · Senayan Padel Club</div></div>
                     <div class="rank-track global"><div class="rank-track-label">Global</div><div class="rank-track-value">2085</div><div class="rank-track-sub">#2 padel</div></div>
                   </div>
-                  <button type="button" class="btn btn-outline btn-block mt-2" data-flow-goto="7">Endorse player →</button>
+                  <button type="button" class="btn btn-primary btn-block mt-2" data-toggle-active data-follow-btn data-i18n="social.follow">Follow</button>
+                  <button type="button" class="btn btn-outline btn-block mt-1" data-flow-goto="7">Endorse player →</button>
                 </div>
               </div>
             </div>
@@ -3088,62 +3206,247 @@
               </div>
             </div>
 
-            <!-- Step 18: Verify phone (SMS OTP) -->
-            <div class="flow-step" data-step="verify-otp">
-              <div class="app" data-no-chrome>
+            <!-- Step 27: Social feed (member + guest preview via shared renderer) -->
+            <div class="flow-step" data-step="social-feed">
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-logo">
+                    <span class="app-logo-dot"></span> Match Point
+                  </div>
+                </header>
+                <div class="app-body">
+                  <div class="mp-feed-col">
+                    <div data-social-stories data-stories-mode="auto"></div>
+                    <hr class="mp-section-hr" style="margin: 0.5rem 0 1rem" />
+                    <div
+                      data-social-feed
+                      data-feed-mode="auto"
+                      data-feed-composer
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 28: Messages inbox (member only) -->
+            <div class="flow-step" data-step="messages-inbox">
+              <div class="app">
                 <div class="app-header">
                   <div class="app-header-left">
                     <button
                       type="button"
                       class="header-back"
-                      data-flow-back="17"
+                      data-flow-goto="27"
                       aria-label="Back"
                     >
                       ←
                     </button>
-                    <div class="app-logo" data-i18n="otp.title">
-                      Verifikasi No. HP
+                    <div class="app-logo" data-i18n="title.messages-inbox">
+                      Messages
+                    </div>
+                  </div>
+                </div>
+                <div class="app-body" data-auth-only>
+                  <button type="button" class="mp-msg-row">
+                    <span class="avatar avatar-photo">👩🏻</span>
+                    <span class="mp-msg-row-main"
+                      ><strong>Sari Wijaya</strong
+                      ><small>Rematch minggu depan ya? 🏓</small></span
+                    >
+                    <span class="mp-msg-time">2m</span>
+                    <span class="mp-msg-unread">2</span>
+                  </button>
+                  <button type="button" class="mp-msg-row">
+                    <span class="avatar avatar-photo">🧔🏽</span>
+                    <span class="mp-msg-row-main"
+                      ><strong>Andi Pratama</strong
+                      ><small>Court booked for Thursday 19:00</small></span
+                    >
+                    <span class="mp-msg-time">1h</span>
+                  </button>
+                  <button type="button" class="mp-msg-row">
+                    <span class="avatar avatar-photo">🏓</span>
+                    <span class="mp-msg-row-main"
+                      ><strong>Senayan Padel Club</strong
+                      ><small data-i18n="social.joinToSee"
+                        >Join to see more</small
+                      ></span
+                    >
+                    <span class="mp-msg-time">3h</span>
+                  </button>
+                  <button type="button" class="mp-msg-row">
+                    <span class="avatar avatar-photo">👩🏽</span>
+                    <span class="mp-msg-row-main"
+                      ><strong>Maya Putri</strong
+                      ><small>GG today! Same time next week 🥎</small></span
+                    >
+                    <span class="mp-msg-time">1d</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 29: Player Passport (5-sport identity) -->
+            <div class="flow-step" data-step="player-passport">
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-goto="6"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="title.player-passport">
+                      Player Passport
+                    </div>
+                  </div>
+                </header>
+                <div class="app-body mp-passport-body">
+                  <div data-passport></div>
+                  <div data-achievements data-pride></div>
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="passport.friends">Friends</h2>
+                    <button
+                      type="button"
+                      class="linkish"
+                      data-flow-goto="32"
+                      data-i18n="social.seeAllFriends"
+                    >
+                      See all friends
+                    </button>
+                  </div>
+                  <div data-friends-list></div>
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="social.suggested">Suggested</h2>
+                  </div>
+                  <div data-friends-suggested></div>
+                  <button
+                    type="button"
+                    class="btn btn-outline btn-block mt-2"
+                    data-flow-goto="8"
+                    data-return-step="29"
+                    data-i18n="passport.share"
+                  >
+                    Share passport
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 30: Court booking teaser -->
+            <div class="flow-step" data-step="court-booking">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-goto="1"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="title.court-booking">
+                      Court Booking
+                    </div>
+                  </div>
+                </div>
+                <div class="app-body">
+                  <p class="section-sub" data-i18n="booking.subtitle">
+                    Pick a court &amp; time — teaser (mockup, no payments).
+                  </p>
+                  <div class="info-strip mb-2">
+                    <strong>Senayan Padel Club</strong> ·
+                    <span data-i18n="booking.date">Date</span>: Sabtu / Saturday
+                  </div>
+                  <div data-booking-slots></div>
+                  <button
+                    type="button"
+                    class="btn btn-primary btn-block btn-lg mt-2"
+                    data-requires-auth
+                    data-flow-goto="31"
+                    data-i18n="booking.continue"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 31: Booking confirmed (demo) -->
+            <div class="flow-step" data-step="booking-confirm">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-goto="30"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="title.booking-confirm">
+                      Booking Confirmed
                     </div>
                   </div>
                 </div>
                 <div class="app-body app-body-narrow text-center">
-                  <div style="font-size: 3rem; margin-top: 1rem">📲</div>
-                  <h2 class="section-title" data-i18n="otp.title">
-                    Verifikasi No. HP
+                  <div style="font-size: 3rem; margin-top: 1rem">✅</div>
+                  <h2 class="section-title" data-i18n="booking.confirmedTitle">
+                    Booking confirmed (demo)
                   </h2>
-                  <p class="section-sub" data-i18n="otp.desc">
-                    Kode 6 digit dikirim via SMS ke +62 812-••••-7890.
+                  <p class="section-sub" data-i18n="booking.confirmedDesc">
+                    Payments &amp; court inventory arrive in a later phase.
                   </p>
-                  <div class="otp-inputs">
-                    <input class="otp-box" maxlength="1" value="4" />
-                    <input class="otp-box" maxlength="1" value="8" />
-                    <input class="otp-box" maxlength="1" value="2" />
-                    <input class="otp-box" maxlength="1" value="9" />
-                    <input class="otp-box" maxlength="1" value="1" />
-                    <input class="otp-box" maxlength="1" value="3" />
-                  </div>
-                  <button type="button" class="linkish mb-2" data-i18n="otp.resend">
-                    Kirim ulang kode (0:24)
-                  </button>
-                  <div class="btn-stack">
+                  <div data-booking-summary class="text-left"></div>
+                  <div class="btn-stack mt-2">
                     <button
                       type="button"
-                      class="btn btn-primary btn-block btn-lg"
-                      data-login
-                      data-login-goto="1"
-                      data-i18n="otp.verifyBtn"
+                      class="btn btn-primary btn-block"
+                      data-flow-goto="27"
+                      data-i18n="booking.invite"
                     >
-                      Verifikasi &amp; Buat Akun
+                      Invite friends
                     </button>
                     <button
                       type="button"
                       class="btn btn-outline btn-block"
-                      data-flow-back="17"
-                      data-i18n="otp.editPhone"
+                      data-flow-goto="1"
+                      data-i18n="booking.backHome"
                     >
-                      Ubah nomor
+                      Back to Home
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 32: Friends list + suggestions -->
+            <div class="flow-step" data-step="friends-list">
+              <div class="app">
+                <div class="app-header">
+                  <div class="app-header-left">
+                    <button
+                      type="button"
+                      class="header-back"
+                      data-flow-goto="29"
+                      aria-label="Back"
+                    >
+                      ←
+                    </button>
+                    <div class="app-logo" data-i18n="title.friends-list">Friends</div>
+                  </div>
+                </div>
+                <div class="app-body">
+                  <div data-friends-list></div>
+                  <div class="mp-section-head mt-2">
+                    <h2 data-i18n="social.suggested">Suggested</h2>
+                  </div>
+                  <div data-friends-suggested></div>
                 </div>
               </div>
             </div>
@@ -3197,6 +3500,13 @@
     <script src="../role.js"></script>
     <script src="../battle-of-communities.js"></script>
     <script src="../community-sparring.js"></script>
+    <script src="../social-feed.js"></script>
+    <script src="../social-graph.js"></script>
+    <script src="../achievements.js"></script>
+    <script src="../home-pulse.js"></script>
+    <script src="../guest-pulse.js"></script>
+    <script src="../passport.js"></script>
+    <script src="../booking-mock.js"></script>
     <script src="../badges.js"></script>
     <script src="../feedback.js"></script>
     <script src="../mascot.js"></script>
@@ -3236,7 +3546,7 @@
         {
           titleKey: "title.events",
           hintKey: "flow.hint.events",
-          nav: "events",
+          nav: "play",
         },
         { titleKey: "title.americano", hintKey: "flow.hint.americano" },
         { titleKey: "title.mexicano", hintKey: "flow.hint.mexicano" },
@@ -3257,7 +3567,7 @@
         {
           titleKey: "title.event-register",
           hintKey: "flow.hint.register",
-          nav: "events",
+          nav: "play",
         },
         { titleKey: "title.auth-register", hintKey: "flow.hint.signup" },
         { titleKey: "title.verify-otp", hintKey: "flow.hint.verifyOtp" },
@@ -3269,6 +3579,31 @@
         { titleKey: "title.leaderboard-snapshot", hintKey: "flow.hint.snapshot" },
         { titleKey: "boc.fixtureDetail", hintKey: "boc.hintFixture" },
         { titleKey: "sparring.detailTitle", hintKey: "sparring.hintDetail" },
+        {
+          titleKey: "title.social-feed",
+          hintKey: "flow.hint.socialFeed",
+          nav: "social",
+        },
+        {
+          titleKey: "title.messages-inbox",
+          hintKey: "flow.hint.messages",
+          nav: "social",
+        },
+        {
+          titleKey: "title.player-passport",
+          hintKey: "flow.hint.passport",
+        },
+        {
+          titleKey: "title.court-booking",
+          hintKey: "flow.hint.booking",
+          nav: "play",
+        },
+        { titleKey: "title.booking-confirm", hintKey: "flow.hint.bookingConfirm" },
+        {
+          titleKey: "title.friends-list",
+          hintKey: "flow.hint.friends",
+          nav: "social",
+        },
       ];
 
       const isGuest = new URLSearchParams(location.search).get("guest") === "1";
@@ -3280,11 +3615,19 @@
         finishUrl: "index.html",
         settingsStep: 23,
         playerStep: 22,
+        messagesStep: 28,
       });
 
       if (window.MP_Referee) MP_Referee.init();
       MP_BoC.init();
       MP_InterCommunity.init();
+      MP_SocialFeed.init();
+      MP_SocialGraph.init();
+      MP_Achievements.init();
+      MP_HomePulse.init();
+      MP_GuestPulse.init();
+      MP_Passport.init();
+      MP_Booking.init();
       MP_Badges.init();
       MP_Feedback.init();
       MP_Mascot.init();

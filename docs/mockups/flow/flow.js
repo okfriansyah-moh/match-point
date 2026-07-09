@@ -1,4 +1,51 @@
 /* Match Point — natural interactive flow (immersive, multi-sport) */
+
+/* Lucide-style inline SVG nav icons — no emoji as structural icons
+   (design-system/match-point/MASTER.md anti-pattern rule). */
+window.MP_NAV_ICONS = (function () {
+  const svg = (body) =>
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    body +
+    "</svg>";
+  return {
+    home: svg(
+      '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>',
+    ),
+    play: svg(
+      '<circle cx="12" cy="12" r="9"/><path d="M4.6 5.7c2.9 2.6 2.9 10 0 12.6"/><path d="M19.4 5.7c-2.9 2.6-2.9 10 0 12.6"/>',
+    ),
+    social: svg('<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>'),
+    rank: svg(
+      '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+    ),
+    community: svg(
+      '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    ),
+    explore: svg(
+      '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+    ),
+    plus: svg('<path d="M5 12h14"/><path d="M12 5v14"/>'),
+    calendar: svg(
+      '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+    ),
+    dashboard: svg(
+      '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+    ),
+    inbox: svg(
+      '<polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>',
+    ),
+    clock: svg('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'),
+    chart: svg('<path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>'),
+    pipeline: svg('<path d="M3 3h18l-7 8v6l-4 2v-8L3 3z"/>'),
+    shield: svg('<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>'),
+    activity: svg('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'),
+    booking: svg(
+      '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/><path d="M15 21V9"/>',
+    ),
+  };
+})();
+
 window.MP_Flow = (function () {
   const i18n = window.MP_I18N;
   let goFn = null;
@@ -93,7 +140,7 @@ window.MP_Flow = (function () {
     }
 
     const mascotSwitchHTML =
-      '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="sm" data-i18n-title="sport.switch" title="Switch sport"></button>';
+      '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="header" data-i18n-title="sport.switch" title="Switch sport"></button>';
 
     const slimControlsHTML = mascotSwitchHTML;
 
@@ -105,22 +152,41 @@ window.MP_Flow = (function () {
         title: "Budi Santoso",
       };
 
-      const NAV_ITEMS = (
+      const IC = window.MP_NAV_ICONS;
+      const filterNav = (items) =>
+        items.filter(
+          (it) =>
+            NAV_STEP[it.key] !== undefined ||
+            (config.navRedirect && config.navRedirect[it.key]),
+        );
+
+      // Member nav: Home · Play · Social · Rank · Communities (four-journey IA).
+      const NAV_ITEMS = filterNav(
         config.navItems || [
-          { key: "home", i18n: "nav.home", icon: "🏠" },
-          { key: "rank", i18n: "nav.rank", icon: "🏆" },
-          { key: "match", i18n: "nav.play", icon: "➕", auth: true },
-          { key: "events", i18n: "nav.events", icon: "🎯" },
-          { key: "community", i18n: "nav.group.community", icon: "👥" },
-        ]
-      ).filter(
-        (it) =>
-          NAV_STEP[it.key] !== undefined ||
-          (config.navRedirect && config.navRedirect[it.key]),
+          { key: "home", i18n: "nav.home", icon: IC.home },
+          { key: "play", i18n: "nav.play", icon: IC.play },
+          { key: "social", i18n: "nav.social", icon: IC.social },
+          { key: "rank", i18n: "nav.rank", icon: IC.rank },
+          { key: "community", i18n: "nav.communitiesTab", icon: IC.community },
+        ],
       );
 
+      // Guest nav: reduced Explore · Play · Social preview · Rank preview.
+      // Keys reuse member step keys so NAV_STEP + active-sync work unchanged.
+      // Pages with custom navItems (club/platform) never run as guest — skip.
+      const GUEST_NAV_ITEMS = config.navItems
+        ? []
+        : filterNav(
+            config.guestNavItems || [
+              { key: "home", i18n: "nav.explore", icon: IC.explore },
+              { key: "play", i18n: "nav.play", icon: IC.play },
+              { key: "social", i18n: "nav.socialPreview", icon: IC.social },
+              { key: "rank", i18n: "nav.rankPreview", icon: IC.rank },
+            ],
+          );
+
       const mascotSwitchHTML =
-        '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="sm" data-i18n-title="sport.switch" title="Switch sport"></button>';
+        '<button type="button" class="mp-mascot-switch mp-mascot-header-slot" data-mascot data-mascot-switch data-mascot-sport="auto" data-mascot-size="header" data-i18n-title="sport.switch" title="Switch sport"></button>';
 
       const sportOrbHTML = config.chromeSport !== false ? mascotSwitchHTML : "";
 
@@ -146,6 +212,7 @@ window.MP_Flow = (function () {
         "</span></div>" +
         '<button type="button" class="profile-menu-item" data-nav="profile" data-i18n="menu.viewProfile">Lihat Profil</button>' +
         '<button type="button" class="profile-menu-item" data-menu-settings data-i18n="menu.settings">Akun &amp; Pengaturan</button>' +
+        '<button type="button" class="profile-menu-item" data-menu-messages data-i18n="title.messages-inbox">Pesan</button>' +
         '<a href="../about.html" class="profile-menu-item" data-i18n="about.title">About Match Point</a>' +
         '<a href="../global-readiness.html" class="profile-menu-item" data-i18n="global.navLink">Global readiness</a>' +
         '<div class="profile-menu-divider"></div>' +
@@ -176,39 +243,62 @@ window.MP_Flow = (function () {
             actions.insertAdjacentHTML("beforeend", controlsHTML);
           }
 
+          // Facebook-style top tabs (icon + label + active underline) and the
+          // mobile bottom nav render one variant per auth state; CSS hides the
+          // inactive [data-nav-variant] via body.mp-guest.
+          const topnavHTML = (items, variant) =>
+            '<nav class="mp-topnav" data-nav-variant="' +
+            variant +
+            '">' +
+            items
+              .map(
+                (it) =>
+                  '<button type="button" class="mp-topnav-item"' +
+                  (it.auth ? " data-requires-auth" : "") +
+                  ' data-nav="' +
+                  it.key +
+                  '">' +
+                  (it.icon || "") +
+                  '<span data-i18n="' +
+                  it.i18n +
+                  '"></span></button>',
+              )
+              .join("") +
+            "</nav>";
+
+          const bottomNavHTML = (items, variant) =>
+            '<nav class="bottom-nav" data-nav-variant="' +
+            variant +
+            '">' +
+            items
+              .map(
+                (it) =>
+                  '<button type="button" class="bottom-nav-item"' +
+                  (it.auth ? " data-requires-auth" : "") +
+                  ' data-nav="' +
+                  it.key +
+                  '"><span>' +
+                  it.icon +
+                  '</span><span data-i18n="' +
+                  it.i18n +
+                  '"></span></button>',
+              )
+              .join("") +
+            "</nav>";
+
           if (NAV_ITEMS.length && !app.querySelector(".mp-topnav")) {
-            const nav = document.createElement("nav");
-            nav.className = "mp-topnav";
-            nav.innerHTML = NAV_ITEMS.map(
-              (it) =>
-                '<button type="button" class="mp-topnav-item"' +
-                (it.auth ? " data-requires-auth" : "") +
-                ' data-nav="' +
-                it.key +
-                '" data-i18n="' +
-                it.i18n +
-                '"></button>',
-            ).join("");
-            if (header) header.insertAdjacentElement("afterend", nav);
-            else app.prepend(nav);
+            let navHTML = topnavHTML(NAV_ITEMS, "member");
+            if (GUEST_NAV_ITEMS.length)
+              navHTML += topnavHTML(GUEST_NAV_ITEMS, "guest");
+            if (header) header.insertAdjacentHTML("afterend", navHTML);
+            else app.insertAdjacentHTML("afterbegin", navHTML);
           }
 
           if (NAV_ITEMS.length && !app.querySelector(".bottom-nav")) {
-            const bn = document.createElement("nav");
-            bn.className = "bottom-nav";
-            bn.innerHTML = NAV_ITEMS.map(
-              (it) =>
-                '<button type="button" class="bottom-nav-item"' +
-                (it.auth ? " data-requires-auth" : "") +
-                ' data-nav="' +
-                it.key +
-                '"><span>' +
-                it.icon +
-                '</span><span data-i18n="' +
-                it.i18n +
-                '"></span></button>',
-            ).join("");
-            app.appendChild(bn);
+            let navHTML = bottomNavHTML(NAV_ITEMS, "member");
+            if (GUEST_NAV_ITEMS.length)
+              navHTML += bottomNavHTML(GUEST_NAV_ITEMS, "guest");
+            app.insertAdjacentHTML("beforeend", navHTML);
           }
           return;
         }
@@ -361,6 +451,16 @@ window.MP_Flow = (function () {
         });
       }
       if (window.MP_Rank) MP_Rank.applyDOM();
+      // Four-journey OS modules render into data-* hooks on the active step
+      if (window.MP_SocialFeed) MP_SocialFeed.applyDOM({ guest });
+      if (window.MP_HomePulse) MP_HomePulse.applyDOM({ guest });
+      if (window.MP_GuestPulse) MP_GuestPulse.applyDOM({ guest });
+      if (window.MP_Passport) MP_Passport.applyDOM({ guest });
+      if (window.MP_SocialGraph) MP_SocialGraph.applyDOM();
+      if (window.MP_Achievements) MP_Achievements.applyDOM();
+      if (window.MP_CommunityHQ) MP_CommunityHQ.applyDOM();
+      if (window.MP_Booking) MP_Booking.applyDOM();
+      if (window.MP_Ecosystem) MP_Ecosystem.applyDOM(current);
       if (window.MP_PlayerAnalytics) {
         const profBody = document.querySelector('.flow-step.active[data-step="profile"] .app-body');
         if (profBody) MP_PlayerAnalytics.renderProfilePanel(profBody);
@@ -554,6 +654,14 @@ window.MP_Flow = (function () {
         return;
       }
 
+      const messagesEl = e.target.closest("[data-menu-messages]");
+      if (messagesEl) {
+        e.preventDefault();
+        closeMenus();
+        if (config.messagesStep != null) go(config.messagesStep, { toast: false });
+        return;
+      }
+
       // Logout from the profile dropdown
       const logoutEl = e.target.closest("[data-menu-logout]");
       if (logoutEl) {
@@ -599,6 +707,10 @@ window.MP_Flow = (function () {
       if (togEl) {
         e.preventDefault();
         togEl.classList.toggle("active");
+        if (togEl.hasAttribute("data-follow-btn")) {
+          const on = togEl.classList.contains("active");
+          togEl.textContent = i18n.t(on ? "social.following" : "social.follow");
+        }
         return;
       }
 
@@ -1071,13 +1183,23 @@ window.MP_Flow = (function () {
       if (gotoEl) {
         e.preventDefault();
         const idx = parseInt(gotoEl.dataset.flowGoto, 10);
-        if (!isNaN(idx)) go(idx);
+        if (!isNaN(idx)) {
+          if (gotoEl.dataset.returnStep) {
+            sessionStorage.setItem("mp-flow-return", gotoEl.dataset.returnStep);
+          }
+          go(idx);
+        }
         return;
       }
 
       const backEl = e.target.closest("[data-flow-back]");
       if (backEl) {
         e.preventDefault();
+        if (backEl.dataset.flowBack === "return") {
+          const ret = parseInt(sessionStorage.getItem("mp-flow-return") || "6", 10);
+          go(isNaN(ret) ? 6 : ret, { toast: false });
+          return;
+        }
         if (backEl.dataset.flowBack === "smart") {
           const target = guest && NAV_STEP.home !== undefined ? NAV_STEP.home : current - 1;
           go(Math.max(0, target), { toast: false });
