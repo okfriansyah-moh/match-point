@@ -283,12 +283,97 @@ window.MP_GalleryNotesData = (function () {
     "court-booking": {
       journey: "player",
       purpose: L(
-        "Teaser booking lapangan — grid slot per lapangan (mono, terisi dicoret, terpilih accent); tanpa pembayaran (Fase 4 roadmap).",
-        "Court booking teaser — per-court slot grid (mono, taken struck, selected accent); no payments (roadmap Phase 4).",
+        "Teaser booking lapangan — grid slot referensi UI; Fase 4 roadmap, CTA ke open mabar & acara.",
+        "Court booking teaser — slot grid UI reference; Phase 4 roadmap, CTAs to open mabar & events.",
       ),
       components: [
-        c(1, "[data-booking-slots], .mp-slot", { id: "Grid slot", en: "Slot grid" }, { id: "Jam mono tabular; state kosong/terisi/terpilih jelas.", en: "Tabular mono times; clear free/taken/selected states." }, { id: "Modul kelas-KUYY di dalam graph.", en: "The KUYY-class module inside the graph." }),
-        c(2, ".btn-primary[data-flow-goto=\"31\"]", { id: "CTA lanjut", en: "Continue CTA" }, { id: "Satu CTA primer setelah pilih slot.", en: "One primary CTA after slot selection." }, { id: "Teaser tetap jujur: demo, bukan checkout.", en: "The teaser stays honest: demo, not checkout." }),
+        c(1, "[data-booking-slots], .mp-slot", { id: "Grid slot", en: "Slot grid" }, { id: "Jam mono tabular; banner Fase 4 di atas grid.", en: "Tabular mono times; Phase 4 banner above grid." }, { id: "Spesifikasi AYO/KUYY untuk fase berikutnya.", en: "AYO/KUYY spec for a later phase." }),
+        c(2, ".mp-phase-banner", { id: "Banner fase", en: "Phase banner" }, { id: "Menjelaskan booking ditunda; graph dulu.", en: "Explains booking is deferred; graph first." }, { id: "Reclub-style sequencing.", en: "Reclub-style sequencing." }),
+        c(3, "[data-goto=\"open-mabar-board\"]", { id: "CTA open mabar", en: "Open mabar CTA" }, { id: "Alihkan ke organize-play sekarang.", en: "Routes to organize-play now." }, { id: "Play-to-rank loop.", en: "Play-to-rank loop." }),
+      ],
+      mechanics: SHARED.rankMovement,
+    },
+    "open-mabar-board": {
+      journey: "player",
+      purpose: L(
+        "Open mabar / pickup discovery — AYO Main Bareng + KUYY open match di bracket MP Rating.",
+        "Open mabar / pickup discovery — AYO Main Bareng + KUYY open match at MP Rating bracket.",
+      ),
+      components: [
+        c(1, "[data-open-mabar-board], .mp-mabar-card", { id: "Daftar mabar", en: "Mabar list" }, { id: "Kartu slot, bracket, patungan demo.", en: "Slot cards, bracket, demo cost share." }, { id: "Tanpa checkout booking.", en: "No booking checkout." }),
+        c(2, "[data-play-tab=\"mabar\"]", { id: "Tab Play", en: "Play tab" }, { id: "Segmen di events-feed.", en: "Segment on events-feed." }, { id: "Satu hub discovery.", en: "One discovery hub." }),
+      ],
+      mechanics: SHARED.rankMovement,
+    },
+    "open-mabar-detail": {
+      journey: "player",
+      purpose: L(
+        "Detail open mabar — roster slot, host, bracket band, gabung tanpa bayar lapangan.",
+        "Open mabar detail — slot roster, host, bracket band, join without court checkout.",
+      ),
+      components: [
+        c(1, "[data-open-mabar-detail], .mp-mabar-roster", { id: "Roster", en: "Roster" }, { id: "Slot terisi/kosong + host.", en: "Filled/open slots + host." }, { id: "Transparansi sebelum gabung.", en: "Transparency before joining." }),
+        c(2, "[data-mabar-join]", { id: "CTA gabung", en: "Join CTA" }, { id: "Request slot → submit match setelah main.", en: "Request slot → submit match after play." }, { id: "Play-to-rank loop.", en: "Play-to-rank loop." }),
+      ],
+      mechanics: SHARED.rankMovement,
+    },
+    "open-mabar-create": {
+      journey: "player",
+      purpose: L(
+        "Host open mabar — venue teks, waktu, bracket gate; tanpa modul booking.",
+        "Host open mabar — venue text, time, bracket gate; no booking module.",
+      ),
+      components: [
+        c(1, ".form-group", { id: "Form host", en: "Host form" }, { id: "Venue, waktu, kelas bracket.", en: "Venue, time, bracket class." }, { id: "Organize-play tanpa inventory.", en: "Organize-play without inventory." }),
+        c(2, "[data-flow-goto=\"34\"]", { id: "Publish", en: "Publish" }, { id: "Ke detail setelah publish demo.", en: "To detail after demo publish." }, { id: "Mirip Reclub create meet.", en: "Like Reclub create meet." }),
+      ],
+      mechanics: SHARED.rankMovement,
+    },
+    "player-challenge": {
+      journey: "player",
+      purpose: L(
+        "Tantang pemain — alur ILTL-style; eligibility dari MP Rating.",
+        "Challenge a player — ILTL-style flow; eligibility from MP Rating.",
+      ),
+      components: [
+        c(1, "[data-player-challenge]", { id: "Form tantangan", en: "Challenge form" }, { id: "Lawan, waktu, venue.", en: "Opponent, time, venue." }, { id: "Prefill dari leaderboard/find players.", en: "Prefill from leaderboard/find players." }),
+        c(2, "[data-challenge-inbox]", { id: "Inbox", en: "Inbox" }, { id: "Pending/accepted + terima → submit match.", en: "Pending/accepted + accept → submit match." }, { id: "Menutup loop kompetisi.", en: "Closes the competition loop." }),
+      ],
+      mechanics: SHARED.rankMovement,
+    },
+    "challenge-inbox": {
+      journey: "player",
+      purpose: L(
+        "Kotak tantangan — masuk/keluar, terima lalu arahkan ke catat hasil.",
+        "Challenge inbox — in/out, accept then route to submit result.",
+      ),
+      components: [
+        c(1, "[data-challenge-inbox], .mp-challenge-row", { id: "Daftar", en: "List" }, { id: "Status badge + aksi terima/tolak.", en: "Status badge + accept/decline actions." }, { id: "ILTL-style challenge hub.", en: "ILTL-style challenge hub." }),
+        c(2, "[data-challenge-badge]", { id: "Badge", en: "Badge" }, { id: "Counter pending di header.", en: "Pending counter in header." }, { id: "Sinyal aksi harian.", en: "Daily action signal." }),
+      ],
+      mechanics: SHARED.rankMovement,
+    },
+    "player-availability": {
+      journey: "player",
+      purpose: L(
+        "Ketersediaan pemain / OOT — sembunyikan dari saran mabar & tantangan.",
+        "Player availability / OOT — hide from mabar suggestions & challenges.",
+      ),
+      components: [
+        c(1, "[data-player-availability], .mp-avail-option", { id: "Status", en: "Status" }, { id: "Siap / Sibuk / OOT + tanggal kembali.", en: "Available / Busy / OOT + return date." }, { id: "ILTL OOT parity.", en: "ILTL OOT parity." }),
+        c(2, "[data-avail-display]", { id: "Chip profil", en: "Profile chip" }, { id: "Tampil di player-other.", en: "Shown on player-other." }, { id: "Konteks sosial fair-play.", en: "Fair-play social context." }),
+      ],
+      mechanics: SHARED.rankMovement,
+    },
+    "booking-roadmap": {
+      journey: "player",
+      purpose: L(
+        "Roadmap modul booking Fase 4 — venue directory, DP/checkout, reschedule (AYO/KUYY-class).",
+        "Phase 4 booking module roadmap — venue directory, DP/checkout, reschedule (AYO/KUYY-class).",
+      ),
+      components: [
+        c(1, "[data-booking-roadmap]", { id: "Daftar fitur", en: "Feature list" }, { id: "4 bullet roadmap + CTA organize-play.", en: "4 bullet roadmap + organize-play CTAs." }, { id: "Jujur soal fase produk.", en: "Honest about product phase." }),
+        c(2, ".btn-stack", { id: "CTA alternatif", en: "Alt CTAs" }, { id: "Open mabar & acara sebagai jalur sekarang.", en: "Open mabar & events as the path now." }, { id: "Reclub-style defer booking.", en: "Reclub-style defer booking." }),
       ],
       mechanics: SHARED.rankMovement,
     },

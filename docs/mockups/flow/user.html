@@ -1201,6 +1201,7 @@
                             <div class="lb-meta">MP Rating 8.1 ✓ · 52 match · +24 minggu ini</div>
                           </div>
                           <span class="lb-points">1820</span>
+                          <button type="button" class="btn btn-outline btn-sm" data-flow-goto="36" data-challenge-target="Rudi Hartono" data-i18n="challenge.issue">Tantang</button>
                         </li>
                         <li class="lb-row highlight" data-auth-only>
                           <span
@@ -1380,6 +1381,10 @@
                     <div class="match-meta">
                       Kamu naik ke <strong>#12</strong> di Padel Jakarta
                     </div>
+                  </div>
+                  <div class="match-endorse-prompt">
+                    <p class="text-sm font-bold mb-1" data-i18n="match.endorsePrompt">Endorse skill lawanmu?</p>
+                    <button type="button" class="btn btn-outline btn-block btn-sm" data-flow-goto="7" data-i18n="match.endorseCta">Beri Endorsement →</button>
                   </div>
                   <div class="btn-stack">
                     <button
@@ -1798,7 +1803,7 @@
 
             <!-- Step 9: Events discovery feed -->
             <div class="flow-step" data-step="events">
-              <div class="app mp-shell" data-events-feed>
+              <div class="app mp-shell" data-play-discovery data-events-feed>
                 <header class="app-header">
                   <div class="app-logo">
                     <span class="app-logo-dot"></span> Match Point
@@ -1809,7 +1814,13 @@
                     Acara live &amp; registrasi terbuka di dekatmu dan di
                     komunitasmu
                   </p>
-                  <div class="filter-chips mb-2">
+                  <div class="mp-play-tabs mb-2" role="tablist">
+                    <button type="button" class="mp-play-tab active" data-play-tab="events" data-i18n="play.tabEvents">Acara</button>
+                    <button type="button" class="mp-play-tab" data-play-tab="mabar" data-i18n="play.tabMabar">Open Mabar</button>
+                    <button type="button" class="mp-play-tab" data-play-tab="players" data-i18n="play.tabPlayers">Cari Pemain</button>
+                  </div>
+                  <div data-play-pane-events>
+                  <div class="filter-chips mb-2" data-event-filters>
                     <button
                       type="button"
                       class="filter-chip active"
@@ -1850,6 +1861,13 @@
                     >
                       Selesai
                     </button>
+                  </div>
+                  <div class="filter-chips mp-activity-chips mb-2">
+                    <button type="button" class="filter-chip active" data-activity-filter="all" data-i18n="events.filterAll">Semua</button>
+                    <button type="button" class="filter-chip" data-activity-filter="tournament" data-i18n="activity.tournament">Turnamen</button>
+                    <button type="button" class="filter-chip" data-activity-filter="coaching" data-i18n="activity.coaching">Coaching</button>
+                    <button type="button" class="filter-chip" data-activity-filter="clinic" data-i18n="activity.clinic">Klinik</button>
+                    <button type="button" class="filter-chip" data-activity-filter="social" data-i18n="activity.social">Format sosial</button>
                   </div>
                   <div class="event-feed events-list" data-events-list>
                     <article
@@ -1993,6 +2011,38 @@
                       </button>
                     </article>
                     <article
+                      class="event-card mb-2"
+                      data-event-card
+                      data-event-tags="open"
+                      data-activity-type="coaching"
+                    >
+                      <div class="event-card-top">
+                        <span class="badge badge-info" data-i18n="activity.coaching">Coaching</span>
+                        <span class="badge badge-mabar">Intermediate</span>
+                      </div>
+                      <strong>Padel Coaching — Teknik Volley</strong>
+                      <p class="text-sm text-muted event-card-meta">
+                        Senayan Padel Club · Coach Marco · 8 slot · Sabtu 15:00
+                      </p>
+                      <button type="button" class="btn btn-outline btn-sm btn-block mt-1" data-requires-auth data-flow-goto="16" data-i18n="events.registerCta">Daftar →</button>
+                    </article>
+                    <article
+                      class="event-card mb-2"
+                      data-event-card
+                      data-event-tags="open"
+                      data-activity-type="clinic"
+                    >
+                      <div class="event-card-top">
+                        <span class="badge badge-info" data-i18n="activity.clinic">Klinik</span>
+                        <span class="badge badge-mabar">Beginner</span>
+                      </div>
+                      <strong>Pickleball Clinic — Pemula</strong>
+                      <p class="text-sm text-muted event-card-meta">
+                        Pickle Blok M · 12 slot · Minggu 09:00
+                      </p>
+                      <button type="button" class="btn btn-outline btn-sm btn-block mt-1" data-requires-auth data-flow-goto="16" data-i18n="events.registerCta">Daftar →</button>
+                    </article>
+                    <article
                       class="event-card event-card-past mb-2"
                       data-event-card
                       data-event-tags="past"
@@ -2017,6 +2067,12 @@
                       </button>
                     </article>
                   </div>
+                  </div>
+                  <div data-play-pane-mabar hidden>
+                    <div data-open-mabar-board></div>
+                    <button type="button" class="btn btn-primary btn-block mt-2" data-flow-goto="35" data-i18n="play.createMabar">+ Buat Open Mabar</button>
+                  </div>
+                  <div data-play-pane-players hidden data-find-players-list></div>
                 </div>
               </div>
             </div>
@@ -2389,6 +2445,8 @@
                       <div class="stat-lbl">km</div>
                     </div>
                   </div>
+
+                  <div data-club-rewards class="mb-2"></div>
 
                   <div class="fit-card mb-2">
                     <strong data-i18n="community.fitTitle">Apakah komunitas ini cocok buatmu?</strong>
@@ -3141,6 +3199,8 @@
                     <div class="rank-track global"><div class="rank-track-label">Global</div><div class="rank-track-value">2085</div><div class="rank-track-sub">#2 padel</div></div>
                   </div>
                   <button type="button" class="btn btn-primary btn-block mt-2" data-toggle-active data-follow-btn data-i18n="social.follow">Follow</button>
+                  <span data-avail-display class="mb-1" style="display:block"></span>
+                  <button type="button" class="btn btn-outline btn-block mt-1" data-flow-goto="36" data-challenge-target="Rudi Hartono" data-i18n="challenge.issue">Tantang</button>
                   <button type="button" class="btn btn-outline btn-block mt-1" data-flow-goto="7">Endorse player →</button>
                 </div>
               </div>
@@ -3156,6 +3216,8 @@
                   <div class="form-group"><label class="form-label">Nama</label><input class="form-input" value="Budi Santoso" /></div>
                   <div class="form-group"><label class="form-label">@username</label><input class="form-input" value="budisantoso" disabled /><p class="form-hint">Username global tidak bisa diubah</p></div>
                   <div class="form-group"><label class="form-label" data-i18n="profile.homeCommunity">Komunitas utama</label><select class="form-select"><option>Padel Jakarta Selatan</option><option>Kemang Tennis Society</option></select></div>
+                  <div data-player-availability class="mb-2"></div>
+                  <button type="button" class="btn btn-outline btn-block btn-sm mb-2" data-flow-goto="38" data-i18n="title.player-availability">Ketersediaan lengkap →</button>
                   <button type="button" class="btn btn-primary btn-block" data-flow-goto="6">Simpan</button>
                   <div class="card mt-2 mp-help-card">
                     <p class="text-sm font-bold mb-1" data-i18n="about.helpSection">Help &amp; transparency</p>
@@ -3363,15 +3425,11 @@
                     <span data-i18n="booking.date">Date</span>: Sabtu / Saturday
                   </div>
                   <div data-booking-slots></div>
-                  <button
-                    type="button"
-                    class="btn btn-primary btn-block btn-lg mt-2"
-                    data-requires-auth
-                    data-flow-goto="31"
-                    data-i18n="booking.continue"
-                  >
-                    Continue
-                  </button>
+                  <div class="btn-stack mt-2">
+                    <button type="button" class="btn btn-primary btn-block" data-flow-goto="33" data-i18n="booking.findMabar">Cari Open Mabar →</button>
+                    <button type="button" class="btn btn-outline btn-block" data-flow-goto="10" data-i18n="booking.browseEvents">Lihat Acara →</button>
+                    <button type="button" class="btn btn-outline btn-block btn-sm" data-flow-goto="39" data-i18n="booking.roadmapTitle">Roadmap Booking →</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3450,6 +3508,106 @@
                 </div>
               </div>
             </div>
+
+            <!-- Step 33: Open mabar board -->
+            <div class="flow-step" data-step="open-mabar-board">
+              <div class="app mp-shell">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="10" aria-label="Back">←</button>
+                    <div class="app-logo" data-i18n="title.open-mabar-board">Open Mabar</div>
+                  </div>
+                </header>
+                <div class="app-body">
+                  <div data-open-mabar-board></div>
+                  <button type="button" class="btn btn-primary btn-block mt-2" data-flow-goto="35" data-i18n="play.createMabar">+ Buat Open Mabar</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 34: Open mabar detail -->
+            <div class="flow-step" data-step="open-mabar-detail">
+              <div class="app">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="33" aria-label="Back">←</button>
+                    <div class="app-logo" data-i18n="title.open-mabar-detail">Detail Open Mabar</div>
+                  </div>
+                </header>
+                <div class="app-body" data-open-mabar-detail></div>
+              </div>
+            </div>
+
+            <!-- Step 35: Host open mabar -->
+            <div class="flow-step" data-step="open-mabar-create">
+              <div class="app">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="33" aria-label="Back">←</button>
+                    <div class="app-logo" data-i18n="title.open-mabar-create">Buat Open Mabar</div>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow">
+                  <p class="section-sub" data-i18n="mabar.createSub">Host pickup game — tanpa booking checkout.</p>
+                  <div class="form-group"><label class="form-label" data-i18n="challenge.venue">Venue</label><input class="form-input" value="Senayan Padel Club" /></div>
+                  <div class="form-group"><label class="form-label" data-i18n="challenge.proposedTime">Waktu usulan</label><input class="form-input" value="Jumat 19:00" /></div>
+                  <div class="form-group"><label class="form-label" data-i18n="mabar.bracketBand">Kelas bracket</label><select class="form-select"><option>Intermediate</option><option>Beginner</option><option>Advanced</option></select></div>
+                  <button type="button" class="btn btn-primary btn-block btn-lg" data-flow-goto="34">Publish →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Step 36: Player challenge -->
+            <div class="flow-step" data-step="player-challenge">
+              <div class="app">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="3" aria-label="Back">←</button>
+                    <div class="app-logo" data-i18n="title.player-challenge">Tantang Pemain</div>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow" data-player-challenge></div>
+              </div>
+            </div>
+
+            <!-- Step 37: Challenge inbox -->
+            <div class="flow-step" data-step="challenge-inbox">
+              <div class="app">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="6" aria-label="Back">←</button>
+                    <div class="app-logo" data-i18n="title.challenge-inbox">Kotak Tantangan <span class="badge badge-pending" data-challenge-badge hidden>1</span></div>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow" data-challenge-inbox></div>
+              </div>
+            </div>
+
+            <!-- Step 38: Player availability -->
+            <div class="flow-step" data-step="player-availability">
+              <div class="app">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="23" aria-label="Back">←</button>
+                    <div class="app-logo" data-i18n="title.player-availability">Ketersediaan</div>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow" data-player-availability></div>
+              </div>
+            </div>
+
+            <!-- Step 39: Booking roadmap (Phase 4) -->
+            <div class="flow-step" data-step="booking-roadmap">
+              <div class="app">
+                <header class="app-header">
+                  <div class="app-header-left">
+                    <button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button>
+                    <div class="app-logo" data-i18n="title.booking-roadmap">Roadmap Booking</div>
+                  </div>
+                </header>
+                <div class="app-body app-body-narrow" data-booking-roadmap></div>
+              </div>
+            </div>
           </div>
         </div>
         <!-- /device-stage -->
@@ -3507,6 +3665,10 @@
     <script src="../guest-pulse.js"></script>
     <script src="../passport.js"></script>
     <script src="../booking-mock.js"></script>
+    <script src="../open-mabar.js"></script>
+    <script src="../player-challenge.js"></script>
+    <script src="../player-availability.js"></script>
+    <script src="../club-rewards.js"></script>
     <script src="../badges.js"></script>
     <script src="../feedback.js"></script>
     <script src="../mascot.js"></script>
@@ -3604,6 +3766,13 @@
           hintKey: "flow.hint.friends",
           nav: "social",
         },
+        { titleKey: "title.open-mabar-board", hintKey: "flow.hint.openMabar", nav: "play" },
+        { titleKey: "title.open-mabar-detail", hintKey: "flow.hint.openMabarDetail", nav: "play" },
+        { titleKey: "title.open-mabar-create", hintKey: "flow.hint.openMabarCreate", nav: "play" },
+        { titleKey: "title.player-challenge", hintKey: "flow.hint.challenge" },
+        { titleKey: "title.challenge-inbox", hintKey: "flow.hint.challengeInbox" },
+        { titleKey: "title.player-availability", hintKey: "flow.hint.availability" },
+        { titleKey: "title.booking-roadmap", hintKey: "flow.hint.bookingRoadmap", nav: "play" },
       ];
 
       const isGuest = new URLSearchParams(location.search).get("guest") === "1";
@@ -3628,6 +3797,10 @@
       MP_GuestPulse.init();
       MP_Passport.init();
       MP_Booking.init();
+      MP_OpenMabar.init();
+      MP_PlayerChallenge.init();
+      MP_PlayerAvailability.init();
+      MP_ClubRewards.init();
       MP_Badges.init();
       MP_Feedback.init();
       MP_Mascot.init();

@@ -141,6 +141,13 @@ addMappedScreens(lines, playerSteps, [
   { screenId: "court-booking", stepId: "court-booking" },
   { screenId: "booking-confirm", stepId: "booking-confirm" },
   { screenId: "friends-list", stepId: "friends-list" },
+  { screenId: "open-mabar-board", stepId: "open-mabar-board" },
+  { screenId: "open-mabar-detail", stepId: "open-mabar-detail" },
+  { screenId: "open-mabar-create", stepId: "open-mabar-create" },
+  { screenId: "player-challenge", stepId: "player-challenge" },
+  { screenId: "challenge-inbox", stepId: "challenge-inbox" },
+  { screenId: "player-availability", stepId: "player-availability" },
+  { screenId: "booking-roadmap", stepId: "booking-roadmap" },
 ]);
 
 const socialStep = mapStepsById(playerSteps)["social-feed"];

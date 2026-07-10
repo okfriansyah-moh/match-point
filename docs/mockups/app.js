@@ -59,6 +59,13 @@
     "player-highlights",
     "court-booking",
     "booking-confirm",
+    "booking-roadmap",
+    "open-mabar-board",
+    "open-mabar-detail",
+    "open-mabar-create",
+    "player-challenge",
+    "challenge-inbox",
+    "player-availability",
     "home-dashboard-guest",
     "social-feed-guest",
     "passport-teaser-guest",
@@ -135,6 +142,13 @@
     30: "court-booking",
     31: "booking-confirm",
     32: "friends-list",
+    33: "open-mabar-board",
+    34: "open-mabar-detail",
+    35: "open-mabar-create",
+    36: "player-challenge",
+    37: "challenge-inbox",
+    38: "player-availability",
+    39: "booking-roadmap",
   };
 
   function updateTitle(screenId) {

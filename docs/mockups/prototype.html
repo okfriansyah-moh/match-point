@@ -128,6 +128,27 @@
           <button class="nav-link" data-screen="booking-confirm">
             <span class="dot"></span><span data-i18n="title.booking-confirm">Booking Confirmed</span>
           </button>
+          <button class="nav-link" data-screen="booking-roadmap">
+            <span class="dot"></span><span data-i18n="title.booking-roadmap">Booking Roadmap</span>
+          </button>
+          <button class="nav-link" data-screen="open-mabar-board">
+            <span class="dot"></span><span data-i18n="title.open-mabar-board">Open Mabar</span>
+          </button>
+          <button class="nav-link" data-screen="open-mabar-detail">
+            <span class="dot"></span><span data-i18n="title.open-mabar-detail">Open Mabar Detail</span>
+          </button>
+          <button class="nav-link" data-screen="open-mabar-create">
+            <span class="dot"></span><span data-i18n="title.open-mabar-create">Host Open Mabar</span>
+          </button>
+          <button class="nav-link" data-screen="player-challenge">
+            <span class="dot"></span><span data-i18n="title.player-challenge">Challenge</span>
+          </button>
+          <button class="nav-link" data-screen="challenge-inbox">
+            <span class="dot"></span><span data-i18n="title.challenge-inbox">Challenge Inbox</span>
+          </button>
+          <button class="nav-link" data-screen="player-availability">
+            <span class="dot"></span><span data-i18n="title.player-availability">Availability</span>
+          </button>
 <button class="nav-link" data-screen="submit-match">
             <span class="dot"></span
             ><span data-i18n="nav.submitMatch">Submit Match</span>
@@ -1974,7 +1995,9 @@
                                         <div class="stat-lbl">km</div>
                                       </div>
                                     </div>
-                  
+
+                                    <div data-club-rewards class="mb-2"></div>
+
                                     <div class="fit-card mb-2">
                                       <strong data-i18n="community.fitTitle">Apakah komunitas ini cocok buatmu?</strong>
                                       <p class="text-sm text-muted mt-1" data-community-fit-tagline>
@@ -2724,7 +2747,11 @@
                         +18 Mabar pts · K=32 Elo delta
                       </div>
                     </div>
-                    <button class="btn btn-primary btn-block mt-2">
+                    <div class="match-endorse-prompt">
+                      <p class="text-sm font-bold mb-1" data-i18n="match.endorsePrompt">Endorse skill lawanmu?</p>
+                      <button type="button" class="btn btn-outline btn-block btn-sm" data-goto="endorsement" data-i18n="match.endorseCta">Beri Endorsement →</button>
+                    </div>
+                    <button class="btn btn-primary btn-block mt-2" data-goto="leaderboard">
                       Lihat Leaderboard
                     </button>
                   </div>
@@ -3474,7 +3501,7 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
               <div class="screen" id="screen-events-feed">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell" data-events-feed>
+                  <div class="app mp-shell" data-play-discovery data-events-feed>
                                   <header class="app-header">
                                     <div class="app-logo">
                                       <span class="app-logo-dot"></span> Match Point
@@ -3485,7 +3512,13 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                       Acara live &amp; registrasi terbuka di dekatmu dan di
                                       komunitasmu
                                     </p>
-                                    <div class="filter-chips mb-2">
+                                    <div class="mp-play-tabs mb-2" role="tablist">
+                                      <button type="button" class="mp-play-tab active" data-play-tab="events" data-i18n="play.tabEvents">Acara</button>
+                                      <button type="button" class="mp-play-tab" data-play-tab="mabar" data-i18n="play.tabMabar">Open Mabar</button>
+                                      <button type="button" class="mp-play-tab" data-play-tab="players" data-i18n="play.tabPlayers">Cari Pemain</button>
+                                    </div>
+                                    <div data-play-pane-events>
+                                    <div class="filter-chips mb-2" data-event-filters>
                                       <button
                                         type="button"
                                         class="filter-chip active"
@@ -3526,6 +3559,13 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                       >
                                         Selesai
                                       </button>
+                                    </div>
+                                    <div class="filter-chips mp-activity-chips mb-2">
+                                      <button type="button" class="filter-chip active" data-activity-filter="all" data-i18n="events.filterAll">Semua</button>
+                                      <button type="button" class="filter-chip" data-activity-filter="tournament" data-i18n="activity.tournament">Turnamen</button>
+                                      <button type="button" class="filter-chip" data-activity-filter="coaching" data-i18n="activity.coaching">Coaching</button>
+                                      <button type="button" class="filter-chip" data-activity-filter="clinic" data-i18n="activity.clinic">Klinik</button>
+                                      <button type="button" class="filter-chip" data-activity-filter="social" data-i18n="activity.social">Format sosial</button>
                                     </div>
                                     <div class="event-feed events-list" data-events-list>
                                       <article
@@ -3668,6 +3708,24 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                           Daftar →
                                         </button>
                                       </article>
+                                      <article class="event-card mb-2" data-event-card data-event-tags="open" data-activity-type="coaching">
+                                        <div class="event-card-top">
+                                          <span class="badge badge-info" data-i18n="activity.coaching">Coaching</span>
+                                          <span class="badge badge-mabar">Intermediate</span>
+                                        </div>
+                                        <strong>Padel Coaching — Teknik Volley</strong>
+                                        <p class="text-sm text-muted event-card-meta">Senayan Padel Club · Coach Marco · Sabtu 15:00</p>
+                                        <button type="button" class="btn btn-outline btn-sm btn-block mt-1" data-goto="event-register" data-i18n="events.registerCta">Daftar →</button>
+                                      </article>
+                                      <article class="event-card mb-2" data-event-card data-event-tags="open" data-activity-type="clinic">
+                                        <div class="event-card-top">
+                                          <span class="badge badge-info" data-i18n="activity.clinic">Klinik</span>
+                                          <span class="badge badge-mabar">Beginner</span>
+                                        </div>
+                                        <strong>Pickleball Clinic — Pemula</strong>
+                                        <p class="text-sm text-muted event-card-meta">Pickle Blok M · Minggu 09:00</p>
+                                        <button type="button" class="btn btn-outline btn-sm btn-block mt-1" data-goto="event-register" data-i18n="events.registerCta">Daftar →</button>
+                                      </article>
                                       <article
                                         class="event-card event-card-past mb-2"
                                         data-event-card
@@ -3693,6 +3751,12 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                         </button>
                                       </article>
                                     </div>
+                                    </div>
+                                    <div data-play-pane-mabar hidden>
+                                      <div data-open-mabar-board></div>
+                                      <button type="button" class="btn btn-primary btn-block mt-2" data-goto="open-mabar-create" data-i18n="play.createMabar">+ Buat Open Mabar</button>
+                                    </div>
+                                    <div data-play-pane-players hidden data-find-players-list></div>
                                   </div>
                                 </div>
                 </div>
@@ -5062,7 +5126,7 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
               <div class="screen" id="screen-club-admin-dashboard">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell">
                                   <header class="app-header">
                                     <div class="app-header-left">
                                       <button
@@ -5076,10 +5140,7 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                         ←
                                       </button>
                                       <div class="app-logo">
-                                        👑
-                                        <span class="club-name-dynamic"
-                                          >Padel Jakarta Selatan</span
-                                        >
+                                        <span class="app-logo-dot"></span> Match Point
                                       </div>
                                     </div>
                                   </header>
@@ -6343,15 +6404,11 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                       <span data-i18n="booking.date">Date</span>: Sabtu / Saturday
                                     </div>
                                     <div data-booking-slots></div>
-                                    <button
-                                      type="button"
-                                      class="btn btn-primary btn-block btn-lg mt-2"
-                                      data-requires-auth
-                                      data-flow-goto="31"
-                                      data-i18n="booking.continue"
-                                    >
-                                      Continue
-                                    </button>
+                                    <div class="btn-stack mt-2">
+                                      <button type="button" class="btn btn-primary btn-block" data-goto="open-mabar-board" data-i18n="booking.findMabar">Cari Open Mabar →</button>
+                                      <button type="button" class="btn btn-outline btn-block" data-goto="events-feed" data-i18n="booking.browseEvents">Lihat Acara →</button>
+                                      <button type="button" class="btn btn-outline btn-block btn-sm" data-goto="booking-roadmap" data-i18n="booking.roadmapTitle">Roadmap Booking →</button>
+                                    </div>
                                   </div>
                                 </div>
                 </div>
@@ -6404,6 +6461,111 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
                                     </div>
                                   </div>
                                 </div>
+                </div>
+              </div>
+              <div class="screen" id="screen-booking-roadmap">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                    <div class="app-header">
+                      <div class="app-header-left">
+                        <button type="button" class="header-back" data-goto="court-booking" aria-label="Back">←</button>
+                        <div class="app-logo" data-i18n="title.booking-roadmap">Roadmap Booking</div>
+                      </div>
+                    </div>
+                    <div class="app-body app-body-narrow" data-booking-roadmap></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen" id="screen-open-mabar-board">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app mp-shell">
+                    <div class="app-header">
+                      <div class="app-header-left">
+                        <button type="button" class="header-back" data-goto="events-feed" aria-label="Back">←</button>
+                        <div class="app-logo" data-i18n="title.open-mabar-board">Open Mabar</div>
+                      </div>
+                    </div>
+                    <div class="app-body">
+                      <div data-open-mabar-board></div>
+                      <button type="button" class="btn btn-primary btn-block mt-2" data-goto="open-mabar-create" data-i18n="play.createMabar">+ Buat Open Mabar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen" id="screen-open-mabar-detail">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                    <div class="app-header">
+                      <div class="app-header-left">
+                        <button type="button" class="header-back" data-goto="open-mabar-board" aria-label="Back">←</button>
+                        <div class="app-logo" data-i18n="title.open-mabar-detail">Detail Open Mabar</div>
+                      </div>
+                    </div>
+                    <div class="app-body" data-open-mabar-detail></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen" id="screen-open-mabar-create">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                    <div class="app-header">
+                      <div class="app-header-left">
+                        <button type="button" class="header-back" data-goto="open-mabar-board" aria-label="Back">←</button>
+                        <div class="app-logo" data-i18n="title.open-mabar-create">Buat Open Mabar</div>
+                      </div>
+                    </div>
+                    <div class="app-body app-body-narrow">
+                      <p class="section-sub" data-i18n="mabar.createSub">Host pickup game — tanpa booking checkout.</p>
+                      <div class="form-group"><label class="form-label" data-i18n="challenge.venue">Venue</label><input class="form-input" value="Senayan Padel Club" /></div>
+                      <button type="button" class="btn btn-primary btn-block btn-lg" data-goto="open-mabar-detail">Publish →</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen" id="screen-player-challenge">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                    <div class="app-header">
+                      <div class="app-header-left">
+                        <button type="button" class="header-back" data-goto="leaderboard" aria-label="Back">←</button>
+                        <div class="app-logo" data-i18n="title.player-challenge">Tantang Pemain</div>
+                      </div>
+                    </div>
+                    <div class="app-body app-body-narrow" data-player-challenge></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen" id="screen-challenge-inbox">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                    <div class="app-header">
+                      <div class="app-header-left">
+                        <button type="button" class="header-back" data-goto="profile" aria-label="Back">←</button>
+                        <div class="app-logo" data-i18n="title.challenge-inbox">Kotak Tantangan <span class="badge badge-pending" data-challenge-badge hidden>1</span></div>
+                      </div>
+                    </div>
+                    <div class="app-body app-body-narrow" data-challenge-inbox></div>
+                  </div>
+                </div>
+              </div>
+              <div class="screen" id="screen-player-availability">
+                <div class="gallery-callout-wrap">
+                  <div class="gallery-callout-layer" aria-hidden="true"></div>
+                  <div class="app">
+                    <div class="app-header">
+                      <div class="app-header-left">
+                        <button type="button" class="header-back" data-goto="edit-profile" aria-label="Back">←</button>
+                        <div class="app-logo" data-i18n="title.player-availability">Ketersediaan</div>
+                      </div>
+                    </div>
+                    <div class="app-body app-body-narrow" data-player-availability></div>
+                  </div>
                 </div>
               </div>
               <!-- Gallery-only: Social stories viewer -->
@@ -6927,6 +7089,10 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
     <script src="passport.js"></script>
     <script src="community-hq.js"></script>
     <script src="booking-mock.js"></script>
+    <script src="open-mabar.js"></script>
+    <script src="player-challenge.js"></script>
+    <script src="player-availability.js"></script>
+    <script src="club-rewards.js"></script>
     <script src="platform-ecosystem.js"></script>
     <script src="event-wizard.js"></script>
     <script src="gallery-hydrate.js"></script>
@@ -6947,6 +7113,13 @@ Dispute #D-4421 resolved — koreksi ranking.</textarea
       MP_GalleryChrome.init();
       if (window.MP_GalleryNotes) MP_GalleryNotes.init();
       if (window.MP_EventWizard) MP_EventWizard.init();
+      if (window.MP_Booking) MP_Booking.init();
+      if (window.MP_OpenMabar) MP_OpenMabar.init();
+      if (window.MP_PlayerChallenge) MP_PlayerChallenge.init();
+      if (window.MP_PlayerAvailability) MP_PlayerAvailability.init();
+      if (window.MP_ClubRewards) MP_ClubRewards.init();
+      if (window.MP_CommunityHQ) MP_CommunityHQ.init();
+      if (window.MP_HomePulse) MP_HomePulse.init();
     </script>
   </body>
 </html>

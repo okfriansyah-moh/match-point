@@ -36,14 +36,75 @@ window.MP_CommunityHQ = (function () {
   ];
 
   const MODULES = [
-    { icon: "calendar", labelKey: "hq.modEvents", kpi: "3", subKey: "hq.upcoming", goto: 1 },
-    { icon: "queue", labelKey: "hq.modRegs", kpi: "12/16", subKey: "hq.slots", goto: 7 },
-    { icon: "live", labelKey: "hq.modLive", kpi: "R3/7", subKey: "hq.liveRound", goto: 9 },
-    { icon: "users", labelKey: "hq.modMembers", kpi: "88", subKey: "hq.newThisMonth" },
-    { icon: "feed", labelKey: "hq.modFeed", kpi: "12", subKey: "hq.postsWeek" },
-    { icon: "swords", labelKey: "hq.modSparring", kpi: "2", subKey: "hq.openRequests", goto: 11 },
-    { icon: "court", labelKey: "hq.modBooking", kpi: "", soon: true },
-    { icon: "wallet", labelKey: "hq.modFinance", kpi: "", soon: true },
+    {
+      icon: "calendar",
+      labelKey: "hq.modEvents",
+      descKey: "hq.descEvents",
+      kpi: "3",
+      subKey: "hq.upcoming",
+      goto: 1,
+    },
+    {
+      icon: "queue",
+      labelKey: "hq.modRegs",
+      descKey: "hq.descRegs",
+      kpi: "12/16",
+      subKey: "hq.slots",
+      goto: 7,
+    },
+    {
+      icon: "live",
+      labelKey: "hq.modLive",
+      descKey: "hq.descLive",
+      kpi: "R3/7",
+      subKey: "hq.liveRound",
+      goto: 9,
+    },
+    {
+      icon: "users",
+      labelKey: "hq.modMembers",
+      descKey: "hq.descMembers",
+      kpi: "88",
+      subKey: "hq.newThisMonth",
+    },
+    {
+      icon: "feed",
+      labelKey: "hq.modFeed",
+      descKey: "hq.descFeed",
+      kpi: "12",
+      subKey: "hq.postsWeek",
+    },
+    {
+      icon: "swords",
+      labelKey: "hq.modSparring",
+      descKey: "hq.descSparring",
+      kpi: "2",
+      subKey: "hq.openRequests",
+      goto: 11,
+    },
+    {
+      icon: "store",
+      labelKey: "hq.modRewards",
+      descKey: "hq.descRewards",
+      kpi: "2.8k",
+      subKey: "hq.rewardsKpi",
+      goto: 15,
+    },
+    {
+      icon: "court",
+      labelKey: "hq.modBooking",
+      descKey: "hq.descBooking",
+      kpi: "",
+      roadmap: true,
+      goto: 39,
+    },
+    {
+      icon: "wallet",
+      labelKey: "hq.modFinance",
+      descKey: "hq.descFinance",
+      kpi: "",
+      soon: true,
+    },
   ];
 
   function renderKpis(root) {
@@ -74,6 +135,11 @@ window.MP_CommunityHQ = (function () {
           ? ' class="mp-hq-module is-soon" aria-disabled="true"'
           : ' class="mp-hq-module"' +
             (m.goto != null ? ' data-flow-goto="' + m.goto + '"' : "");
+        const soonLabel = m.soon
+          ? t("hq.comingSoon")
+          : m.roadmap
+            ? "Phase 4"
+            : "";
         return (
           "<button type=\"button\"" +
           attrs +
@@ -83,8 +149,11 @@ window.MP_CommunityHQ = (function () {
           "</span><strong>" +
           t(m.labelKey) +
           "</strong>" +
-          (m.soon
-            ? '<span class="mp-hq-delta is-warn">' + t("hq.comingSoon") + "</span>"
+          (m.descKey
+            ? '<p class="mp-hq-module-desc">' + t(m.descKey) + "</p>"
+            : "") +
+          (m.soon || m.roadmap
+            ? '<span class="mp-hq-delta is-warn">' + soonLabel + "</span>"
             : '<span class="mp-hq-module-kpi"><b>' +
               m.kpi +
               "</b><small>" +

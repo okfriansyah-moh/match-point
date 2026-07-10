@@ -256,16 +256,21 @@ window.MP_Communities = (function () {
     if (!container) return;
     const cards = container.querySelectorAll("[data-event-card]");
     const chips = container.querySelectorAll("[data-event-filter]");
+    const activityChips = container.querySelectorAll("[data-activity-filter]");
 
     function applyEventFilter() {
       const active = container.querySelector("[data-event-filter].active");
       const key = active ? active.dataset.eventFilter : "all";
+      const actActive = container.querySelector("[data-activity-filter].active");
+      const actKey = actActive ? actActive.dataset.activityFilter : "all";
 
       cards.forEach((card) => {
         const tags = (card.dataset.eventTags || "").split(",");
+        const activity = card.dataset.activityType || "social";
         let show = false;
         if (key === "all") show = !tags.includes("past");
         else show = tags.includes(key);
+        if (show && actKey !== "all") show = activity === actKey;
         card.hidden = !show;
       });
     }
@@ -273,6 +278,14 @@ window.MP_Communities = (function () {
     chips.forEach((chip) => {
       chip.addEventListener("click", () => {
         chips.forEach((c) => c.classList.remove("active"));
+        chip.classList.add("active");
+        applyEventFilter();
+      });
+    });
+
+    activityChips.forEach((chip) => {
+      chip.addEventListener("click", () => {
+        activityChips.forEach((c) => c.classList.remove("active"));
         chip.classList.add("active");
         applyEventFilter();
       });

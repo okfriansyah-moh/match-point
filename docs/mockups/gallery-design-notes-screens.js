@@ -411,7 +411,7 @@ window.MP_GalleryNotesScreens = (function () {
       components: [
         c(1, ".cp-cover", L("Cover komunitas", "Community cover"), L("Sama seperti member view.", "Same as member view."), L("Admin = member + panel, bukan dunia terpisah.", "Admin = member + panel, not a detached world.")),
         c(2, "[data-hq-kpis]", L("KPI strip", "KPI strip"), L("Anggota · aktif minggu ini · acara berikutnya · pending — angka mono.", "Members · active this week · next event · pending — mono figures."), L("Kesehatan komunitas terbaca dalam satu baris.", "Community health reads in one row.")),
-        c(3, "[data-hq-grid], .mp-hq-module", L("Grid modul HQ", "HQ module grid"), L("Tile Events/Regs/Live masuk wizard lama; Booking & Finance bertanda 'Segera'.", "Events/Regs/Live tiles enter the existing wizards; Booking & Finance marked 'Coming soon'."), L("Menjawab 'bagaimana menjalankan & menumbuhkan komunitas' melampaui ops acara.", "Answers 'how do I run and grow my community' beyond event ops.")),
+        c(3, "[data-hq-grid], .mp-hq-module, .mp-hq-module-desc", L("Grid modul HQ", "HQ module grid"), L("Setiap tile punya judul + deskripsi singkat (apa fungsinya) + KPI; Events/Regs/Live masuk wizard; Booking & Finance bertanda roadmap/segera.", "Each tile has title + short purpose line + KPI; Events/Regs/Live enter wizards; Booking & Finance marked roadmap/coming soon."), L("Menjawab 'bagaimana menjalankan & menumbuhkan komunitas' melampaui ops acara.", "Answers 'how do I run and grow my community' beyond event ops.")),
         c(4, ".operator-divider", L("Pemisah mode", "Mode divider"), L("Transisi dari HQ ke tampilan member.", "Transition from HQ to the member view."), L("Mengurangi campur aduk peran.", "Reduces role mixing.")),
       ],
     },

@@ -81,6 +81,13 @@ window.MP_HomePulse = (function () {
       }),
       card({
         icon: ICONS.users,
+        title: t("pulse.openMabar"),
+        sub: t("pulse.openMabarSub"),
+        meta: "3",
+        goto: 33,
+      }),
+      card({
+        icon: ICONS.users,
         title: t("pulse.friendActivity"),
         sub: L({
           id: "Sari & Andi main Americano semalam — Sari naik +8.",

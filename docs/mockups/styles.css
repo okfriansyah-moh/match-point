@@ -4040,6 +4040,32 @@ body.mp-device-mobile .app-header-actions .lang-toggle-compact {
   background: rgba(255, 255, 255, 0.25);
 }
 
+/* Operator wizards with full player chrome — white header, not legacy dark admin bar */
+.mp-shell.admin-theme[data-chrome-level="full"] .app-header {
+  background: #fff;
+  border-bottom: 1px solid #e8ece9;
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.mp-shell.admin-theme[data-chrome-level="full"] .app-header .header-back {
+  background: var(--surface);
+}
+
+.mp-shell.admin-theme[data-chrome-level="full"] .app-header .header-back:hover {
+  background: var(--surface-2);
+}
+
+.mp-shell.admin-theme[data-chrome-level="full"] .app-header .icon-btn {
+  border-color: var(--surface-2);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.mp-shell.admin-theme[data-chrome-level="full"] .app-header .avatar-photo {
+  border-color: var(--surface-2);
+}
+
 .mp-shell .app-body {
   padding: 1rem 1.25rem 5rem;
   max-width: none;
@@ -9065,8 +9091,8 @@ body.mp-device-tablet .mp-home-highlights .mp-story-rail {
   padding: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  min-height: 118px;
+  gap: 0.35rem;
+  min-height: 148px;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
@@ -9094,6 +9120,14 @@ body.mp-device-tablet .mp-home-highlights .mp-story-rail {
 
 .mp-hq-module strong {
   font-size: 0.88rem;
+}
+
+.mp-hq-module-desc {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  flex: 1;
 }
 
 .mp-hq-module-kpi {
@@ -9461,4 +9495,137 @@ body.mp-dark .mp-pulse-skeleton {
   .mp-topnav-item {
     transition: none;
   }
+}
+
+/* ── Play discovery / open mabar / challenge / rewards ── */
+.mp-play-tabs {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+.mp-play-tab {
+  flex: 1;
+  min-width: 0;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.mp-play-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+.mp-mabar-card {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.mp-mabar-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+.mp-mabar-roster {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.mp-mabar-slot {
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border);
+  font-size: 0.82rem;
+  text-align: center;
+}
+.mp-mabar-slot.is-filled {
+  border-style: solid;
+  background: var(--surface-2);
+}
+.mp-mabar-slot.is-open {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.mp-player-match-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.mp-player-match-main {
+  flex: 1;
+  min-width: 0;
+}
+.mp-player-match-main small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.mp-challenge-row .btn-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.mp-avail-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.mp-avail-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.mp-avail-option.is-selected {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+.mp-rewards-panel .mp-rewards-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.mp-rewards-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.88rem;
+}
+.mp-rewards-list li:last-child {
+  border-bottom: none;
+}
+.mp-phase-banner {
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--warning, #f59e0b) 12%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--warning, #f59e0b) 35%, var(--border));
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: center;
+}
+.mp-activity-chips .filter-chip {
+  font-size: 0.72rem;
+}
+.match-endorse-prompt {
+  padding: 0.85rem 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--primary) 10%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
+  text-align: left;
 }

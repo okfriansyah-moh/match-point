@@ -2349,6 +2349,42 @@ window.MP_I18N = (function () {
     "hq.newThisMonth": { id: "baru bulan ini", en: "new this month" },
     "hq.postsWeek": { id: "post minggu ini", en: "posts this week" },
     "hq.openRequests": { id: "tantangan terbuka", en: "open challenges" },
+    "hq.descEvents": {
+      id: "Buat & kelola acara — Americano, liga, turnamen, dan format sosial.",
+      en: "Create & run events — Americano, leagues, tournaments, and social formats.",
+    },
+    "hq.descRegs": {
+      id: "Lihat siapa mendaftar, setujui waitlist, dan atur kapasitas slot per acara.",
+      en: "See who signed up, approve waitlist, and manage slot caps per event.",
+    },
+    "hq.descLive": {
+      id: "Pantau skor live saat acara berjalan — lapangan, klasemen, dan progres ronde.",
+      en: "Run live scoring during play — courts, standings, and round progress.",
+    },
+    "hq.descMembers": {
+      id: "Daftar anggota, role admin, dan permintaan gabung yang perlu ditinjau.",
+      en: "Member roster, admin roles, and join requests that need review.",
+    },
+    "hq.descFeed": {
+      id: "Posting pengumuman & sorotan ke feed komunitas — hanya untuk member.",
+      en: "Post announcements & highlights to the member-only community feed.",
+    },
+    "hq.descSparring": {
+      id: "Undang klub lain untuk sparring ranked atau casual lintas komunitas.",
+      en: "Invite other clubs for ranked or casual cross-community sparring.",
+    },
+    "hq.descRewards": {
+      id: "Poin performa klub dari liga & turnamen — tebus reward untuk member.",
+      en: "Club performance points from leagues & wins — redeem rewards for members.",
+    },
+    "hq.descBooking": {
+      id: "Fase 4 — booking lapangan & inventori venue (modul AYO/KUYY-class).",
+      en: "Phase 4 — court booking & venue inventory (AYO/KUYY-class module).",
+    },
+    "hq.descFinance": {
+      id: "Segera — tagihan event, langganan Community Pro, dan laporan keuangan.",
+      en: "Coming soon — event fees, Community Pro billing, and finance reports.",
+    },
 
     /* ── Platform ecosystem console ── */
     "ecosystem.healthTitle": {
@@ -2396,8 +2432,8 @@ window.MP_I18N = (function () {
 
     /* ── Booking teaser ── */
     "booking.subtitle": {
-      id: "Pilih lapangan & jam — teaser (mockup, tanpa pembayaran).",
-      en: "Pick a court & time — teaser (mockup, no payments).",
+      id: "Referensi UI booking — Fase 4 (tanpa checkout).",
+      en: "Booking UI reference — Phase 4 (no checkout).",
     },
     "booking.court": { id: "Lapangan", en: "Court" },
     "booking.continue": { id: "Lanjut", en: "Continue" },
@@ -2406,14 +2442,143 @@ window.MP_I18N = (function () {
       en: "Booking confirmed (demo)",
     },
     "booking.confirmedDesc": {
-      id: "Pembayaran & inventori lapangan hadir di fase berikutnya.",
-      en: "Payments & court inventory arrive in a later phase.",
+      id: "Checkout & inventori venue — Fase 4. Atur main lewat open mabar sekarang.",
+      en: "Checkout & venue inventory — Phase 4. Organize play via open mabar now.",
     },
     "booking.date": { id: "Tanggal", en: "Date" },
     "booking.time": { id: "Jam", en: "Time" },
     "booking.price": { id: "Perkiraan harga", en: "Est. price" },
     "booking.backHome": { id: "Kembali ke Beranda", en: "Back to Home" },
     "booking.invite": { id: "Ajak teman", en: "Invite friends" },
+    "booking.phaseBanner": {
+      id: "Booking lapangan — Fase 4. Atur main lewat open mabar & acara dulu.",
+      en: "Court booking — Phase 4. Organize play via open mabar & events for now.",
+    },
+    "booking.findMabar": { id: "Cari Open Mabar", en: "Find Open Mabar" },
+    "booking.browseEvents": { id: "Lihat Acara", en: "Browse Events" },
+    "booking.roadmapTitle": { id: "Roadmap Booking", en: "Booking Roadmap" },
+    "booking.roadmapSub": {
+      id: "Modul AYO/KUYY-class — setelah graph komunitas padat (Reclub-style).",
+      en: "AYO/KUYY-class module — after community graph density (Reclub-style).",
+    },
+    "booking.roadmapItem1": { id: "Direktori venue & detail lapangan", en: "Venue directory & court detail" },
+    "booking.roadmapItem2": { id: "DP / checkout (GoPay, VA)", en: "Down payment / checkout (GoPay, VA)" },
+    "booking.roadmapItem3": { id: "Reschedule & kebijakan refund", en: "Reschedule & refund policy" },
+    "booking.roadmapItem4": { id: "Review venue & fasilitas", en: "Venue reviews & facilities" },
+
+    /* ── Play discovery / open mabar ── */
+    "play.tabEvents": { id: "Acara", en: "Events" },
+    "play.tabMabar": { id: "Open Mabar", en: "Open Mabar" },
+    "play.tabPlayers": { id: "Cari Pemain", en: "Find Players" },
+    "play.createMabar": { id: "+ Buat Open Mabar", en: "+ Host Open Mabar" },
+    "mabar.openBadge": { id: "Open", en: "Open" },
+    "mabar.private": { id: "Privat", en: "Private" },
+    "mabar.slots": { id: "Slot", en: "Slots" },
+    "mabar.costShare": { id: "Patungan", en: "Split" },
+    "mabar.viewDetail": { id: "Detail", en: "Details" },
+    "mabar.bracketBand": { id: "Kelas bracket", en: "Bracket band" },
+    "mabar.eligible": { id: "eligible", en: "eligible" },
+    "mabar.host": { id: "Host", en: "Host" },
+    "mabar.openSlot": { id: "Slot kosong", en: "Open slot" },
+    "mabar.costShareHint": { id: "Patungan per orang (demo):", en: "Cost share per player (demo):" },
+    "mabar.joinCta": { id: "Gabung / Request Slot", en: "Join / Request Slot" },
+    "mabar.afterJoinSubmit": { id: "Setelah main, catat hasil", en: "After play, submit result" },
+    "mabar.findPlayersHint": {
+      id: "Pemain di bracket MP Rating-mu — tantang atau ajak open mabar.",
+      en: "Players at your MP Rating bracket — challenge or invite to open mabar.",
+    },
+    "mabar.createSub": {
+      id: "Host pickup game — tanpa booking checkout.",
+      en: "Host a pickup game — no booking checkout.",
+    },
+
+    /* ── Player challenge ── */
+    "challenge.issue": { id: "Tantang", en: "Challenge" },
+    "challenge.issueSub": {
+      id: "Kirim tantangan ke lawan (alur ILTL-style).",
+      en: "Issue a challenge to an opponent (ILTL-style flow).",
+    },
+    "challenge.opponent": { id: "Lawan", en: "Opponent" },
+    "challenge.proposedTime": { id: "Waktu usulan", en: "Proposed time" },
+    "challenge.venue": { id: "Venue", en: "Venue" },
+    "challenge.eligibilityHint": {
+      id: "Bracket eligibility dicek otomatis dari MP Rating.",
+      en: "Bracket eligibility checked automatically from MP Rating.",
+    },
+    "challenge.send": { id: "Kirim Tantangan", en: "Send Challenge" },
+    "challenge.inboxSub": {
+      id: "Tantangan masuk & keluar — terima lalu catat hasil.",
+      en: "Incoming & outgoing challenges — accept then submit results.",
+    },
+    "challenge.from": { id: "Dari", en: "From" },
+    "challenge.to": { id: "Ke", en: "To" },
+    "challenge.statusPending": { id: "Menunggu", en: "Pending" },
+    "challenge.statusAccepted": { id: "Diterima", en: "Accepted" },
+    "challenge.statusDeclined": { id: "Ditolak", en: "Declined" },
+    "challenge.accept": { id: "Terima", en: "Accept" },
+    "challenge.decline": { id: "Tolak", en: "Decline" },
+    "challenge.submitResult": { id: "Catat Hasil", en: "Submit Result" },
+
+    /* ── Availability ── */
+    "avail.sub": {
+      id: "Status ketersediaan — disembunyikan dari saran mabar saat OOT.",
+      en: "Availability status — hidden from mabar suggestions when OOT.",
+    },
+    "avail.available": { id: "Siap main", en: "Available" },
+    "avail.busy": { id: "Sibuk", en: "Busy" },
+    "avail.oot": { id: "Luar kota (OOT)", en: "Out of town" },
+    "avail.returnDate": { id: "Tanggal kembali", en: "Return date" },
+    "avail.save": { id: "Simpan status", en: "Save status" },
+
+    /* ── Club rewards ── */
+    "rewards.title": { id: "Poin Performa Klub", en: "Club Performance Points" },
+    "rewards.sub": {
+      id: "Dari liga, menang match, & turnamen member — tebus reward.",
+      en: "From member leagues, wins & tournaments — redeem rewards.",
+    },
+    "rewards.pts": { id: "poin", en: "pts" },
+    "rewards.redeem": { id: "Tebus", en: "Redeem" },
+    "hq.modRewards": { id: "Poin & Reward", en: "Points & Rewards" },
+    "hq.rewardsKpi": { id: "2.840 poin", en: "2,840 pts" },
+
+    /* ── Activity types (KUYY-style) ── */
+    "activity.tournament": { id: "Turnamen", en: "Tournament" },
+    "activity.league": { id: "Liga", en: "League" },
+    "activity.openMabar": { id: "Open Mabar", en: "Open Mabar" },
+    "activity.coaching": { id: "Coaching", en: "Coaching" },
+    "activity.clinic": { id: "Klinik", en: "Clinic" },
+    "activity.social": { id: "Format sosial", en: "Social format" },
+    "events.filterCoaching": { id: "Coaching", en: "Coaching" },
+    "events.filterClinic": { id: "Klinik", en: "Clinic" },
+
+    /* ── Post-match endorse ── */
+    "match.endorsePrompt": {
+      id: "Endorse skill lawanmu?",
+      en: "Endorse your opponent's skill?",
+    },
+    "match.endorseCta": { id: "Beri Endorsement →", en: "Give Endorsement →" },
+
+    "pulse.openMabar": { id: "Open mabar dekatmu", en: "Open mabar near you" },
+    "pulse.openMabarSub": {
+      id: "3 slot di bracket Intermediate — Jumat 19:00",
+      en: "3 slots at Intermediate bracket — Fri 19:00",
+    },
+
+    "title.open-mabar-board": { id: "Open Mabar", en: "Open Mabar" },
+    "title.open-mabar-detail": { id: "Detail Open Mabar", en: "Open Mabar Detail" },
+    "title.open-mabar-create": { id: "Buat Open Mabar", en: "Host Open Mabar" },
+    "title.player-challenge": { id: "Tantang Pemain", en: "Challenge Player" },
+    "title.challenge-inbox": { id: "Kotak Tantangan", en: "Challenge Inbox" },
+    "title.player-availability": { id: "Ketersediaan", en: "Availability" },
+    "title.booking-roadmap": { id: "Roadmap Booking", en: "Booking Roadmap" },
+
+    "flow.hint.openMabar": { id: "Pickup games di bracket-mu", en: "Pickup games at your bracket" },
+    "flow.hint.openMabarDetail": { id: "Roster & gabung slot", en: "Roster & join slot" },
+    "flow.hint.openMabarCreate": { id: "Host tanpa booking checkout", en: "Host without booking checkout" },
+    "flow.hint.challenge": { id: "Tantangan ILTL-style", en: "ILTL-style challenge" },
+    "flow.hint.challengeInbox": { id: "Tantangan masuk/keluar", en: "In/out challenges" },
+    "flow.hint.availability": { id: "OOT & status main", en: "OOT & play status" },
+    "flow.hint.bookingRoadmap": { id: "Fase 4 — modul booking", en: "Phase 4 — booking module" },
 
     /* ── Messages ── */
     "messages.new": { id: "Baru", en: "New" },

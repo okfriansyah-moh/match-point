@@ -200,7 +200,7 @@ const syncChecks = [
     screenId: "events-feed",
     sourceStep: "events",
     targetHtml: EXTRACTED_HTML,
-    selectors: ["[data-events-feed]", '[data-event-filter="live"]', "[data-events-list]"],
+    selectors: ["[data-play-discovery]", "[data-event-filter=\"live\"]", "[data-events-list]", "[data-play-tab=\"mabar\"]"],
   },
   {
     screenId: "event-register",

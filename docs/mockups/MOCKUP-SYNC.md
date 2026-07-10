@@ -45,7 +45,7 @@ Gallery screens use `id="screen-{name}"` in `prototype.html`. Interactive uses `
 | `home-dashboard-guest` | 1 + guest banner          | Derived by `build-gallery-screens.js`               |
 | `leaderboard`          | `data-step="leaderboard"` | **Dual-maintained** — Mabar/Global tabs             |
 | `communities`          | 9                         | Community directory / membership state              |
-| `events-feed`          | 10                        |                                                     |
+| `events-feed`          | 10                        | Play Discovery Hub — Events / Open Mabar / Find Players tabs |
 | `event-americano`      | 11                        |                                                     |
 | `event-mexicano`       | 12                        |                                                     |
 | `find-community`       | 14                        |                                                     |
@@ -65,8 +65,16 @@ Gallery screens use `id="screen-{name}"` in `prototype.html`. Interactive uses `
 | `social-feed-guest`    | 27 + guest transform      | Derived by `build-gallery-screens.js` (`deriveGuestSocial`) |
 | `messages-inbox`       | 28                        | Derived                                             |
 | `player-passport`      | 29                        | Derived — `passport.js` + `achievements.js`         |
-| `court-booking`        | 30                        | Derived — `booking-mock.js`                         |
-| `booking-confirm`      | 31                        | Derived                                             |
+| `court-booking`        | 30                        | Phase 4 teaser — `booking-mock.js`                  |
+| `booking-confirm`      | 31                        | Phase 4 teaser — routes to open mabar / events      |
+| `friends-list`         | 32                        | Derived — `social-graph.js`                         |
+| `open-mabar-board`     | 33                        | `open-mabar.js`                                     |
+| `open-mabar-detail`    | 34                        |                                                     |
+| `open-mabar-create`    | 35                        |                                                     |
+| `player-challenge`     | 36                        | `player-challenge.js` (ILTL-style)                  |
+| `challenge-inbox`      | 37                        |                                                     |
+| `player-availability`  | 38                        | `player-availability.js` (OOT)                      |
+| `booking-roadmap`      | 39                        | Phase 4 AYO/KUYY-class spec                         |
 
 ### Club admin (`flow/club.html`)
 
@@ -113,7 +121,11 @@ Gallery screens use `id="screen-{name}"` in `prototype.html`. Interactive uses `
 | `home-pulse.js` / `guest-pulse.js` | member/guest dashboard halves |
 | `passport.js` + `achievements.js` | player-passport, passport-teaser-guest, guest home teaser |
 | `community-hq.js` | club.html step 0 + derived `club-admin-dashboard` |
-| `booking-mock.js` | court-booking, booking-confirm |
+| `booking-mock.js` | court-booking, booking-confirm, booking-roadmap |
+| `open-mabar.js` | events-feed (mabar tab), open-mabar-board, open-mabar-detail |
+| `player-challenge.js` | player-challenge, challenge-inbox, leaderboard challenge CTAs |
+| `player-availability.js` | player-availability, edit-profile, player-other |
+| `club-rewards.js` | community-detail rewards panel, Community HQ tile |
 | `platform-ecosystem.js` | platform overview + pipeline/moderation/graph-health |
 
 Gallery hydration for all of these goes through `hydrateOSModules(guest)` in `gallery-hydrate.js`.
@@ -144,7 +156,7 @@ When editing **any** file under `docs/mockups/`:
 
 ```bash
 node docs/mockups/scripts/build-gallery-screens.js   # flow HTML → gallery-screens-extracted.html
-node docs/mockups/scripts/verify-gallery.js          # 91 screens + design notes + sync checks
+node docs/mockups/scripts/verify-gallery.js          # 98 screens + design notes + sync checks
 ```
 
 `gallery-screens-extracted.html` is a build artifact from flow steps. Primary gallery content lives inline in `prototype.html` — **do not assume** running the build updates `prototype.html`; sync twins manually.

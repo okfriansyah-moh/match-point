@@ -61,7 +61,7 @@
             <strong>Match Point can serve the world</strong> as <strong>the operating system for racket sports communities</strong> —
             the place where players and communities build their <em>entire sporting life</em>: identity, competition, community ops, and social connection on one connected graph.
             Five sports in the mockup today (padel, tennis, pickleball, badminton, table tennis).
-            Phase 0 validates UX across <strong>four interactive journeys</strong> (67 flow steps + 91 gallery screens); architecture is region-agnostic.
+            Phase 0 validates UX across <strong>four interactive journeys</strong> (74 flow steps + 98 gallery screens); architecture is region-agnostic.
             Indonesia-specific today: <em>launch data, integrations, and copy</em> — not the core model.
           </p>
           <table class="pa-table docs-table">
@@ -269,6 +269,12 @@
                 <td>Integrate — match import, not head-on booking war</td>
               </tr>
               <tr>
+                <td><strong>AYO</strong> (Indonesia)</td>
+                <td>Court booking density, payments (GoPay/VA/DP), sparring, pickup games (“Main Bareng”), venue reviews, multi-sport inventory</td>
+                <td>No portable cross-community rank, weak bracket fairness, no BoC graph, no endorsement-based trust</td>
+                <td>Module — Booking + Sparring; integrate Phase 4, win daily habit on graph + fair play now (Reclub-style)</td>
+              </tr>
+              <tr>
                 <td><strong>KUYY</strong> (Indonesia)</td>
                 <td>Court discovery &amp; booking, local padel/tennis density</td>
                 <td>No portable rank, endorsements, or cross-community BoC graph</td>
@@ -342,6 +348,10 @@
               <tr>
                 <td><strong>Visual identity system</strong></td>
                 <td>Per-sport mascots (Pipo, Tenni, Dink, Birdi, Pongi) — memorable brand for community pride globally.</td>
+              </tr>
+              <tr>
+                <td><strong>Play-to-rank loop</strong></td>
+                <td>Discover open mabar → verified match → MP Rating update → bracket eligibility — a closed loop AYO/KUYY booking apps cannot offer without a reputation graph.</td>
               </tr>
             </tbody>
           </table>
@@ -632,6 +642,7 @@
             <tbody>
               <tr><td>Dense padel/tennis/badminton club culture (Jakarta, Bali, Surabaya)</td><td>Madrid, Dubai, Austin, Guangzhou metro wedges</td></tr>
               <tr><td>WhatsApp-native organizing</td><td>Share cards + deep links; add email/SMS in US/EU</td></tr>
+              <tr><td>AYO as booking + sparring density</td><td>Win daily opens on graph + fair play first; integrate booking Phase 4 (Reclub-style sequencing)</td></tr>
               <tr><td>KUYY as booking/discovery density</td><td>Playtomic EU — integrate as Phase 4 module, not head-on war</td></tr>
               <tr><td>ILTL as official data hook</td><td>Playtomic EU, UTR US, local federation APIs</td></tr>
               <tr><td>“Mabar” community identity</td><td>Localize label (“Club rank”, “Local ladder”) per locale</td></tr>
@@ -695,10 +706,22 @@
                 <td>i18n keys + locale glossary</td>
               </tr>
               <tr>
+                <td>Open mabar / player challenge / OOT availability</td>
+                <td>AYO sparring + ILTL challenge flows not yet in mockup</td>
+                <td>P0</td>
+                <td>✅ Phase 0 — Play Discovery Hub, challenge inbox, availability (see <code>docs/COMPETITIVE-PLAN.md</code>)</td>
+              </tr>
+              <tr>
+                <td>Club performance points / activity taxonomy</td>
+                <td>ILTL club rewards + KUYY class types missing</td>
+                <td>P1</td>
+                <td>✅ Phase 0 — club rewards panel, activity chips on events feed</td>
+              </tr>
+              <tr>
                 <td>No court booking payments</td>
-                <td>Booking UI mocked; no checkout</td>
-                <td>P2</td>
-                <td>Phase 4 — partner or build; teaser exists in flow steps 30–31</td>
+                <td>Booking deferred — organize play here, checkout later</td>
+                <td>Phase 4</td>
+                <td>AYO/KUYY-class module: venue directory, DP/checkout, reschedule; roadmap screen in mockup</td>
               </tr>
               <tr>
                 <td>Social backend (real-time feed, push, DMs)</td>
@@ -941,8 +964,8 @@
               </tr>
               <tr>
                 <td><strong>Phase 4</strong> — Booking</td>
-                <td>KUYY-class discovery + court module</td>
-                <td>Productionize court-booking mock; inventory, payments integration</td>
+                <td>AYO/KUYY-class discovery + court module (Reclub-style: after graph density)</td>
+                <td>Venue directory, inventory, DP/checkout, reschedule policy; partner handoff or native build — see booking roadmap screen in mockup</td>
               </tr>
               <tr>
                 <td><strong>Phase 5</strong> — Social production</td>

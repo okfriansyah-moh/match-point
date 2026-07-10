@@ -1352,9 +1352,10 @@ window.MP_Flow = (function () {
       });
     }
 
-    if (config.appChrome) injectChrome();
-
-    i18n.apply(i18n.getLang());
+    if (config.appChrome) {
+      injectChrome();
+      if (window.MP_Mascot) MP_Mascot.initAll();
+    }
     document.querySelectorAll(".lang-btn").forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.lang === i18n.getLang());
     });

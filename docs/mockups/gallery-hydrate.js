@@ -241,6 +241,13 @@ window.MP_GalleryHydrate = (function () {
     "passport-teaser-guest": () => hydrateOSModules(true),
     "court-booking": () => hydrateOSModules(false),
     "booking-confirm": () => hydrateOSModules(false),
+    "booking-roadmap": () => hydrateOSModules(false),
+    "open-mabar-board": () => hydrateOSModules(false),
+    "open-mabar-detail": () => hydrateOSModules(false),
+    "open-mabar-create": () => hydrateOSModules(false),
+    "player-challenge": () => hydrateOSModules(false),
+    "challenge-inbox": () => hydrateOSModules(false),
+    "player-availability": () => hydrateOSModules(false),
     "community-detail": () => hydrateOSModules(false),
     "club-admin-dashboard": () => hydrateOSModules(false),
     "platform-overview": () => hydrateOSModules(false),
@@ -260,6 +267,10 @@ window.MP_GalleryHydrate = (function () {
     if (window.MP_Passport) MP_Passport.applyDOM({ guest });
     if (window.MP_CommunityHQ) MP_CommunityHQ.applyDOM();
     if (window.MP_Booking) MP_Booking.applyDOM();
+    if (window.MP_OpenMabar) MP_OpenMabar.applyDOM();
+    if (window.MP_PlayerChallenge) MP_PlayerChallenge.applyDOM();
+    if (window.MP_PlayerAvailability) MP_PlayerAvailability.applyDOM();
+    if (window.MP_ClubRewards) MP_ClubRewards.applyDOM();
     if (window.MP_Ecosystem) MP_Ecosystem.applyDOM();
   }
 

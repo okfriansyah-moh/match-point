@@ -97,6 +97,7 @@ window.MP_GalleryChrome = (function () {
       tournament: "events",
       "tournament-create": "events",
       "tournament-bracket": "events",
+      "club-admin-dashboard": "community",
       endorsement: "community",
       "share-card": "community",
     };
