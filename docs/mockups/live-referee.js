@@ -1,6 +1,8 @@
 /* Match Point — referee live session (tabs: standings · courts · score · fullscreen) */
 window.MP_Referee = (function () {
   const i18n = () => window.MP_I18N;
+  const FS_ICON =
+    '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>';
 
   let activeMatchId = null;
   let activeTab = "courts";
@@ -14,8 +16,16 @@ window.MP_Referee = (function () {
     return window.MP_Tournament;
   }
 
-  function getSport() {
-    return (window.MP_Sport && MP_Sport.get()) || "padel";
+  function S() {
+    return window.MP_ScoringRules;
+  }
+
+  function getEventSport(ev) {
+    return ev?.sport || (window.MP_Sport && MP_Sport.get()) || "padel";
+  }
+
+  function getProfile(ev) {
+    return S() ? S().resolveProfile(ev) : T()?.isSetsScoring?.(ev) ? "sets_won" : "race_points";
   }
 
   function shareUrl(ev) {
@@ -31,24 +41,48 @@ window.MP_Referee = (function () {
 
   function formatSubtitle(ev) {
     const parts = [];
+    const sport = getEventSport(ev);
+    parts.push(sport.replace(/_/g, " "));
     if (ev.eventType) parts.push(ev.eventType.charAt(0).toUpperCase() + ev.eventType.slice(1));
     else if (ev.format) parts.push(ev.format.replace(/_/g, " "));
-    if (ev.division) parts.push(ev.division);
-    if (ev.structure && ev.structure !== ev.format) parts.push(ev.structure.replace(/_/g, " "));
-    parts.push(new Date().toLocaleDateString());
+    if (S()) {
+      const meta = S().profileMeta(ev);
+      parts.push(t(meta.labelKey, meta.id));
+    }
     return parts.join(" · ");
   }
 
-  function applySportTheme(root) {
+  function applySportTheme(root, ev) {
     const shell = root.closest(".referee-live-shell");
-    if (shell) shell.dataset.sport = getSport();
+    if (shell) shell.dataset.sport = getEventSport(ev);
+  }
+
+  function renderBreadcrumb(shell, ev) {
+    const bar = shell?.querySelector("[data-referee-breadcrumb]");
+    if (!bar || !ev) return;
+    const tour = T();
+    const round = tour?.getRoundLabel?.() || "R" + (ev.round || 1);
+    bar.className = "mp-operator-context";
+    bar.innerHTML =
+      '<button type="button" class="mp-operator-crumb mp-operator-crumb-btn" data-flow-goto="0">' +
+      t("operator.manageCommunity", "Manage Community") +
+      "</button>" +
+      '<span class="mp-operator-sep">›</span>' +
+      '<span class="mp-operator-crumb">' +
+      (ev.name || "Live") +
+      "</span>" +
+      '<span class="mp-operator-sep">›</span>' +
+      '<span class="mp-operator-step">' +
+      round +
+      "</span>";
   }
 
   function applyTabState(root) {
     root.querySelectorAll("[data-referee-view]").forEach((el) => {
       el.hidden = el.dataset.refereeView !== activeTab;
     });
-    const tabBar = root.closest(".referee-live-shell")?.querySelector(".referee-tab-bar");
+    const shell = root.closest(".referee-live-shell");
+    const tabBar = shell?.querySelector(".referee-tab-bar");
     if (tabBar) {
       tabBar.querySelectorAll("[data-referee-tab]").forEach((btn) => {
         const on = btn.dataset.refereeTab === activeTab;
@@ -56,6 +90,20 @@ window.MP_Referee = (function () {
         btn.setAttribute("aria-selected", on ? "true" : "false");
       });
     }
+    const sessionBar = shell?.querySelector("[data-referee-session-bar]");
+    if (sessionBar) sessionBar.hidden = activeTab !== "courts";
+  }
+
+  function displayScore(m, ev) {
+    if (m.score1 == null || m.score2 == null) return "– – –";
+    if (T()?.formatMatchScore) return T().formatMatchScore(m, ev);
+    return m.score1 + " – " + m.score2;
+  }
+
+  function formatStepperValue(m, side, ev, profile) {
+    const val = side === 1 ? (m.score1 != null ? m.score1 : 0) : m.score2 != null ? m.score2 : 0;
+    if (S()) return S().formatPoint(val, profile, m.gameState);
+    return val;
   }
 
   function renderSetup(root) {
@@ -65,20 +113,24 @@ window.MP_Referee = (function () {
     if (!ev) {
       ev = tour.createEvent({ format: "americano", name: "Americano Session", capacity: 8 });
     }
-    const form = root.querySelector("[data-referee-setup-form]");
+    const form = root.querySelector("[data-referee-setup-form]") || root.closest("[data-referee-setup-form]");
     if (!form) return;
 
     const nameEl = form.querySelector("[data-referee-event-name]");
     if (nameEl) nameEl.value = ev.name || "";
 
     const scoringEl = form.querySelector("[data-referee-scoring-mode]");
-    if (scoringEl) scoringEl.textContent = ev.scoring || "race_to_n";
+    if (scoringEl) {
+      const meta = S() ? S().profileMeta(ev) : null;
+      scoringEl.textContent = meta ? t(meta.labelKey, meta.id) : ev.scoring || "race_to_n";
+    }
 
+    const profile = getProfile(ev);
+    const raceMode = profile === "race_points";
     const maxWrap = form.querySelector("[data-show-race-to]");
     const setsWrap = form.querySelector("[data-show-sets]");
-    const setsScoring = tour.isSetsScoring?.(ev);
-    if (maxWrap) maxWrap.hidden = setsScoring;
-    if (setsWrap) setsWrap.hidden = !setsScoring;
+    if (maxWrap) maxWrap.hidden = !raceMode;
+    if (setsWrap) setsWrap.hidden = raceMode;
 
     const maxEl = form.querySelector("[data-referee-max-score]");
     if (maxEl) maxEl.value = ev.maxScore ?? ev.raceTo ?? 24;
@@ -94,7 +146,11 @@ window.MP_Referee = (function () {
 
     const formatBadge = form.querySelector("[data-referee-format-badge]");
     if (formatBadge) {
-      formatBadge.textContent = (ev.format || "").replace(/_/g, " ") + (ev.eventType ? " · " + ev.eventType : "");
+      formatBadge.textContent =
+        getEventSport(ev) +
+        " · " +
+        (ev.format || "").replace(/_/g, " ") +
+        (ev.eventType ? " · " + ev.eventType : "");
     }
 
     const playersWrap = form.querySelector("[data-referee-players-list]");
@@ -115,7 +171,7 @@ window.MP_Referee = (function () {
             i +
             '" value="' +
             (p.name || "") +
-            '" /></div>'
+            '" /></div>',
         )
         .join("");
     }
@@ -133,7 +189,7 @@ window.MP_Referee = (function () {
             i +
             '" value="' +
             name +
-            '" /></div>'
+            '" /></div>',
         )
         .join("");
     }
@@ -162,12 +218,13 @@ window.MP_Referee = (function () {
       courtNames.push(el.value.trim() || "Court");
     });
     const ev = T()?.get();
-    const setsScoring = ev && T().isSetsScoring(ev);
+    const profile = getProfile(ev);
+    const raceMode = profile === "race_points";
     return {
       name: form.querySelector("[data-referee-event-name]")?.value?.trim(),
-      maxScore: setsScoring
-        ? undefined
-        : parseInt(form.querySelector("[data-referee-max-score]")?.value, 10) || 24,
+      maxScore: raceMode
+        ? parseInt(form.querySelector("[data-referee-max-score]")?.value, 10) || 24
+        : undefined,
       bestOf: parseInt(form.querySelector("[data-referee-best-of]")?.value, 10) || 3,
       courtCount: courtNames.length || 2,
       courtNames,
@@ -180,16 +237,18 @@ window.MP_Referee = (function () {
     const ev = tour?.get();
     if (!root || !ev) return;
 
-    applySportTheme(root);
+    const shell = root.closest(".referee-live-shell");
+    applySportTheme(root, ev);
+    renderBreadcrumb(shell, ev);
     applyTabState(root);
 
-    const titleEl = root.closest(".referee-live-shell")?.querySelector("[data-referee-title]");
+    const titleEl = shell?.querySelector("[data-referee-title]");
     if (titleEl) titleEl.textContent = ev.name || "Live Session";
 
     const subEl = root.querySelector("[data-referee-subtitle]");
     if (subEl) subEl.textContent = formatSubtitle(ev);
 
-    const badgeEl = root.closest(".referee-live-shell")?.querySelector("[data-referee-round-badge]");
+    const badgeEl = shell?.querySelector("[data-referee-round-badge]");
     if (badgeEl) {
       badgeEl.textContent = "LIVE · " + (tour.getRoundLabel?.() || "R" + ev.round);
     }
@@ -204,7 +263,10 @@ window.MP_Referee = (function () {
     if (roundLabel) roundLabel.textContent = tour.getRoundLabel?.() || t("referee.roundN", "Round") + " " + (ev.round || 1);
 
     const matchesEl = root.querySelector("[data-referee-matches]");
-    if (matchesEl) matchesEl.innerHTML = renderMatches(ev);
+    if (matchesEl) {
+      matchesEl.className = "referee-matches-grid";
+      matchesEl.innerHTML = renderMatches(ev);
+    }
 
     const pickerEl = root.querySelector("[data-referee-score-picker]");
     if (pickerEl) pickerEl.innerHTML = renderScorePicker(ev, activeMatchId);
@@ -217,8 +279,8 @@ window.MP_Referee = (function () {
 
   function renderStandingsTable(ev) {
     const standings = T()?.getStandings?.() || ev.players || [];
-    const setsMode = T()?.isSetsScoring?.(ev);
-    const ptsCol = setsMode ? "Pts" : "P+";
+    const profile = getProfile(ev);
+    const ptsCol = profile === "sets_won" ? "Pts" : "P+";
     let html =
       '<div class="referee-table-wrap"><table class="referee-table"><thead><tr>' +
       "<th>#</th><th>" +
@@ -229,7 +291,7 @@ window.MP_Referee = (function () {
       "</th><th>P-</th><th>+/-</th></tr></thead><tbody>";
     standings.forEach((p, i) => {
       const diff = (p.pf || 0) - (p.pa || 0);
-      const mainPts = setsMode ? p.pts || 0 : p.pf || 0;
+      const mainPts = profile === "sets_won" ? p.pts || 0 : p.pf || 0;
       html +=
         "<tr><td>" +
         (i + 1) +
@@ -251,14 +313,10 @@ window.MP_Referee = (function () {
         "</td></tr>";
     });
     html += "</tbody></table></div>";
+    const meta = S() ? S().profileMeta(ev) : null;
     html +=
       '<p class="form-hint mt-1">' +
-      (setsMode
-        ? t("referee.standingsSetsHint", "League points · sets won/lost per match")
-        : t("referee.standingsHint", "P+ = points scored · race to ") +
-          (ev.maxScore ?? ev.raceTo ?? 24) +
-          " " +
-          t("referee.perMatch", "per match")) +
+      (meta ? t(meta.hintKey, "") : t("referee.standingsHint", "Standings update after each confirmed match.")) +
       "</p>";
     return html;
   }
@@ -275,9 +333,7 @@ window.MP_Referee = (function () {
         const id = m.id || "r" + ev.round + "c" + m.court;
         const active = activeMatchId === id ? " active" : "";
         const done = m.done ? " done" : "";
-        const s1 = m.score1 != null ? m.score1 : "–";
-        const s2 = m.score2 != null ? m.score2 : "–";
-        const unit = T()?.isSetsScoring?.(ev) ? " sets" : "";
+        const scoreline = displayScore(m, ev);
         return (
           '<div class="referee-match-card' +
           active +
@@ -298,16 +354,15 @@ window.MP_Referee = (function () {
           formatSide(m.team2, ev).replace(/ \+ /g, "<br>") +
           "</div></div>" +
           '<div class="referee-match-scoreline">' +
-          s1 +
-          " – " +
-          s2 +
-          unit +
+          scoreline +
           "</div>" +
           '<div class="referee-match-actions">' +
-          '<button type="button" class="btn btn-outline btn-sm" data-referee-fs-open="' +
+          '<button type="button" class="btn btn-outline btn-sm referee-fs-btn" data-referee-fs-open="' +
           id +
           '">' +
-          t("referee.fullscreenBtn", "⛶ Full screen") +
+          FS_ICON +
+          " " +
+          t("referee.fullscreenBtn", "Full screen") +
           "</button>" +
           '<button type="button" class="btn btn-primary btn-sm" data-referee-tab="score" data-referee-select-match="' +
           id +
@@ -319,7 +374,25 @@ window.MP_Referee = (function () {
       .join("");
   }
 
-  function renderScoreStepper(matchId, side, label, value, max) {
+  function scoreFlowHint(ev, profile) {
+    if (profile === "game_tennis") return t("referee.scoreFlowGame", "Tap + to advance game points (15, 30, 40, AD). Confirm when a set is won.");
+    if (profile === "rally_21") return t("referee.scoreFlowRally21", "Rally scoring to 21 — win by 2, cap 30.");
+    if (profile === "rally_11") return t("referee.scoreFlowRally11", "Rally scoring to 11 — win by 2.");
+    if (profile === "sets_won") return t("referee.scoreFlowSets", "Adjust sets won, then confirm.");
+    return t("referee.scoreFlowRace", "Set each side's score with +/−, then confirm.");
+  }
+
+  function renderScoreStepper(matchId, side, label, m, ev, profile) {
+    const val = formatStepperValue(m, side, ev, profile);
+    const cap = T()?.scoreCap?.(ev) ?? 24;
+    const capLabel =
+      profile === "game_tennis"
+        ? t("score.gamePoints", "Game points")
+        : profile === "rally_21"
+          ? t("score.rally21", "Rally · /21")
+          : profile === "rally_11"
+            ? t("score.rally11", "Rally · /11")
+            : t("referee.raceTo", "Race to") + " " + cap;
     return (
       '<div class="referee-score-stepper-row">' +
       '<span class="referee-picker-label">' +
@@ -331,7 +404,7 @@ window.MP_Referee = (function () {
       side +
       '" data-delta="-1" aria-label="-1">−</button>' +
       '<span class="referee-stepper-val" aria-live="polite">' +
-      value +
+      val +
       "</span>" +
       '<button type="button" class="referee-stepper-btn" data-referee-bump-score="' +
       matchId +
@@ -340,9 +413,7 @@ window.MP_Referee = (function () {
       '" data-delta="1" aria-label="+1">+</button>' +
       "</div>" +
       '<span class="referee-stepper-cap">' +
-      t("referee.raceTo", "Race to") +
-      " " +
-      max +
+      capLabel +
       "</span></div>"
     );
   }
@@ -351,15 +422,11 @@ window.MP_Referee = (function () {
     if (!matchId) {
       return (
         '<div class="referee-score-empty">' +
-        '<p class="referee-score-empty-icon" aria-hidden="true">🏟</p>' +
         '<p class="referee-score-empty-title">' +
         t("referee.scoreEmptyTitle", "No court selected") +
         "</p>" +
         '<p class="form-hint">' +
-        t(
-          "referee.scoreEmptyHint",
-          "Open Courts, tap a match card, then return here to enter the score.",
-        ) +
+        t("referee.scoreEmptyHint", "Open Courts, tap a match card, then return here to enter the score.") +
         "</p>" +
         '<button type="button" class="btn btn-outline btn-block mt-1" data-referee-tab="courts">' +
         t("referee.goToCourts", "Go to Courts →") +
@@ -368,46 +435,105 @@ window.MP_Referee = (function () {
     }
     const match = T()?.findMatch?.(matchId);
     if (!match) return "";
-    const max = T()?.scoreCap?.(ev) ?? 24;
-    const setsMode = T()?.isSetsScoring?.(ev);
+    const profile = getProfile(ev);
     const team1Name = formatSide(match.team1, ev);
     const team2Name = formatSide(match.team2, ev);
-    const s1 = match.score1 != null ? match.score1 : 0;
-    const s2 = match.score2 != null ? match.score2 : 0;
-    const label1 = setsMode ? team1Name + " · " + t("referee.setsWon", "Sets won") : team1Name;
-    const label2 = setsMode ? team2Name + " · " + t("referee.setsWon", "Sets won") : team2Name;
+    const label1 = team1Name;
+    const label2 = team2Name;
+    const deuce = S() ? S().deuceLabel(match) : "";
 
     let html =
       '<div class="referee-picker-head"><strong>' +
       team1Name +
       "</strong><span>vs</span><strong>" +
       team2Name +
-      "</strong></div>" +
-      '<p class="form-hint referee-score-flow-hint">' +
-      (setsMode
-        ? t("referee.scoreFlowSets", "Step 1: adjust sets won with +/−. Step 2: tap Confirm to save and update standings.")
-        : t(
-            "referee.scoreFlowRace",
-            "Step 1: set each side's score with +/−. Step 2: tap Confirm to lock the result and refresh standings.",
-          )) +
-      "</p>";
+      "</strong></div>";
+    if (profile === "game_tennis" && match.setScores) {
+      html +=
+        '<p class="referee-set-strip">' +
+        t("referee.setsLabel", "Sets") +
+        ": " +
+        match.setScores.sets1 +
+        " – " +
+        match.setScores.sets2 +
+        (deuce ? ' · <span class="referee-deuce">' + deuce + "</span>" : "") +
+        "</p>";
+    }
+    html += '<p class="form-hint referee-score-flow-hint">' + scoreFlowHint(ev, profile) + "</p>";
 
-    html += renderScoreStepper(matchId, 1, label1, s1, setsMode ? ev.bestOf || 3 : max);
-    html += renderScoreStepper(matchId, 2, label2, s2, setsMode ? ev.bestOf || 3 : max);
+    html += renderScoreStepper(matchId, 1, label1, match, ev, profile);
+    html += renderScoreStepper(matchId, 2, label2, match, ev, profile);
 
+    const canConfirm = T()?.canConfirmMatch?.(matchId);
     html +=
       '<div class="referee-score-actions">' +
-      '<button type="button" class="btn btn-outline btn-block" data-referee-fs-open="' +
+      '<button type="button" class="btn btn-outline btn-block referee-fs-btn" data-referee-fs-open="' +
       matchId +
       '">' +
-      t("referee.fullscreenBtn", "⛶ Full screen") +
+      FS_ICON +
+      " " +
+      t("referee.fullscreenBtn", "Full screen") +
       "</button>" +
-      '<button type="button" class="btn btn-primary btn-block" data-referee-confirm-score="' +
+      '<button type="button" class="btn btn-primary btn-block"' +
+      (canConfirm ? "" : " disabled") +
+      ' data-referee-confirm-score="' +
       matchId +
       '">' +
       t("referee.confirmScore", "Confirm score") +
       "</button></div>";
     return html;
+  }
+
+  function renderFullscreenQuick(profile, matchId) {
+    if (profile === "game_tennis") {
+      return (
+        '<button type="button" class="referee-fs-quick-btn referee-fs-confirm" data-referee-confirm-score="' +
+        matchId +
+        '">' +
+        t("referee.confirmScore", "Confirm") +
+        "</button>"
+      );
+    }
+    if (profile === "race_points") {
+      return (
+        [1, 2, 3]
+          .map(
+            (n) =>
+              '<button type="button" class="referee-fs-quick-btn" data-referee-fs-add="' +
+              matchId +
+              '" data-side="1" data-add="' +
+              n +
+              '">L+' +
+              n +
+              "</button>",
+          )
+          .join("") +
+        [1, 2, 3]
+          .map(
+            (n) =>
+              '<button type="button" class="referee-fs-quick-btn" data-referee-fs-add="' +
+              matchId +
+              '" data-side="2" data-add="' +
+              n +
+              '">R+' +
+              n +
+              "</button>",
+          )
+          .join("") +
+        '<button type="button" class="referee-fs-quick-btn referee-fs-confirm" data-referee-confirm-score="' +
+        matchId +
+        '">' +
+        t("referee.confirmScore", "Confirm") +
+        "</button>"
+      );
+    }
+    return (
+      '<button type="button" class="referee-fs-quick-btn referee-fs-confirm" data-referee-confirm-score="' +
+      matchId +
+      '">' +
+      t("referee.confirmScore", "Confirm") +
+      "</button>"
+    );
   }
 
   function renderFullscreen(root, ev) {
@@ -418,14 +544,15 @@ window.MP_Referee = (function () {
     }
     root.hidden = false;
     root.setAttribute("aria-hidden", "false");
-    const max = T()?.scoreCap?.(ev) ?? 24;
-    const setsMode = T()?.isSetsScoring?.(ev);
+    const profile = getProfile(ev);
     const t1 = formatSide(match.team1, ev);
     const t2 = formatSide(match.team2, ev);
-    const s1 = match.score1 != null ? match.score1 : 0;
-    const s2 = match.score2 != null ? match.score2 : 0;
-    const targetLabel = setsMode ? "BO" + (ev.bestOf || 3) : "/" + max;
-    const sport = getSport();
+    const s1 = formatStepperValue(match, 1, ev, profile);
+    const s2 = formatStepperValue(match, 2, ev, profile);
+    const targetLabel = S() ? S().targetLabel(ev, profile) : "/" + (ev.maxScore ?? 24);
+    const sport = getEventSport(ev);
+    root.dataset.sport = sport;
+    const bumpLabel = profile === "game_tennis" ? t("score.point", "+ Point") : "+1";
 
     root.innerHTML =
       '<div class="referee-fs-inner" data-sport="' +
@@ -447,7 +574,9 @@ window.MP_Referee = (function () {
       '<div class="referee-fs-score">' +
       s1 +
       "</div>" +
-      '<div class="referee-fs-bump">+1</div></button>' +
+      '<div class="referee-fs-bump">' +
+      bumpLabel +
+      "</div></button>" +
       '<div class="referee-fs-mid"><span class="referee-fs-vs">vs</span><span class="referee-fs-target">' +
       targetLabel +
       "</span></div>" +
@@ -460,37 +589,19 @@ window.MP_Referee = (function () {
       '<div class="referee-fs-score">' +
       s2 +
       "</div>" +
-      '<div class="referee-fs-bump">+1</div></button></div>' +
+      '<div class="referee-fs-bump">' +
+      bumpLabel +
+      "</div></button></div>" +
       '<div class="referee-fs-quick">' +
-      [1, 2, 3].map(
-        (n) =>
-          '<button type="button" class="referee-fs-quick-btn" data-referee-fs-add="' +
-          activeMatchId +
-          '" data-side="1" data-add="' +
-          n +
-          '">L+' +
-          n +
-          "</button>",
-      ).join("") +
-      [1, 2, 3].map(
-        (n) =>
-          '<button type="button" class="referee-fs-quick-btn" data-referee-fs-add="' +
-          activeMatchId +
-          '" data-side="2" data-add="' +
-          n +
-          '">R+' +
-          n +
-          "</button>",
-      ).join("") +
-      '<button type="button" class="referee-fs-quick-btn referee-fs-confirm" data-referee-confirm-score="' +
-      activeMatchId +
-      '">' +
-      t("referee.confirmScore", "Confirm") +
-      "</button></div></div>";
+      renderFullscreenQuick(profile, activeMatchId) +
+      "</div></div>";
   }
 
   function applyAll() {
-    document.querySelectorAll("[data-referee-setup]").forEach((el) => renderSetup(el));
+    document.querySelectorAll("[data-referee-setup]").forEach((el) => {
+      const form = el.querySelector("[data-referee-setup-form]") || el;
+      renderSetup(form);
+    });
     document.querySelectorAll("[data-referee-live]").forEach((el) => renderLive(el));
   }
 

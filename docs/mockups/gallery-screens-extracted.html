@@ -2703,7 +2703,7 @@
               <div class="screen" id="screen-club-wizard-1">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell mp-operator-shell">
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-flow-back="0" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step1Title">Buat Acara — Tipe</span></div></div>
                                     <span class="badge badge-info" data-i18n="wizard.stepLabel">Langkah 1/4</span>
@@ -2741,7 +2741,7 @@
               <div class="screen" id="screen-club-wizard-2">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell mp-operator-shell">
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="1" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step2Title">Kategori Pemain</span></div></div>
                                     <span class="badge badge-info" data-i18n="wizard.step2Label">Langkah 2/4</span>
@@ -2769,7 +2769,7 @@
               <div class="screen" id="screen-club-wizard-3">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell mp-operator-shell">
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-wizard-back="participants" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step3Title">Jumlah Peserta</span></div></div>
                                     <span class="badge badge-info" data-i18n="wizard.step3Label">Langkah 3/4</span>
@@ -2803,7 +2803,7 @@
               <div class="screen" id="screen-club-wizard-4">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell mp-operator-shell">
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-flow-goto="3" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.step4Title">Format Kompetisi</span></div></div>
                                     <span class="badge badge-info" data-i18n="wizard.step4Label">Langkah 4/4</span>
@@ -2845,7 +2845,7 @@
               <div class="screen" id="screen-club-wizard-roster">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell mp-operator-shell">
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-wizard-back="roster" aria-label="Back">←</button><div class="app-logo"><span data-i18n="wizard.rosterTitle">Daftar Pemain</span></div></div>
                                     <span class="badge badge-info" data-i18n="wizard.rosterOptional">Opsional</span>
@@ -2891,11 +2891,15 @@
               <div class="screen" id="screen-club-wizard-publish">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell mp-operator-shell">
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-wizard-back="publish" aria-label="Back">←</button><div class="app-logo"><span data-i18n="title.admin-publish-event">Publish Acara</span></div></div>
                                   </header>
                                   <div class="app-body app-body-narrow">
+                                    <div class="wizard-publish-chip" data-wizard-scoring-preview>
+                                      <div data-mascot data-mascot-sport="auto" data-mascot-size="sm"></div>
+                                      <div><strong>Padel · Americano</strong><span>Race points</span></div>
+                                    </div>
                                     <div class="card mb-2" style="padding:0.85rem">
                                       <span class="text-sm text-muted" data-i18n="wizard.summaryLabel">Ringkasan acara</span>
                                       <div class="font-bold mt-1" data-wizard-summary>Americano · 16 players</div>
@@ -2951,7 +2955,7 @@
               <div class="screen" id="screen-club-registrations">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme">
+                  <div class="app mp-shell mp-operator-shell">
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-flow-back="0" aria-label="Back">←</button><div class="app-logo"><span data-i18n="club.regTitle">Pendaftaran Peserta</span></div></div>
                                     <span class="badge badge-pending" data-admin-reg-badge>0 / 16</span>
@@ -2996,11 +3000,15 @@
               <div class="screen" id="screen-club-referee-setup">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme" data-chrome-slim>
+                  <div class="app mp-shell mp-operator-shell" data-chrome-slim>
                                   <header class="app-header">
                                     <div class="app-header-left"><button type="button" class="header-back" data-flow-back="7" aria-label="Back">←</button><div class="app-logo"><span data-i18n="referee.setupTitle">Setup Sesi</span></div></div>
                                     <span class="badge badge-info" data-i18n="referee.setupBadge">Sebelum live</span>
                                   </header>
+                                  <div class="mp-operator-context" data-operator-context>
+                                    <span class="mp-operator-crumb club-name-dynamic">Padel Jakarta Selatan</span>
+                                    <span class="mp-operator-step" data-i18n="operator.setupStep">Setup session</span>
+                                  </div>
                                   <div class="app-body app-body-narrow" data-referee-setup-form>
                                     <p class="section-sub" data-i18n="referee.setupSub">Konfirmasi nama turnamen, pemain, lapangan &amp; skor — berlaku untuk Americano, Mexicano, Singles &amp; Doubles.</p>
                                     <div class="referee-format-chip mb-2"><span class="badge badge-info" data-referee-format-badge>Americano</span></div>
@@ -3056,11 +3064,22 @@
               <div class="screen" id="screen-club-live-referee">
                 <div class="gallery-callout-wrap">
                   <div class="gallery-callout-layer" aria-hidden="true"></div>
-                  <div class="app mp-shell admin-theme referee-live-shell" data-referee-immersive>
-                                  <header class="app-header">
-                                    <div class="app-header-left"><button type="button" class="header-back" data-flow-back="8" aria-label="Back">←</button><div class="app-logo"><span data-referee-title data-i18n="title.admin-live-session">Live Session</span></div></div>
-                                    <span class="badge badge-live" data-referee-round-badge>LIVE</span>
-                                  </header>
+                  <div class="app mp-shell referee-live-shell" data-chrome-slim>
+                                  <div class="referee-live-chrome">
+                                    <header class="app-header">
+                                      <div class="app-header-left">
+                                        <button type="button" class="header-back" data-flow-back="0" aria-label="Back" data-i18n-title="operator.exitLive" title="Exit live">←</button>
+                                        <div class="app-logo"><span data-referee-title data-i18n="title.admin-live-session">Live Session</span></div>
+                                      </div>
+                                      <span class="badge badge-live" data-referee-round-badge>LIVE</span>
+                                    </header>
+                                    <div class="mp-operator-context" data-referee-breadcrumb></div>
+                                    <nav class="referee-tab-bar referee-tab-bar--top" aria-label="Referee views" role="tablist">
+                                      <button type="button" class="referee-tab active" role="tab" data-referee-tab="courts" data-i18n="referee.tabCourts">Courts</button>
+                                      <button type="button" class="referee-tab" role="tab" data-referee-tab="score" data-i18n="referee.tabScore">Score</button>
+                                      <button type="button" class="referee-tab" role="tab" data-referee-tab="standings" data-i18n="referee.tabStandings">Standings</button>
+                                    </nav>
+                                  </div>
                                   <div class="app-body referee-live-body" data-referee-live>
                                     <p class="referee-subtitle text-sm text-muted" data-referee-subtitle></p>
                                     <div class="referee-view" data-referee-view="standings" hidden>
@@ -3077,21 +3096,19 @@
                                       <div class="mp-section-head"><h2 data-referee-round-label>Round 1</h2></div>
                                       <p class="form-hint referee-courts-hint mb-1" data-i18n="referee.courtsHint">Tap a court card to select it, then open Score to enter points.</p>
                                       <div data-referee-matches></div>
-                                      <div class="btn-stack mt-2">
-                                        <button type="button" class="btn btn-primary btn-block btn-lg" data-advance-round data-i18n="club.advanceRoundBtn">Round berikutnya →</button>
-                                        <button type="button" class="btn btn-ball btn-block btn-lg" data-event-finalize data-flow-goto="0" data-i18n="rank.finalizeBtn">Finalisasi → Update Mabar Rank</button>
-                                        <button type="button" class="btn btn-secondary btn-block" data-flow-goto="10" data-i18n="club.toBracketBtn">Bracket →</button>
-                                      </div>
                                     </div>
                                     <div class="referee-view" data-referee-view="score" hidden>
                                       <div class="referee-picker-panel" data-referee-score-picker></div>
                                     </div>
                                   </div>
-                                  <nav class="referee-tab-bar" aria-label="Referee views">
-                                    <button type="button" class="referee-tab active" data-referee-tab="courts" data-i18n="referee.tabCourts">Courts</button>
-                                    <button type="button" class="referee-tab" data-referee-tab="score" data-i18n="referee.tabScore">Score</button>
-                                    <button type="button" class="referee-tab" data-referee-tab="standings" data-i18n="referee.tabStandings">Standings</button>
-                                  </nav>
+                                  <footer class="referee-session-bar" data-referee-session-bar aria-label="Session actions">
+                                    <p class="referee-session-label" data-i18n="referee.sessionActions">Session actions</p>
+                                    <div class="btn-stack">
+                                      <button type="button" class="btn btn-primary btn-block btn-lg" data-advance-round data-i18n="club.advanceRoundBtn">Round berikutnya →</button>
+                                      <button type="button" class="btn btn-ball btn-block btn-lg" data-event-finalize data-flow-goto="0" data-i18n="rank.finalizeBtn">Finalisasi → Update Mabar Rank</button>
+                                      <button type="button" class="btn btn-secondary btn-block" data-flow-goto="10" data-i18n="club.toBracketBtn">Bracket →</button>
+                                    </div>
+                                  </footer>
                                 </div>
                 </div>
               </div>

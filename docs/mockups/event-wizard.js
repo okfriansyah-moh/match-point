@@ -573,6 +573,57 @@ window.MP_EventWizard = (function () {
     document.querySelectorAll("[data-admin-reg-panel]").forEach((el) => {
       renderRegistrations(el, state);
     });
+
+    const stepLabel =
+      (window.MP_I18N ? MP_I18N.t("operator.wizardStep") : "Step") +
+      " " +
+      phase +
+      "/" +
+      total;
+
+    document.querySelectorAll(".mp-operator-shell").forEach((app) => {
+      let bar = app.querySelector("[data-operator-context]");
+      if (!bar) {
+        const header = app.querySelector(".app-header");
+        if (!header) return;
+        bar = document.createElement("div");
+        bar.className = "mp-operator-context";
+        bar.setAttribute("data-operator-context", "");
+        bar.innerHTML =
+          '<span class="mp-operator-crumb club-name-dynamic">Padel Jakarta Selatan</span>' +
+          '<span class="mp-operator-step" data-wizard-step-label></span>';
+        header.insertAdjacentElement("afterend", bar);
+      }
+      const lbl = bar.querySelector("[data-wizard-step-label]");
+      if (lbl && flowIdx && flowIdx >= 1 && flowIdx <= 6) lbl.textContent = stepLabel;
+      else if (lbl && app.querySelector("[data-admin-reg-panel]")) {
+        lbl.textContent = window.MP_I18N ? MP_I18N.t("operator.registrations") : "Registrations";
+      }
+    });
+
+    document.querySelectorAll("[data-wizard-scoring-preview]").forEach((el) => {
+      const sport = (window.MP_Sport && MP_Sport.get()) || "padel";
+      const mockEv = {
+        eventType: state.eventType,
+        sport,
+        format: resolveEngineFormat(state),
+        scoring: resolveScoring(state),
+      };
+      if (window.MP_ScoringRules) {
+        const meta = MP_ScoringRules.profileMeta(mockEv);
+        const sportLabel = sport.replace(/_/g, " ");
+        const type = typeLabel(state);
+        const profileLabel = window.MP_I18N ? MP_I18N.t(meta.labelKey) : meta.id;
+        el.innerHTML =
+          "<strong>" +
+          sportLabel +
+          " · " +
+          type +
+          "</strong><span>" +
+          profileLabel +
+          "</span>";
+      }
+    });
   }
 
   function toTournamentOpts(form) {

@@ -497,12 +497,12 @@ window.MP_GalleryNotesScreens = (function () {
     },
     "club-live-referee": {
       journey: "club",
-      purpose: L("Live referee klub — skor real-time per lapangan.", "Club live referee — real-time per-court scoring."),
+      purpose: L("Live referee klub — skor real-time per lapangan, shell terintegrasi (bukan kiosk gelap).", "Club live referee — real-time per-court scoring in integrated shell (not dark kiosk)."),
       components: [
-        c(1, "[data-referee-live]", L("Panel live", "Live panel"), L("Court grid hydrated.", "Hydrated court grid."), L("Core referee UX.", "Core referee UX.")),
-        c(2, ".referee-tab-bar", L("Tab bar", "Referee tabs"), L("Courts/Score/Standings.", "Courts/Score/Standings."), L("Immersive mode.", "Immersive mode.")),
-        c(3, "[data-advance-round]", L("Next round", "Advance round"), L("Lock scores · rotate.", "Lock scores · rotate."), L("Session progression.", "Session progression.")),
-        c(4, "[data-event-finalize]", L("Finalisasi rank", "Finalize rank"), L("Update Mabar rank CTA.", "Update Mabar rank CTA."), L("Rank commit end state.", "Rank commit end state.")),
+        c(1, "[data-referee-breadcrumb], .mp-operator-context", L("Breadcrumb operator", "Operator breadcrumb"), L("Manage › event › round.", "Manage › event › round."), L("Tetap dalam journey komunitas.", "Stays in community journey.")),
+        c(2, "[data-referee-live], .referee-matches-grid", L("Panel live", "Live panel"), L("Court grid · skor per profil olahraga.", "Court grid · sport-profile scores."), L("Core referee UX.", "Core referee UX.")),
+        c(3, ".referee-tab-bar--top, [data-referee-session-bar]", L("Chrome live", "Live chrome"), L("Tab view di atas; footer: Next round (primer) + Finalize/Bracket (sekunder dengan hint).", "View tabs on top; footer: Next round (primary) + Finalize/Bracket (secondary with hints)."), L("Hierarki jelas — bukan tiga tombol besar sejajar.", "Clear hierarchy — not three equal loud buttons.")),
+        c(4, "[data-referee-fullscreen], .referee-fs-board", L("Fullscreen skor", "Fullscreen score"), L("Portrait stack mobile · side-by-side desktop.", "Portrait stack mobile · side-by-side desktop."), L("Touch-first scoring.", "Touch-first scoring.")),
       ],
       mechanics: SHARED.rankMovement,
     },

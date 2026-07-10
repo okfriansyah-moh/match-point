@@ -558,17 +558,54 @@ window.MP_Tournament = (function () {
   function confirmMatchScore(matchId) {
     const m = findMatch(matchId);
     if (!m || m.score1 == null || m.score2 == null) return null;
-    return applyMatchScore(matchId, m.score1, m.score2);
+    if (window.MP_ScoringRules && !MP_ScoringRules.canConfirm(m, current)) return null;
+    const scores = window.MP_ScoringRules
+      ? MP_ScoringRules.resultScores(m, current)
+      : { score1: m.score1, score2: m.score2 };
+    return applyMatchScore(matchId, scores.score1, scores.score2);
   }
 
   function bumpMatchScore(matchId, side, add) {
     const m = findMatch(matchId);
     if (!m) return null;
+    if (window.MP_ScoringRules) {
+      MP_ScoringRules.bumpMatch(m, side, add, current);
+      save();
+      return m;
+    }
     const cap = scoreCap();
     if (side === 1) m.score1 = Math.min((m.score1 || 0) + add, cap);
     else m.score2 = Math.min((m.score2 || 0) + add, cap);
     save();
     return m;
+  }
+
+  function getScoringProfile(ev) {
+    ev = ev || current;
+    return window.MP_ScoringRules ? MP_ScoringRules.resolveProfile(ev) : (isSetsScoring(ev) ? "sets_won" : "race_points");
+  }
+
+  function formatMatchScore(m, ev) {
+    ev = ev || current;
+    if (!m || m.score1 == null || m.score2 == null) return "– – –";
+    if (window.MP_ScoringRules) {
+      const profile = MP_ScoringRules.resolveProfile(ev);
+      if (profile === "game_tennis") {
+        MP_ScoringRules.ensureMatchState(m);
+        const sets = m.setScores.sets1 + "–" + m.setScores.sets2;
+        const games = MP_ScoringRules.formatScoreline(m.score1, m.score2, profile, m.gameState);
+        return sets + " (" + games + ")";
+      }
+      return MP_ScoringRules.formatScoreline(m.score1, m.score2, profile, m.gameState);
+    }
+    return m.score1 + " – " + m.score2;
+  }
+
+  function canConfirmMatch(matchId) {
+    const m = findMatch(matchId);
+    if (!m) return false;
+    if (window.MP_ScoringRules) return MP_ScoringRules.canConfirm(m, current);
+    return m.score1 != null && m.score2 != null && m.score1 !== m.score2;
   }
 
   function getStandings() {
@@ -773,6 +810,9 @@ window.MP_Tournament = (function () {
     setMatchScoreSide,
     confirmMatchScore,
     bumpMatchScore,
+    getScoringProfile,
+    formatMatchScore,
+    canConfirmMatch,
     getStandings,
     addCourt,
     removeCourt,

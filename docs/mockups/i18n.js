@@ -495,6 +495,10 @@ window.MP_I18N = (function () {
     "flow.prev": { id: "Kembali", en: "Back" },
     "flow.finish": { id: "Selesai", en: "Finish" },
     "flow.logout": { id: "Keluar", en: "Log Out" },
+    "flow.returnToClub": {
+      id: "Kembali ke operasi klub",
+      en: "Back to club ops",
+    },
     "flow.toast.login": {
       id: "Berhasil masuk — selamat datang, Budi!",
       en: "Signed in — welcome, Budi!",
@@ -785,6 +789,19 @@ window.MP_I18N = (function () {
     "referee.tabCourts": { id: "Lapangan", en: "Courts" },
     "referee.tabScore": { id: "Skor", en: "Score" },
     "referee.tabStandings": { id: "Klasemen", en: "Standings" },
+    "referee.sessionActions": { id: "Aksi sesi", en: "Session actions" },
+    "referee.sessionNext": { id: "Round berikutnya →", en: "Next round →" },
+    "referee.sessionNextHint": {
+      id: "Kunci skor & lanjut jadwal",
+      en: "Lock scores & advance schedule",
+    },
+    "referee.sessionFinalize": { id: "Finalisasi", en: "Finalize session" },
+    "referee.sessionFinalizeHint": {
+      id: "Publikasikan ke Mabar Rank",
+      en: "Publish to Mabar Rank",
+    },
+    "referee.sessionBracket": { id: "Bracket manual", en: "Manual bracket" },
+    "referee.sessionBracketHint": { id: "Lihat knockout", en: "Knockout view" },
     "referee.courtsHint": {
       id: "Tap kartu lapangan untuk memilih match, lalu buka tab Skor.",
       en: "Tap a court card to select the match, then open the Score tab.",
@@ -807,7 +824,7 @@ window.MP_I18N = (function () {
     "referee.raceTo": { id: "Race to", en: "Race to" },
     "referee.pickerHint": { id: "Tap skor tiap tim — klasemen update langsung.", en: "Tap score for each team — standings update instantly." },
     "referee.confirmScore": { id: "Konfirmasi skor", en: "Confirm score" },
-    "referee.fullscreenBtn": { id: "⛶ Layar penuh", en: "⛶ Full screen" },
+    "referee.fullscreenBtn": { id: "Papan skor", en: "Scoreboard" },
     "referee.scoreSaved": { id: "Skor tersimpan", en: "Score saved" },
     "referee.teamN": { id: "Tim", en: "Team" },
     "referee.bestOf": { id: "Best of (set)", en: "Best of (sets)" },
@@ -2385,6 +2402,43 @@ window.MP_I18N = (function () {
       id: "Segera — tagihan event, langganan Community Pro, dan laporan keuangan.",
       en: "Coming soon — event fees, Community Pro billing, and finance reports.",
     },
+
+    "operator.manageCommunity": { id: "Kelola Komunitas", en: "Manage Community" },
+    "operator.wizardStep": { id: "Langkah", en: "Step" },
+    "operator.registrations": { id: "Pendaftaran", en: "Registrations" },
+    "operator.setupStep": { id: "Setup sesi", en: "Setup session" },
+    "operator.exitLive": { id: "Keluar live", en: "Exit live" },
+
+    "score.profileRace": { id: "Poin race (1, 2, 3…)", en: "Race points (1, 2, 3…)" },
+    "score.profileGame": { id: "Poin game (0, 15, 30, 40, AD)", en: "Game points (0, 15, 30, 40, AD)" },
+    "score.profileRally21": { id: "Rally badminton (21)", en: "Badminton rally (21)" },
+    "score.profileRally11": { id: "Rally tenis meja (11)", en: "Table tennis rally (11)" },
+    "score.profileSets": { id: "Set dimenangkan", en: "Sets won" },
+    "score.hintRace": { id: "P+ = total poin per match · race to N", en: "P+ = total points per match · race to N" },
+    "score.hintGame": { id: "Skor game per poin tenis/padel", en: "Tennis/padel game scoring per point" },
+    "score.hintRally21": { id: "21 poin · menang selisih 2 · cap 30", en: "21 points · win by 2 · cap 30" },
+    "score.hintRally11": { id: "11 poin · menang selisih 2", en: "11 points · win by 2" },
+    "score.hintSets": { id: "Poin liga dari set yang dimenangkan", en: "League points from sets won" },
+    "score.point": { id: "+ Poin", en: "+ Point" },
+    "score.deuce": { id: "Deuce", en: "Deuce" },
+    "score.advantage": { id: "Keunggulan", en: "Advantage" },
+    "score.rally21": { id: "Rally · /21", en: "Rally · /21" },
+    "score.rally11": { id: "Rally · /11", en: "Rally · /11" },
+    "score.gamePoints": { id: "Poin game", en: "Game points" },
+
+    "referee.scoreFlowGame": {
+      id: "Tap + untuk naikkan poin game (15, 30, 40, AD). Konfirmasi saat set selesai.",
+      en: "Tap + to advance game points (15, 30, 40, AD). Confirm when a set is won.",
+    },
+    "referee.scoreFlowRally21": {
+      id: "Skor rally ke 21 — menang selisih 2, cap 30.",
+      en: "Rally scoring to 21 — win by 2, cap 30.",
+    },
+    "referee.scoreFlowRally11": {
+      id: "Skor rally ke 11 — menang selisih 2.",
+      en: "Rally scoring to 11 — win by 2.",
+    },
+    "referee.setsLabel": { id: "Set", en: "Sets" },
 
     /* ── Platform ecosystem console ── */
     "ecosystem.healthTitle": {

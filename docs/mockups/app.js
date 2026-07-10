@@ -259,6 +259,94 @@
         /* no-op */
       }
       showScreen("player-other");
+      return;
+    }
+
+    if (window.MP_Referee && window.MP_Tournament) {
+      const refereeTabEl = e.target.closest("[data-referee-tab]");
+      if (refereeTabEl) {
+        e.preventDefault();
+        const matchId = refereeTabEl.dataset.refereeSelectMatch;
+        if (matchId) MP_Referee.selectMatch(matchId);
+        else MP_Referee.setTab(refereeTabEl.dataset.refereeTab);
+        return;
+      }
+
+      const fsOpenEl = e.target.closest("[data-referee-fs-open]");
+      if (fsOpenEl) {
+        e.preventDefault();
+        e.stopPropagation();
+        MP_Referee.openFullscreen(fsOpenEl.dataset.refereeFsOpen);
+        return;
+      }
+
+      const selectMatchEl = e.target.closest("[data-referee-select-match]");
+      if (selectMatchEl && !e.target.closest("button[data-referee-fs-open]")) {
+        e.preventDefault();
+        MP_Referee.selectMatch(selectMatchEl.dataset.refereeSelectMatch);
+        return;
+      }
+
+      const bumpScoreEl = e.target.closest("[data-referee-bump-score]");
+      if (bumpScoreEl) {
+        e.preventDefault();
+        MP_Tournament.bumpMatchScore(
+          bumpScoreEl.dataset.refereeBumpScore,
+          parseInt(bumpScoreEl.dataset.side, 10),
+          parseInt(bumpScoreEl.dataset.delta, 10),
+        );
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const fsBumpEl = e.target.closest("[data-referee-fs-bump]");
+      if (fsBumpEl) {
+        e.preventDefault();
+        MP_Tournament.bumpMatchScore(
+          fsBumpEl.dataset.refereeFsBump,
+          parseInt(fsBumpEl.dataset.side, 10),
+          1,
+        );
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const fsAddEl = e.target.closest("[data-referee-fs-add]");
+      if (fsAddEl) {
+        e.preventDefault();
+        MP_Tournament.bumpMatchScore(
+          fsAddEl.dataset.refereeFsAdd,
+          parseInt(fsAddEl.dataset.side, 10),
+          parseInt(fsAddEl.dataset.add, 10),
+        );
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const confirmScoreEl = e.target.closest("[data-referee-confirm-score]");
+      if (confirmScoreEl) {
+        e.preventDefault();
+        MP_Tournament.confirmMatchScore(confirmScoreEl.dataset.refereeConfirmScore);
+        MP_Referee.closeFullscreen();
+        MP_Referee.applyAll();
+        return;
+      }
+
+      const fsCloseEl = e.target.closest("[data-referee-fs-close]");
+      if (fsCloseEl) {
+        e.preventDefault();
+        MP_Referee.closeFullscreen();
+        return;
+      }
+
+      const advanceRoundEl = e.target.closest("[data-advance-round]");
+      if (advanceRoundEl) {
+        e.preventDefault();
+        MP_Tournament.advanceRound();
+        MP_Tournament.init();
+        MP_Referee.applyAll();
+        return;
+      }
     }
   });
 

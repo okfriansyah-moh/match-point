@@ -50,6 +50,7 @@ window.MP_Flow = (function () {
   const i18n = window.MP_I18N;
   let goFn = null;
   let setGuestFn = null;
+  let getClubReturnUrlFn = null;
 
   function init(config) {
     const steps = config.steps;
@@ -96,6 +97,83 @@ window.MP_Flow = (function () {
         else localStorage.removeItem("mp-auth");
       } catch (_) {
         /* no-op */
+      }
+    }
+
+    const CROSS_FLOW_KEY = "mp-cross-flow-return";
+
+    function saveCrossFlowReturn() {
+      if (!config.navRedirect) return;
+      try {
+        sessionStorage.setItem(
+          CROSS_FLOW_KEY,
+          JSON.stringify({
+            page: location.pathname.split("/").pop() || "club.html",
+            step: current,
+          }),
+        );
+      } catch (_) {
+        /* no-op */
+      }
+    }
+
+    function getCrossFlowReturnUrl(fallbackPage, fallbackStep) {
+      fallbackPage = fallbackPage || "club.html";
+      fallbackStep = fallbackStep != null ? fallbackStep : 0;
+      try {
+        const raw = sessionStorage.getItem(CROSS_FLOW_KEY);
+        if (!raw) return fallbackPage + "?step=" + fallbackStep;
+        const j = JSON.parse(raw);
+        if (j && j.page)
+          return j.page + "?step=" + (j.step != null ? j.step : fallbackStep);
+      } catch (_) {
+        /* no-op */
+      }
+      return fallbackPage + "?step=" + fallbackStep;
+    }
+
+    function syncCrossFlowBanner() {
+      if (config.navRedirect) return;
+      const flowBody = document.querySelector(".flow-body");
+      if (!flowBody) return;
+      let banner = document.getElementById("mp-cross-flow-banner");
+      let data;
+      try {
+        const raw = sessionStorage.getItem(CROSS_FLOW_KEY);
+        if (!raw) {
+          if (banner) banner.hidden = true;
+          return;
+        }
+        data = JSON.parse(raw);
+        if (!data || !data.page || data.page.indexOf("club") === -1) {
+          if (banner) banner.hidden = true;
+          return;
+        }
+      } catch (_) {
+        if (banner) banner.hidden = true;
+        return;
+      }
+      const href = data.page + "?step=" + (data.step != null ? data.step : 0);
+      const label = i18n.t("flow.returnToClub");
+      if (!banner) {
+        banner = document.createElement("div");
+        banner.id = "mp-cross-flow-banner";
+        banner.className = "mp-cross-flow-banner";
+        banner.innerHTML =
+          '<a class="mp-cross-flow-banner-link" href="' +
+          href +
+          '"><span aria-hidden="true">←</span> <span data-i18n="flow.returnToClub">' +
+          label +
+          "</span></a>";
+        flowBody.insertAdjacentElement("afterbegin", banner);
+      } else {
+        banner.hidden = false;
+        const link = banner.querySelector(".mp-cross-flow-banner-link");
+        if (link) {
+          link.href = href;
+          const span = link.querySelector("[data-i18n]");
+          if (span) span.textContent = label;
+        }
       }
     }
 
@@ -225,96 +303,94 @@ window.MP_Flow = (function () {
         '<button type="button" class="profile-menu-item danger" data-menu-logout data-i18n="flow.logout">Keluar</button>' +
         "</div></div>";
 
+      const topnavHTML = (items, variant) =>
+        '<nav class="mp-topnav" data-nav-variant="' +
+        variant +
+        '">' +
+        items
+          .map(
+            (it) =>
+              '<button type="button" class="mp-topnav-item"' +
+              (it.auth ? " data-requires-auth" : "") +
+              ' data-nav="' +
+              it.key +
+              '">' +
+              (it.icon || "") +
+              '<span data-i18n="' +
+              it.i18n +
+              '"></span></button>',
+          )
+          .join("") +
+        "</nav>";
+
+      const bottomNavHTML = (items, variant) =>
+        '<nav class="bottom-nav" data-nav-variant="' +
+        variant +
+        '">' +
+        items
+          .map(
+            (it) =>
+              '<button type="button" class="bottom-nav-item"' +
+              (it.auth ? " data-requires-auth" : "") +
+              ' data-nav="' +
+              it.key +
+              '"><span>' +
+              it.icon +
+              '</span><span data-i18n="' +
+              it.i18n +
+              '"></span></button>',
+          )
+          .join("") +
+        "</nav>";
+
+      function mountHeaderControls(header, full) {
+        if (!header || header.querySelector(full ? ".profile-menu-wrap" : ".mp-mascot-switch"))
+          return;
+        let actions = header.querySelector(".app-header-actions");
+        if (!actions) {
+          actions = document.createElement("div");
+          actions.className =
+            "app-header-actions" + (full ? "" : " app-header-actions-slim");
+          header.appendChild(actions);
+        }
+        actions.insertAdjacentHTML("beforeend", full ? controlsHTML : slimControlsHTML);
+      }
+
+      function mountSectionNav(app, header) {
+        if (!NAV_ITEMS.length) return;
+        if (!app.querySelector(".mp-topnav")) {
+          let navHTML = topnavHTML(NAV_ITEMS, "member");
+          if (GUEST_NAV_ITEMS.length) navHTML += topnavHTML(GUEST_NAV_ITEMS, "guest");
+          if (header) header.insertAdjacentHTML("afterend", navHTML);
+          else app.insertAdjacentHTML("afterbegin", navHTML);
+        }
+        if (!app.querySelector(".bottom-nav")) {
+          let navHTML = bottomNavHTML(NAV_ITEMS, "member");
+          if (GUEST_NAV_ITEMS.length) navHTML += bottomNavHTML(GUEST_NAV_ITEMS, "guest");
+          app.insertAdjacentHTML("beforeend", navHTML);
+        }
+      }
+
       document.querySelectorAll(".flow-step .app").forEach((app) => {
         const level = chromeLevel(app);
         if (level === "none") return;
 
         app.dataset.chromeLevel = level;
         const header = app.querySelector(".app-header");
+        const bridgeNav = !!(config.navRedirect && NAV_ITEMS.length);
 
         if (level === "full") {
-          if (header && !header.querySelector(".profile-menu-wrap")) {
-            let actions = header.querySelector(".app-header-actions");
-            if (!actions) {
-              actions = document.createElement("div");
-              actions.className = "app-header-actions";
-              header.appendChild(actions);
-            }
-            actions.insertAdjacentHTML("beforeend", controlsHTML);
-          }
-
-          // Facebook-style top tabs (icon + label + active underline) and the
-          // mobile bottom nav render one variant per auth state; CSS hides the
-          // inactive [data-nav-variant] via body.mp-guest.
-          const topnavHTML = (items, variant) =>
-            '<nav class="mp-topnav" data-nav-variant="' +
-            variant +
-            '">' +
-            items
-              .map(
-                (it) =>
-                  '<button type="button" class="mp-topnav-item"' +
-                  (it.auth ? " data-requires-auth" : "") +
-                  ' data-nav="' +
-                  it.key +
-                  '">' +
-                  (it.icon || "") +
-                  '<span data-i18n="' +
-                  it.i18n +
-                  '"></span></button>',
-              )
-              .join("") +
-            "</nav>";
-
-          const bottomNavHTML = (items, variant) =>
-            '<nav class="bottom-nav" data-nav-variant="' +
-            variant +
-            '">' +
-            items
-              .map(
-                (it) =>
-                  '<button type="button" class="bottom-nav-item"' +
-                  (it.auth ? " data-requires-auth" : "") +
-                  ' data-nav="' +
-                  it.key +
-                  '"><span>' +
-                  it.icon +
-                  '</span><span data-i18n="' +
-                  it.i18n +
-                  '"></span></button>',
-              )
-              .join("") +
-            "</nav>";
-
-          if (NAV_ITEMS.length && !app.querySelector(".mp-topnav")) {
-            let navHTML = topnavHTML(NAV_ITEMS, "member");
-            if (GUEST_NAV_ITEMS.length)
-              navHTML += topnavHTML(GUEST_NAV_ITEMS, "guest");
-            if (header) header.insertAdjacentHTML("afterend", navHTML);
-            else app.insertAdjacentHTML("afterbegin", navHTML);
-          }
-
-          if (NAV_ITEMS.length && !app.querySelector(".bottom-nav")) {
-            let navHTML = bottomNavHTML(NAV_ITEMS, "member");
-            if (GUEST_NAV_ITEMS.length)
-              navHTML += bottomNavHTML(GUEST_NAV_ITEMS, "guest");
-            app.insertAdjacentHTML("beforeend", navHTML);
-          }
+          mountHeaderControls(header, true);
+          mountSectionNav(app, header);
           return;
         }
 
         app.classList.add(
           level === "immersive" ? "chrome-immersive" : "chrome-slim",
         );
-        if (header && !header.querySelector(".mp-mascot-switch")) {
-          let actions = header.querySelector(".app-header-actions");
-          if (!actions) {
-            actions = document.createElement("div");
-            actions.className = "app-header-actions app-header-actions-slim";
-            header.appendChild(actions);
-          }
-          actions.insertAdjacentHTML("beforeend", slimControlsHTML);
-        }
+        if (bridgeNav && level === "slim") app.classList.add("chrome-nav-bridge");
+        mountHeaderControls(header, bridgeNav);
+        if (bridgeNav && level === "slim") mountSectionNav(app, header);
       });
     }
 
@@ -444,6 +520,7 @@ window.MP_Flow = (function () {
 
       syncBottomNav(current);
       syncActiveChrome();
+      syncCrossFlowBanner();
 
       if (window.MP_Communities) {
         document.querySelectorAll("[data-community-page]").forEach((el) => {
@@ -587,6 +664,9 @@ window.MP_Flow = (function () {
     }
 
     goFn = go;
+    getClubReturnUrlFn = function () {
+      return getCrossFlowReturnUrl("club.html", 0);
+    };
     setGuestFn = function (v) {
       guest = v;
       updateUI();
@@ -1014,15 +1094,7 @@ window.MP_Flow = (function () {
         const id = bumpScoreEl.dataset.refereeBumpScore;
         const side = parseInt(bumpScoreEl.dataset.side, 10);
         const delta = parseInt(bumpScoreEl.dataset.delta, 10);
-        if (delta > 0) {
-          MP_Tournament.bumpMatchScore(id, side, delta);
-        } else {
-          const m = MP_Tournament.findMatch(id);
-          if (m) {
-            const cur = side === 1 ? m.score1 || 0 : m.score2 || 0;
-            MP_Tournament.setMatchScoreSide(id, side, Math.max(0, cur + delta));
-          }
-        }
+        MP_Tournament.bumpMatchScore(id, side, delta);
         MP_Referee.applyAll();
         return;
       }
@@ -1216,19 +1288,27 @@ window.MP_Flow = (function () {
       );
       if (navEl) {
         const key = navEl.dataset.nav;
+        // Cross-page sections (club/platform → player journey) win over in-flow steps
+        if (config.navRedirect && config.navRedirect[key]) {
+          e.preventDefault();
+          closeMenus();
+          saveCrossFlowReturn();
+          location.href = config.navRedirect[key];
+          return;
+        }
         if (NAV_STEP[key] !== undefined) {
           e.preventDefault();
           closeMenus();
           go(NAV_STEP[key]);
           return;
         }
-        // Section lives on another page (e.g. club admin → player journey)
-        if (config.navRedirect && config.navRedirect[key]) {
-          e.preventDefault();
-          closeMenus();
-          location.href = config.navRedirect[key];
-          return;
-        }
+      }
+
+      const clubReturnEl = e.target.closest("[data-club-return]");
+      if (clubReturnEl) {
+        e.preventDefault();
+        location.href = getCrossFlowReturnUrl("club.html", 0);
+        return;
       }
 
       const loginEl = e.target.closest("[data-login]");
@@ -1399,5 +1479,7 @@ window.MP_Flow = (function () {
     init,
     go: (n, opts) => goFn && goFn(n, opts),
     setGuest: (v) => setGuestFn && setGuestFn(v),
+    getClubReturnUrl: () =>
+      (getClubReturnUrlFn && getClubReturnUrlFn()) || "club.html?step=0",
   };
 })();

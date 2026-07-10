@@ -5791,52 +5791,190 @@ body.mp-dark .mp-mascot-switch {
   color: var(--text-muted, #6b7280);
 }
 
-/* Referee live session — tabbed views + sport-themed panels */
+/* Referee live session — integrated light shell + sport accents */
 .referee-live-shell {
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  --referee-accent: #38bdf8;
-  --referee-bg: #0a1628;
-  --referee-panel: #0f1d33;
-  --referee-card: #1e293b;
-  --referee-border: #334155;
+  --referee-accent: var(--sport-padel, #277da1);
+  --referee-accent-soft: color-mix(in srgb, var(--referee-accent) 12%, #fff);
+  --referee-bg: var(--surface, #f0f2f5);
+  --referee-panel: var(--card, #fff);
+  --referee-card: var(--card, #fff);
+  --referee-border: var(--surface-2, #e8ece9);
+  --referee-ink: var(--ink, #1a1a2e);
+  --referee-muted: var(--ink-muted, #64748b);
 }
 
-.referee-live-shell[data-sport="tennis"] {
-  --referee-accent: #40916c;
-  --referee-bg: #071510;
-  --referee-panel: #0c1f18;
-  --referee-card: #143328;
-  --referee-border: #1f4d3a;
-}
-
-.referee-live-shell[data-sport="padel"] {
-  --referee-accent: #38bdf8;
-  --referee-bg: #0a1628;
-  --referee-panel: #0f1d33;
-  --referee-card: #1e293b;
-  --referee-border: #334155;
-}
-
-.referee-live-shell[data-sport="pickleball"] {
-  --referee-accent: #f87171;
-  --referee-bg: #1a0808;
-  --referee-panel: #2d1212;
-  --referee-card: #3d1818;
-  --referee-border: #5c2424;
-}
+.referee-live-shell[data-sport="padel"] { --referee-accent: var(--sport-padel); }
+.referee-live-shell[data-sport="tennis"] { --referee-accent: var(--sport-tennis); }
+.referee-live-shell[data-sport="pickleball"] { --referee-accent: var(--sport-pickleball); }
+.referee-live-shell[data-sport="badminton"] { --referee-accent: var(--sport-badminton); }
+.referee-live-shell[data-sport="table_tennis"] { --referee-accent: var(--sport-table-tennis); }
 
 .referee-live-shell .app-body,
 .referee-setup-shell .app-body {
   flex: 1;
+  min-height: 0;
   padding-bottom: 1rem;
   background: var(--referee-bg);
-  color: #e2e8f0;
+  color: var(--referee-ink);
+}
+
+.referee-live-chrome {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  flex-shrink: 0;
+  background: var(--card, #fff);
+  box-shadow: 0 1px 0 var(--surface-2, #e8ece9);
+}
+
+.referee-live-chrome .mp-operator-context {
+  margin-bottom: 0;
+}
+
+.mp-operator-shell .app-body {
+  padding-bottom: 5rem;
+}
+
+.mp-operator-context {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  padding: 0.5rem 1.25rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--surface-2);
+  border-left: 3px solid var(--referee-accent, var(--sport-padel));
+  font-size: 0.78rem;
+}
+
+body[data-sport="tennis"] .mp-operator-context { border-left-color: var(--sport-tennis); }
+body[data-sport="pickleball"] .mp-operator-context { border-left-color: var(--sport-pickleball); }
+body[data-sport="badminton"] .mp-operator-context { border-left-color: var(--sport-badminton); }
+body[data-sport="table_tennis"] .mp-operator-context { border-left-color: var(--sport-table-tennis); }
+
+.mp-operator-crumb {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.mp-operator-sep {
+  color: var(--ink-muted);
+  opacity: 0.6;
+}
+
+.mp-operator-step {
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+.mp-operator-shell .wizard-dot.current {
+  background: var(--referee-accent, var(--sport-padel));
+  border-color: var(--referee-accent, var(--sport-padel));
+}
+
+.mp-operator-shell .wizard-dot.done {
+  background: color-mix(in srgb, var(--referee-accent, var(--sport-padel)) 25%, #fff);
+  border-color: var(--referee-accent, var(--sport-padel));
+  color: var(--referee-accent, var(--sport-padel));
+}
+
+.mp-operator-shell .action-card.primary,
+.mp-operator-shell .action-card:hover {
+  border-left: 3px solid var(--referee-accent, var(--sport-padel));
 }
 
 .referee-live-body {
   min-height: 0;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.referee-live-body .mp-section-head {
+  text-align: center;
+}
+
+.referee-live-body .referee-subtitle {
+  text-align: center;
+}
+
+.referee-matches-grid {
+  display: grid;
+  gap: 0.65rem;
+  grid-template-columns: 1fr;
+  width: 100%;
+  max-width: 36rem;
+  margin: 0 auto;
+}
+
+body.mp-device-tablet .referee-matches-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 42rem;
+}
+
+.referee-fs-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.referee-live-shell .referee-fs-btn {
+  border-color: color-mix(in srgb, var(--referee-accent) 45%, var(--referee-border));
+  color: var(--referee-accent);
+  background: color-mix(in srgb, var(--referee-accent) 7%, var(--referee-card));
+}
+
+.referee-live-shell .referee-fs-btn:hover {
+  background: color-mix(in srgb, var(--referee-accent) 14%, var(--referee-card));
+  border-color: var(--referee-accent);
+}
+
+.referee-set-strip {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.referee-deuce {
+  color: var(--referee-accent);
+  font-weight: 800;
+}
+
+.wizard-scoring-preview {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--referee-accent, var(--sport-padel)) 8%, #fff);
+  border: 1px solid color-mix(in srgb, var(--referee-accent, var(--sport-padel)) 22%, transparent);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.wizard-publish-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px solid var(--surface-2);
+  margin-bottom: 1rem;
+}
+
+.wizard-publish-chip strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.wizard-publish-chip span {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
 }
 
 .referee-view[hidden] {
@@ -5850,6 +5988,149 @@ body.mp-dark .mp-mascot-switch {
   flex-shrink: 0;
 }
 
+.referee-tab-bar--top {
+  border-top: none;
+  border-bottom: 1px solid var(--referee-border);
+}
+
+.referee-live-shell .referee-tab-bar:not(.referee-tab-bar--top) {
+  position: sticky;
+  bottom: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: 20;
+  margin-bottom: 0;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+}
+
+body.mp-device-desktop .referee-live-shell .referee-tab-bar:not(.referee-tab-bar--top) {
+  bottom: 0;
+}
+
+.referee-session-bar {
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 25;
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+  background: var(--referee-panel);
+  border-top: 1px solid var(--referee-border);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.referee-session-bar[hidden] {
+  display: none !important;
+}
+
+.referee-session-primary,
+.referee-session-secondary-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 1rem;
+  border-radius: var(--radius-sm, 0.5rem);
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+}
+
+.referee-session-primary span,
+.referee-session-secondary-btn span {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.referee-session-primary small,
+.referee-session-secondary-btn small {
+  display: block;
+  width: 100%;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.referee-session-primary {
+  background: var(--referee-accent);
+  color: #fff;
+  border: none;
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--referee-accent) 55%, #0a1628),
+    0 6px 16px color-mix(in srgb, var(--referee-accent) 28%, transparent);
+}
+
+.referee-session-primary small {
+  color: color-mix(in srgb, #fff 82%, transparent);
+}
+
+.referee-session-primary:hover {
+  background: color-mix(in srgb, var(--referee-accent) 88%, #fff);
+}
+
+.referee-session-primary:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--referee-accent) 55%, #0a1628),
+    0 2px 8px color-mix(in srgb, var(--referee-accent) 22%, transparent);
+}
+
+.referee-session-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.referee-session-secondary-btn {
+  background: var(--referee-card);
+  color: var(--referee-accent);
+  border: 2px solid color-mix(in srgb, var(--referee-accent) 55%, var(--referee-border));
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--referee-accent) 18%, var(--referee-border)),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.referee-session-secondary-btn small {
+  color: var(--referee-muted);
+}
+
+.referee-session-secondary-btn:hover {
+  background: color-mix(in srgb, var(--referee-accent) 10%, var(--referee-card));
+  border-color: var(--referee-accent);
+}
+
+.referee-session-secondary-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--referee-accent) 18%, var(--referee-border));
+}
+
+body.mp-dark .referee-session-primary {
+  color: #fff;
+}
+
+body.mp-dark .referee-session-secondary-btn {
+  background: color-mix(in srgb, var(--referee-accent) 8%, var(--referee-card));
+}
+
 .referee-tab {
   flex: 1;
   display: flex;
@@ -5857,17 +6138,31 @@ body.mp-dark .mp-mascot-switch {
   align-items: center;
   justify-content: center;
   gap: 0.15rem;
+  width: 100%;
   padding: 0.65rem 0.35rem;
+  min-height: 48px;
   border: none;
   background: transparent;
-  color: #94a3b8;
+  color: var(--referee-muted);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  text-align: center;
   cursor: pointer;
   border-top: 2px solid transparent;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
+  touch-action: manipulation;
+}
+
+.referee-tab-bar--top .referee-tab {
+  border-top: none;
+  border-bottom: 2px solid transparent;
+}
+
+.referee-tab-bar--top .referee-tab.active {
+  border-top-color: transparent;
+  border-bottom-color: var(--referee-accent);
 }
 
 .referee-tab.active {
@@ -5879,6 +6174,7 @@ body.mp-dark .mp-mascot-switch {
 .referee-courts-hint,
 .referee-score-flow-hint {
   line-height: 1.45;
+  text-align: center;
 }
 
 .referee-match-actions {
@@ -5921,14 +6217,17 @@ body.mp-dark .mp-mascot-switch {
 .referee-stepper-btn {
   width: 2.75rem;
   height: 2.75rem;
+  min-width: 44px;
+  min-height: 44px;
   border-radius: 0.5rem;
   border: 1px solid var(--referee-border);
   background: var(--referee-card);
-  color: #f1f5f9;
+  color: var(--referee-ink);
   font-size: 1.35rem;
   font-weight: 700;
   cursor: pointer;
   line-height: 1;
+  touch-action: manipulation;
 }
 
 .referee-stepper-btn:active {
@@ -6017,7 +6316,8 @@ body.mp-dark .mp-mascot-switch {
 
 .referee-live-shell .referee-table th,
 .referee-live-shell .referee-table td {
-  color: #e2e8f0;
+  color: var(--referee-ink);
+  border-bottom: 1px solid var(--referee-border);
 }
 
 .referee-table th:nth-child(2),
@@ -6044,11 +6344,14 @@ body.mp-dark .mp-mascot-switch {
 }
 
 .referee-match-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 9.5rem;
   background: var(--surface, #fff);
   border: 2px solid var(--border, #e5e7eb);
   border-radius: var(--radius, 0.65rem);
   padding: 0.85rem;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0;
   cursor: pointer;
   transition: border-color 0.15s, box-shadow 0.15s;
 }
@@ -6056,7 +6359,7 @@ body.mp-dark .mp-mascot-switch {
 .referee-live-shell .referee-match-card {
   background: var(--referee-card);
   border-color: var(--referee-border);
-  color: #f1f5f9;
+  color: var(--referee-ink);
 }
 
 .referee-match-card.active {
@@ -6075,6 +6378,7 @@ body.mp-dark .mp-mascot-switch {
   letter-spacing: 0.05em;
   color: var(--referee-accent);
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .referee-match-label {
@@ -6088,13 +6392,17 @@ body.mp-dark .mp-mascot-switch {
   grid-template-columns: 1fr auto 1fr;
   gap: 0.5rem;
   align-items: center;
+  justify-items: center;
+  flex: 1;
   margin-bottom: 0.5rem;
+  text-align: center;
 }
 
 .referee-team {
   font-weight: 600;
   font-size: 0.9rem;
   line-height: 1.35;
+  width: 100%;
 }
 
 .referee-vs {
@@ -6107,6 +6415,7 @@ body.mp-dark .mp-mascot-switch {
   font-weight: 800;
   margin-bottom: 0.5rem;
   color: var(--referee-accent);
+  text-align: center;
 }
 
 .referee-picker-panel {
@@ -6119,6 +6428,7 @@ body.mp-dark .mp-mascot-switch {
 .referee-live-shell .referee-picker-panel {
   background: var(--referee-panel);
   border: 1px solid var(--referee-border);
+  color: var(--referee-ink);
 }
 
 .referee-picker-head {
@@ -6189,16 +6499,63 @@ body.referee-fs-active .guest-banner,
 body.referee-fs-active .flow-step.active .app-header,
 body.referee-fs-active .flow-step.active .mp-topnav,
 body.referee-fs-active .flow-step.active .bottom-nav,
-body.referee-fs-active .flow-step.active .referee-tab-bar {
+body.referee-fs-active .flow-step.active .referee-tab-bar,
+body.referee-fs-active .flow-step.active .referee-session-bar,
+body.referee-fs-active .flow-step.active .referee-live-chrome {
   display: none !important;
 }
 
-/* Chrome levels — slim / immersive (no section nav) */
-.chrome-slim .mp-topnav,
-.chrome-slim .bottom-nav,
+/* Chrome levels — slim / immersive hide section nav unless bridged to player journey */
+.chrome-slim:not(.chrome-nav-bridge) .mp-topnav,
 .chrome-immersive .mp-topnav,
+.chrome-slim:not(.chrome-nav-bridge) .bottom-nav,
 .chrome-immersive .bottom-nav {
   display: none !important;
+}
+
+.mp-cross-flow-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 1rem;
+  background: color-mix(in srgb, var(--accent) 10%, var(--card));
+  border-bottom: 1px solid var(--surface-2);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.mp-cross-flow-banner[hidden] {
+  display: none !important;
+}
+
+.mp-cross-flow-banner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.mp-cross-flow-banner-link:hover {
+  color: var(--accent);
+}
+
+.chrome-nav-bridge.referee-live-shell .referee-live-chrome .mp-topnav {
+  border-bottom: none;
+}
+
+.mp-operator-crumb-btn {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.mp-operator-crumb-btn:hover {
+  color: var(--accent);
 }
 
 .app-header-actions-slim {
@@ -6238,25 +6595,26 @@ body.mp-chrome-immersive .chrome-immersive {
   position: fixed;
   inset: 0;
   z-index: 99999;
-  background: #020617;
+  --referee-accent: var(--sport-padel, #277da1);
+  background: color-mix(in srgb, var(--referee-accent) 10%, #070b12);
   color: #f8fafc;
 }
+
+.referee-fullscreen[data-sport="padel"] { --referee-accent: var(--sport-padel); }
+.referee-fullscreen[data-sport="tennis"] { --referee-accent: var(--sport-tennis); }
+.referee-fullscreen[data-sport="pickleball"] { --referee-accent: var(--sport-pickleball); }
+.referee-fullscreen[data-sport="badminton"] { --referee-accent: var(--sport-badminton); }
+.referee-fullscreen[data-sport="table_tennis"] { --referee-accent: var(--sport-table-tennis); }
 
 .referee-fullscreen[hidden] {
   display: none !important;
 }
 
-.referee-fs-inner[data-sport="tennis"] {
-  --referee-accent: #40916c;
-}
-
-.referee-fs-inner[data-sport="padel"] {
-  --referee-accent: #38bdf8;
-}
-
-.referee-fs-inner[data-sport="pickleball"] {
-  --referee-accent: #f87171;
-}
+.referee-fs-inner[data-sport="padel"] { --referee-accent: var(--sport-padel); }
+.referee-fs-inner[data-sport="tennis"] { --referee-accent: var(--sport-tennis); }
+.referee-fs-inner[data-sport="pickleball"] { --referee-accent: var(--sport-pickleball); }
+.referee-fs-inner[data-sport="badminton"] { --referee-accent: var(--sport-badminton); }
+.referee-fs-inner[data-sport="table_tennis"] { --referee-accent: var(--sport-table-tennis); }
 
 .referee-fs-inner {
   height: 100%;
@@ -6264,6 +6622,14 @@ body.mp-chrome-immersive .chrome-immersive {
   flex-direction: column;
   padding: 1rem;
   padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--referee-accent) 16%, #0c1220) 0%,
+    #070b12 42%,
+    color-mix(in srgb, var(--referee-accent) 8%, #070b12) 100%
+  );
+  color: #f8fafc;
 }
 
 .referee-fs-close {
@@ -6273,8 +6639,8 @@ body.mp-chrome-immersive .chrome-immersive {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 50%;
-  border: 1px solid #475569;
-  background: #1e293b;
+  border: 1px solid color-mix(in srgb, var(--referee-accent) 45%, #475569);
+  background: color-mix(in srgb, var(--referee-accent) 12%, #1e293b);
   color: #fff;
   font-size: 1.1rem;
   cursor: pointer;
@@ -6298,23 +6664,46 @@ body.mp-chrome-immersive .chrome-immersive {
   min-height: 0;
 }
 
+body.mp-device-mobile .referee-fs-board,
+@media (orientation: portrait) {
+  .referee-fs-board {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr auto 1fr;
+    gap: 0.65rem;
+  }
+
+  .referee-fs-mid {
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.35rem 0;
+  }
+}
+
+body.mp-device-desktop .referee-fs-board {
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: none;
+}
+
 .referee-fs-side {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border: 2px solid #334155;
+  border: 2px solid color-mix(in srgb, var(--referee-accent) 32%, #334155);
   border-radius: 1rem;
-  background: #0f172a;
+  background: color-mix(in srgb, var(--referee-accent) 9%, #0f172a);
   padding: 1rem;
+  min-height: 44px;
   cursor: pointer;
   color: inherit;
   font: inherit;
+  touch-action: manipulation;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .referee-fs-side:active {
-  background: #1e293b;
-  border-color: var(--referee-accent, #38bdf8);
+  background: color-mix(in srgb, var(--referee-accent) 20%, #1e293b);
+  border-color: var(--referee-accent);
 }
 
 .referee-fs-names {
@@ -6335,7 +6724,8 @@ body.mp-chrome-immersive .chrome-immersive {
 .referee-fs-bump {
   margin-top: 0.75rem;
   font-size: 0.85rem;
-  opacity: 0.7;
+  font-weight: 600;
+  color: var(--referee-accent);
 }
 
 .referee-fs-mid {
@@ -6353,7 +6743,7 @@ body.mp-chrome-immersive .chrome-immersive {
 
 .referee-fs-target {
   font-size: 0.9rem;
-  color: #94a3b8;
+  color: color-mix(in srgb, var(--referee-accent) 55%, #94a3b8);
 }
 
 .referee-fs-quick {
@@ -6366,18 +6756,20 @@ body.mp-chrome-immersive .chrome-immersive {
 
 .referee-fs-quick-btn {
   padding: 0.65rem 1rem;
+  min-height: 44px;
   border-radius: 0.5rem;
-  border: 1px solid #475569;
-  background: #1e293b;
+  border: 1px solid color-mix(in srgb, var(--referee-accent) 30%, #475569);
+  background: color-mix(in srgb, var(--referee-accent) 10%, #1e293b);
   color: #f1f5f9;
   font-weight: 700;
   cursor: pointer;
+  touch-action: manipulation;
 }
 
 .referee-fs-quick-btn.referee-fs-confirm {
-  background: var(--referee-accent, #38bdf8);
+  background: var(--referee-accent);
   color: #0f172a;
-  border-color: var(--referee-accent, #38bdf8);
+  border-color: var(--referee-accent);
   flex: 1 1 100%;
   max-width: 100%;
   padding: 0.85rem;

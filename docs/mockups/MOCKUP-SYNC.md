@@ -121,6 +121,8 @@ Gallery screens use `id="screen-{name}"` in `prototype.html`. Interactive uses `
 | `home-pulse.js` / `guest-pulse.js` | member/guest dashboard halves |
 | `passport.js` + `achievements.js` | player-passport, passport-teaser-guest, guest home teaser |
 | `community-hq.js` | club.html step 0 + derived `club-admin-dashboard` |
+| `scoring-rules.js` | `tournament.js` + `live-referee.js` — format/sport score profiles |
+| `live-referee.js` | club step 9, player format demos, gallery `club-live-referee` |
 | `booking-mock.js` | court-booking, booking-confirm, booking-roadmap |
 | `open-mabar.js` | events-feed (mabar tab), open-mabar-board, open-mabar-detail |
 | `player-challenge.js` | player-challenge, challenge-inbox, leaderboard challenge CTAs |
